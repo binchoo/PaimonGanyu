@@ -71,6 +71,7 @@ public class RetcodeException extends RuntimeException {
 
         if (exceptionMapping.containsKey(retcode)) {
             Class<RetcodeException> clazz = exceptionMapping.get(retcode);
+
             try {
                 retcodeException = clazz.newInstance();
             } catch (InstantiationException e) {
