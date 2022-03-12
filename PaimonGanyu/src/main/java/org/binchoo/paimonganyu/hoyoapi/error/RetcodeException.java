@@ -9,40 +9,7 @@ public class RetcodeException extends RuntimeException {
 
     private static final Map<Integer, Class<RetcodeException>> exceptionMapping;
 
-    static {
-        exceptionMapping = new HashMap<>();
-
-        for (Class<?> clazz : RetcodeException.class.getClasses()) {
-            Retcode retcodeAnnot = clazz.getAnnotation(Retcode.class);
-
-            if (Integer.MIN_VALUE != retcodeAnnot.value())
-                exceptionMapping.put(retcodeAnnot.value(), (Class<RetcodeException>) clazz);
-
-            for (int code : retcodeAnnot.codes())
-                exceptionMapping.put(code, (Class<RetcodeException>) clazz);
-        }
-    }
-
-    public static RetcodeException of(int retcode) {
-        RetcodeException retcodeException = null;
-
-        if (exceptionMapping.containsKey(retcode)) {
-            Class<RetcodeException> clazz = exceptionMapping.get(retcode);
-            try {
-                retcodeException = clazz.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return retcodeException;
-    }
-
     private String message = "";
-
-    public RetcodeException() { }
 
     public void setMessage(String message) {
         this.message = message;
@@ -83,5 +50,36 @@ public class RetcodeException extends RuntimeException {
 
     @Retcode(codes = {-5003, 2001})
     public static class SignInException extends RetcodeException {
+    }
+
+    static {
+        exceptionMapping = new HashMap<>();
+
+        for (Class<?> clazz : RetcodeException.class.getClasses()) {
+            Retcode retcodeAnnot = clazz.getAnnotation(Retcode.class);
+
+            if (Integer.MIN_VALUE != retcodeAnnot.value())
+                exceptionMapping.put(retcodeAnnot.value(), (Class<RetcodeException>) clazz);
+
+            for (int code : retcodeAnnot.codes())
+                exceptionMapping.put(code, (Class<RetcodeException>) clazz);
+        }
+    }
+
+    public static RetcodeException of(int retcode) {
+        RetcodeException retcodeException = null;
+
+        if (exceptionMapping.containsKey(retcode)) {
+            Class<RetcodeException> clazz = exceptionMapping.get(retcode);
+            try {
+                retcodeException = clazz.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return retcodeException;
     }
 }
