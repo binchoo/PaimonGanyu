@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass.entity.utils;
 
-import org.binchoo.paimonganyu.hoyopass.api.pojo.UserGameRole;
+import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyopass.entity.Uid;
 
 public class UidUtils {

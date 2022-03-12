@@ -1,19 +1,16 @@
 package org.binchoo.paimonganyu.hoyopass.service;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.api.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyopass.api.pojo.LtuidLtoken;
-import org.binchoo.paimonganyu.hoyopass.api.pojo.UserGameRole;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.entity.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.entity.Uid;
-import org.binchoo.paimonganyu.hoyopass.entity.utils.HoyopassUtils;
 import org.binchoo.paimonganyu.hoyopass.repository.HoyopassRepository;
 import org.binchoo.paimonganyu.hoyopass.repository.UidRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -46,11 +43,12 @@ public class HoyopassServiceImpl implements HoyopassService {
     }
 
     private Hoyopass uidListFilled(Hoyopass hoyopass) {
-        return hoyopass.toBuilder()
-                .uidList(apiClient.getUserGameRoles(HoyopassUtils.ltuidLtoken(hoyopass)).stream()
-                        .map(UserGameRole::getGameUid)
-                        .collect(Collectors.toList()))
-                .build();
+        return null;
+//        return hoyopass.toBuilder()
+//                .uidList(apiClient.getUserGameRoles(HoyopassUtils.ltuidLtoken(hoyopass)).stream()
+//                        .map(UserGameRole::getGameUid)
+//                        .collect(Collectors.toList()))
+//                .build();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass.service;
 
-import org.binchoo.paimonganyu.hoyopass.api.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 
 public interface HoyopassSecurityService {
     /**

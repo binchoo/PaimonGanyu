@@ -1,0 +1,51 @@
+package org.binchoo.paimonganyu.hoyoapi.webclient;
+
+import org.binchoo.paimonganyu.hoyoapi.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Collections;
+
+@Component
+public class HoyolabAccountWebClient implements HoyolabAccountApi {
+
+    private WebClient webClient;
+
+    public HoyolabAccountWebClient() {
+        this.webClient = WebClient.builder()
+                .baseUrl(BASE_URL)
+                .defaultUriVariables(Collections.singletonMap(PARAM_GAME_BIZ, "hk4e_global"))
+                .build();
+    }
+
+    @Override
+    public HoyoResponse<UserGameRoles> getUserGameRoles(LtuidLtoken ltuidLtoken) {
+        ResponseEntity<HoyoResponse<UserGameRoles>> response = webClient.get()
+                .uri(GET_USER_GAME_ROLE_URL)
+                .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
+                .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<HoyoResponse<UserGameRoles>>() {})
+                .block();
+
+        return response.getBody();
+    }
+
+    @Override
+    public HoyoResponse<UserGameRoles> getUserGameRoleByRegion(LtuidLtoken ltuidLtoken, String region) {
+        ResponseEntity<HoyoResponse<UserGameRoles>> response = webClient.get()
+                .uri(GET_USER_GAME_ROLE_URL, Collections.singletonMap(PARAM_REGION, region))
+                .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
+                .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<HoyoResponse<UserGameRoles>>() {})
+                .block();
+
+        return response.getBody();
+    }
+}
