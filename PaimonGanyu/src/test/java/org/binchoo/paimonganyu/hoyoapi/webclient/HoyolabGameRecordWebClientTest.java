@@ -6,7 +6,7 @@
 //import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatar;
 //import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 //import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
-//import org.binchoo.paimonganyu.hoyopass.entity.Hoyopass;
+//import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 //import org.binchoo.paimonganyu.hoyopass.entity.utils.HoyopassUtils;
 //import org.junit.jupiter.api.Test;
 //

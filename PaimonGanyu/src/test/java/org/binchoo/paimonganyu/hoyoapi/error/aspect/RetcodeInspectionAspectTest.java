@@ -1,14 +1,14 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
-import org.binchoo.paimonganyu.PaimonGanyuApp;
+import org.binchoo.paimonganyu.hoyopass.PaimonGanyuApp;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatar;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
-import org.binchoo.paimonganyu.hoyopass.entity.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.entity.utils.HoyopassUtils;
+import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.utils.conversion.HoyopassToLtuidLtoken;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +31,7 @@ class RetcodeInspectionAspectTest {
 
     @Test
     void getAllCharacter() {
-        LtuidLtoken ltuidLtoken = HoyopassUtils.ltuidLtoken(hoyopass);
+        LtuidLtoken ltuidLtoken = HoyopassToLtuidLtoken.ltuidLtoken(hoyopass);
 
         for (UserGameRole gameRole : accountApi.getUserGameRoles(ltuidLtoken).getData().getList()) {
             System.out.println(gameRole);
@@ -46,7 +46,7 @@ class RetcodeInspectionAspectTest {
 
     @Test
     void getGivenCharacters() {
-        LtuidLtoken ltuidLtoken = HoyopassUtils.ltuidLtoken(hoyopass);
+        LtuidLtoken ltuidLtoken = HoyopassToLtuidLtoken.ltuidLtoken(hoyopass);
         int aether = 10000005;
 
         for (UserGameRole gameRole : accountApi.getUserGameRoles(ltuidLtoken).getData().getList()) {
@@ -65,7 +65,7 @@ class RetcodeInspectionAspectTest {
 
     @Test
     void getDailyNote() {
-        LtuidLtoken ltuidLtoken = HoyopassUtils.ltuidLtoken(hoyopass);
+        LtuidLtoken ltuidLtoken = HoyopassToLtuidLtoken.ltuidLtoken(hoyopass);
 
         for (UserGameRole gameRole : accountApi.getUserGameRoles(ltuidLtoken).getData().getList()) {
             System.out.println(gameRole);

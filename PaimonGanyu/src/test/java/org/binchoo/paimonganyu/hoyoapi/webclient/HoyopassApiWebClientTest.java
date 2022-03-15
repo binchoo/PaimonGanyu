@@ -3,8 +3,8 @@
 //import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 //import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 //import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
-//import org.binchoo.paimonganyu.hoyopass.entity.Hoyopass;
-//import org.binchoo.paimonganyu.hoyopass.entity.Uid;
+//import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
+//import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 //import org.junit.jupiter.api.Test;
 //
 //import java.util.List;

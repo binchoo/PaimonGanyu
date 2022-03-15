@@ -19,7 +19,6 @@ import java.util.Random;
  * <p> h := "salt=%s&t=%s&r=%s".format(salt, t, r)를 MD5로 다이제스트 한 뒤 16진수로 표현한 문자열
  */
 @Builder(access = AccessLevel.PACKAGE)
-@Setter
 @Getter
 @AllArgsConstructor
 public final class BasicDsGenerator implements DsGenerator {
@@ -33,14 +32,6 @@ public final class BasicDsGenerator implements DsGenerator {
     private String xRpcLang;
     private String xRpcAppVersion;
     private String xRpcClientType;
-
-    public static BasicDsGenerator basic() {
-        return BasicDsGenerator.builder()
-                .xRpcLang("ko-kr")
-                .xRpcAppVersion("1.5.0")
-                .xRpcClientType("5")
-                .build();
-    }
 
     @Override
     public MultiValueMap<String, String> generateDsHeader() {
@@ -96,5 +87,13 @@ public final class BasicDsGenerator implements DsGenerator {
                 String.format("salt=%s&t=%s&r=%s", salt, t, r).getBytes());
 
         return DatatypeConverter.printHexBinary(digest).toLowerCase(); // must be a lowercase string
+    }
+
+    public static BasicDsGenerator basic() {
+        return BasicDsGenerator.builder()
+                .xRpcLang("ko-kr")
+                .xRpcAppVersion("1.5.0")
+                .xRpcClientType("5")
+                .build();
     }
 }
