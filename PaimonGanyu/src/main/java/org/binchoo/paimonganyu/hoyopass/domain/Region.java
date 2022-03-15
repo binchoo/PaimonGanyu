@@ -7,4 +7,8 @@ public enum Region {
     public String lowercase() {
         return this.name().toLowerCase();
     }
+
+    public static Region fromString(String s) {
+        return Region.fromString(s);
+    }
 }

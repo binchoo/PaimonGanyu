@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import org.binchoo.paimonganyu.hoyoapi.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.ds.BasicDsGenerator;
 import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;

@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass.http;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.domain.inport.HoyopassChatbotService;
+import org.binchoo.paimonganyu.hoyopass.domain.inport.HoyopassRegistrar;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController("/hoyopass")
-public class HoyopassController {
+public class HoyopassChatbotController {
 
-    private final HoyopassChatbotService hoyopassChatbotService;
+    private final HoyopassRegistrar hoyopassRegistrar;
 
     @PostMapping("/post")
     public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {

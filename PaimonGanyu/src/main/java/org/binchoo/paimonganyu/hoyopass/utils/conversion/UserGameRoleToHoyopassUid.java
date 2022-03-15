@@ -16,7 +16,7 @@ public class UserGameRoleToHoyopassUid implements Converter<UserGameRole, Uid> {
                 .uidString(source.getGameUid())
                 .characterLevel(source.getLevel())
                 .characterName(source.getNickname())
-                .region(Region.valueOf(source.getRegion().toUpperCase()))
+                .region(Region.fromString(source.getRegion()))
                 .isLumine(false)
                 .build();
     }

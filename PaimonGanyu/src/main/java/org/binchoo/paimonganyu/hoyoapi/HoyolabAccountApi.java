@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.hoyoapi;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 
 public interface HoyolabAccountApi extends HoyolabApi {
 

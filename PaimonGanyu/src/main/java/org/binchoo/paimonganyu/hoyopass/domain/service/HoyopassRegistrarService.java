@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.inport.HoyopassChatbotService;
+import org.binchoo.paimonganyu.hoyopass.domain.inport.HoyopassRegistrar;
 import org.binchoo.paimonganyu.hoyopass.domain.outport.HoyopassRepository;
 import org.binchoo.paimonganyu.hoyopass.domain.outport.HoyopassSearch;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class HoyopassChatbotServiceImpl implements HoyopassChatbotService {
+public class HoyopassRegistrarService implements HoyopassRegistrar {
 
     private final HoyopassSearch hoyopassSearch;
     private final HoyopassRepository hoyopassRepository;

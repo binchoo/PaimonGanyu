@@ -5,7 +5,7 @@ import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 
 import java.util.List;
 
-public interface HoyopassChatbotService {
+public interface HoyopassRegistrar {
 
     /**
      * 지정된 유저가 갖는 통행증을 새로 등록한다.

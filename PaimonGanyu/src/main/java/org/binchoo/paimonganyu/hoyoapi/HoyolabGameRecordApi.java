@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.hoyoapi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 
 public interface HoyolabGameRecordApi extends HoyolabApi {
 

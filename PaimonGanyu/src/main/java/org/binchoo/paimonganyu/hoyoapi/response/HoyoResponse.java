@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi;
+package org.binchoo.paimonganyu.hoyoapi.response;
 
 import lombok.Getter;
 import lombok.Setter;
