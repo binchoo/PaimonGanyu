@@ -1,6 +1,9 @@
 package org.binchoo.paimonganyu.hoyoapi.ds;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,6 +32,7 @@ public final class BasicDsGenerator implements DsGenerator {
     private final static String HEADER_X_RPC_APP_VERSION = "x-rpc-app_version";
     private final static String HEADER_X_RPC_CLIENT_TYPE = "x-rpc-client_type";
 
+    private MessageDigest messageDigest;
     private String xRpcLang;
     private String xRpcAppVersion;
     private String xRpcClientType;
@@ -59,15 +63,9 @@ public final class BasicDsGenerator implements DsGenerator {
     public String generateDs(String salt) {
         final long t = T();
         final String r = R();
-        final String h;
+        final String h = H(salt, t, r);
 
-        try {
-            h = H(salt, t, r);
-            return String.format("%s,%s,%s", t, r, h);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("MessageDigest's configuration is not valid");
-        }
+        return String.format("%s,%s,%s", t, r, h);
     }
 
     private long T() {
@@ -80,20 +78,22 @@ public final class BasicDsGenerator implements DsGenerator {
                 .toString();
     }
 
-    private String H(String salt, long t, String r) throws NoSuchAlgorithmException {
-        MessageDigest md5 = MessageDigest.getInstance(MessageDigestAlgorithms.MD5);
-
-        byte[] digest = md5.digest(
+    private String H(String salt, long t, String r) {
+        byte[] digest = messageDigest.digest(
                 String.format("salt=%s&t=%s&r=%s", salt, t, r).getBytes());
 
         return DatatypeConverter.printHexBinary(digest).toLowerCase(); // must be a lowercase string
     }
 
     public static BasicDsGenerator create() {
-        return BasicDsGenerator.builder()
-                .xRpcLang("ko-kr")
-                .xRpcAppVersion("1.5.0")
-                .xRpcClientType("5")
-                .build();
+        try {
+            return BasicDsGenerator.builder()
+                    .messageDigest(MessageDigest.getInstance(MessageDigestAlgorithms.MD5))
+                    .xRpcLang("ko-kr").xRpcAppVersion("1.5.0").xRpcClientType("5")
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to create a MessageDigest for BasicDsGenerator");
+        }
     }
 }
