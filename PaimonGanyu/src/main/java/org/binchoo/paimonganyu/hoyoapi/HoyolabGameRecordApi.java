@@ -23,7 +23,6 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
     String GAME_RECORD_DAILYNOTE = "/dailyNote";
 
     /**
-     *
      * @param ltuidLtoken 유저 통행증 쿠키
      * @param uid 조회할 uid
      * @param server 조회할 서버
@@ -32,7 +31,6 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
     HoyoResponse<GenshinAvatars> getAllCharacter(LtuidLtoken ltuidLtoken, String uid, String server);
 
     /**
-     *
      * @param ltuidLtoken 유저 통행증 쿠키
      * @param uid 조회할 uid
      * @param server 조회할 서버
@@ -42,7 +40,6 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
     HoyoResponse<GenshinAvatars> getCharacters(LtuidLtoken ltuidLtoken, String uid, String server, long... characterId);
 
     /**
-     *
      * @param ltuidLtoken 유저 통행증 쿠키
      * @param uid 조회할 uid
      * @param server 조회할 서버

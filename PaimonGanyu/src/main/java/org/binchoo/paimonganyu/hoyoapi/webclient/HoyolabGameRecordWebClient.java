@@ -50,13 +50,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
     }
 
     /**
-     *
-     * @param ltuidLtoken 유저 통행증 쿠키
-     * @param uid 조회할 uid
-     * @param server 조회할 서버
-     * @param characterId 조회할 캐릭터 아이디
      * @deprecated 지정한 characterId 뿐만 아닌 모든 캐릭터 정보를 불러오는 이슈 있음
-     * @return 해당 uid가 보유한 캐릭터 중, characterId에 매칭되는 캐릭터 정보 목록
      */
     @Deprecated
     @Override
