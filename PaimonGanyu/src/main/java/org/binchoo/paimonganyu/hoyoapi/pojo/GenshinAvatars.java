@@ -14,8 +14,6 @@ public class GenshinAvatars {
     private List<GenshinAvatar> avatars;
 
     public boolean containsLumine() {
-        return 1 == avatars.stream()
-                .filter(GenshinAvatar::isLumine)
-                .count();
+        return avatars.stream().anyMatch(GenshinAvatar::isLumine);
     }
 }

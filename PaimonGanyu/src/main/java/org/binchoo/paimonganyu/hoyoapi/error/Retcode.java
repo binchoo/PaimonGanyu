@@ -1,6 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi.error.annotation;
-
-import org.springframework.web.bind.annotation.RequestMapping;
+package org.binchoo.paimonganyu.hoyoapi.error;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -3,11 +3,15 @@ package org.binchoo.paimonganyu.hoyopass.domain;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBConvertedBool;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @DynamoDBDocument
 public class Uid {
 
@@ -37,14 +41,4 @@ public class Uid {
      */
     @DynamoDBConvertedBool(DynamoDBConvertedBool.Format.Y_N)
     private Boolean isLumine;
-
-    public Uid() { }
-
-    public Uid(String uidString, Region region, Integer characterLevel, String characterName, Boolean isLumine) {
-        this.uidString = uidString;
-        this.region = region;
-        this.characterLevel = characterLevel;
-        this.characterName = characterName;
-        this.isLumine = isLumine;
-    }
 }

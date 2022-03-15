@@ -1,10 +1,12 @@
 package org.binchoo.paimonganyu.hoyopass.domain.outport;
 
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 
 public interface HoyopassSearch {
-
+    /**
+     * 주어진 {@link Hoyopass} 객체와 연관된 UID 객체를 채워넣습니다.
+     * @param hoyopass
+     * @return {@link org.binchoo.paimonganyu.hoyopass.domain.Uid} 값이 채워진 {@link Hoyopass} 객체
+     */
     Hoyopass fillUids(Hoyopass hoyopass);
-    Hoyopass fillIsLumines(Hoyopass hoyopass);
 }

@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass.domain;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
@@ -10,10 +10,8 @@ import lombok.Setter;
 import org.binchoo.paimonganyu.hoyopass.utils.dynamo.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 @Setter
@@ -28,7 +26,7 @@ public class Hoyopass implements Comparable<Hoyopass> {
     /**
      * 통행증 고유의 ltuid
      */
-    @DynamoDBIndexHashKey
+    @DynamoDBHashKey
     private String ltuid;
 
     /**

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
@@ -28,30 +27,16 @@ public class HoyopassHoyolabApiSearch implements HoyopassSearch {
 
     @Override
     public Hoyopass fillUids(Hoyopass hoyopass) {
-        HoyoResponse<UserGameRoles> apiResponse =
-                accountApi.getUserGameRoles(getLtuidLtoken(hoyopass));
-
-        List<UserGameRole> userGameRoles = apiResponse.getData().getList();
-        List<Uid> newUids = new LinkedList<>();
-        userGameRoles.forEach(ugr->
-            newUids.add(converters.convert(ugr, Uid.class))
-        );
-
-        return hoyopass.toBuilder().uids(newUids).build();
-    }
-
-    @Override
-    public Hoyopass fillIsLumines(Hoyopass hoyopass) {
         LtuidLtoken ltuidLtoken = getLtuidLtoken(hoyopass);
-        List<Uid> uids = hoyopass.getUids();
-
-        if (Objects.isNull(uids))
-            throw new IllegalStateException("UID 리스트가 null이어서 isLumine 값을 채울 수 없습니다.");
+        HoyoResponse<UserGameRoles> apiResponse =
+                accountApi.getUserGameRoles(ltuidLtoken);
 
         List<Uid> newUids = new LinkedList<>();
-        uids.forEach(uid->
-                newUids.add(fillIsLumine(uid, ltuidLtoken))
-        );
+        List<UserGameRole> userGameRoles = apiResponse.getData().getList();
+        userGameRoles.forEach(ugr-> {
+            Uid newUid = converters.convert(ugr, Uid.class);
+            fillIsLumine(newUid, ltuidLtoken);
+        });
 
         return hoyopass.toBuilder().uids(newUids).build();
     }
@@ -60,7 +45,13 @@ public class HoyopassHoyolabApiSearch implements HoyopassSearch {
         return converters.convert(hoyopass, LtuidLtoken.class);
     }
 
-    public Uid fillIsLumine(Uid uid, LtuidLtoken ltuidLtoken) {
+    /**
+     * 주어진 Uid가 루미네를 갖고 있는지 확인하여 isLumine 값을 설정합니다.
+     * @param uid
+     * @param ltuidLtoken
+     * @return 루미네 보유 여부를 표시하고 있는 {@link Uid} 객체
+     */
+    private Uid fillIsLumine(Uid uid, LtuidLtoken ltuidLtoken) {
         HoyoResponse<GenshinAvatars> apiResponse =
                 gameRecordApi.getAllCharacter(ltuidLtoken, uid.getUidString(), uid.getRegion().lowercase());
 
