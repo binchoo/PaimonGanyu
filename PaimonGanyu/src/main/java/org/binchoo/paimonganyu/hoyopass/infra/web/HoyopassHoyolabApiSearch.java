@@ -39,7 +39,7 @@ public class HoyopassHoyolabApiSearch implements HoyopassSearch {
                         .characterLevel(ugr.getLevel())
                         .characterName(ugr.getNickname())
                         .region(Region.fromString(ugr.getRegion()))
-                        .isLumine(resolveIsLumine(ltuidLtoken, ugr.getGameUid(), ugr.getRegion()))
+                        .isLumine(containsLumine(ltuidLtoken, ugr.getGameUid(), ugr.getRegion()))
                         .build())
                 .collect(Collectors.toList());
 
@@ -51,13 +51,13 @@ public class HoyopassHoyolabApiSearch implements HoyopassSearch {
     }
 
     /**
-     * 해당 uid가 루미네를 갖고 있는지 미호요 API를 호출하여 판단합니다.
-     * @param ltuidLtoken
-     * @param uid
-     * @param region
-     * @return
+     * 해당 UID가 루미네를 갖고 있는지 미호요 API를 호출하여 판단합니다.
+     * @param ltuidLtoken 미호요 통행증 쿠키
+     * @param uid UID 스트링
+     * @param region 해당 UID의 서버
+     * @return 이 UID가 루미네를 캐릭터로 포함하고 있는지 여부
      */
-    private boolean resolveIsLumine(LtuidLtoken ltuidLtoken, String uid, String region) {
+    private boolean containsLumine(LtuidLtoken ltuidLtoken, String uid, String region) {
         HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllCharacter(ltuidLtoken, uid, region);
         return apiResponse.getData().containsLumine();
     }

@@ -89,7 +89,7 @@ public final class BasicDsGenerator implements DsGenerator {
         return DatatypeConverter.printHexBinary(digest).toLowerCase(); // must be a lowercase string
     }
 
-    public static BasicDsGenerator basic() {
+    public static BasicDsGenerator create() {
         return BasicDsGenerator.builder()
                 .xRpcLang("ko-kr")
                 .xRpcAppVersion("1.5.0")

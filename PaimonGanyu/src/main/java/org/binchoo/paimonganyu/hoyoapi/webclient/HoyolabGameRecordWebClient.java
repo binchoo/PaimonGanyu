@@ -27,7 +27,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
 
     public HoyolabGameRecordWebClient() {
         this.webClient = WebClient.create(BASE_URL);
-        this.dsGenerator = BasicDsGenerator.basic();
+        this.dsGenerator = BasicDsGenerator.create();
     }
 
     @Override

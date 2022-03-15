@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Aspect
 @Component
-public class ResponseDataInspectionAspect {
+public class DataInspectionAspect {
 
     /**
      * <p> 이 애프터리터닝 어드바이스는 {@link HoyoResponse}의 data 값의 null 여부에 검사하여 예외를 던집니다.
