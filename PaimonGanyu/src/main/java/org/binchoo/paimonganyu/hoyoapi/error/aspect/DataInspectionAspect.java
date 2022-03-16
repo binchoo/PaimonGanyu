@@ -12,8 +12,9 @@ import java.util.Objects;
 public class DataInspectionAspect {
 
     /**
-     * <p> 이 애프터리터닝 어드바이스는 {@link HoyoResponse}의 data 값의 null 여부에 검사하여 예외를 던집니다.
+     * <p> 이 애프터리터닝 어드바이스는 {@link HoyoResponse}의 data 값의 null 여부를 검사합니다.
      * @param response {@link org.binchoo.paimonganyu.hoyoapi.webclient} 하위 클라이언트 메서드가 반환한 응답.
+     * @throws NullPointerException 만약 {@link HoyoResponse}의 data가 null이면
      */
     @AfterReturning(
             pointcut = "execution(* org.binchoo.paimonganyu.hoyoapi.webclient.*.*(..))",

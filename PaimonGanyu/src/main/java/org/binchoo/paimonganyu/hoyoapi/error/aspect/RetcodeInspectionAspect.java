@@ -12,9 +12,9 @@ public class RetcodeInspectionAspect {
 
     /**
      * <p> 미호요 API는 대부분의 오류 응답 상황에서도 200 상태코드를 줍니다.
-     * <p> 대신에 오류 컨텍스트를 {@link HoyoResponse}의 retcode 필드에 담습니다.
-     * <p> 이 애프터리터닝 어드바이스는 {@link HoyoResponse}의 retcode 값에 대응하여 예외를 던집니다.
-     * @param response {@link org.binchoo.paimonganyu.hoyoapi.webclient} 하위 클라이언트 메서드가 반환한 응답.
+     * <p> 대신에 오류 컨텍스트가 있다면 {@link HoyoResponse}의 retcode를 0이 아닌 값으로 담습니다.
+     * @param response {@link org.binchoo.paimonganyu.hoyoapi.webclient} 하위 클라이언트 메서드가 반환한 응답
+     * @throws RetcodeException retcode가 0이 아니며 이 코드에 대응하여 정의된 자손 예외가 있을 때
      */
     @AfterReturning(
             pointcut = "execution(* org.binchoo.paimonganyu.hoyoapi.webclient.*.*(..))",

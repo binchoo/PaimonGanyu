@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.Map;
 
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@SpringBootTest(classes = {TestAopConfig.class})
+@SpringJUnitConfig(classes = {TestAopConfig.class})
 @ExtendWith(MockitoExtension.class)
 class RetcodeInspectionAspectTest {
 
@@ -31,8 +31,8 @@ class RetcodeInspectionAspectTest {
     HoyoResponse<Object> badHoyoResponse;
 
     /**
-     * RetocdeException's static behavior initializes RetcodeExceptionMappings
-     * See {@link RetcodeException}'s static area.
+     * <p> RetocdeException's static behavior initializes RetcodeExceptionMappings
+     * <p> See {@link RetcodeException}'s static area.
      */
     @BeforeAll
     public static void bootstrapRetcodeMappings() {
