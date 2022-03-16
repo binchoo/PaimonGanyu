@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.config;
+package org.binchoo.paimonganyu.config;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;

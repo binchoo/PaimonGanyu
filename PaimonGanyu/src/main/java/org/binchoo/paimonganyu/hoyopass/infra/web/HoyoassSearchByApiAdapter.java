@@ -11,7 +11,7 @@ import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Region;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.outport.HoyopassSearch;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
-public class HoyopassHoyolabApiSearch implements HoyopassSearch {
+public class HoyoassSearchByApiAdapter implements HoyopassSearchPort {
 
     private final HoyolabAccountApi accountApi;
     private final HoyolabGameRecordApi gameRecordApi;

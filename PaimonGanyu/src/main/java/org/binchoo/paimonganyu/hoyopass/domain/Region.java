@@ -9,6 +9,6 @@ public enum Region {
     }
 
     public static Region fromString(String s) {
-        return Region.fromString(s);
+        return Region.valueOf(s.toUpperCase());
     }
 }
