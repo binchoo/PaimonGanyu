@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.hoyoapi.error.exceptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class RetcodeExceptionMappings {
 
@@ -9,7 +10,7 @@ public class RetcodeExceptionMappings {
 
     private final Map<Integer, Class<RetcodeException>> exceptionMappings = new HashMap<>();
 
-    static RetcodeExceptionMappings getInstance() {
+    public static RetcodeExceptionMappings getInstance() {
         if (instance == null)
             instance = new RetcodeExceptionMappings();
         return instance;
@@ -47,5 +48,9 @@ public class RetcodeExceptionMappings {
     @Override
     public String toString() {
         return this.exceptionMappings.toString();
+    }
+
+    public Set<Map.Entry<Integer, Class<RetcodeException>>> entrySet() {
+        return this.exceptionMappings.entrySet();
     }
 }

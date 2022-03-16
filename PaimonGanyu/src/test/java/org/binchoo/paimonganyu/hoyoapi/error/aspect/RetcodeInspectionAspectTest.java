@@ -1,36 +1,60 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
-import org.binchoo.paimonganyu.PaimonGanyuApp;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
+import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.config.TestAopConfig;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.RetcodeException;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.RetcodeExceptionMappings;
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest(classes = {PaimonGanyuApp.class})
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+@Slf4j
+@SpringBootTest(classes = {TestAopConfig.class})
+@ExtendWith(MockitoExtension.class)
 class RetcodeInspectionAspectTest {
 
     @Autowired
-    HoyolabAccountApi accountApi;
+    RetcodeInspectionAspect retcodeInspectionAspect;
 
-    @Autowired
-    HoyolabGameRecordApi gameRecordApi;
+    @MockBean
+    HoyoResponse<Object> badHoyoResponse;
 
-    Hoyopass hoyopass = Hoyopass.builder()
-            .ltuid("77407897")
-            .ltoken("rN0anFtemzPu8vfYLW0hkLkysJeidRk3vN6YGtjA")
-            .build();
-
-    @Test
-    void getAllCharacter() {
+    /**
+     * RetocdeException's static behavior initializes RetcodeExceptionMappings
+     * See {@link RetcodeException}'s static area.
+     */
+    @BeforeAll
+    public static void bootstrapRetcodeMappings() {
+        RetcodeException.of(987654321);
     }
 
     @Test
-    void getGivenCharacters() {
+    public void inspectRetcode() throws ClassNotFoundException {
+        RetcodeExceptionMappings mappings = RetcodeExceptionMappings.getInstance();
+        for (Map.Entry<Integer, Class<RetcodeException>> entry : mappings.entrySet()) {
+            testRetcodeHandling(entry.getKey(),entry.getValue());
+        }
     }
 
-    @Test
-    void getDailyNote() throws ClassNotFoundException {
+    private void testRetcodeHandling(int retcode, Class<RetcodeException> expectedExceptionClass) {
+        when(badHoyoResponse.getRetcode()).thenReturn(retcode);
+
+        assertThrows(expectedExceptionClass, () -> {
+            retcodeInspectionAspect.inspectRetcode(badHoyoResponse);
+        });
+
+        Mockito.reset(badHoyoResponse);
+        log.info(String.format("retcode %d is handled to throw %s", retcode, expectedExceptionClass));
     }
 }
