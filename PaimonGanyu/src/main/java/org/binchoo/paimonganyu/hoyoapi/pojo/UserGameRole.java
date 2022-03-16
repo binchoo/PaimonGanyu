@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @ToString
-@Setter
 @Getter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserGameRole {

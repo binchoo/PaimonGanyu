@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.ds;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
@@ -21,9 +20,8 @@ import java.util.Random;
  * <p> r := 임의의 아스키 6문자
  * <p> h := "salt=%s&t=%s&r=%s".format(salt, t, r)를 MD5로 다이제스트 한 뒤 16진수로 표현한 문자열
  */
-@Builder(access = AccessLevel.PACKAGE)
 @Getter
-@AllArgsConstructor
+@Builder(access = AccessLevel.PACKAGE)
 public final class BasicDsGenerator implements DsGenerator {
 
     private final static String DS_SALT = "6s25p5ox5y14umn1p61aqyyvbvvl3lrt";

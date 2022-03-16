@@ -6,15 +6,11 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.binchoo.paimonganyu.hoyopass.utils.dynamo.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
-
-@Setter
 @Getter
 @Builder(toBuilder = true)
 @DynamoDBTable(tableName = Hoyopass.TABLE_NAME)
@@ -51,24 +47,8 @@ public class Hoyopass implements Comparable<Hoyopass> {
             converter = LocalDateTimeStringConverter.class)
     @DynamoDBIndexRangeKey(
             globalSecondaryIndexName = GLOBAL_RANGEINDEX_CREAT_AT)
-    private LocalDateTime createAt;
-
-    public Hoyopass() {
-        this.createAt = LocalDateTime.now();
-    }
-
-    public Hoyopass(String botUserId, String ltuid, String ltoken, Uid... uids) {
-        this();
-        Collections.addAll(this.uids, uids);
-    }
-
-    public Hoyopass(String botUserId, String ltuid, String ltoken, List<Uid> uids, LocalDateTime createAt) {
-        this.botUserId = botUserId;
-        this.ltuid = ltuid;
-        this.ltoken = ltoken;
-        this.uids = uids;
-        this.createAt = createAt;
-    }
+    @Builder.Default
+    private LocalDateTime createAt = LocalDateTime.now();
 
     @Override
     public int compareTo(Hoyopass o) {

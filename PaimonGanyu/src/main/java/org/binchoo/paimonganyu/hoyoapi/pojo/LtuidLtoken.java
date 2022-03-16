@@ -3,7 +3,6 @@ package org.binchoo.paimonganyu.hoyoapi.pojo;
 import lombok.*;
 
 @ToString
-@Setter
 @Getter
 @RequiredArgsConstructor
 public class LtuidLtoken {

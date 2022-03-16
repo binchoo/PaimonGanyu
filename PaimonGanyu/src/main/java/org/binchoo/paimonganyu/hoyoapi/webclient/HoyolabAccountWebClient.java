@@ -39,7 +39,10 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
     @Override
     public HoyoResponse<UserGameRoles> getUserGameRoleByRegion(LtuidLtoken ltuidLtoken, String region) {
         ResponseEntity<HoyoResponse<UserGameRoles>> response = webClient.get()
-                .uri(GET_USER_GAME_ROLE_URL, Collections.singletonMap(PARAM_REGION, region))
+                .uri(uriBuilder -> uriBuilder
+                        .path(GET_USER_GAME_ROLE_URL)
+                        .queryParam(PARAM_REGION, region)
+                        .build())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .retrieve()

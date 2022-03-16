@@ -12,7 +12,6 @@ import lombok.ToString;
 import java.util.List;
 
 @ToString
-@Setter
 @Getter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class DailyNote {

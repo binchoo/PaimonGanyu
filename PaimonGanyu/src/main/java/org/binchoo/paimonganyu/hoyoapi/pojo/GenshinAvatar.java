@@ -9,7 +9,6 @@ import lombok.ToString;
 import java.util.List;
 
 @ToString
-@Setter
 @Getter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class GenshinAvatar {
@@ -37,7 +36,6 @@ public class GenshinAvatar {
     }
 
     @ToString
-    @Setter
     @Getter
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Weapon {
@@ -55,7 +53,6 @@ public class GenshinAvatar {
     }
 
     @ToString
-    @Setter
     @Getter
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Reliquary {
@@ -70,7 +67,6 @@ public class GenshinAvatar {
         private String posName;
 
         @ToString
-        @Setter
         @Getter
         public static class ReliquarySet {
 
@@ -79,7 +75,6 @@ public class GenshinAvatar {
             private List<Affix> affixes;
 
             @ToString
-            @Setter
             @Getter
             @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
             public static class Affix {
@@ -91,7 +86,6 @@ public class GenshinAvatar {
     }
 
     @ToString
-    @Setter
     @Getter
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Constellation {
@@ -105,7 +99,6 @@ public class GenshinAvatar {
     }
 
     @ToString
-    @Setter
     @Getter
     public static class Costume {
 
