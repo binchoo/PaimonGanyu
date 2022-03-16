@@ -31,7 +31,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
     }
 
     @Override
-    public HoyoResponse<GenshinAvatars> getAllCharacter(LtuidLtoken ltuidLtoken, String uid, String server) {
+    public HoyoResponse<GenshinAvatars> getAllAvartar(LtuidLtoken ltuidLtoken, String uid, String server) {
         ResponseEntity<HoyoResponse<GenshinAvatars>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(GAME_RECORD_CHARACTER)
@@ -54,7 +54,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
      */
     @Deprecated
     @Override
-    public HoyoResponse<GenshinAvatars> getCharacters(LtuidLtoken ltuidLtoken, String uid, String server, long... characterId) {
+    public HoyoResponse<GenshinAvatars> fetchAvartars(LtuidLtoken ltuidLtoken, String uid, String server, long... characterId) {
         ResponseEntity<HoyoResponse<GenshinAvatars>> response = webClient.post()
                 .uri(GAME_RECORD_CHARACTER)
                 .contentType(MediaType.APPLICATION_JSON)

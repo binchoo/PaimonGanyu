@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
+import org.binchoo.paimonganyu.hoyoapi.TestAccountConfig;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
@@ -53,7 +54,6 @@ class HoyolabAccountWebClientTest {
 
         assertThat(response.getRetcode()).isNotEqualTo(0);
         assertThat(response.getData()).isNull();
-        System.out.println((response.getMessage()));
     }
 
     @Test

@@ -1,6 +1,5 @@
-package org.binchoo.paimonganyu.hoyoapi.webclient;
+package org.binchoo.paimonganyu.hoyoapi;
 
-import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @PropertySource("classpath:accounts.properties")
 @Configuration
 public class TestAccountConfig {
@@ -20,6 +18,11 @@ public class TestAccountConfig {
     @Bean("validAccount")
     LtuidLtoken validAccount(@Value("${valid.ltuid}") String ltuid, @Value("${valid.ltoken}") String ltoken) {
         return new LtuidLtoken(ltuid, ltoken);
+    }
+
+    @Bean("fakeAccount")
+    LtuidLtoken fakeAccount() {
+        return new LtuidLtoken("111", "zzz");
     }
 
     @Bean("asiaAccount")
@@ -34,20 +37,23 @@ public class TestAccountConfig {
 
     }
 
-    @Bean("aetherAccount")
-    LtuidLtoken aetherAccount(@Value("${aether.ltuid}") String ltuid, @Value("${aether.ltoken}") String ltoken) {
-        return new LtuidLtoken(ltuid, ltoken);
+    @Bean("aetherAccountDetails")
+    TestAccountDetails aetherAccountDetails(@Value("${aether.ltuid}") String ltuid, @Value("${aether.ltoken}") String ltoken,
+                                     @Value("${aether.region}") String region, @Value("${aether.uid}") String uid) {
 
+        return TestAccountDetails.builder()
+                .ltuidLtoken(new LtuidLtoken(ltuid, ltoken))
+                .region(region).uid(uid)
+                .build();
     }
 
-    @Bean("lumineAccount")
-    LtuidLtoken lumineAccout(@Value("${lumine.ltuid}") String ltuid, @Value("${lumine.ltoken}") String ltoken) {
-        return new LtuidLtoken(ltuid, ltoken);
+    @Bean("lumineAccountDetails")
+    TestAccountDetails lumineAccountDetails(@Value("${lumine.ltuid}") String ltuid, @Value("${lumine.ltoken}") String ltoken,
+                                            @Value("${lumine.region}") String region, @Value("${lumine.uid}") String uid) {
 
-    }
-
-    @Bean("fakeAccount")
-    LtuidLtoken fakeAccount() {
-        return new LtuidLtoken("111", "zzz");
+        return TestAccountDetails.builder()
+                .ltuidLtoken(new LtuidLtoken(ltuid, ltoken))
+                .region(region).uid(uid)
+                .build();
     }
 }

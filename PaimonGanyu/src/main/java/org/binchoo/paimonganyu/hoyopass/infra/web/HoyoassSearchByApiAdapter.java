@@ -58,7 +58,7 @@ public class HoyoassSearchByApiAdapter implements HoyopassSearchPort {
      * @return 이 UID가 루미네를 캐릭터로 포함하고 있는지 여부
      */
     private boolean containsLumine(LtuidLtoken ltuidLtoken, String uid, String region) {
-        HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllCharacter(ltuidLtoken, uid, region);
+        HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllAvartar(ltuidLtoken, uid, region);
         return apiResponse.getData().containsLumine();
     }
 }
