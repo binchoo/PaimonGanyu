@@ -3,74 +3,64 @@ package org.binchoo.paimonganyu.hoyopass.app;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassRepositoryPort;
+import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassRepository;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
 public class HoyopassRegistryApp implements HoyopassRegistryPort {
 
     private final HoyopassSearchPort hoyopassSearchPort;
-    private final HoyopassRepositoryPort hoyopassRepositoryPort;
+    private final UserHoyopassRepository userHoyopassRepository;
 
     @Override
-    public boolean registerSecureHoyopass(String userId, String secureHoyopass) {
-        // TODO: implement this method
-        return false;
+    public UserHoyopass registerSecureHoyopass(String botUserId, String secureHoyopass) {
+        //TODO: implement this method.
+        return null;
     }
 
     @Override
-    public boolean registerHoyopass(String botUserId, String ltuid, String ltoken) {
-        final Hoyopass newHoyopass = Hoyopass.builder()
-                .botUserId(botUserId).ltuid(ltuid).ltoken(ltoken).build();
-        final Hoyopass filled
-                = hoyopassSearchPort.fillUids(newHoyopass);
-        final Hoyopass saved
-                = hoyopassRepositoryPort.save(filled);
-        return Objects.nonNull(saved);
+    public UserHoyopass registerHoyopass(String botUserId, String ltuid, String ltoken) {
+        UserHoyopass userHoyopass = userHoyopassRepository.findByBotUserId(botUserId)
+                .orElse(new UserHoyopass(botUserId));
+
+        userHoyopass.addHoyopass(ltuid, ltoken, hoyopassSearchPort);
+
+        return userHoyopassRepository.save(userHoyopass);
     }
 
     @Override
     public List<Hoyopass> listHoyopasses(String botUserId) {
-        return hoyopassRepositoryPort.findByBotUserId(botUserId)
-                .stream().sorted().collect(Collectors.toList());
+        return userHoyopassRepository.findByBotUserId(botUserId)
+                .map(UserHoyopass::getHoyopasses).orElse(new ArrayList<>());
     }
 
     @Override
     public List<Uid> listUids(String botUserId) {
-        final List<Hoyopass> userHoyopasses = this.listHoyopasses(botUserId);
-        return userHoyopasses.stream()
-                .map(hoyopass -> hoyopass.getUids().stream())
-                .reduce(Stream::concat).orElseThrow(()-> new IllegalStateException("Uid reduction failed"))
-                .collect(Collectors.toList());
+        return this.listHoyopasses(botUserId).stream().map(Hoyopass::getUids)
+                .flatMap(List::stream).collect(Collectors.toList());
     }
 
     @Override
     public List<Uid> listUids(String botUserId, int order) {
-        final List<Hoyopass> userHoyopasses = this.listHoyopasses(botUserId);
-
-        if (order >= userHoyopasses.size())
-            throw new IllegalArgumentException(
-                    String.format("Designated hoyopass %d could not be found.", order));
-
-        return userHoyopasses.get(order).getUids();
+        Hoyopass hoyopass = this.listHoyopasses(botUserId).get(order);
+        return hoyopass.getUids();
     }
 
     @Override
     public void deleteHoyopass(String botUserId, int order) {
-        final List<Hoyopass> userHoyopasses = this.listHoyopasses(botUserId);
+        UserHoyopass userHoyopass = userHoyopassRepository.findByBotUserId(botUserId)
+                .orElse(new UserHoyopass(botUserId));
 
-        if (order >= userHoyopasses.size())
-            throw new IllegalArgumentException(
-                    String.format("Designated hoyopass %d could not be found.", order));
+        userHoyopass.deleteAt(order);
 
-        hoyopassRepositoryPort.delete(userHoyopasses.get(order));
+        userHoyopassRepository.save(userHoyopass);
     }
 }

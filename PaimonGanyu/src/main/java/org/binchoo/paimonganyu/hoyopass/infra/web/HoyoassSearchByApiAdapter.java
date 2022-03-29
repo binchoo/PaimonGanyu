@@ -11,6 +11,7 @@ import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Region;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
+import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -27,13 +28,13 @@ public class HoyoassSearchByApiAdapter implements HoyopassSearchPort {
     private final ConversionService converters;
 
     @Override
-    public Hoyopass fillUids(Hoyopass hoyopass) {
+    public List<Uid> findUids(Hoyopass hoyopass) {
         LtuidLtoken ltuidLtoken = getLtuidLtoken(hoyopass);
 
         HoyoResponse<UserGameRoles> apiResponse = accountApi.getUserGameRoles(ltuidLtoken);
         List<UserGameRole> userGameRoles = apiResponse.getData().getList();
 
-        List<Uid> newUids = userGameRoles.stream()
+        List<Uid> uids = userGameRoles.stream()
                 .map(ugr-> Uid.builder()
                         .uidString(ugr.getGameUid())
                         .characterLevel(ugr.getLevel())
@@ -43,7 +44,7 @@ public class HoyoassSearchByApiAdapter implements HoyopassSearchPort {
                         .build())
                 .collect(Collectors.toList());
 
-        return hoyopass.toBuilder().uids(newUids).build();
+        return uids;
     }
 
     private LtuidLtoken getLtuidLtoken(Hoyopass hoyopass) {
