@@ -5,8 +5,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Aspect
 @Component
 public class DataInspectionAspect {
@@ -20,8 +18,8 @@ public class DataInspectionAspect {
             pointcut = "execution(* org.binchoo.paimonganyu.hoyoapi.webclient.*.*(..))",
             returning = "response")
     public void inspectResponseData(HoyoResponse<?> response) {
-        if (Objects.isNull(response.getData())) {
-            throw new NullPointerException("HoyoResponse.getData()에 null이 담겼습니다.");
+        if (response.getData() == null) {
+            throw new NullPointerException("HoyoResponse::data에 null이 담겼습니다.");
         }
     }
 }

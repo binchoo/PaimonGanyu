@@ -5,7 +5,7 @@ import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserHoyopassRepository {
+public interface UserHoyopassCrudPort {
 
     /**
      * UserHoyopass 테이블의 모든 아이템을 조회합니다.

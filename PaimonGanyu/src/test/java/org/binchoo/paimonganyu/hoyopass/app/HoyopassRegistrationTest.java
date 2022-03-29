@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassRepository;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class HoyopassRegistrationTest {
     HoyopassRegistryPort hoyopassRegistration;
 
     @Autowired
-    UserHoyopassRepository repository;
+    UserHoyopassCrudPort repository;
 
     @Autowired
     @Qualifier("validHoyopass")
@@ -96,7 +96,6 @@ class HoyopassRegistrationTest {
         String botUserId = "987654321";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
 
-
         List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
 
         assertThat(hoyopasses.size()).isEqualTo(2);
@@ -129,17 +128,16 @@ class HoyopassRegistrationTest {
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
 
         List<Uid> uids = hoyopassRegistration.listUids(botUserId, 0);
-        assert(uids.containsAll(userHoyopass.getHoyopasses().get(0).getUids()));
+        assertThat(uids.containsAll(userHoyopass.listUids(0))).isTrue();
 
         uids = hoyopassRegistration.listUids(botUserId, 1);
-        assert(uids.containsAll(userHoyopass.getHoyopasses().get(1).getUids()));
+        assertThat(uids.containsAll(userHoyopass.listUids(1))).isTrue();
     }
 
     @Test
     void deleteHoyopass() {
         String botUserId = "1";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
-        assertThat(userHoyopass.getCount()).isEqualTo(2);
 
         hoyopassRegistration.deleteHoyopass(botUserId, 0);
 
@@ -159,6 +157,10 @@ class HoyopassRegistrationTest {
         UserHoyopass userHoyopass = null;
         for (LtuidLtoken ltuidLtoken : ltuidLtokens)
             userHoyopass = this.registerHoyopass(botUserId, ltuidLtoken);
+
+        if (userHoyopass != null)
+            assertThat(userHoyopass.getCount()).isEqualTo(ltuidLtokens.length);
+
         return userHoyopass;
     }
 }

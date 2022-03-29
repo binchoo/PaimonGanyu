@@ -1,7 +1,6 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.entity;
+package org.binchoo.paimonganyu.hoyopass.infra.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
@@ -21,7 +20,6 @@ public class HoyopassDocument {
     /**
      * 통행증 고유의 ltuid
      */
-    @DynamoDBHashKey
     private String ltuid;
 
     /**

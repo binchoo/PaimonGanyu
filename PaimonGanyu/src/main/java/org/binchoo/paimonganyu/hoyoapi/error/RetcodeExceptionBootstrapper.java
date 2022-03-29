@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 class RetcodeExceptionBootstrapper {
 
-    protected static String className = RetcodeExceptionBootstrapper.class.getName();
     protected static String packageName = RetcodeExceptionBootstrapper.class.getPackage().getName();
     protected static String excecptionPackageName = packageName + ".exceptions";
 

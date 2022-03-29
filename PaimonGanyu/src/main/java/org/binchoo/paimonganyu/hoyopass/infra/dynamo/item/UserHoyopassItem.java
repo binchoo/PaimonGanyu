@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.entity;
+package org.binchoo.paimonganyu.hoyopass.infra.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;

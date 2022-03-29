@@ -1,5 +1,9 @@
 package org.binchoo.paimonganyu.hoyoapi.error;
 
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+
+import java.util.Optional;
+
 public class RetcodeException extends RuntimeException {
 
     private String message = "";
@@ -17,8 +21,8 @@ public class RetcodeException extends RuntimeException {
         RetcodeExceptionBootstrapper.start();
     }
 
-    public static RetcodeException of(int retcode) {
-        RetcodeExceptionMappings exceptionMappings = RetcodeExceptionMappings.getInstance();
-        return exceptionMappings.newExceptionInstance(retcode);
+    public static Optional<RetcodeException> findMapping(HoyoResponse<?> response) {
+        return RetcodeExceptionMappings.getInstance()
+                .createException(response.getRetcode(), response.getMessage());
     }
 }

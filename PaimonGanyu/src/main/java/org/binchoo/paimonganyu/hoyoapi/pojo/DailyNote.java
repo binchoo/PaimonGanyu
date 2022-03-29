@@ -27,7 +27,7 @@ public class DailyNote {
     private int maxResin;
 
     /**
-     * 레진 회복에 걸릴 시간 secs = [0, 60*8*160=76800] //TODO: Reslove Max elaspsing time
+     * 레진 회복에 걸릴 시간 secs = [0, 60*8*160=76800]
      */
     @JsonSerialize(using = ToStringSerializer.class)
     @JsonDeserialize(as = Long.class)

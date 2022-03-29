@@ -36,7 +36,7 @@ class RetcodeInspectionAspectTest {
      */
     @BeforeAll
     public static void bootstrapRetcodeMappings() {
-        RetcodeException.of(987654321);
+        RetcodeException foobar = new RetcodeException();
     }
 
     @Test

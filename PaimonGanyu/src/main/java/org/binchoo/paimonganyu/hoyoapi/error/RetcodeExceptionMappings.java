@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.hoyoapi.error;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class RetcodeExceptionMappings {
@@ -10,25 +11,26 @@ public class RetcodeExceptionMappings {
 
     private final Map<Integer, Class<RetcodeException>> exceptionMappings = new HashMap<>();
 
-    public RetcodeException newExceptionInstance(int retcode) {
-        RetcodeException retcodeException = null;
+    public Optional<RetcodeException> createException(int retcode, String message) {
+        RetcodeException ex = null;
         if (this.contains(retcode)) {
             Class<RetcodeException> clazz = this.getMapping(retcode);
             try {
-                retcodeException = clazz.newInstance();
+                ex = clazz.newInstance();
+                ex.setMessage(message);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-        return retcodeException;
+        return Optional.ofNullable(ex);
+    }
+
+    protected void addMapping(int retcode, Class<RetcodeException> retcodeExceptionClass) {
+        exceptionMappings.put(retcode, retcodeExceptionClass);
     }
 
     public Class<RetcodeException> getMapping(int retcode) {
         return exceptionMappings.get(retcode);
-    }
-
-    public void addMapping(int retcode, Class<RetcodeException> retcodeExceptionClass) {
-        exceptionMappings.put(retcode, retcodeExceptionClass);
     }
 
     public void deleteMapping(int retcode) {

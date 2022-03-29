@@ -2,8 +2,8 @@ package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -20,10 +20,6 @@ public class RetcodeInspectionAspect {
             pointcut = "execution(* org.binchoo.paimonganyu.hoyoapi.webclient.*.*(..))",
             returning = "response")
     public void inspectRetcode(HoyoResponse<?> response) {
-        RetcodeException retcodeException = RetcodeException.of(response.getRetcode());
-        if (retcodeException != null) {
-            retcodeException.setMessage(response.getMessage());
-            throw retcodeException;
-        }
+        RetcodeException.findMapping(response).ifPresent((ex)-> { throw ex; });
     }
 }
