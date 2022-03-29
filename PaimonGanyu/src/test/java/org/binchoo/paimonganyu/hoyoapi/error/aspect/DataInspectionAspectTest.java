@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
-import org.binchoo.paimonganyu.config.TestAopConfig;
+import org.binchoo.paimonganyu.config.HoyoApiAspectJConfig;
 import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@SpringJUnitConfig(classes = {TestAopConfig.class})
+@SpringJUnitConfig(classes = {HoyoApiAspectJConfig.class})
 @ExtendWith(MockitoExtension.class)
 class DataInspectionAspectTest {
 

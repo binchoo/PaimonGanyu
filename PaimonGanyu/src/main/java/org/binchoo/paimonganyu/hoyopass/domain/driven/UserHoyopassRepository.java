@@ -1,10 +1,17 @@
-package org.binchoo.paimonganyu.hoyopass.domain.driving;
+package org.binchoo.paimonganyu.hoyopass.domain.driven;
 
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserHoyopassRepository {
+
+    /**
+     * UserHoyopass 테이블의 모든 아이템을 조회합니다.
+     * @return {@link UserHoyopass} 리스트
+     */
+    List<UserHoyopass> findAll();
 
     /**
      * 카카오 챗봇 유저의 정보입니다. 연관된 통행증 정보를 갖습니다.
@@ -32,4 +39,9 @@ public interface UserHoyopassRepository {
      * @return 이 챗봇 유저의 통행증 등록 여부
      */
     boolean existsByBotUserId(String botUserId);
+
+    /**
+     * 모든 통행증 정보를 삭제합니다.
+     */
+    void deleteAll();
 }

@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSearchPort;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.UserHoyopassRepository;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassRepository;
+import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,7 +39,8 @@ public class HoyopassRegistration implements HoyopassRegistryPort {
     @Override
     public List<Hoyopass> listHoyopasses(String botUserId) {
         return userHoyopassRepository.findByBotUserId(botUserId)
-                .map(UserHoyopass::getHoyopasses).orElse(new ArrayList<>());
+                .map(UserHoyopass::getHoyopasses)
+                .orElse(new ArrayList<>());
     }
 
     @Override

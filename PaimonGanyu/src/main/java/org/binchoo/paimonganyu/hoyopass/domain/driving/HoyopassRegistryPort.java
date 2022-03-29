@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.domain.driven;
+package org.binchoo.paimonganyu.hoyopass.domain.driving;
 
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;

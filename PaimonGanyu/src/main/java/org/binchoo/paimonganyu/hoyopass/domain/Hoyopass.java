@@ -2,11 +2,13 @@ package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSearchPort;
+import lombok.ToString;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@ToString
 @Getter
 @Builder(toBuilder = true)
 public class Hoyopass {
@@ -29,10 +31,20 @@ public class Hoyopass {
     /**
      * 해당 통행증 객체가 생성된 시간
      */
+    @Builder.Default
     private LocalDateTime createAt = LocalDateTime.now();
 
     public void fillUids(HoyopassSearchPort hoyopassSearchPort) {
         List<Uid> uids = hoyopassSearchPort.findUids(this);
         this.uids = uids;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Hoyopass) {
+            Hoyopass other = (Hoyopass) obj;
+            return this.ltuid.equals(other.getLtuid());
+        }
+        return false;
     }
 }

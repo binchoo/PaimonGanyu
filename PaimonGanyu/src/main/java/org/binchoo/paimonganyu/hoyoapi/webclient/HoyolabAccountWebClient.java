@@ -23,6 +23,10 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
                 .build();
     }
 
+    /**
+     * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError 유효하지 않은 통행증이거나
+     * HoYoLab에 닉네임 등록하지 않은 통행증일 때
+     */
     @Override
     public HoyoResponse<UserGameRoles> getUserGameRoles(LtuidLtoken ltuidLtoken) {
         ResponseEntity<HoyoResponse<UserGameRoles>> response = webClient.get()
@@ -36,6 +40,11 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
         return response.getBody();
     }
 
+    /**
+     *
+     * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError 유효하지 않은 통행증이거나
+     * HoYoLab에 닉네임 등록하지 않은 통행증일 때
+     */
     @Override
     public HoyoResponse<UserGameRoles> getUserGameRoleByRegion(LtuidLtoken ltuidLtoken, String region) {
         ResponseEntity<HoyoResponse<UserGameRoles>> response = webClient.get()

@@ -2,11 +2,13 @@ package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSearchPort;
+import lombok.ToString;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @Builder
 @Getter
 public class UserHoyopass {
@@ -38,44 +40,46 @@ public class UserHoyopass {
     }
 
     public void addHoyopass(Hoyopass hoyopass) {
-        this.checkHoyopassAppendable();
+        this.checkHoyopassAppendable(hoyopass);
         hoyopasses.add(hoyopass);
     }
 
-    public void addHoyopass(String ltuid, String ltoken, HoyopassSearchPort hoyopassSearchPort) {
-        this.checkHoyopassAppendable();
+    private void checkHoyopassAppendable(Hoyopass hoyopass) {
+        checkVacancy();
+        checkDuplicate(hoyopass);
+    }
 
+    private void checkVacancy() {
+        if (!this.hasVacancy()) {
+            throw new IllegalStateException("A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
+        }
+    }
+
+    private boolean hasVacancy() {
+        return MAX_HOYOPASS_COUNT > this.getCount();
+    }
+
+    private void checkDuplicate(Hoyopass hoyopass) {
+        if (this.hoyopasses.stream().anyMatch(it-> it.equals(hoyopass))) {
+            throw new IllegalStateException(
+                    String.format("You're trying to add duplicate Hoyopass(ltuid: %s) object.", hoyopass.getLtuid()));
+        }
+    }
+
+    public void addHoyopass(String ltuid, String ltoken, HoyopassSearchPort hoyopassSearchPort) {
         Hoyopass newHoyopass = Hoyopass.builder()
-                .ltuid(ltuid).ltoken(ltoken)
-                .build();
-        newHoyopass.fillUids(hoyopassSearchPort);
+                .ltuid(ltuid).ltoken(ltoken).build();
 
         this.addHoyopass(newHoyopass);
-    }
-
-    private void checkHoyopassAppendable() {
-        if (this.isAppendable())
-            throw new IllegalStateException("A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
-    }
-
-    public void deleteFirst() {
-        this.deleteAt(0);
-    }
-
-    public void deleteLast() {
-        this.deleteAt(hoyopasses.size() - 1);
+        newHoyopass.fillUids(hoyopassSearchPort);
     }
 
     public void deleteAt(int i) {
-        if (0 < getCount())
+        if (0 < this.getCount())
             hoyopasses.remove(i);
     }
 
     public int getCount() {
         return hoyopasses.size();
-    }
-
-    public boolean isAppendable() {
-        return MAX_HOYOPASS_COUNT <= getCount();
     }
 }

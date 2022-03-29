@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi;
+package org.binchoo.paimonganyu;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,29 +15,23 @@ public class TestAccountConfig {
 
     private List<LtuidLtoken> testAccounts = new ArrayList<>();
 
-    @Bean("validAccount")
+    @Bean("validHoyopass")
     LtuidLtoken validAccount(@Value("${valid.ltuid}") String ltuid, @Value("${valid.ltoken}") String ltoken) {
         return new LtuidLtoken(ltuid, ltoken);
     }
 
-    @Bean("fakeAccount")
+    @Bean("validHoyopass2")
+    LtuidLtoken valid2Account(@Value("${valid2.ltuid}") String ltuid, @Value("${valid2.ltoken}") String ltoken) {
+        return new LtuidLtoken(ltuid, ltoken);
+    }
+
+    @Bean("fakeHoyopass")
     LtuidLtoken fakeAccount() {
         return new LtuidLtoken("111", "zzz");
     }
 
-    @Bean("asiaAccount")
-    LtuidLtoken asiaAccount(@Value("${asia.ltuid}") String ltuid, @Value("${asia.ltoken}") String ltoken) {
-        return new LtuidLtoken(ltuid, ltoken);
 
-    }
-
-    @Bean("usaAccount")
-    LtuidLtoken usaAccount(@Value("${usa.ltuid}") String ltuid, @Value("${usa.ltoken}") String ltoken) {
-        return new LtuidLtoken(ltuid, ltoken);
-
-    }
-
-    @Bean("aetherAccountDetails")
+    @Bean({"aetherAccountDetails", "asiaAccountDetails"})
     TestAccountDetails aetherAccountDetails(@Value("${aether.ltuid}") String ltuid, @Value("${aether.ltoken}") String ltoken,
                                      @Value("${aether.region}") String region, @Value("${aether.uid}") String uid) {
 
@@ -47,7 +41,7 @@ public class TestAccountConfig {
                 .build();
     }
 
-    @Bean("lumineAccountDetails")
+    @Bean({"lumineAccountDetails", "usaAccountDetails"})
     TestAccountDetails lumineAccountDetails(@Value("${lumine.ltuid}") String ltuid, @Value("${lumine.ltoken}") String ltoken,
                                             @Value("${lumine.region}") String region, @Value("${lumine.uid}") String uid) {
 

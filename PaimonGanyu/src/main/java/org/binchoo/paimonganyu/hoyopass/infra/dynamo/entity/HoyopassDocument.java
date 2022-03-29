@@ -1,10 +1,9 @@
 package org.binchoo.paimonganyu.hoyopass.infra.dynamo.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.utils.dynamo.LocalDateTimeStringConverter;
 
@@ -12,17 +11,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Setter
 @Getter
-@Builder(toBuilder = true)
+@Builder
+@AllArgsConstructor
 @DynamoDBDocument
 public class HoyopassDocument {
-
-    protected static final String TABLE_NAME = "hoyopass";
-    public static final String GLOBAL_RANGEINDEX_CREAT_AT = "hoyopassCreateAt";
 
     /**
      * 통행증 고유의 ltuid
      */
+    @DynamoDBHashKey
     private String ltuid;
 
     /**
@@ -36,27 +35,28 @@ public class HoyopassDocument {
     private List<UidDocument> uidDocuments;
 
     /**
-     * 해당 통행증 객체가 생성된 시간. 정렬 쿼리를 위한 {@link DynamoDBIndexRangeKey}를 적용.
+     * 해당 통행증 객체가 생성된 시간.
      */
-    @DynamoDBTypeConverted(
-            converter = LocalDateTimeStringConverter.class)
-    @DynamoDBIndexRangeKey(
-            globalSecondaryIndexName = GLOBAL_RANGEINDEX_CREAT_AT)
-    @Builder.Default
-    private LocalDateTime createAt = LocalDateTime.now();
+    @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
+    private LocalDateTime createAt;
+
+    public HoyopassDocument() { }
 
     public Hoyopass toDomain() {
         return Hoyopass.builder()
                 .ltuid(this.ltuid).ltoken(this.ltoken)
                 .uids(this.uidDocuments.stream()
                         .map(UidDocument::toDomain).collect(Collectors.toList()))
+                .createAt(this.createAt)
                 .build();
     }
 
     public static HoyopassDocument fromDomain(Hoyopass hoyopass) {
-        return new HoyopassDocument(hoyopass.getLtuid(), hoyopass.getLtoken(),
-            hoyopass.getUids().stream()
-                    .map(UidDocument::fromDomain).collect(Collectors.toList()),
-            hoyopass.getCreateAt());
+        return HoyopassDocument.builder()
+                .ltuid(hoyopass.getLtuid()).ltoken(hoyopass.getLtoken())
+                .uidDocuments(hoyopass.getUids().stream()
+                        .map(UidDocument::fromDomain).collect(Collectors.toList()))
+                .createAt(hoyopass.getCreateAt())
+                .build();
     }
 }

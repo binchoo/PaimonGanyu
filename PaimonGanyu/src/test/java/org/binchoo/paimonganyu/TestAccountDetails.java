@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi;
+package org.binchoo.paimonganyu;
 
 import lombok.Builder;
 import lombok.Getter;

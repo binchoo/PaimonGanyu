@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.TestAccountConfig;
-import org.binchoo.paimonganyu.hoyoapi.TestAccountDetails;
+import org.binchoo.paimonganyu.TestAccountConfig;
+import org.binchoo.paimonganyu.TestAccountDetails;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;

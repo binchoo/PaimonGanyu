@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.config.TestAopConfig;
+import org.binchoo.paimonganyu.config.HoyoApiAspectJConfig;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeExceptionMappings;
 import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@SpringJUnitConfig(classes = {TestAopConfig.class})
+@SpringJUnitConfig(classes = {HoyoApiAspectJConfig.class})
 @ExtendWith(MockitoExtension.class)
 class RetcodeInspectionAspectTest {
 

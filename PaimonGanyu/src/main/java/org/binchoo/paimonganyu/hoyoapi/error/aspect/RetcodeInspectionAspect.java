@@ -20,13 +20,9 @@ public class RetcodeInspectionAspect {
             pointcut = "execution(* org.binchoo.paimonganyu.hoyoapi.webclient.*.*(..))",
             returning = "response")
     public void inspectRetcode(HoyoResponse<?> response) {
-        int retcode = response.getRetcode();
-
-        RetcodeException retcodeException = RetcodeException.of(retcode);
-        String message = response.getMessage();
-
+        RetcodeException retcodeException = RetcodeException.of(response.getRetcode());
         if (retcodeException != null) {
-            retcodeException.setMessage(message);
+            retcodeException.setMessage(response.getMessage());
             throw retcodeException;
         }
     }

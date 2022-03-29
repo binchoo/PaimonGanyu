@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.config;
+package org.binchoo.paimonganyu;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

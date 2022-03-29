@@ -3,13 +3,17 @@ package org.binchoo.paimonganyu.hoyopass.infra.dynamo.entity;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBConvertedBool;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.binchoo.paimonganyu.hoyopass.domain.Region;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 
+@Setter
 @Getter
-@Builder(toBuilder = true)
+@Builder
+@AllArgsConstructor
 @DynamoDBDocument
 public class UidDocument {
 
@@ -40,6 +44,8 @@ public class UidDocument {
     @DynamoDBConvertedBool(DynamoDBConvertedBool.Format.Y_N)
     private Boolean isLumine;
 
+    public UidDocument() { }
+
     public Uid toDomain() {
         return Uid.builder()
                 .uidString(this.uidString)
@@ -50,9 +56,11 @@ public class UidDocument {
     }
 
     public static UidDocument fromDomain(Uid uid) {
-        return new UidDocument(uid.getUidString(),
-                uid.getCharacterLevel(), uid.getCharacterName(),
-                uid.getRegion(),
-                uid.getIsLumine());
+        return UidDocument.builder()
+                .uidString(uid.getUidString())
+                .characterLevel(uid.getCharacterLevel()).characterName(uid.getCharacterName())
+                .region(uid.getRegion())
+                .isLumine(uid.getIsLumine())
+                .build();
     }
 }

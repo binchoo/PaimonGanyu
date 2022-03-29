@@ -1,8 +1,12 @@
 package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
+@EqualsAndHashCode
+@ToString
 @Getter
 @Builder(toBuilder = true)
 public class Uid {

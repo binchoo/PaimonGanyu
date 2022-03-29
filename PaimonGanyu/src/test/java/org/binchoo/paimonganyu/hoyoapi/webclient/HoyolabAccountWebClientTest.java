@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.TestAccountConfig;
+import org.binchoo.paimonganyu.TestAccountConfig;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
@@ -21,20 +21,12 @@ class HoyolabAccountWebClientTest {
     HoyolabAccountWebClient accountApi = new HoyolabAccountWebClient();
 
     @Autowired
-    @Qualifier("validAccount")
+    @Qualifier("validHoyopass")
     LtuidLtoken validAccount; // this account has Asia & Usa uids
 
     @Autowired
-    @Qualifier("fakeAccount")
+    @Qualifier("fakeHoyopass")
     LtuidLtoken fakeAccount;
-
-    @Autowired
-    @Qualifier("asiaAccount")
-    LtuidLtoken asiaAccount;
-
-    @Autowired
-    @Qualifier("usaAccount")
-    LtuidLtoken usaAccount;
 
     @Test
     void givenValidAccount_getUserGameRoles_successful() {
@@ -80,7 +72,7 @@ class HoyolabAccountWebClientTest {
 
     @Test
     void whenSearchingAsia_getUserGameRoleByRegion_onlyReturnsAsiaUid() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(asiaAccount,
+        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(validAccount,
                 Region.OS_ASIA.lowercase());
         List<UserGameRole> userRoles = response.getData().getList();
 
@@ -91,7 +83,7 @@ class HoyolabAccountWebClientTest {
 
     @Test
     void whenSearchingUsa_getUserGameRoleByRegion_onlyReturnsUsaUid() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(asiaAccount,
+        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(validAccount,
                 Region.OS_USA.lowercase());
         List<UserGameRole> userRoles = response.getData().getList();
 
