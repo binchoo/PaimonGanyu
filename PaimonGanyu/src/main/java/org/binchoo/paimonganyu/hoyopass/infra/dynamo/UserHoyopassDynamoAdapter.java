@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.hoyopass.infra.dynamo;
 
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassRepository;
+import org.binchoo.paimonganyu.hoyopass.domain.driving.UserHoyopassRepository;
 import org.binchoo.paimonganyu.hoyopass.infra.dynamo.entity.UserHoyopassTable;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
@@ -40,11 +40,8 @@ public class UserHoyopassDynamoAdapter implements UserHoyopassRepository {
     interface UserHoyopassDynamoRepository extends CrudRepository<UserHoyopassTable, String> {
 
         Optional<UserHoyopassTable> findByBotUserId(String botUserId);
-
         UserHoyopassTable save(UserHoyopassTable entity);
-
         boolean existsByBotUserId(String botUserId);
-        @Override
         void delete(UserHoyopassTable entity);
     }
 }

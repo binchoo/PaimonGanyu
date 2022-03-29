@@ -2,8 +2,8 @@ package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.config.TestAopConfig;
-import org.binchoo.paimonganyu.hoyoapi.error.exceptions.RetcodeException;
-import org.binchoo.paimonganyu.hoyoapi.error.exceptions.RetcodeExceptionMappings;
+import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
+import org.binchoo.paimonganyu.hoyoapi.error.RetcodeExceptionMappings;
 import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

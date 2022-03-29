@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi.error.exceptions;
+package org.binchoo.paimonganyu.hoyoapi.error;
 
 public class RetcodeException extends RuntimeException {
 
@@ -14,19 +14,11 @@ public class RetcodeException extends RuntimeException {
     }
 
     static {
-        bootstrapRetcodeExceptions();
-    }
-
-    private static void bootstrapRetcodeExceptions() {
-        try {
-            Class.forName(RetcodeExceptionBootstrap.className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        RetcodeExceptionBootstrapper.start();
     }
 
     public static RetcodeException of(int retcode) {
         RetcodeExceptionMappings exceptionMappings = RetcodeExceptionMappings.getInstance();
-        return exceptionMappings.getMappingClass(retcode);
+        return exceptionMappings.newExceptionInstance(retcode);
     }
 }

@@ -47,8 +47,7 @@ public class HoyopassDocument {
 
     public Hoyopass toDomain() {
         return Hoyopass.builder()
-                .ltuid(this.ltuid)
-                .ltoken(this.ltoken)
+                .ltuid(this.ltuid).ltoken(this.ltoken)
                 .uids(this.uidDocuments.stream()
                         .map(UidDocument::toDomain).collect(Collectors.toList()))
                 .build();
@@ -56,7 +55,8 @@ public class HoyopassDocument {
 
     public static HoyopassDocument fromDomain(Hoyopass hoyopass) {
         return new HoyopassDocument(hoyopass.getLtuid(), hoyopass.getLtoken(),
-            hoyopass.getUids().stream().map(UidDocument::fromDomain).collect(Collectors.toList()),
+            hoyopass.getUids().stream()
+                    .map(UidDocument::fromDomain).collect(Collectors.toList()),
             hoyopass.getCreateAt());
     }
 }

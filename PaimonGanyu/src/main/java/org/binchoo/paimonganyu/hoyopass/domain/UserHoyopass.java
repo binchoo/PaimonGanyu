@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSearchPort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,11 @@ public class UserHoyopass {
     public UserHoyopass(String botUserId) {
         this();
         this.botUserId = botUserId;
+    }
+
+    public UserHoyopass(String botUserId, List<Hoyopass> hoyopasses) {
+        this.botUserId = botUserId;
+        this.hoyopasses = hoyopasses;
     }
 
     public void addHoyopass(Hoyopass hoyopass) {

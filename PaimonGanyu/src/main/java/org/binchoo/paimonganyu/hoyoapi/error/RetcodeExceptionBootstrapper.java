@@ -1,6 +1,5 @@
-package org.binchoo.paimonganyu.hoyoapi.error.exceptions;
+package org.binchoo.paimonganyu.hoyoapi.error;
 
-import org.binchoo.paimonganyu.hoyoapi.error.Retcode;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
@@ -10,18 +9,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-class RetcodeExceptionBootstrap {
+class RetcodeExceptionBootstrapper {
 
-    protected static String className = RetcodeExceptionBootstrap.class.getName();
-    protected static String packageName = RetcodeExceptionBootstrap.class.getPackage().getName();
-    protected static String excecptionPackageName = packageName;
+    protected static String className = RetcodeExceptionBootstrapper.class.getName();
+    protected static String packageName = RetcodeExceptionBootstrapper.class.getPackage().getName();
+    protected static String excecptionPackageName = packageName + ".exceptions";
 
     private static ClassPathScanningCandidateComponentProvider provider
             = new ClassPathScanningCandidateComponentProvider(false);
 
     private static RetcodeExceptionMappings mappings = RetcodeExceptionMappings.getInstance();
 
-    static {
+    protected static void start() {
         initComponentProvider();
         initRetcodeExceptionMappings();
     }

@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSearchPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
