@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.TestAccountConfig;
+import org.binchoo.paimonganyu.config.TestAccountConfig;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;

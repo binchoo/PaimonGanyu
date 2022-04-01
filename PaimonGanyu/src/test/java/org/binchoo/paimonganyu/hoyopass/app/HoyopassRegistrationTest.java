@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass.app;
 
-import org.binchoo.paimonganyu.PaimonGanyuApp;
-import org.binchoo.paimonganyu.TestAccountConfig;
+import org.binchoo.paimonganyu.config.IntegrationTestConfig;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
@@ -15,13 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {PaimonGanyuApp.class, TestAccountConfig.class})
+@ActiveProfiles("integ")
+@SpringBootTest(classes = {IntegrationTestConfig.class})
 class HoyopassRegistrationTest {
 
     @Autowired
