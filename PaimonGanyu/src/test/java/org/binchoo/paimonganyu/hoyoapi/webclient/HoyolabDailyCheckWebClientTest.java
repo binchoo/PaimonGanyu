@@ -57,7 +57,6 @@ class HoyolabDailyCheckWebClientTest {
     void givenValidAccount_getDailyCheckStatus_succeeds() {
         DailyCheckMonthlyReport report = hoyolabDailyCheckApi.getDailyCheckStatus(validHoyopass).getData();
 
-        System.out.println(report);
         assertThat(report.getToday()).isEqualTo(LocalDate.now());
         assertThat(report.getTotalSignDay()).isGreaterThanOrEqualTo(0);
     }

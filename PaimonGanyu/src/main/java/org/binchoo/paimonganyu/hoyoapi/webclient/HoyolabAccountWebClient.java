@@ -47,7 +47,6 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
     }
 
     /**
-     *
      * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError 유효하지 않은 통행증이거나
      * HoYoLab에 닉네임 등록하지 않은 통행증일 때
      */

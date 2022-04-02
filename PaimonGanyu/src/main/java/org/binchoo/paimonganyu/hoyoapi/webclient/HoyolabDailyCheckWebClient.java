@@ -30,6 +30,10 @@ public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
         this.webClient = WebClient.create(getBaseUrl());
     }
 
+    /**
+     * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError
+     * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.SignInException
+     */
     @Override
     public HoyoResponse<DailyCheckResult> claimDailyCheck(LtuidLtoken ltuidLtoken) {
         ResponseEntity<HoyoResponse<DailyCheckResult>> response = webClient.post()
@@ -46,6 +50,9 @@ public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
         return response.getBody();
     }
 
+    /**
+     * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError
+     */
     @Override
     public HoyoResponse<DailyCheckMonthlyReport> getDailyCheckStatus(LtuidLtoken ltuidLtoken) {
         ResponseEntity<HoyoResponse<DailyCheckMonthlyReport>> response = webClient.get()
