@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.config.TestAccountConfig;
 import org.binchoo.paimonganyu.TestAccountDetails;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,10 @@
 package org.binchoo.paimonganyu.config;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabAccountWebClient;
+import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabDailyCheckWebClient;
 import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabGameRecordWebClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,5 +24,10 @@ public class HoyoApiConfig {
     @Bean
     HoyolabGameRecordApi hoyolabGameRecordApi() {
         return new HoyolabGameRecordWebClient();
+    }
+
+    @Bean
+    HoyolabDailyCheckApi hoyolabDailyCheckApi() {
+        return new HoyolabDailyCheckWebClient();
     }
 }

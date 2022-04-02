@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import org.binchoo.paimonganyu.config.HoyoApiConfig;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

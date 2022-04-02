@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.springframework.stereotype.Component;
 
 @Aspect

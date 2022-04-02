@@ -2,14 +2,14 @@ package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.ds.BasicDsGenerator;
 import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;
 import org.binchoo.paimonganyu.hoyoapi.ds.DsHeaderGenerator;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static org.binchoo.paimonganyu.hoyoapi.constant.HoyoConstant.*;
+import static org.binchoo.paimonganyu.hoyoapi.HoyoConstant.*;
 
 public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
 

@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.config.TestAccountConfig;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyopass.domain.Region;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

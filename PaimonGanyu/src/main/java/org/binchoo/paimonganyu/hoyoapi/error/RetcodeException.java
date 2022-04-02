@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.error;
 
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 
 import java.util.Optional;
 

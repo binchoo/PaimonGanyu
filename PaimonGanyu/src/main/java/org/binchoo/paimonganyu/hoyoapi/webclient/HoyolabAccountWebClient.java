@@ -1,16 +1,16 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 
-import static org.binchoo.paimonganyu.hoyoapi.constant.HoyoConstant.*;
+import static org.binchoo.paimonganyu.hoyoapi.HoyoConstant.*;
 
 public class HoyolabAccountWebClient implements HoyolabAccountApi {
 

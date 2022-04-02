@@ -17,23 +17,23 @@ public class TestAccountConfig {
     private List<LtuidLtoken> testAccounts = new ArrayList<>();
 
     @Bean("validHoyopass")
-    LtuidLtoken validAccount(@Value("${valid.ltuid}") String ltuid, @Value("${valid.ltoken}") String ltoken) {
+    public LtuidLtoken validAccount(@Value("${valid.ltuid}") String ltuid, @Value("${valid.ltoken}") String ltoken) {
         return new LtuidLtoken(ltuid, ltoken);
     }
 
     @Bean("validHoyopass2")
-    LtuidLtoken valid2Account(@Value("${valid2.ltuid}") String ltuid, @Value("${valid2.ltoken}") String ltoken) {
+    public LtuidLtoken valid2Account(@Value("${valid2.ltuid}") String ltuid, @Value("${valid2.ltoken}") String ltoken) {
         return new LtuidLtoken(ltuid, ltoken);
     }
 
     @Bean("fakeHoyopass")
-    LtuidLtoken fakeAccount() {
+    public LtuidLtoken fakeAccount() {
         return new LtuidLtoken("111", "zzz");
     }
 
 
     @Bean({"aetherAccountDetails", "asiaAccountDetails"})
-    TestAccountDetails aetherAccountDetails(@Value("${aether.ltuid}") String ltuid, @Value("${aether.ltoken}") String ltoken,
+    public TestAccountDetails aetherAccountDetails(@Value("${aether.ltuid}") String ltuid, @Value("${aether.ltoken}") String ltoken,
                                             @Value("${aether.region}") String region, @Value("${aether.uid}") String uid) {
 
         return TestAccountDetails.builder()
@@ -43,7 +43,7 @@ public class TestAccountConfig {
     }
 
     @Bean({"lumineAccountDetails", "usaAccountDetails"})
-    TestAccountDetails lumineAccountDetails(@Value("${lumine.ltuid}") String ltuid, @Value("${lumine.ltoken}") String ltoken,
+    public TestAccountDetails lumineAccountDetails(@Value("${lumine.ltuid}") String ltuid, @Value("${lumine.ltoken}") String ltoken,
                                             @Value("${lumine.region}") String region, @Value("${lumine.uid}") String uid) {
 
         return TestAccountDetails.builder()

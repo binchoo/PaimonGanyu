@@ -2,14 +2,14 @@ package org.binchoo.paimonganyu.hoyopass.infra.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Region;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
