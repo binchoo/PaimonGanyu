@@ -9,11 +9,9 @@ public interface HoyolabAccountApi extends HoyolabApi {
     /**
      * 호요랩 어카운트 API OS 엔드포인트
      */
-    String BASE_URL = "https://api-account-os.hoyolab.com/binding/api";
-
     @Override
     default String getBaseUrl() {
-        return BASE_URL;
+        return "https://api-account-os.hoyolab.com/binding/api";
     }
 
     /**

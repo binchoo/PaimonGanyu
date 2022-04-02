@@ -26,7 +26,7 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
 
     public HoyolabAccountWebClient() {
         this.webClient = WebClient.builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(getBaseUrl())
                 .defaultUriVariables(Collections.singletonMap(PARAM_GAME_BIZ, "hk4e_global"))
                 .build();
     }

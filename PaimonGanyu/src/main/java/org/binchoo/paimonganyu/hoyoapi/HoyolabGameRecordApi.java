@@ -10,11 +10,9 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
     /**
      * 호요랩 BBS API - OS 엔드포인트
      */
-    String BASE_URL = "https://bbs-api-os.hoyolab.com/game_record/genshin/api";
-
     @Override
     default String getBaseUrl() {
-        return BASE_URL;
+        return "https://bbs-api-os.hoyolab.com/game_record/genshin/api";
     }
 
     /**
