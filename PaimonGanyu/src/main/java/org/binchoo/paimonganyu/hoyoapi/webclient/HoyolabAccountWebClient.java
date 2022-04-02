@@ -1,9 +1,9 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
+import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,8 +11,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 
+import static org.binchoo.paimonganyu.hoyoapi.constant.HoyoConstant.*;
+
 @Component
 public class HoyolabAccountWebClient implements HoyolabAccountApi {
+
+    /**
+     * <p> 해당 유저의 원신 게임 롤을 모두 조회하는 엔드포인트 - GET API
+     * <p> (ltuid,ltoken -> uid 매핑에 이용할 수 있다)
+     */
+    private static final String GET_USER_GAME_ROLE_URL = "/getUserGameRolesByLtoken";
 
     private WebClient webClient;
 

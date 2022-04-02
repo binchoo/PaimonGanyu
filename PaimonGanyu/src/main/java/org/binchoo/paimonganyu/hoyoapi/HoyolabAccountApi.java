@@ -11,11 +11,10 @@ public interface HoyolabAccountApi extends HoyolabApi {
      */
     String BASE_URL = "https://api-account-os.hoyolab.com/binding/api";
 
-    /**
-     * <p> 해당 유저의 원신 게임 롤을 모두 조회하는 엔드포인트 - GET API
-     * <p> (ltuid,ltoken -> uid 매핑에 이용할 수 있다)
-     */
-    String GET_USER_GAME_ROLE_URL = "/getUserGameRolesByLtoken";
+    @Override
+    default String getBaseUrl() {
+        return BASE_URL;
+    }
 
     /**
      * @param ltuidLtoken 유저 통행증 쿠키

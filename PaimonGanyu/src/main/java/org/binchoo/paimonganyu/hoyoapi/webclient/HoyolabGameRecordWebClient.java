@@ -2,10 +2,10 @@ package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
+import org.binchoo.paimonganyu.hoyoapi.ds.BasicDsGenerator;
 import org.binchoo.paimonganyu.hoyoapi.response.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
-import org.binchoo.paimonganyu.hoyoapi.ds.BasicDsGenerator;
-import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;
+import org.binchoo.paimonganyu.hoyoapi.ds.DsHeaderGenerator;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
@@ -19,15 +19,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+import static org.binchoo.paimonganyu.hoyoapi.constant.HoyoConstant.*;
+
 @Component
 public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
 
+    /**
+     * 원신 전적 API - 보유 캐릭터 조회 - POST API
+     */
+    private final String GAME_RECORD_CHARACTER = "/character";
+
+    /**
+     * 원신 전적 API - 현재 게임 스테이터스 조회 (레진, 파견의뢰, 선계보화 등)
+     */
+    private final String GAME_RECORD_DAILYNOTE = "/dailyNote";
+
     private WebClient webClient;
-    private DsGenerator dsGenerator;
+    private DsHeaderGenerator dsHeaderGenerator;
 
     public HoyolabGameRecordWebClient() {
         this.webClient = WebClient.create(BASE_URL);
-        this.dsGenerator = BasicDsGenerator.create();
+        this.dsHeaderGenerator = DsHeaderGenerator.builder()
+                .dsGenerator(new BasicDsGenerator()).build();
     }
 
     @Override
@@ -39,7 +52,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
                         .queryParam(PARAM_SERVER, server)
                         .build())
                 .headers(headers-> headers
-                        .addAll(dsGenerator.generateDsHeader()))
+                        .addAll(dsHeaderGenerator.generateDsHeader()))
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
                 .retrieve()
@@ -59,7 +72,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
                 .uri(GAME_RECORD_CHARACTER)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers-> headers
-                        .addAll(dsGenerator.generateDsHeader()))
+                        .addAll(dsHeaderGenerator.generateDsHeader()))
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
                 .bodyValue(CharacterPayload.builder()
@@ -76,6 +89,10 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
         return response.getBody();
     }
 
+    /**
+     * @deprecated fetchAvartars(LtuidLtoken, String, String, long...)가 제외되었음.
+     */
+    @Deprecated
     @Builder
     private static final class CharacterPayload {
 
@@ -98,7 +115,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
                         .queryParam(PARAM_SERVER, server)
                         .build())
                 .headers(headers-> headers
-                        .addAll(dsGenerator.generateDsHeader()))
+                        .addAll(dsHeaderGenerator.generateDsHeader()))
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
                 .retrieve()

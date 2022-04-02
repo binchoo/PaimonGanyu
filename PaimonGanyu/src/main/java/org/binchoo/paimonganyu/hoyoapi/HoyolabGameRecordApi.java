@@ -12,15 +12,10 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
      */
     String BASE_URL = "https://bbs-api-os.hoyolab.com/game_record/genshin/api";
 
-    /**
-     * 원신 전적 API - 보유 캐릭터 조회 - POST API
-     */
-    String GAME_RECORD_CHARACTER = "/character";
-
-    /**
-     * 원신 전적 API - 현재 게임 스테이터스 조회 (레진, 파견의뢰, 선계보화 등)
-     */
-    String GAME_RECORD_DAILYNOTE = "/dailyNote";
+    @Override
+    default String getBaseUrl() {
+        return BASE_URL;
+    }
 
     /**
      * @param ltuidLtoken 유저 통행증 쿠키
