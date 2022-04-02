@@ -19,6 +19,7 @@ Resources:
   UserHoyopassTable:
     Type: AWS::DyanamoDB::Table
     Properties:
+      BillingMode: PAY_PER_REQUEST
       KeySchema:
         - AttributeName: botUserId
           KeyType: S
