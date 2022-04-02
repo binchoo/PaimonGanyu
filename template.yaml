@@ -3,41 +3,171 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   paimonganyu
 
-  Sample SAM Template for paimonganyu
+  SAM Template for paimonganyu
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 20
+    CodeUri: PaimonGanyu
+    Timeout: 30
+    Runtime: java8
+    MemorySize: 512
+    Architectures:
+      - x86_64
 
 Resources:
-  PaimonGanyu:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  # Hoyopass
+  UserHoyopassTable:
+    Type: AWS::DyanamoDB::Table
     Properties:
-      CodeUri: PaimonGanyu
-      Handler: helloworld.App::handleRequest
-      Runtime: java8
-      MemorySize: 512
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          PARAM1: VALUE
-      Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /hello
-            Method: get
+      KeySchema:
+        - AttributeName: botUserId
+          KeyType: S
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt PaimonGanyu.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt PaimonGanyu.Arn
+  PaimonGanyuSpringBootApp:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: #TODO
+      Events:
+        RestApi:
+          Type: Api
+          Properties:
+            #TODO
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserHoyopassTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserRedeemTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserDailyCheckTable
+
+  # Hoyopass Fanout
+  UserHoyopassTopic:
+    Type: AWS::SNS::Topic
+#    Properties:
+#      Subscription:
+#        - Endpoint: !Ref CodeRedeemWorker
+#          Protocol: "lambda"
+#        - Endpoint: !Ref DailyCheckWorker
+#          Protocol: "lambda"
+
+  UserHoyopassFanoutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: #TODO
+      Events:
+        NewUserHoyopassEvent:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt UserHoyopassTable.StreamArn
+            Enabled: true
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !Ref UserHoyopassTopic
+      Environment:
+        Variables:
+          USERHOYOPASS_TOPIC_NAME: !Ref UserHoyopassTopic
+
+  # Code Redeem
+  UserRedeemTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: botUserId
+        Type: String
+
+  CodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+
+  CodeRedeemRequestQueue:
+    Type: AWS::SQS::Queue
+
+  CodeRedeemRequester:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: #TODO
+      Events:
+        NewRedeemCodeEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref CodeBucket
+            Events: s3:ObjectCreated:*.json
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserHoyopassTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+      Environment:
+        Variables:
+          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+
+  CodeRedeemWorker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: #TODO
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+        CodeRedeemRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !Ref CodeRedeemRequestQueue
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserRedeemTable
+
+  # Daily Check
+  UserDailyCheckTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: botUserId
+        Type: String
+
+  DailyCheckRequestQueue:
+    Type: AWS::SQS::Queue
+
+  DailyCheckRequester:
+    Type: AWS::Serverless::Function
+      Properties:
+        Handler: #TODO
+        Events:
+          BatchDailyCheckEvent:
+            Type: Schedule
+            Properties:
+              Schedule: "cron(1 4/8 * * * *)" # 04:01AM, 12:01PM, 08:01PM
+              Name: BatchDailyCheckEvent
+              Description: do batch dailycheck three times a day!
+              Enabled: true
+        Policies:
+          - DynamoDBReadPolicy:
+              TableName: !Ref UserHoyopassTable
+          - SQSSendMessagePolicy:
+              QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+        Environment:
+          Variables:
+            DAILYCHECK_QUEUE_NAME: !Ref DailyCheckRequestQueue
+
+  DailyCheckWorker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: #TODO
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+        DailyCheckRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !Ref DailyCheckRequestQueue
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserDailyCheckTable
