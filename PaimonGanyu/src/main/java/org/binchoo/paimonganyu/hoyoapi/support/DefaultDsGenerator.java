@@ -1,6 +1,7 @@
-package org.binchoo.paimonganyu.hoyoapi.ds;
+package org.binchoo.paimonganyu.hoyoapi.support;
 
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
+import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
@@ -15,13 +16,13 @@ import java.util.Random;
  * <p> r := 임의의 아스키 6문자
  * <p> h := "salt=%s&t=%s&r=%s".format(salt, t, r)를 MD5로 다이제스트 한 뒤 16진수로 표현한 문자열
  */
-public class BasicDsGenerator implements DsGenerator {
+public class DefaultDsGenerator implements DsGenerator {
 
     private final static String DS_SALT = "6s25p5ox5y14umn1p61aqyyvbvvl3lrt";
 
     private MessageDigest messageDigest;
 
-    public BasicDsGenerator() {
+    public DefaultDsGenerator() {
         try {
             messageDigest = MessageDigest.getInstance(MessageDigestAlgorithms.MD5);
         } catch (NoSuchAlgorithmException e) {

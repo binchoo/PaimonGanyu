@@ -2,8 +2,8 @@ package org.binchoo.paimonganyu.hoyopass.infra.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
@@ -17,6 +17,8 @@ import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +70,9 @@ public class HoyoassSearchingApiAdapter implements HoyopassSearchPort {
             HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllAvartar(ltuidLtoken, uid, region);
             return apiResponse.getData().containsLumine();
         } catch (NotLoggedInError e) {
-            e.printStackTrace();
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            log.warn(sw.toString());
             log.warn("This account cannot use HoYoLab api. Please create your nickname at HoYoLab main homepage.");
             return false;
         }

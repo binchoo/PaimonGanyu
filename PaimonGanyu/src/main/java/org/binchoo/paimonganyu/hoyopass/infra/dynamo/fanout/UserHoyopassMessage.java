@@ -1,6 +1,9 @@
-package org.binchoo.paimonganyu.hoyopass.domain;
+package org.binchoo.paimonganyu.hoyopass.infra.dynamo.fanout;
 
 import lombok.Getter;
+import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.domain.Uid;
+import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 
 import java.io.Serializable;
 import java.util.List;

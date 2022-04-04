@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabDailyCheckApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyoConstant;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabConstant;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckMonthlyReport;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
@@ -10,7 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static org.binchoo.paimonganyu.hoyoapi.HoyoConstant.*;
+import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
 public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
 
@@ -39,7 +39,7 @@ public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
         ResponseEntity<HoyoResponse<DailyCheckResult>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                     .path(CLAIM_URL)
-                    .queryParam(HoyoConstant.PARAM_ACT_ID, HoyoConstant.ACT_ID_DAILYCHECK)
+                    .queryParam(HoyolabConstant.PARAM_ACT_ID, HoyolabConstant.ACT_ID_DAILYCHECK)
                     .build())
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
@@ -58,7 +58,7 @@ public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
         ResponseEntity<HoyoResponse<DailyCheckMonthlyReport>> response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(MONTHLY_REPORT_URL)
-                        .queryParam(HoyoConstant.PARAM_ACT_ID, HoyoConstant.ACT_ID_DAILYCHECK)
+                        .queryParam(HoyolabConstant.PARAM_ACT_ID, HoyolabConstant.ACT_ID_DAILYCHECK)
                         .build())
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())

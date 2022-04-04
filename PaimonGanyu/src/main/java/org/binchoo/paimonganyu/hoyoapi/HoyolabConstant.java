@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi;
 
-public class HoyoConstant {
+public class HoyolabConstant {
 
     public static final String PARAM_GAME_BIZ = "game_biz";
     public static final String PARAM_REGION = "region";

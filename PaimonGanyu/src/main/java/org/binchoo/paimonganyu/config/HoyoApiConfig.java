@@ -1,8 +1,9 @@
 package org.binchoo.paimonganyu.config;
 
-import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabDailyCheckApi;
-import org.binchoo.paimonganyu.hoyoapi.apis.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
 import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabAccountWebClient;
 import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabDailyCheckWebClient;
 import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabGameRecordWebClient;
@@ -23,7 +24,7 @@ public class HoyoApiConfig {
 
     @Bean
     HoyolabGameRecordApi hoyolabGameRecordApi() {
-        return new HoyolabGameRecordWebClient();
+        return new HoyolabGameRecordWebClient(DsHeaderGenerator.getDefault());
     }
 
     @Bean

@@ -1,6 +1,5 @@
-package org.binchoo.paimonganyu.hoyoapi.apis;
+package org.binchoo.paimonganyu.hoyoapi;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;

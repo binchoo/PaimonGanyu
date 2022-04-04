@@ -1,6 +1,7 @@
-package org.binchoo.paimonganyu.hoyoapi.ds;
+package org.binchoo.paimonganyu.hoyoapi.support;
 
 import lombok.Builder;
+import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -12,7 +13,8 @@ public final class DsHeaderGenerator {
     private final static String HEADER_X_RPC_APP_VERSION = "x-rpc-app_version";
     private final static String HEADER_X_RPC_CLIENT_TYPE = "x-rpc-client_type";
 
-    private final DsGenerator dsGenerator;
+    @Builder.Default
+    private final DsGenerator dsGenerator = new DefaultDsGenerator();
 
     @Builder.Default
     private String xRpcLang = "ko-kr";
@@ -54,5 +56,9 @@ public final class DsHeaderGenerator {
 
     public int getxRpcClientType() {
         return xRpcClientType;
+    }
+
+    public static DsHeaderGenerator getDefault() {
+        return builder().build();
     }
 }
