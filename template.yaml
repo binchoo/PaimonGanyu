@@ -7,7 +7,7 @@ Description: >
 
 Globals:
   Function:
-    CodeUri: PaimonGanyu
+    CodeUri: ../../PaimonGanyu/build/distributions/PaimonGanyu.zip
     Timeout: 60
     Runtime: java8
     MemorySize: 512
@@ -17,31 +17,35 @@ Globals:
 Resources:
   # Hoyopass
   UserHoyopassTable:
-    Type: AWS::DyanamoDB::Table
+    Type: AWS::DynamoDB::Table
     Properties:
+      TableName: UserHoyopass
       BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: botUserId
+          AttributeType: S
       KeySchema:
         - AttributeName: botUserId
-          KeyType: S
+          KeyType: HASH
       StreamSpecification:
         StreamViewType: NEW_IMAGE
 
-  PaimonGanyuSpringBootApp:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: #TODO
-      Events:
-        RestApi:
-          Type: Api
-          Properties:
-            #TODO
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref UserHoyopassTable
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserRedeemTable
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserDailyCheckTable
+#  PaimonGanyuSpringBootApp:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: #TODO
+#      Events:
+#        RestApi:
+#          Type: Api
+#          Properties:
+#            #TODO
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref UserHoyopassTable
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserRedeemTable
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserDailyCheckTable
 
   # Hoyopass Fanout
   UserHoyopassTopic:
@@ -50,123 +54,124 @@ Resources:
   UserHoyopassFanoutFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: #TODO
+      Handler: org.binchoo.paimonganyu.fanout.UserHoyopassFanout::fanout
       Events:
         NewUserHoyopassEvent:
           Type: DynamoDB
           Properties:
+            StartingPosition: LATEST
             Stream: !GetAtt UserHoyopassTable.StreamArn
             Enabled: true
       Policies:
         - SNSPublishMessagePolicy:
-            TopicName: !Ref UserHoyopassTopic
+            TopicName: !GetAtt UserHoyopassTopic.TopicName
       Environment:
         Variables:
-          USERHOYOPASS_TOPIC_NAME: !Ref UserHoyopassTopic
+          USERHOYOPASS_TOPIC: !Ref UserHoyopassTopic
 
-  # Code Redeem
-  UserRedeemTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      PrimaryKey:
-        Name: botUserId
-        Type: String
-
-  CodeBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
-
-  CodeRedeemRequestQueue:
-    Type: AWS::SQS::Queue
-
-  CodeRedeemRequester:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: #TODO
-      Events:
-        NewRedeemCodeEvent:
-          Type: S3
-          Properties:
-            Bucket: !Ref CodeBucket
-            Events: s3:ObjectCreated:*.json
-      Policies:
-        - S3ReadPolicy:
-            BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserHoyopassTable
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserRedeemTable
-        - SQSSendMessagePolicy:
-            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
-      Environment:
-        Variables:
-          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
-
-  CodeRedeemWorker:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: #TODO
-      Events:
-        NewUserHoyopassEvent:
-          Type: SNS
-          Properties:
-            Topic: !Ref UserHoyopassTopic
-        CodeRedeemRequestQueueEvent:
-          Type: SQS
-          Properties:
-            Queue: !Ref CodeRedeemRequestQueue
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref UserRedeemTable
-
-  # Daily Check
-  UserDailyCheckTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      PrimaryKey:
-        Name: botUserId
-        Type: String
-
-  DailyCheckRequestQueue:
-    Type: AWS::SQS::Queue
-
-  DailyCheckRequester:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: #TODO
-      Events:
-        BatchDailyCheckEvent:
-          Type: Schedule
-          Properties:
-            Schedule: "cron(1 4/8 * * * *)" # 04:01AM, 12:01PM, 08:01PM
-            Name: BatchDailyCheckEvent
-            Description: do batch dailycheck three times a day!
-            Enabled: true
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserHoyopassTable
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserDailyCheckTable
-        - SQSSendMessagePolicy:
-            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
-      Environment:
-        Variables:
-          DAILYCHECK_QUEUE_NAME: !Ref DailyCheckRequestQueue
-
-  DailyCheckWorker:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: #TODO
-      Events:
-        NewUserHoyopassEvent:
-          Type: SNS
-          Properties:
-            Topic: !Ref UserHoyopassTopic
-        DailyCheckRequestQueueEvent:
-          Type: SQS
-          Properties:
-            Queue: !Ref DailyCheckRequestQueue
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref UserDailyCheckTable
+#  # Code Redeem
+#  UserRedeemTable:
+#    Type: AWS::Serverless::SimpleTable
+#    Properties:
+#      PrimaryKey:
+#        Name: botUserId
+#        Type: String
+#
+#  CodeBucket:
+#    Type: AWS::S3::Bucket
+#    Properties:
+#      BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+#
+#  CodeRedeemRequestQueue:
+#    Type: AWS::SQS::Queue
+#
+#  CodeRedeemRequester:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: #TODO
+#      Events:
+#        NewRedeemCodeEvent:
+#          Type: S3
+#          Properties:
+#            Bucket: !Ref CodeBucket
+#            Events: s3:ObjectCreated:*.json
+#      Policies:
+#        - S3ReadPolicy:
+#            BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserHoyopassTable
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserRedeemTable
+#        - SQSSendMessagePolicy:
+#            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+#      Environment:
+#        Variables:
+#          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+#
+#  CodeRedeemWorker:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: #TODO
+#      Events:
+#        NewUserHoyopassEvent:
+#          Type: SNS
+#          Properties:
+#            Topic: !Ref UserHoyopassTopic
+#        CodeRedeemRequestQueueEvent:
+#          Type: SQS
+#          Properties:
+#            Queue: !Ref CodeRedeemRequestQueue
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref UserRedeemTable
+#
+#  # Daily Check
+#  UserDailyCheckTable:
+#    Type: AWS::Serverless::SimpleTable
+#    Properties:
+#      PrimaryKey:
+#        Name: botUserId
+#        Type: String
+#
+#  DailyCheckRequestQueue:
+#    Type: AWS::SQS::Queue
+#
+#  DailyCheckRequester:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: #TODO
+#      Events:
+#        BatchDailyCheckEvent:
+#          Type: Schedule
+#          Properties:
+#            Schedule: "cron(1 4/8 * * * *)" # 04:01AM, 12:01PM, 08:01PM
+#            Name: BatchDailyCheckEvent
+#            Description: do batch dailycheck three times a day!
+#            Enabled: true
+#      Policies:
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserHoyopassTable
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserDailyCheckTable
+#        - SQSSendMessagePolicy:
+#            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+#      Environment:
+#        Variables:
+#          DAILYCHECK_QUEUE_NAME: !Ref DailyCheckRequestQueue
+#
+#  DailyCheckWorker:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: #TODO
+#      Events:
+#        NewUserHoyopassEvent:
+#          Type: SNS
+#          Properties:
+#            Topic: !Ref UserHoyopassTopic
+#        DailyCheckRequestQueueEvent:
+#          Type: SQS
+#          Properties:
+#            Queue: !GetAtt DailyCheckRequestQueue.Arn
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref UserDailyCheckTable

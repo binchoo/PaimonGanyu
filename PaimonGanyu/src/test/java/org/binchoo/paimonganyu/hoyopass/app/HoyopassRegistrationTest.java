@@ -61,7 +61,7 @@ class HoyopassRegistrationTest {
 
     @Test
     void givenOneHoyopass_registerHoyopass_successful() {
-        registerHoyopass("1", validHoyopass);
+        registerHoyopass("10", validHoyopass);
     }
 
     @Test
