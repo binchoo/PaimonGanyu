@@ -51,10 +51,10 @@ Resources:
   UserHoyopassTopic:
     Type: AWS::SNS::Topic
 
-  UserHoyopassFanoutFunction:
+  UserHoyopassFanoutSupportFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.fanout.UserHoyopassFanout::fanout
+      Handler: org.binchoo.paimonganyu.fanout.UserHoyopassFanoutSupportLambda::handler
       Events:
         NewUserHoyopassEvent:
           Type: DynamoDB
@@ -68,6 +68,16 @@ Resources:
       Environment:
         Variables:
           USERHOYOPASS_TOPIC: !Ref UserHoyopassTopic
+
+  UserHoyopassFanoutSubscribingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.fanout.UserHoyopassFanoutSubscribingLambda::handler
+      Events:
+        NewHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
 
 #  # Code Redeem
 #  UserRedeemTable:

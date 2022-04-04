@@ -15,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,7 +58,8 @@ class HoyolabDailyCheckWebClientTest {
     void givenValidAccount_getDailyCheckStatus_succeeds() {
         DailyCheckMonthlyReport report = hoyolabDailyCheckApi.getDailyCheckStatus(validHoyopass).getData();
 
-        assertThat(report.getToday()).isEqualTo(LocalDate.now());
+        assertThat(report.getToday()).isEqualTo(
+                LocalDateTime.now().minus(4, ChronoUnit.HOURS).toLocalDate());
         assertThat(report.getTotalSignDay()).isGreaterThanOrEqualTo(0);
     }
 
