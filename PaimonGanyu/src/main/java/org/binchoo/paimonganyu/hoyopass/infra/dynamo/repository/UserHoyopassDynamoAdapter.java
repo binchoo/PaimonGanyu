@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo;
+package org.binchoo.paimonganyu.hoyopass.infra.dynamo.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.fanout.mapper;
+package org.binchoo.paimonganyu.awsutils.dynamo;
 
 enum DdbEventName {
     INSERT, MODIFY, REMOVE

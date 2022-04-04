@@ -1,12 +1,15 @@
-package org.binchoo.paimonganyu.fanout;
+package org.binchoo.paimonganyu.hoyopass.domain;
 
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserHoyopassMessage {
+/**
+ * Simplified version of class for {@UserHoyopass}
+ */
+@Getter
+public class UserHoyopassMessage implements Serializable {
 
     private String botUserId;
     private String ltuid;
@@ -24,21 +27,5 @@ public class UserHoyopassMessage {
                 this.uids[i] = uids.get(i).getUidString();
             }
         }
-    }
-
-    public String getBotUserId() {
-        return botUserId;
-    }
-
-    public String getLtuid() {
-        return ltuid;
-    }
-
-    public String getLtoken() {
-        return ltoken;
-    }
-
-    public String[] getUids() {
-        return uids;
     }
 }

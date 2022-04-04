@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.fanout.mapper;
+package org.binchoo.paimonganyu.awsutils.dynamo;
 
 //import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
 
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-class NewImagePackageCoverter {
+class DdbNewImagePackageCoverter {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

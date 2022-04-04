@@ -1,9 +1,9 @@
-package org.binchoo.paimonganyu.fanout.mapper;
+package org.binchoo.paimonganyu.awsutils.dynamo;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
-import org.binchoo.paimonganyu.aws.AwsEventMapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +40,7 @@ public class DdbNewImageMapper<T> implements AwsEventMapper<DynamodbEvent, T> {
     private void doMapping() {
         this.pojos = dynamodbEvent.getRecords().stream().filter(this::recordEventNameFilter)
                 .map(this::recordNewImageGetter)
-                .map(NewImagePackageCoverter::fromLambdaToDdb)
+                .map(DdbNewImagePackageCoverter::fromLambdaToDdb)
                 .map(newImage-> dynamoDBMapper.marshallIntoObject(clazz, newImage))
                 .collect(Collectors.toList());
     }
