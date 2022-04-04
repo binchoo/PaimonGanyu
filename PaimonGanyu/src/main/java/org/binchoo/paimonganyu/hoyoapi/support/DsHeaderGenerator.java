@@ -25,15 +25,25 @@ public final class DsHeaderGenerator {
     @Builder.Default
     private int xRpcClientType= 5;
 
+    /**
+     * DS 헤더를 만듭니다.
+     * @return DS 값과 XRPC 파라미터가 담긴 DS 헤더
+     */
     public MultiValueMap<String, String> generateDsHeader() {
-        MultiValueMap<String, String> headers = this.getXrpcHeader();
-        headers.add(HEADER_DS, this.dsGenerator.generateDs());
-        return headers;
+        return generateDsHeader(null);
     }
 
+    /**
+     * DS 헤더를 만듭니다.
+     * @param salt DS 솔트. null일 경우 DsGeneerator의 기본 DS 솔트를 사용합니다.
+     * @return DS 값과 XRPC 파라미터가 담긴 DS 헤더
+     */
     public MultiValueMap<String, String> generateDsHeader(String salt) {
         MultiValueMap<String, String> headers = this.getXrpcHeader();
-        headers.add(HEADER_DS, this.dsGenerator.generateDs(salt));
+        if (salt == null)
+            headers.add(HEADER_DS, this.dsGenerator.generateDs());
+        else
+            headers.add(HEADER_DS, this.dsGenerator.generateDs(salt));
         return headers;
     }
 
