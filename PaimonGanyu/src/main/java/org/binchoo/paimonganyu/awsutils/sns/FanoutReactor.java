@@ -40,11 +40,4 @@ public class FanoutReactor<T> {
             s += batchSize;
         }
     }
-
-    private SNSEventWrapper getOrCreateSNSEventWrapper(SNSEvent snsEvent) {
-        if (snsEventWrapper == null) {
-            snsEventWrapper = new SNSEventWrapper(snsEvent);
-        }
-        return snsEventWrapper;
-    }
 }

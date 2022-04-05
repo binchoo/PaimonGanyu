@@ -10,7 +10,7 @@
         "Signature": "tcc6faL2yUC6dgZdmrwh1Y4cGa/ebXEkAi6RibDsvpi+tE/1+82j...65r==",
         "SigningCertUrl": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
         "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
-        "Message": "{\n    \"botUserId\": \"987654321\",\n    \"ltuid\": \"77407897\",\n    \"ltoken\": \"rN0anFtemzPu8vfYLW0hkLkysJeidRk3vN6YGtjA\",\n    \"uids\": [\n        \"648088106\",\n        \"814975004\"\n    ]\n}",
+        "Message": "{\n  \"botUserId\": \"123456789\",\n  \"ltuidLtokens\": [\n    {\n      \"ltuid\": \"77407897\",\n      \"ltoken\": \"rN0anFtemzPu8vfYLW0hkLkysJeidRk3vN6YGtjA\"\n    },\n    {\n      \"ltuid\": \"1234567\",\n      \"ltoken\": \"asfasdfasdfadfadf\"\n    }\n  ]\n}",
         "MessageAttributes": {
           "Test": {
             "Type": "String",

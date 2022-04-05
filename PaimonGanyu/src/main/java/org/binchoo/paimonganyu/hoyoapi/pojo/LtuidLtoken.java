@@ -3,10 +3,11 @@ package org.binchoo.paimonganyu.hoyoapi.pojo;
 import lombok.*;
 
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public class LtuidLtoken {
 
-    private final String ltuid;
-    private final String ltoken;
+    private String ltuid;
+    private String ltoken;
 }

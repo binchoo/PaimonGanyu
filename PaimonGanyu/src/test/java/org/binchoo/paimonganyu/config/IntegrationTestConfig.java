@@ -1,11 +1,10 @@
 package org.binchoo.paimonganyu.config;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.binchoo.paimonganyu.PaimonGanyuApp;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-@ComponentScan(basePackages = "org.binchoo.paimonganyu")
-@Configuration
+@Import(PaimonGanyuApp.class)
 @Profile("integ")
 public class IntegrationTestConfig {
 }

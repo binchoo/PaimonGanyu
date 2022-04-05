@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.utils.dynamo.LocalDateTimeStringConverter;
+import org.binchoo.paimonganyu.awsutils.dynamo.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;

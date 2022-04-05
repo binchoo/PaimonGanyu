@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.utils.dynamo;
+package org.binchoo.paimonganyu.awsutils.dynamo;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 

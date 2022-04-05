@@ -1,61 +1,55 @@
 package org.binchoo.paimonganyu.hoyopass.infra.fanout;
 
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 
-import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Simplified version of class for {@UserHoyopass}
  */
-public class UserHoyopassMessage implements Serializable {
+public class UserHoyopassMessage {
 
     private String botUserId;
-    private String ltuid;
-    private String ltoken;
-    private String[] uids;
+    private LtuidLtoken[] ltuidLtokens;
 
     public UserHoyopassMessage() { }
 
     public UserHoyopassMessage(UserHoyopass userHoyopass) {
-        this.botUserId = userHoyopass.getBotUserId();
-        for (Hoyopass hoyopass : userHoyopass.getHoyopasses()) {
-            List<Uid> uids = hoyopass.getUids();
-            this.ltuid = hoyopass.getLtuid();
-            this.ltoken = hoyopass.getLtoken();
-            this.uids = new String[uids.size()];
-            for (int i = 0; i < uids.size(); i++) {
-                this.uids[i] = uids.get(i).getUidString();
-            }
+        this(userHoyopass.getBotUserId(), new LtuidLtoken[userHoyopass.getCount()]);
+        for (int i = 0; i < ltuidLtokens.length; i++) {
+            Hoyopass hoyopass = userHoyopass.getHoyopasses().get(i);
+            this.ltuidLtokens[i] = new LtuidLtoken(hoyopass.getLtuid(), hoyopass.getLtoken());
         }
+    }
+
+    public UserHoyopassMessage(String botUserId, LtuidLtoken[] ltuidLtokens) {
+        this.botUserId = botUserId;
+        this.ltuidLtokens = ltuidLtokens;
     }
 
     public String getBotUserId() {
         return botUserId;
     }
 
-    public String getLtuid() {
-        return ltuid;
+    public void setBotUserId(String botUserId) {
+        this.botUserId = botUserId;
     }
 
-    public String getLtoken() {
-        return ltoken;
+    public LtuidLtoken[] getLtuidLtokens() {
+        return ltuidLtokens;
     }
 
-    public String[] getUids() {
-        return uids;
+    public void setLtuidLtokens(LtuidLtoken[] ltuidLtokens) {
+        this.ltuidLtokens = ltuidLtokens;
     }
 
     @Override
     public String toString() {
         return "UserHoyopassMessage{" +
                 "botUserId='" + botUserId + '\'' +
-                ", ltuid='" + ltuid + '\'' +
-                ", ltoken='" + ltoken + '\'' +
-                ", uids=" + Arrays.toString(uids) +
+                ", ltuidLtokens=" + Arrays.toString(ltuidLtokens) +
                 '}';
     }
 }

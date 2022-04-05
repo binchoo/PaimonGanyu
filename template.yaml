@@ -127,11 +127,25 @@ Resources:
 #
   # Daily Check
   UserDailyCheckTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: botUserId
-        Type: String
+      TableName: UserDailyCheck
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: botUserIdLtuid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: botUserIdLtuid
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+            - AttributeName: botUserIdLtuid
+              KeyType: HASH
 
   DailyCheckRequestQueue:
     Type: AWS::SQS::Queue

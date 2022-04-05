@@ -21,8 +21,8 @@ public class UserHoyopassFanoutLambda {
 
     public void handler(DynamodbEvent dynamodbEvent) {
         new DynamodbEventWrapper(dynamodbEvent, dynamodbMapper)
-                .extractPojos(UserHoyopassItem.class).stream()
-                .map(UserHoyopassItem::toDomain)
+                .extractPojos(UserHoyopassItem.class)
+                .stream().map(UserHoyopassItem::toDomain)
                 .map(this::createMessage)
                 .forEach(this::publish);
     }
