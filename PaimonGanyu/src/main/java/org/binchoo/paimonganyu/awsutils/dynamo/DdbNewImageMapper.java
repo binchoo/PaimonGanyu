@@ -12,33 +12,31 @@ import java.util.stream.Collectors;
 
 /**
  * This utility class can convert the NewImage JSONs of DynamodbEvent to a list of java POJO.
- * @param <T> the POJO type you use to represent the dynamodb item.
  */
-public class DdbNewImageMapper<T> implements AwsEventMapper<DynamodbEvent, T> {
+public class DdbNewImageMapper implements AwsEventMapper<DynamodbEvent> {
 
     private static final DdbEventName[] allowedEventNames = {DdbEventName.MODIFY, DdbEventName.INSERT};
 
-    private final DynamodbEvent dynamodbEvent;
     private final DynamoDBMapper dynamoDBMapper;
-    private final Class<T> clazz;
-
-    private List<T> pojos;
 
     /**
-     *
-     * @param dynamodbEvent the {@link DynamodbEvent} object inject received from the AWS lambda service
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
-     * @param clazz the POJO class you use to represent the dynamodb item.
      */
-    public DdbNewImageMapper(DynamodbEvent dynamodbEvent, DynamoDBMapper dynamoDBMapper, Class<T> clazz) {
-        this.dynamodbEvent = dynamodbEvent;
+    public DdbNewImageMapper(DynamoDBMapper dynamoDBMapper) {
         this.dynamoDBMapper = dynamoDBMapper;
-        this.clazz = clazz;
-        doMapping();
     }
 
-    private void doMapping() {
-        this.pojos = dynamodbEvent.getRecords().stream().filter(this::recordEventNameFilter)
+    /**
+     * Get the list of POJO that hydrate DynamoDBEvent::Records::NewImage
+     * @return unmodifiable list of POJO that hydrate DynamoDBEvent::Records::NewImage
+     */
+    @Override
+    public <T> List<T> extractPojos(DynamodbEvent event, Class<T> clazz) {
+        return Collections.unmodifiableList(this.doMapping(event, clazz));
+    }
+
+    private <T> List<T> doMapping(DynamodbEvent event, Class<T> clazz) {
+        return event.getRecords().stream().filter(this::recordEventNameFilter)
                 .map(this::recordNewImageGetter)
                 .map(DdbNewImagePackageCoverter::fromLambdaToDdb)
                 .map(newImage-> dynamoDBMapper.marshallIntoObject(clazz, newImage))
@@ -57,13 +55,5 @@ public class DdbNewImageMapper<T> implements AwsEventMapper<DynamodbEvent, T> {
 
     private Map<String, AttributeValue> recordNewImageGetter(DynamodbEvent.DynamodbStreamRecord record) {
         return record.getDynamodb().getNewImage();
-    }
-
-    /**
-     * Get the list of POJO that hydrate DynamoDBEvent::Records::NewImage
-     * @return unmodifiable list of POJO that hydrate DynamoDBEvent::Records::NewImage
-     */
-    public List<T> getPojos() {
-        return Collections.unmodifiableList(this.pojos);
     }
 }

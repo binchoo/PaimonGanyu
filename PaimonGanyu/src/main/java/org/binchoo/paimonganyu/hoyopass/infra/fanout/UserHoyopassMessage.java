@@ -1,23 +1,24 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.fanout;
+package org.binchoo.paimonganyu.hoyopass.infra.fanout;
 
-import lombok.Getter;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Simplified version of class for {@UserHoyopass}
  */
-@Getter
 public class UserHoyopassMessage implements Serializable {
 
     private String botUserId;
     private String ltuid;
     private String ltoken;
     private String[] uids;
+
+    public UserHoyopassMessage() { }
 
     public UserHoyopassMessage(UserHoyopass userHoyopass) {
         this.botUserId = userHoyopass.getBotUserId();
@@ -30,5 +31,31 @@ public class UserHoyopassMessage implements Serializable {
                 this.uids[i] = uids.get(i).getUidString();
             }
         }
+    }
+
+    public String getBotUserId() {
+        return botUserId;
+    }
+
+    public String getLtuid() {
+        return ltuid;
+    }
+
+    public String getLtoken() {
+        return ltoken;
+    }
+
+    public String[] getUids() {
+        return uids;
+    }
+
+    @Override
+    public String toString() {
+        return "UserHoyopassMessage{" +
+                "botUserId='" + botUserId + '\'' +
+                ", ltuid='" + ltuid + '\'' +
+                ", ltoken='" + ltoken + '\'' +
+                ", uids=" + Arrays.toString(uids) +
+                '}';
     }
 }

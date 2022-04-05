@@ -1,5 +1,7 @@
-main: build_gradle
-	sam build --profile serverless
+main: deploy
+	cd PaimonGanyu; ./gradlew test
+deploy: build
 	sam deploy --profile serverless
-build_gradle:
-	cd PaimonGanyu; ./gradlew -x test build; ./gradlew buildZip
+build:
+	cd PaimonGanyu; ./gradlew -x test clean build; ./gradlew buildZip
+	sam build --profile serverless

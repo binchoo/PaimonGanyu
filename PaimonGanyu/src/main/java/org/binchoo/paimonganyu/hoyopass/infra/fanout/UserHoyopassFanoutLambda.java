@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.fanout;
+package org.binchoo.paimonganyu.hoyopass.infra.fanout;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -11,7 +11,7 @@ import org.binchoo.paimonganyu.awsutils.dynamo.DdbNewImageMapper;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.infra.dynamo.item.UserHoyopassItem;
 
-public class NewHoyopassFanoutLambda {
+public class UserHoyopassFanoutLambda {
 
     private static final String USERHOYOPASS_TOPIC = System.getenv("USERHOYOPASS_TOPIC");
 
@@ -20,8 +20,8 @@ public class NewHoyopassFanoutLambda {
     private final AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
 
     public void handler(DynamodbEvent dynamodbEvent) {
-        new DdbNewImageMapper<>(dynamodbEvent, dynamodbMapper, UserHoyopassItem.class)
-                .getPojos().stream()
+        new DdbNewImageMapper(dynamodbMapper)
+                .extractPojos(dynamodbEvent, UserHoyopassItem.class).stream()
                 .map(UserHoyopassItem::toDomain)
                 .map(this::createMessage)
                 .forEach(this::publish);

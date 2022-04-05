@@ -51,10 +51,10 @@ Resources:
   UserHoyopassTopic:
     Type: AWS::SNS::Topic
 
-  NewHoyopassFanoutFunction:
+  UserHoyopassFanoutFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.hoyopass.infra.dynamo.fanout.NewHoyopassFanoutLambda::handler
+      Handler: org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassFanoutLambda::handler
       Events:
         NewUserHoyopassEvent:
           Type: DynamoDB
@@ -68,16 +68,6 @@ Resources:
       Environment:
         Variables:
           USERHOYOPASS_TOPIC: !Ref UserHoyopassTopic
-
-  NewHoyopassLoggingFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: org.binchoo.paimonganyu.hoyopass.infra.dynamo.fanout.NewHoyopassLoggingLambda::handler
-      Events:
-        NewHoyopassEvent:
-          Type: SNS
-          Properties:
-            Topic: !Ref UserHoyopassTopic
 
 #  # Code Redeem
 #  UserRedeemTable:
@@ -135,39 +125,58 @@ Resources:
 #        - DynamoDBCrudPolicy:
 #            TableName: !Ref UserRedeemTable
 #
-#  # Daily Check
-#  UserDailyCheckTable:
-#    Type: AWS::Serverless::SimpleTable
-#    Properties:
-#      PrimaryKey:
-#        Name: botUserId
-#        Type: String
-#
-#  DailyCheckRequestQueue:
-#    Type: AWS::SQS::Queue
-#
-#  DailyCheckRequester:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        BatchDailyCheckEvent:
-#          Type: Schedule
-#          Properties:
-#            Schedule: "cron(1 4/8 * * * *)" # 04:01AM, 12:01PM, 08:01PM
-#            Name: BatchDailyCheckEvent
-#            Description: do batch dailycheck three times a day!
-#            Enabled: true
-#      Policies:
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserHoyopassTable
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserDailyCheckTable
-#        - SQSSendMessagePolicy:
-#            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
-#      Environment:
-#        Variables:
-#          DAILYCHECK_QUEUE_NAME: !Ref DailyCheckRequestQueue
+  # Daily Check
+  UserDailyCheckTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: botUserId
+        Type: String
+
+  DailyCheckRequestQueue:
+    Type: AWS::SQS::Queue
+
+  DailyCheckHitoriRequesterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckHitoriRequesterLambda::handler
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserDailyCheckTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+      Environment:
+        Variables:
+          DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
+
+  DailyCheckBatchRequesterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckBatchRequesterLambda::handler
+      Events:
+        BatchDailyCheckEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(1 3/8 ? * * *)' # every day 04:01AM, 12:01PM, 08:01PM GMT+9 (Seoul)
+            Name: batched-dailycheck
+            Description: Do batched dailycheck three times a day!
+            Enabled: true
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserDailyCheckTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserHoyopassTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+      Environment:
+        Variables:
+          DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
+
 #
 #  DailyCheckWorker:
 #    Type: AWS::Serverless::Function
