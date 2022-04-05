@@ -18,7 +18,7 @@ public class DailyCheckApp implements DailyCheckPort {
     }
 
     @Override
-    public boolean checkDuplicate(DailyCheckTaskSpec dailyCheckTaskSpec) {
+    public boolean isDoneToday(DailyCheckTaskSpec dailyCheckTaskSpec) {
         return false;
     }
 }

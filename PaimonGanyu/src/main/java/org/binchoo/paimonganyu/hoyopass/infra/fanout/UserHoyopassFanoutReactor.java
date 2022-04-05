@@ -1,18 +1,11 @@
 package org.binchoo.paimonganyu.hoyopass.infra.fanout;
 
-import org.binchoo.paimonganyu.awsutils.sns.AbstractFanoutReactor;
+import com.amazonaws.services.lambda.runtime.events.SNSEvent;
+import org.binchoo.paimonganyu.awsutils.sns.FanoutReactor;
 
-public class UserHoyopassFanoutReactor extends AbstractFanoutReactor<UserHoyopassMessage> {
+public class UserHoyopassFanoutReactor extends FanoutReactor<UserHoyopassMessage> {
 
-    private final UserHoyopassMessageReaction messageProcessor;
-
-    public UserHoyopassFanoutReactor(UserHoyopassMessageReaction messageProcessor) {
-        super(UserHoyopassMessage.class);
-        this.messageProcessor = messageProcessor;
-    }
-
-    @Override
-    protected void reactEach(UserHoyopassMessage messagePojo) {
-        messageProcessor.handle(messagePojo);
+    public UserHoyopassFanoutReactor(SNSEvent snsEvent) {
+        super(snsEvent, UserHoyopassMessage.class);
     }
 }

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-class DdbNewImagePackageCoverter {
+class AttributeValuePackageConversion {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

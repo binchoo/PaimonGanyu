@@ -1,5 +1,5 @@
 package org.binchoo.paimonganyu.awsutils.dynamo;
 
-enum DdbEventName {
+enum DynamodbEventName {
     INSERT, MODIFY, REMOVE
 }

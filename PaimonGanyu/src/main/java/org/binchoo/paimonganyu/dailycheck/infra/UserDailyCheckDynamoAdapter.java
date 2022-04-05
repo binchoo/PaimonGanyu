@@ -2,5 +2,5 @@ package org.binchoo.paimonganyu.dailycheck.infra;
 
 import org.binchoo.paimonganyu.dailycheck.domain.driven.UserDailyCheckCrudPort;
 
-public class UserDailyCheckRepository extends UserDailyCheckCrudPort {
+public class UserDailyCheckDynamoAdapter extends UserDailyCheckCrudPort {
 }

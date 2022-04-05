@@ -1,6 +1,11 @@
 package org.binchoo.paimonganyu.dailycheck.domain;
 
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.binchoo.paimonganyu.dailycheck.domain.driven.UserDailyCheckCrudPort;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
 
 public class DailyCheckTaskSpec {
 
@@ -14,7 +19,8 @@ public class DailyCheckTaskSpec {
      */
     LtuidLtoken ltuidLtoken;
 
-    public DailyCheckTaskSpec() {
+    public DailyCheckTaskSpec(UserHoyopassMessage message) {
+        this(message.getBotUserId(), new LtuidLtoken(message.getLtuid(), message.getLtoken()));
     }
 
     public DailyCheckTaskSpec(String botUserId, LtuidLtoken ltuidLtoken) {
@@ -36,5 +42,22 @@ public class DailyCheckTaskSpec {
 
     public void setLtuidLtoken(LtuidLtoken ltuidLtoken) {
         this.ltuidLtoken = ltuidLtoken;
+    }
+
+    public boolean isDoneToday(UserDailyCheckCrudPort repositoryAdapter) {
+        return false;
+    }
+
+    public String getJson(ObjectMapper objectMapper) {
+        try {
+          return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to serialize a DailyCheckTaskSpec", e);
+        }
+    }
+
+    public void sendToQueue(AmazonSQS sqsClient, String targetQueueUrl, ObjectMapper objectMapper) {
+        sqsClient.sendMessage(targetQueueUrl, this.getJson(objectMapper));
     }
 }

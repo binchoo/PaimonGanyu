@@ -1,26 +1,27 @@
 package org.binchoo.paimonganyu.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
-import org.binchoo.paimonganyu.dailycheck.app.DailyCheckApp;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
 import org.binchoo.paimonganyu.dailycheck.domain.DailyCheckTaskSpec;
 import org.binchoo.paimonganyu.dailycheck.domain.driven.UserDailyCheckCrudPort;
-import org.binchoo.paimonganyu.dailycheck.domain.driving.DailyCheckPort;
-import org.binchoo.paimonganyu.dailycheck.infra.UserDailyCheckRepository;
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
-import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassFanoutReactor;
+import org.binchoo.paimonganyu.dailycheck.infra.UserDailyCheckDynamoAdapter;
+import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
 
 public class DailyCheckHitoriRequesterLambda {
 
     private static final String DAILYCHECK_QUEUE_URL = System.getenv("DAILYCHECK_QUEUE_URL");
 
-    private final UserDailyCheckCrudPort logSource = new UserDailyCheckRepository();
-    private final DailyCheckPort dailyCheckPort = new DailyCheckApp(logSource);
-    private final UserHoyopassFanoutReactor messageReactor = new UserHoyopassFanoutReactor((message)-> {
-        dailyCheckPort.request(new DailyCheckTaskSpec(
-                message.getBotUserId(), new LtuidLtoken(message.getLtuid(), message.getLtoken())));
-    });
+    private final UserDailyCheckCrudPort repositoryAdapter = new UserDailyCheckDynamoAdapter();
+    private final AmazonSQS sqsClient = AmazonSQSClientBuilder.defaultClient();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void handler(SNSEvent snsEvent) {
-        messageReactor.reactAll(snsEvent);
+        new SNSEventWrapper(snsEvent).extractPojos(UserHoyopassMessage.class).stream()
+                .map(DailyCheckTaskSpec::new)
+                .filter(task-> !task.isDoneToday(repositoryAdapter))
+                .forEach(task-> task.sendToQueue(sqsClient, DAILYCHECK_QUEUE_URL, objectMapper));
     }
 }
