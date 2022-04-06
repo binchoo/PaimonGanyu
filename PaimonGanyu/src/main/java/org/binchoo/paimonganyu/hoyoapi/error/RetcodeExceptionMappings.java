@@ -17,7 +17,7 @@ public class RetcodeExceptionMappings {
             Class<RetcodeException> clazz = this.getMapping(retcode);
             try {
                 ex = clazz.newInstance();
-                ex.setMessage(message);
+                ex.setMessage(clazz.getName() + "(" + message + ")");
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

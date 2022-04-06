@@ -4,6 +4,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
+import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public class DailyCheckTaskSpec {
      * 미호요 크레덴셜 토큰
      */
     String ltoken;
+
+    public DailyCheckTaskSpec() { }
 
     public DailyCheckTaskSpec(String botUserId, String ltuid, String ltoken) {
         this.botUserId = botUserId;
@@ -79,5 +82,10 @@ public class DailyCheckTaskSpec {
         return Arrays.stream(userHoyopassMessage.getLtuidLtokens())
                 .map(it-> new DailyCheckTaskSpec(botUserId, it.getLtuid(), it.getLtoken()))
                 .collect(Collectors.toList());
+    }
+
+    static List<DailyCheckTaskSpec> getList(UserHoyopass userHoyopass) {
+        UserHoyopassMessage userHoyopassMessage = new UserHoyopassMessage(userHoyopass);
+        return DailyCheckTaskSpec.getList(userHoyopassMessage);
     }
 }

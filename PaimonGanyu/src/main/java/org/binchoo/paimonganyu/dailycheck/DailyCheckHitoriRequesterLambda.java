@@ -8,27 +8,29 @@ import org.binchoo.paimonganyu.dailycheck.config.DailyCheckLambdaConfig;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DailyCheckHitoriRequesterLambda {
 
-    private static final String CONTEXT_PROFILE = "dailycheck";
     private static final String DAILYCHECK_QUEUE_URL = System.getenv("DAILYCHECK_QUEUE_URL");
 
-    private final AmazonSQS sqsClient;
-    private final ObjectMapper objectMapper;
-    private final DailyCheckService dailyCheckService;
+    private AmazonSQS sqsClient;
+    private ObjectMapper objectMapper;
+    private DailyCheckService dailyCheckService;
 
     public DailyCheckHitoriRequesterLambda() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.getEnvironment().addActiveProfile(CONTEXT_PROFILE);
-        context.register(DailyCheckLambdaConfig.class);
-        context.refresh();
+        this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckLambdaConfig.class));
+    }
 
+    private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.dailyCheckService = context.getBean(DailyCheckService.class);
+        Objects.requireNonNull(dailyCheckService);
+        Objects.requireNonNull(dailyCheckService.getUserDailyCheckRepository());
     }
 
     public void handler(SNSEvent snsEvent) {

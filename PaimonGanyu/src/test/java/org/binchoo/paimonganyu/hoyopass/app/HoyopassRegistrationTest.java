@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.hoyopass.app;
 
-import org.binchoo.paimonganyu.config.IntegrationTestConfig;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
@@ -8,21 +7,20 @@ import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.testconfig.hoyopass.HoyopassIntegrationConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ActiveProfiles("integ")
-@SpringBootTest(classes = {IntegrationTestConfig.class})
+@SpringBootTest(classes = {HoyopassIntegrationConfig.class})
 class HoyopassRegistrationTest {
 
     @Autowired

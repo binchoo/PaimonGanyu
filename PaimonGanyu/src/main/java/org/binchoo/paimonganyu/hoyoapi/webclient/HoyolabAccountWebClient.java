@@ -6,12 +6,14 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 
 import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
+@Component
 public class HoyolabAccountWebClient implements HoyolabAccountApi {
 
     /**

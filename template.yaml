@@ -149,6 +149,8 @@ Resources:
 
   DailyCheckRequestQueue:
     Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 60
 
   DailyCheckHitoriRequesterFunction:
     Type: AWS::Serverless::Function
@@ -191,20 +193,17 @@ Resources:
         Variables:
           DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
 
-#
-#  DailyCheckWorker:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        NewUserHoyopassEvent:
-#          Type: SNS
-#          Properties:
-#            Topic: !Ref UserHoyopassTopic
-#        DailyCheckRequestQueueEvent:
-#          Type: SQS
-#          Properties:
-#            Queue: !GetAtt DailyCheckRequestQueue.Arn
-#      Policies:
-#        - DynamoDBCrudPolicy:
-#            TableName: !Ref UserDailyCheckTable
+
+  DailyCheckWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckWorkerLambda::handler
+      Events:
+        DailyCheckRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt DailyCheckRequestQueue.Arn
+            BatchSize: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserDailyCheckTable

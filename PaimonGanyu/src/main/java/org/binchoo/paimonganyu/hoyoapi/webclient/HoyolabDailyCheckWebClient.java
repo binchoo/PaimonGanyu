@@ -8,10 +8,12 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
+@Component
 public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
 
     /**

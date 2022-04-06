@@ -11,6 +11,7 @@ import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.stream.LongStream;
 
 import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
+@Component
 public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
 
     /**
@@ -31,8 +33,9 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
      */
     private final String GAME_RECORD_DAILYNOTE = "/dailyNote";
 
+    private final DsHeaderGenerator dsHeaderGenerator;
+
     private WebClient webClient;
-    private DsHeaderGenerator dsHeaderGenerator;
 
     public HoyolabGameRecordWebClient(DsHeaderGenerator dsHeaderGenerator) {
         this.webClient = WebClient.create(getBaseUrl());

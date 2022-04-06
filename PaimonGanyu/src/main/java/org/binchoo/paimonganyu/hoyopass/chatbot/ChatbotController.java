@@ -2,8 +2,8 @@ package org.binchoo.paimonganyu.hoyopass.chatbot;
 
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
-import org.binchoo.paimonganyu.view.ikakao.SkillPayload;
-import org.binchoo.paimonganyu.view.ikakao.SkillResponse;
+import org.binchoo.paimonganyu.ikakao.SkillPayload;
+import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
