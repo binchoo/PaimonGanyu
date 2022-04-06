@@ -78,4 +78,23 @@ public class UserDailyCheck {
     private boolean isCompleted() {
         return UserDailyCheckStatus.COMPLETED.equals(this.status);
     }
+
+    public String getBotUserId() {
+        splitBotUserIdLtuid();
+        return botUserId;
+    }
+
+    public String getLtuid() {
+        splitBotUserIdLtuid();
+        return ltuid;
+    }
+
+    private void splitBotUserIdLtuid() {
+        if (ltuid == null || botUserId == null) {
+            String[] split = botUserIdLtuid.split("-");
+            assert(2 == split.length);
+            this.botUserId = split[0];
+            this.ltuid = split[1];
+        }
+    }
 }

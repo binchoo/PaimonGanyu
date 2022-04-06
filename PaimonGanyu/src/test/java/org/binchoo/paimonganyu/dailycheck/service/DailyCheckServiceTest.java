@@ -1,24 +1,21 @@
 package org.binchoo.paimonganyu.dailycheck.service;
 
+import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.dailycheck.repository.UserDailyCheckDynamoRepository;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.testconfig.dailycheck.DailyCheckIntegrationConfig;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.time.LocalDate;
-import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig(classes = {DailyCheckIntegrationConfig.class, TestAccountConfig.class})
 class DailyCheckServiceTest {
@@ -28,45 +25,45 @@ class DailyCheckServiceTest {
     LtuidLtoken validHoyopass;
 
     @Autowired
-    HoyolabDailyCheckApi api;
+    DailyCheckService dailyCheckService;
 
-    UserDailyCheckDynamoRepository repository = Mockito.mock(UserDailyCheckDynamoRepository.class);
-    DailyCheckService dailyCheckService = new DailyCheckService(api, repository);
+    @Autowired
+    UserDailyCheckDynamoRepository repository;
 
     @Test
-    void whenUserHasCheckedInToday_hasCheckedInToday_returnsTrue() {
-        final String botUserId = "1";
-        final String ltuid = validHoyopass.getLtuid();
-        final UserDailyCheck completedUserDailyCheck = UserDailyCheck.builder()
-                .botUserId(botUserId).ltuid(ltuid)
-                .status(UserDailyCheckStatus.COMPLETED).build();
+    public void withInvalidHoyopass_claimDailyCheckIn_savesFailedUserDailyCheck() {
+        String botUserId = RandomString.make();
+        String ltuid = RandomString.make();
 
-        when(repository.findByBotUserIdLtuid(any()))
-                .thenReturn(Collections.singletonList(completedUserDailyCheck));
+        dailyCheckService.claimDailyCheckIn(botUserId, ltuid, "foobar");
 
-        boolean hasCheckedIn = dailyCheckService.hasCheckedInToday(botUserId, ltuid);
-        assertThat(hasCheckedIn).isTrue();
+        List<UserDailyCheck> findResult = repository.findByBotUserIdLtuid(botUserId + "-" + ltuid);
+        assertThat(findResult.size()).isEqualTo(1);
+
+        UserDailyCheck saved = findResult.get(0);
+        assertThat(saved.getBotUserId()).isEqualTo(botUserId);
+        assertThat(saved.getLtuid()).isEqualTo(ltuid);
+        assertThat(saved.getStatus()).isEqualTo(UserDailyCheckStatus.FAILED);
+
+        System.out.println(saved);
     }
 
+    @Disabled("Integration test for real daily check-in is only meaningful once a day.")
     @Test
-    void whenUserHasCheckedInToday_hasCheckedIn_onTomorrow_returnsFalse() {
-        final String botUserId = "1";
-        final String ltuid = validHoyopass.getLtuid();
-        final UserDailyCheck completedUserDailyCheck = UserDailyCheck.builder()
-                .botUserId(botUserId).ltuid(ltuid)
-                .status(UserDailyCheckStatus.COMPLETED).build();
+    public void withInvalidHoyopass_claimDailyCheckIn_savesCompledtedUserDailyCheck() {
+        String botUserId = RandomString.make();
+        String ltuid = validHoyopass.getLtuid();
 
-        when(repository.findByBotUserIdLtuid(any()))
-                .thenReturn(Collections.singletonList(completedUserDailyCheck));
+        dailyCheckService.claimDailyCheckIn(botUserId, ltuid, validHoyopass.getLtoken());
 
-        boolean hasCheckedInTomorrow = dailyCheckService.hasCheckedIn(botUserId, ltuid, LocalDate.now().plusDays(1));
-        assertThat(hasCheckedInTomorrow).isFalse();
-    }
+        List<UserDailyCheck> findResult = repository.findByBotUserIdLtuid(botUserId + "-" + ltuid);
+        assertThat(findResult.size()).isEqualTo(1);
 
-    @Test
-    void withValidHoyopass_claimDailyCheckIn_throwsNoError() {
-        when(repository.save(any()))
-                .thenReturn(UserDailyCheck.queued("anyid", validHoyopass.getLtuid()));
-        dailyCheckService.claimDailyCheckIn("anyid", validHoyopass.getLtuid(), validHoyopass.getLtoken());
+        UserDailyCheck saved = findResult.get(0);
+        assertThat(saved.getBotUserId()).isEqualTo(botUserId);
+        assertThat(saved.getLtuid()).isEqualTo(ltuid);
+        assertThat(saved.getStatus()).isEqualTo(UserDailyCheckStatus.COMPLETED);
+
+        System.out.println(saved);
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-// This import order is very important.
-// The bean 'amazonDynamoDB' in TestDynamodbClientConfig.class is the primary bean.
-// That's why followed 'amazonDynamoDB' bean in PaimonGanyu.class cannot make a duplication error.
+// If you're going to bootstrap a springboot test, import order below should be maintained.
+// The bean 'amazonDynamoDB' in TestDynamodbClientConfig.class is the primary.
+// It is the trick not to make followed 'amazonDynamoDB' bean creation in springboot test throw a duplication error.
 @Import({AwsContextConfig.class, TestDynamodbClientConfig.class, PaimonGanyu.class})
 @ComponentScan("org.binchoo.paimonganyu.testconfig.hoyopass")
 @Configuration
