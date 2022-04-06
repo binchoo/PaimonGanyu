@@ -5,6 +5,7 @@ import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.dailycheck.repository.UserDailyCheckDynamoRepository;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.testconfig.dailycheck.DailyCheckIntegrationConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringJUnitConfig(classes = DailyCheckIntegrationConfig.class)
+@SpringJUnitConfig(classes = {DailyCheckIntegrationConfig.class, TestAccountConfig.class})
 class DailyCheckServiceTest {
 
     @Autowired

@@ -7,6 +7,7 @@ import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.testconfig.hoyopass.HoyopassIntegrationConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {HoyopassIntegrationConfig.class})
+@SpringBootTest(classes = {HoyopassIntegrationConfig.class, TestAccountConfig.class})
 class HoyopassRegistrationTest {
 
     @Autowired

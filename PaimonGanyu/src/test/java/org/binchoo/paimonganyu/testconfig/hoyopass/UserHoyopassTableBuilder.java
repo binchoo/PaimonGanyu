@@ -16,17 +16,16 @@ public class UserHoyopassTableBuilder {
     @Autowired
     private AmazonDynamoDB dynamoClient;
 
-    private DynamoDBMapper mapper = new DynamoDBMapper(dynamoClient);
-
     @PostConstruct
     public void initTable() {
+        DynamoDBMapper mapper = new DynamoDBMapper(dynamoClient);
         CreateTableRequest request = mapper.generateCreateTableRequest(UserHoyopassItem.class);
         request.setProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
-
         try {
             dynamoClient.createTable(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        dynamoClient.listTables().getTableNames().forEach(System.out::println);
     }
 }
