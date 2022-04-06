@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.dailycheck;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class DailyCheckTaskSpec {
 
     /**
@@ -75,6 +77,7 @@ public class DailyCheckTaskSpec {
 
     public void sendToQueue(AmazonSQS sqsClient, String targetQueueUrl, ObjectMapper objectMapper) {
         sqsClient.sendMessage(targetQueueUrl, this.getJson(objectMapper));
+        log.info("send: {}", this);
     }
 
     static List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {

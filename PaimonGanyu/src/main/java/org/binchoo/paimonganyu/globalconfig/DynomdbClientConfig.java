@@ -1,15 +1,16 @@
-package org.binchoo.paimonganyu.hoyopass.config;
+package org.binchoo.paimonganyu.globalconfig;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@EnableDynamoDBRepositories({"org.binchoo.paimonganyu.hoyopass.infra.dynamo"})
-public class DynamoConfig {
+@Configuration
+public class DynomdbClientConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
+        System.out.println("Using prod AmazonDynamoDB");
         return AmazonDynamoDBClientBuilder.defaultClient();
     }
 }

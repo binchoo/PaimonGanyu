@@ -5,12 +5,9 @@ import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.dailycheck.repository.UserDailyCheckDynamoRepository;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
-import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
-import org.binchoo.paimonganyu.testconfig.hoyoapi.HoyoApiIntegrationConfig;
+import org.binchoo.paimonganyu.testconfig.dailycheck.DailyCheckIntegrationConfig;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -22,8 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringJUnitConfig(classes = {TestAccountConfig.class, HoyoApiIntegrationConfig.class})
-@ExtendWith(MockitoExtension.class)
+@SpringJUnitConfig(classes = DailyCheckIntegrationConfig.class)
 class DailyCheckServiceTest {
 
     @Autowired

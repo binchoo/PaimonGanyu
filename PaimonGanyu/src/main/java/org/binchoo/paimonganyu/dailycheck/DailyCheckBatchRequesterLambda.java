@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.dailycheck.config.DailyCheckLambdaConfig;
+import org.binchoo.paimonganyu.dailycheck.config.DailyCheckConfig;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -23,7 +23,7 @@ public class DailyCheckBatchRequesterLambda {
     private UserHoyopassCrudPort crudPort;
 
     public DailyCheckBatchRequesterLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckLambdaConfig.class));
+        this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckConfig.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {

@@ -1,10 +1,10 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.globalconfig.HoyoApiConfig;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeExceptionMappings;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
-import org.binchoo.paimonganyu.testconfig.hoyoapi.HoyoApiIntegrationConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@SpringJUnitConfig(classes = {HoyoApiIntegrationConfig.class})
+@SpringJUnitConfig(classes = {HoyoApiConfig.class})
 @ExtendWith(MockitoExtension.class)
 class HoyoResponseInspectionAspectTest {
 

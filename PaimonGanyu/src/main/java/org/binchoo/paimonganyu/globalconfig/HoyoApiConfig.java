@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi.config;
+package org.binchoo.paimonganyu.globalconfig;
 
 import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
 import org.springframework.context.annotation.Bean;
