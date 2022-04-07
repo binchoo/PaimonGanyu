@@ -19,6 +19,7 @@ public class SecureHoyopass {
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
 
     private final String secureHoyopassString;
+
     private String ltuid;
     private String ltoken;
 
@@ -33,7 +34,7 @@ public class SecureHoyopass {
             saveToFields(hoyopassComposite);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                     | BadPaddingException | IllegalBlockSizeException e) {
-            log.error("Could not create a Cipher.", e);
+            log.error("Could not process a decryption for Hoyopass", e);
             throw new RuntimeException(e);
         }
     }
