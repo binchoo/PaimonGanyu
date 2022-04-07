@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class HoyopassRegistrationTest {
 
     @Autowired
-    HoyopassRegistryPort hoyopassRegistration;
+    HoyopassRegistration hoyopassRegistration;
 
     @Autowired
     UserHoyopassCrudPort repository;
