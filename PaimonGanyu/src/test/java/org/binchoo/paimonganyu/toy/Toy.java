@@ -9,7 +9,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * packageName : org.binchoo.paimonganyu.toy
@@ -41,7 +46,7 @@ public class Toy {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException {
         String ltuid = "12345";
         String ltoken = "abced";
 
@@ -50,6 +55,16 @@ public class Toy {
 
         assert(ltuid.equals(hoyopass.getFirst()));
         assert(ltoken.equals(hoyopass.getSecond()));
+
+        byte[] privateKeyX509 = privateKey.getEncoded();
+        String privateKeyEncoded = Base64.getEncoder().encodeToString(privateKeyX509);
+
+
+        byte[] privateKeyDecoded = Base64.getDecoder().decode(privateKeyEncoded);
+        PrivateKey privateKeyCreated = KeyFactory.getInstance("RSA")
+                .generatePrivate(new PKCS8EncodedKeySpec(privateKeyDecoded));
+
+        assert Objects.equals(privateKey, privateKeyCreated);
     }
 
     private static String clientSideWorkflow(String ltuid, String ltoken) {

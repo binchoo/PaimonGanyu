@@ -13,14 +13,26 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-    // aws dynamodb integration
+    /**
+     * AWS SDKs
+     */
+
+    // Amazon DynamoDB
     implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.914'
 
+    // SNS
     implementation 'com.amazonaws:aws-java-sdk-sns:1.11.914'
 
+    // SMS
+    implementation 'com.amazonaws:aws-java-sdk-ssm:1.11.914'
+
+    // AWS Lambda
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+
+    // AWS Systems Manager
+    implementation 'com.amazonaws:aws-ssm-java'
 
     runtimeOnly 'com.h2database:h2'
 

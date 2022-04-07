@@ -22,12 +22,6 @@ public class HoyopassRegistration implements HoyopassRegistryPort {
     private final UserHoyopassCrudPort userHoyopassCrudPort;
 
     @Override
-    public UserHoyopass registerSecureHoyopass(String botUserId, String secureHoyopass) {
-        //TODO: implement this method.
-        return null;
-    }
-
-    @Override
     public UserHoyopass registerHoyopass(String botUserId, String ltuid, String ltoken) {
         UserHoyopass userHoyopass = userHoyopassCrudPort.findByBotUserId(botUserId)
                 .orElse(new UserHoyopass(botUserId));
