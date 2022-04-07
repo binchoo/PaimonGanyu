@@ -1,10 +1,10 @@
 package org.binchoo.paimonganyu.hoyoapi;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabApi;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.SignInException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckMonthlyReport;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 
 public interface HoyolabDailyCheckApi extends HoyolabApi {
 
@@ -17,8 +17,9 @@ public interface HoyolabDailyCheckApi extends HoyolabApi {
      * 이 유저에 대해서 일일 출석 체크를 수행합니다.
      * @param ltuidLtoken 유저 통행증 쿠키
      * @return 오늘자 일일 체크의 성패 응답
+     * @throws SignInException 이미 오늘 출석체크된 경우
      */
-    HoyoResponse<DailyCheckResult> claimDailyCheck(LtuidLtoken ltuidLtoken);
+    HoyoResponse<DailyCheckResult> claimDailyCheck(LtuidLtoken ltuidLtoken) throws SignInException;
 
 
     /**

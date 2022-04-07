@@ -63,7 +63,7 @@ public class UserDailyCheck {
 
     private UserDailyCheck changeStatus(UserDailyCheckStatus status) {
         UserDailyCheck userDailyCheck = this.toBuilder().status(status).build();
-        log.warn("marked as {}: {}", status, userDailyCheck);
+        log.info("marked as {}: {}", status, userDailyCheck);
         return userDailyCheck;
     }
 
