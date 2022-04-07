@@ -57,6 +57,10 @@ public class UserDailyCheck {
         return this.changeStatus(UserDailyCheckStatus.FAILED);
     }
 
+    public UserDailyCheck markDuplicate() {
+        return this.changeStatus(UserDailyCheckStatus.DUPLICATE);
+    }
+
     private UserDailyCheck changeStatus(UserDailyCheckStatus status) {
         UserDailyCheck userDailyCheck = this.toBuilder().status(status).build();
         log.warn("marked as {}: {}", status, userDailyCheck);
@@ -67,16 +71,17 @@ public class UserDailyCheck {
         return new UserDailyCheck(UUID.randomUUID().toString(), botUserid, ltuid, UserDailyCheckStatus.QUEUED);
     }
 
-    public boolean isCompletedOn(LocalDate date) {
-        return isCompleted() && dateEquals(date);
+    public boolean isDoneOn(LocalDate date) {
+        return this.isDone() && this.dateEquals(date);
     }
 
     private boolean dateEquals(LocalDate date) {
         return date.isEqual(this.timestamp.toLocalDate());
     }
 
-    private boolean isCompleted() {
-        return UserDailyCheckStatus.COMPLETED.equals(this.status);
+    private boolean isDone() {
+        return UserDailyCheckStatus.COMPLETED.equals(this.status)
+                || UserDailyCheckStatus.DUPLICATE.equals(this.status);
     }
 
     public String getBotUserId() {

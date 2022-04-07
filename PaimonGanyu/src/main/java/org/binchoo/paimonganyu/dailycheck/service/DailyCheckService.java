@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.repository.UserDailyCheckDynamoRepository;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.SignInException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
@@ -24,8 +25,11 @@ public class DailyCheckService {
     public void claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
         UserDailyCheck userDailyCheck = createNewUserDailyCheck(botUserId, ltuid);
         try {
-            sendRequest(botUserId, ltuid, ltoken);
+            sendRequest(ltuid, ltoken);
             userDailyCheck = userDailyCheck.markComplete();
+        } catch (SignInException e) {
+            log.info(e.getMessage(), e);
+            userDailyCheck = userDailyCheck.markDuplicate();
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             userDailyCheck = userDailyCheck.markFail();
@@ -38,7 +42,7 @@ public class DailyCheckService {
         return userDailyCheckRepository.save(userDailyCheck);
     }
 
-    private void sendRequest(String botUserId, String ltuid, String ltoken) {
+    private void sendRequest(String ltuid, String ltoken) {
         HoyoResponse<DailyCheckResult> response = dailyCheckApi.claimDailyCheck(new LtuidLtoken(ltuid, ltoken));
         System.out.println(response);
     }
@@ -56,7 +60,7 @@ public class DailyCheckService {
     public boolean hasCheckedIn(String botUserId, String ltuid, LocalDate date) {
         String botUserIdLtuid = this.getBotUserIdLtuid(botUserId, ltuid);
         return userDailyCheckRepository.findByBotUserIdLtuid(botUserIdLtuid)
-                .stream().anyMatch(userDailyCheck-> userDailyCheck.isCompletedOn(date));
+                .stream().anyMatch(userDailyCheck-> userDailyCheck.isDoneOn(date));
     }
 
     private String getBotUserIdLtuid(String botUserId, String ltuid) {
