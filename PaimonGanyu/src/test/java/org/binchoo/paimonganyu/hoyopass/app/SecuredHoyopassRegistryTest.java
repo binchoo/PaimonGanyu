@@ -70,7 +70,7 @@ class SecuredHoyopassRegistryTest {
     void registerSecureHoyopass() {
         String botUserId = RandomString.make();
 
-        hoyopassRegistry.registerSecureHoyopass(botUserId, getSecureHoyopass(validHoyopass));
+        hoyopassRegistry.registerHoyopass(botUserId, getSecureHoyopass(validHoyopass));
 
         UserHoyopass userHoyopass = repository.findByBotUserId(botUserId).orElseThrow(RuntimeException::new);
         assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);

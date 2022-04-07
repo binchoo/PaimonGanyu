@@ -17,5 +17,5 @@ public interface SecuredHoyopassRegistryPort extends HoyopassRegistryPort {
      * @param secureHoyopassString "ltuid:ltoken"을 백엔드 private key로 싸인한 문자열
      * @return 저장 완료된 UserHoyopass 엔터티
      */
-    UserHoyopass registerSecureHoyopass(String botUserId, String secureHoyopassString);
+    UserHoyopass registerHoyopass(String botUserId, String secureHoyopassString);
 }

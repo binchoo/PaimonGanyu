@@ -22,7 +22,7 @@ public class SecuredHoyopassRegistry implements SecuredHoyopassRegistryPort {
     private final SigningKeyManagerPort signingKeys;
 
     @Override
-    public UserHoyopass registerSecureHoyopass(String botUserId, String secureHoyopassString) {
+    public UserHoyopass registerHoyopass(String botUserId, String secureHoyopassString) {
         SecureHoyopass secureHoyopass = new SecureHoyopass(secureHoyopassString);
         secureHoyopass.decrypt(signingKeys.getPrivateKey());
         return delegate.registerHoyopass(botUserId, secureHoyopass.getLtuid(), secureHoyopass.getLtoken());
