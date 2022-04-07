@@ -5,7 +5,7 @@ import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.SingingKeyManagerPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SsmSigningKeysManager implements SingingKeyManagerPort {
+public class SsmSigningKeysManager implements SigningKeyManagerPort {
 
     private static final String ALGORITHM = "RSA";
     private static final KeyFactory keyFactory;

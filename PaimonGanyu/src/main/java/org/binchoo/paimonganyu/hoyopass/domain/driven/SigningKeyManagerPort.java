@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass.domain.driven;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-public interface SingingKeyManagerPort {
+public interface SigningKeyManagerPort {
 
     /**
      * @return 통행증 암호화에 이용되는 공개키

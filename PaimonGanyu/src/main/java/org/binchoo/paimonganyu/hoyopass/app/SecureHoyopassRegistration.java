@@ -6,9 +6,9 @@ import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.SecureHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSecurityLayer;
-import org.binchoo.paimonganyu.hoyopass.infra.ssm.SsmSigningKeysManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class SecureHoyopassRegistration implements HoyopassSecurityLayer {
 
     private final HoyopassRegistryPort delegate;
-    private final SsmSigningKeysManager signingKeys;
+    private final SigningKeyManagerPort signingKeys;
 
     @Override
     public UserHoyopass registerSecureHoyopass(String botUserId, String secureHoyopassString) {
