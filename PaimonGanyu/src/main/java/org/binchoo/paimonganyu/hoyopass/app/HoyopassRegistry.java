@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class HoyopassRegistration implements HoyopassRegistryPort {
+class HoyopassRegistration implements HoyopassRegistryPort {
 
     private final HoyopassSearchPort hoyopassSearchPort;
     private final UserHoyopassCrudPort userHoyopassCrudPort;

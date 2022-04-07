@@ -8,7 +8,7 @@ import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSecurityLayer;
+import org.binchoo.paimonganyu.hoyopass.domain.driving.SecuredHoyopassRegistryPort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class SecureHoyopassRegistration implements HoyopassSecurityLayer {
+public class SecuredRegistry implements SecuredHoyopassRegistryPort {
 
     private final HoyopassRegistryPort delegate;
     private final SigningKeyManagerPort signingKeys;

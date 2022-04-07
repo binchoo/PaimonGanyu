@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass.chatbot;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassSecuredRegistration;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("/ikakao/hoyopass")
 public class ChatbotController {
 
-    private final HoyopassRegistryPort hoyopassRegistryPort;
+    private final HoyopassSecuredRegistration hoyopassRegistration;
 
     @PostMapping("/post")
     public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {

@@ -1,6 +1,8 @@
 package org.binchoo.paimonganyu.hoyopass.infra.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
+import com.amazonaws.services.simplesystemsmanagement.model.DescribeParametersRequest;
+import com.amazonaws.services.simplesystemsmanagement.model.DescribeParametersResult;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest;
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +71,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
 
     private void acquireKeys() {
         List<Parameter> ssmParameters = this.acquireSsmParameters();
+
         for (Parameter parameter : ssmParameters) {
             String name = parameter.getName();
             byte[] base64Decoded = base64Decoder.decode(parameter.getValue());
