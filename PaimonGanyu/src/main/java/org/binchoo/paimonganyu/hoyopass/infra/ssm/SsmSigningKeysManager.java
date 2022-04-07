@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 public class SsmSigningKeysManager implements SigningKeyManagerPort {
 
     private static final String ALGORITHM = "RSA";
+
     private static final KeyFactory keyFactory;
     private static final Base64.Decoder base64Decoder;
 
@@ -76,39 +77,44 @@ public class SsmSigningKeysManager implements SigningKeyManagerPort {
         List<Parameter> ssmParameters = this.acquireSsmParameters();
         for (Parameter parameter : ssmParameters) {
             String name = parameter.getName();
-            byte[] base64decoded = base64Decoder.decode(parameter.getValue());
+            byte[] base64Decoded = base64Decoder.decode(parameter.getValue());
             if (publicKeyName.equals(name)) {
-                savePublicKey(new X509EncodedKeySpec(base64decoded));
+                savePublicKeyWithin(new X509EncodedKeySpec(base64Decoded));
             } else if (privateKeyName.equals(name)) {
-                savePrivateKey(new PKCS8EncodedKeySpec(base64decoded));
+                savePrivateKeyWithin(new PKCS8EncodedKeySpec(base64Decoded));
             }
         }
     }
 
     private List<Parameter> acquireSsmParameters() {
         return ssmClient.getParameters(new GetParametersRequest()
-                .withNames(publicKeyName, privateKeyName).withWithDecryption(true))
-                .getParameters();
+                .withNames(publicKeyName, privateKeyName).withWithDecryption(true)).getParameters();
     }
 
-    private void savePublicKey(KeySpec keySpec) {
-        PublicKey x509decoded = null;
+    private void savePublicKeyWithin(KeySpec keySpec) {
+        this.publicKey = generatePublicKey(keySpec);
+    }
+
+    private PublicKey generatePublicKey(KeySpec keySpec) {
         try {
-            x509decoded = keyFactory.generatePublic(keySpec);
+            return keyFactory.generatePublic(keySpec);
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
-        this.publicKey = x509decoded;
+        return null;
     }
 
-    private void savePrivateKey(KeySpec keySpec) {
-        PrivateKey x509decoded = null;
+    private void savePrivateKeyWithin(KeySpec keySpec) {
+        this.privateKey = generatePrivateKey(keySpec);
+    }
+
+    private PrivateKey generatePrivateKey(KeySpec keySpec) {
         try {
-            x509decoded = keyFactory.generatePrivate(keySpec);
+            return keyFactory.generatePrivate(keySpec);
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
-        this.privateKey = x509decoded;
+        return null;
     }
 
     @Override
@@ -119,5 +125,10 @@ public class SsmSigningKeysManager implements SigningKeyManagerPort {
     @Override
     public PrivateKey getPrivateKey() {
         return this.privateKey;
+    }
+
+    @Override
+    public String getAlgorithm() {
+        return ALGORITHM;
     }
 }

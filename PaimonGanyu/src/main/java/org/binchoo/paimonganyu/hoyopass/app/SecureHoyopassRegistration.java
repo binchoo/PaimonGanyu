@@ -23,8 +23,8 @@ public class SecureHoyopassRegistration implements HoyopassSecurityLayer {
 
     @Override
     public UserHoyopass registerSecureHoyopass(String botUserId, String secureHoyopassString) {
-        SecureHoyopass secureHoyopass = new SecureHoyopass(secureHoyopassString, signingKeys.getPrivateKey());
-        secureHoyopass.decrypt();
+        SecureHoyopass secureHoyopass = new SecureHoyopass(secureHoyopassString);
+        secureHoyopass.decrypt(signingKeys.getPrivateKey());
         return delegate.registerHoyopass(botUserId, secureHoyopass.getLtuid(), secureHoyopass.getLtoken());
     }
 

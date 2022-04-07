@@ -65,6 +65,7 @@ public class Toy {
                 .generatePrivate(new PKCS8EncodedKeySpec(privateKeyDecoded));
 
         assert Objects.equals(privateKey, privateKeyCreated);
+        System.out.println(privateKey.getAlgorithm());
     }
 
     private static String clientSideWorkflow(String ltuid, String ltoken) {

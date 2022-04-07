@@ -1,33 +1,57 @@
 package org.binchoo.paimonganyu.hoyopass.domain;
 
+import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Objects;
 
+@Slf4j
 public class SecureHoyopass {
 
-    private static final String signingAlgorithm = "RSA";
+    private static final String DELIMETER = ":";
 
-    public SecureHoyopass(String secureHoyopassString, PrivateKey privateKey) {
+    private final String secureHoyopassString;
+    private String ltuid;
+    private String ltoken;
 
+    public SecureHoyopass(String secureHoyopassString) {
+        this.secureHoyopassString = secureHoyopassString;
+    }
+
+    public void decrypt(PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decryptedHoyopass = cipher.doFinal(secureHoyopassString.getBytes());
+            save(decryptedHoyopass);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
+                    | BadPaddingException | IllegalBlockSizeException e) {
+            log.error("Could not create a Cipher.", e);
+            throw new RuntimeException(e);
         }
     }
 
-    public void decrypt() {
+    private void save(byte[] decryptedHoyopass) {
+        String[] split = new String(decryptedHoyopass).split(DELIMETER);
+        assert split.length == 2;
+        this.ltuid = split[0];
+        this.ltoken = split[1];
     }
 
     public String getLtuid() {
-        return null;
+        Objects.requireNonNull(ltuid);
+        return ltuid;
     }
 
     public String getLtoken() {
-        return null;
+        Objects.requireNonNull(ltoken);
+        return ltoken;
     }
 }
