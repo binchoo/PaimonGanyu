@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SsmSigningKeysManager implements SigningKeyManagerPort {
+public class SsmSigningKeyManager implements SigningKeyManagerPort {
 
     private static final String ALGORITHM = "RSA";
 
