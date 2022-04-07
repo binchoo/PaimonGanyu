@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -10,12 +9,14 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Base64;
 import java.util.Objects;
 
 @Slf4j
 public class SecureHoyopass {
 
     private static final String DELIMETER = ":";
+    private static final Base64.Decoder base64Decoder = Base64.getDecoder();
 
     private final String secureHoyopassString;
     private String ltuid;
@@ -27,10 +28,9 @@ public class SecureHoyopass {
 
     public void decrypt(PrivateKey privateKey) {
         try {
-            Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] decryptedHoyopass = cipher.doFinal(secureHoyopassString.getBytes());
-            save(decryptedHoyopass);
+            byte[] decryptedHoyopass = decryptHoyopassWithin(
+                    base64Decoder.decode(secureHoyopassString), privateKey);
+            saveToFields(decryptedHoyopass);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                     | BadPaddingException | IllegalBlockSizeException e) {
             log.error("Could not create a Cipher.", e);
@@ -38,7 +38,14 @@ public class SecureHoyopass {
         }
     }
 
-    private void save(byte[] decryptedHoyopass) {
+    private byte[] decryptHoyopassWithin(byte[] base64Decoded, PrivateKey privateKey)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        return cipher.doFinal(secureHoyopassString.getBytes());
+    }
+
+    private void saveToFields(byte[] decryptedHoyopass) {
         String[] split = new String(decryptedHoyopass).split(DELIMETER);
         assert split.length == 2;
         this.ltuid = split[0];
