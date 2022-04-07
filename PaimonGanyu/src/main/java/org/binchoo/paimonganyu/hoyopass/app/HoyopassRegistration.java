@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass.app;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @RequiredArgsConstructor
 @Service
 public class HoyopassRegistration implements HoyopassRegistryPort {

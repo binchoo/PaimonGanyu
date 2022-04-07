@@ -10,7 +10,6 @@ public class DynomdbClientConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        System.out.println("Using prod AmazonDynamoDB");
         return AmazonDynamoDBClientBuilder.defaultClient();
     }
 }

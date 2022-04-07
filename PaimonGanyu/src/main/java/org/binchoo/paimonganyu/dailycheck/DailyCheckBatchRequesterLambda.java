@@ -38,7 +38,8 @@ public class DailyCheckBatchRequesterLambda {
 
     public void handler(ScheduledEvent event, Context context) {
         crudPort.findAll().stream().map(DailyCheckTaskSpec::getList)
-                .flatMap(List::stream).filter(task-> !task.isDoneToday(dailyCheckService))
-                .forEach(task-> task.sendToQueue(sqsClient, DAILYCHECK_QUEUE_URL, objectMapper));
+                .flatMap(List::stream)
+                .filter(task-> dailyCheckService.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
+                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.getJson(objectMapper)));
     }
 }

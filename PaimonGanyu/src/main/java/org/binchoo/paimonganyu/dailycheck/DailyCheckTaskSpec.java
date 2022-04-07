@@ -3,6 +3,8 @@ package org.binchoo.paimonganyu.dailycheck;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
@@ -13,22 +15,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Setter
+@Getter
 public class DailyCheckTaskSpec {
 
     /**
      * 일일체크 요청자의 봇 유저 아이디
      */
-    String botUserId;
+    private String botUserId;
 
     /**
      * 미호요 크레덴셜 아이디
      */
-    String ltuid;
+    private String ltuid;
 
     /**
      * 미호요 크레덴셜 토큰
      */
-    String ltoken;
+    private String ltoken;
 
     public DailyCheckTaskSpec() { }
 
@@ -62,10 +66,6 @@ public class DailyCheckTaskSpec {
         this.ltoken = ltoken;
     }
 
-    public boolean isDoneToday(DailyCheckService dailyCheckService) {
-        return dailyCheckService.hasCheckedInToday(botUserId, ltuid);
-    }
-
     public String getJson(ObjectMapper objectMapper) {
         try {
           return objectMapper.writeValueAsString(this);
@@ -75,19 +75,14 @@ public class DailyCheckTaskSpec {
         }
     }
 
-    public void sendToQueue(AmazonSQS sqsClient, String targetQueueUrl, ObjectMapper objectMapper) {
-        sqsClient.sendMessage(targetQueueUrl, this.getJson(objectMapper));
-        log.info("send: {}", this);
-    }
-
-    static List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {
+    static public List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {
         String botUserId = userHoyopassMessage.getBotUserId();
         return Arrays.stream(userHoyopassMessage.getLtuidLtokens())
                 .map(it-> new DailyCheckTaskSpec(botUserId, it.getLtuid(), it.getLtoken()))
                 .collect(Collectors.toList());
     }
 
-    static List<DailyCheckTaskSpec> getList(UserHoyopass userHoyopass) {
+    static public List<DailyCheckTaskSpec> getList(UserHoyopass userHoyopass) {
         UserHoyopassMessage userHoyopassMessage = new UserHoyopassMessage(userHoyopass);
         return DailyCheckTaskSpec.getList(userHoyopassMessage);
     }

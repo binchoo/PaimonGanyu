@@ -26,6 +26,6 @@ public class DailyCheckWorkerLambda {
     public void handler(SQSEvent event) {
         new SQSEventWrapper(event).extractPojos(DailyCheckTaskSpec.class)
                 .forEach(taskSpec -> dailyCheckService
-                        .claimDailyCheckIn(taskSpec.botUserId, taskSpec.ltuid, taskSpec.ltoken));
+                        .claimDailyCheckIn(taskSpec.getBotUserId(), taskSpec.getLtuid(), taskSpec.getLtoken()));
     }
 }
