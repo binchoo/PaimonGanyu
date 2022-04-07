@@ -28,9 +28,9 @@ public class SecureHoyopass {
 
     public void decrypt(PrivateKey privateKey) {
         try {
-            byte[] decryptedHoyopass = decryptHoyopassWithin(
+            byte[] hoyopassComposite = decryptWithin(
                     base64Decoder.decode(secureHoyopassString), privateKey);
-            saveToFields(decryptedHoyopass);
+            saveToFields(hoyopassComposite);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                     | BadPaddingException | IllegalBlockSizeException e) {
             log.error("Could not create a Cipher.", e);
@@ -38,15 +38,15 @@ public class SecureHoyopass {
         }
     }
 
-    private byte[] decryptHoyopassWithin(byte[] base64Decoded, PrivateKey privateKey)
+    private byte[] decryptWithin(byte[] base64Decoded, PrivateKey privateKey)
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        return cipher.doFinal(secureHoyopassString.getBytes());
+        return cipher.doFinal(base64Decoded);
     }
 
-    private void saveToFields(byte[] decryptedHoyopass) {
-        String[] split = new String(decryptedHoyopass).split(DELIMETER);
+    private void saveToFields(byte[] hoyopassComposite) {
+        String[] split = new String(hoyopassComposite).split(DELIMETER);
         assert split.length == 2;
         this.ltuid = split[0];
         this.ltoken = split[1];
