@@ -1,10 +1,12 @@
 package org.binchoo.paimonganyu.hoyopass.app;
 
+import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.Uid;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.testconfig.hoyopass.HoyopassIntegrationConfig;
@@ -15,16 +17,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.util.Base64;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {HoyopassIntegrationConfig.class, TestAccountConfig.class})
-class SecureHoyopassRegistrationTest {
+class SecuredHoyopassRegistryTest {
 
     @Autowired
-    SecureHoyopassRegistration hoyopassRegistration;
+    SecuredHoyopassRegistry hoyopassRegistry;
+
+    @Autowired
+    SigningKeyManagerPort keyManager;
 
     @Autowired
     UserHoyopassCrudPort repository;
@@ -54,7 +68,17 @@ class SecureHoyopassRegistrationTest {
 
     @Test
     void registerSecureHoyopass() {
-        //TODO: implement this test
+        String botUserId = RandomString.make();
+
+        hoyopassRegistry.registerSecureHoyopass(botUserId, getSecureHoyopass(validHoyopass));
+
+        UserHoyopass userHoyopass = repository.findByBotUserId(botUserId).orElseThrow(RuntimeException::new);
+        assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
+        assertThat(userHoyopass.getCount()).isEqualTo(1);
+        assertThat(userHoyopass.getHoyopasses()).map(Hoyopass::getLtuid)
+                .anyMatch(ltuid-> ltuid.equals(validHoyopass.getLtuid()));
+        assertThat(userHoyopass.getHoyopasses()).map(Hoyopass::getLtoken)
+                .anyMatch(ltoken-> ltoken.equals(validHoyopass.getLtoken()));
     }
 
     @Test
@@ -95,7 +119,7 @@ class SecureHoyopassRegistrationTest {
         String botUserId = "987654321";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
 
-        List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
 
         assertThat(hoyopasses.size()).isEqualTo(2);
     }
@@ -104,7 +128,7 @@ class SecureHoyopassRegistrationTest {
     void givenUnknowBotUserId_listHoyopasses_fails() {
         String botUserId = "999";
 
-        List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
 
         assertThat(hoyopasses.size()).isEqualTo(0);
     }
@@ -114,7 +138,7 @@ class SecureHoyopassRegistrationTest {
         String botUserId = "123456789";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
 
-        List<Uid> uids = hoyopassRegistration.listUids(botUserId);
+        List<Uid> uids = hoyopassRegistry.listUids(botUserId);
 
         userHoyopass.getHoyopasses().forEach((hoyopass)-> {
             assert(uids.containsAll(hoyopass.getUids()));
@@ -126,10 +150,10 @@ class SecureHoyopassRegistrationTest {
         String botUserId = "123456789";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
 
-        List<Uid> uids = hoyopassRegistration.listUids(botUserId, 0);
+        List<Uid> uids = hoyopassRegistry.listUids(botUserId, 0);
         assertThat(uids.containsAll(userHoyopass.listUids(0))).isTrue();
 
-        uids = hoyopassRegistration.listUids(botUserId, 1);
+        uids = hoyopassRegistry.listUids(botUserId, 1);
         assertThat(uids.containsAll(userHoyopass.listUids(1))).isTrue();
     }
 
@@ -138,14 +162,14 @@ class SecureHoyopassRegistrationTest {
         String botUserId = "1";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
 
-        hoyopassRegistration.deleteHoyopass(botUserId, 0);
+        hoyopassRegistry.deleteHoyopass(botUserId, 0);
 
-        List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
         assertThat(hoyopasses.size()).isEqualTo(1);
     }
 
     private UserHoyopass registerHoyopass(String botUserId, LtuidLtoken ltuidLtoken) {
-        UserHoyopass userHoyopass = hoyopassRegistration.registerHoyopass(
+        UserHoyopass userHoyopass = hoyopassRegistry.registerHoyopass(
                 botUserId, ltuidLtoken.getLtuid(), ltuidLtoken.getLtoken());
 
         assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
@@ -161,5 +185,21 @@ class SecureHoyopassRegistrationTest {
             assertThat(userHoyopass.getCount()).isEqualTo(ltuidLtokens.length);
 
         return userHoyopass;
+    }
+
+    private String getSecureHoyopass(LtuidLtoken ltuidLtoken) {
+        PublicKey publicKey = keyManager.getPublicKey();
+        try {
+            Cipher cipher = Cipher.getInstance(publicKey.getAlgorithm());
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            String clientLtuidLtoken = String.format("%s:%s", ltuidLtoken.getLtuid(), ltuidLtoken.getLtoken());
+            byte[] encryptedLtuidLtoken = cipher.doFinal(clientLtuidLtoken.getBytes(StandardCharsets.UTF_8));
+            byte[] encodedSecureHoyopass = Base64.getEncoder().encode(encryptedLtuidLtoken);
+            return new String(encodedSecureHoyopass); // secureHoyopass
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException
+                | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException();
     }
 }

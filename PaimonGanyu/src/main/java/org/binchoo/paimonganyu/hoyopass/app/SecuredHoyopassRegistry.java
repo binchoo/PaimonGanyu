@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class SecuredRegistry implements SecuredHoyopassRegistryPort {
+public class SecuredHoyopassRegistry implements SecuredHoyopassRegistryPort {
 
     private final HoyopassRegistryPort delegate;
     private final SigningKeyManagerPort signingKeys;

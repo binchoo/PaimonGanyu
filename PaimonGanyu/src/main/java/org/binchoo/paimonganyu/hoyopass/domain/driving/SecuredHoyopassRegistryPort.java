@@ -9,7 +9,7 @@ import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
  * date : 2022-04-07
  * description :
  */
-public interface HoyopassSecuredRegistration extends HoyopassRegistryPort {
+public interface SecuredHoyopassRegistryPort extends HoyopassRegistryPort {
 
     /**
      * 지정된 유저가 갖는 통행증을 새로 등록한다.
