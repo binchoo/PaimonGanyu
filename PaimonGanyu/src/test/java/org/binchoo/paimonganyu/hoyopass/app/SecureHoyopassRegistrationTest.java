@@ -1,6 +1,10 @@
 package org.binchoo.paimonganyu.hoyopass.app;
 
+import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.domain.Uid;
+import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.testconfig.hoyopass.HoyopassIntegrationConfig;
@@ -11,10 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {HoyopassIntegrationConfig.class, TestAccountConfig.class})
-class SecureHoyopassRegistrationTest extends HoyopassRegistrationTest {
+class SecureHoyopassRegistrationTest {
 
     @Autowired
     SecureHoyopassRegistration hoyopassRegistration;
@@ -35,80 +42,124 @@ class SecureHoyopassRegistrationTest extends HoyopassRegistrationTest {
     LtuidLtoken fakeHoyopass;
 
     @BeforeEach
-    @Override
     void deleteAll() {
-        super.deleteAll();
+        repository.deleteAll();
     }
 
     @AfterEach
-    @Override
     void printAll() {
-        super.printAll();
+        List<UserHoyopass> allUser = repository.findAll();
+        System.out.println(allUser);
     }
 
     @Test
-    @Override
     void registerSecureHoyopass() {
-        super.registerSecureHoyopass();
+        //TODO: implement this test
     }
 
     @Test
-    @Override
     void givenOneHoyopass_registerHoyopass_successful() {
-        super.givenOneHoyopass_registerHoyopass_successful();
+        registerHoyopass("10", validHoyopass);
     }
 
     @Test
-    @Override
     void givenFakeHoyopass_registerHoyopass_fails() {
-        super.givenFakeHoyopass_registerHoyopass_fails();
+        assertThrows(RetcodeException.class, ()->
+                registerHoyopass("113344", fakeHoyopass));
     }
 
     @Test
-    @Override
     void givenTwoHoyopasses_registerHoyopass_successful() {
-        super.givenTwoHoyopasses_registerHoyopass_successful();
+        String botUserId = "2";
+        UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
+
+        assertThat(userHoyopass.getCount()).isEqualTo(2);
     }
 
     @Test
-    @Override
     void givenDuplicateHoyopasses_registeHoyopass_fails() {
-        super.givenDuplicateHoyopasses_registeHoyopass_fails();
+        assertThrows(IllegalStateException.class, ()-> {
+            registerHoyopass("3", validHoyopass);
+            registerHoyopass("3", validHoyopass);
+        });
     }
 
     @Test
-    @Override
     void givenHoyopassesForManyUsers_registeHoyopass_successful() {
-        super.givenHoyopassesForManyUsers_registeHoyopass_successful();
+        for (int i = 0; i < 5; i++)
+            registerHoyopass(String.valueOf(i), validHoyopass2);
     }
 
     @Test
-    @Override
     void listHoyopasses_successful() {
-        super.listHoyopasses_successful();
+        String botUserId = "987654321";
+        UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
+
+        List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
+
+        assertThat(hoyopasses.size()).isEqualTo(2);
     }
 
     @Test
-    @Override
     void givenUnknowBotUserId_listHoyopasses_fails() {
-        super.givenUnknowBotUserId_listHoyopasses_fails();
+        String botUserId = "999";
+
+        List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
+
+        assertThat(hoyopasses.size()).isEqualTo(0);
     }
 
     @Test
-    @Override
     void listUids_successful() {
-        super.listUids_successful();
+        String botUserId = "123456789";
+        UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
+
+        List<Uid> uids = hoyopassRegistration.listUids(botUserId);
+
+        userHoyopass.getHoyopasses().forEach((hoyopass)-> {
+            assert(uids.containsAll(hoyopass.getUids()));
+        });
     }
 
     @Test
-    @Override
     void whenHoyopassDesignated_listUids_successful() {
-        super.whenHoyopassDesignated_listUids_successful();
+        String botUserId = "123456789";
+        UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
+
+        List<Uid> uids = hoyopassRegistration.listUids(botUserId, 0);
+        assertThat(uids.containsAll(userHoyopass.listUids(0))).isTrue();
+
+        uids = hoyopassRegistration.listUids(botUserId, 1);
+        assertThat(uids.containsAll(userHoyopass.listUids(1))).isTrue();
     }
 
     @Test
-    @Override
     void deleteHoyopass() {
-        super.deleteHoyopass();
+        String botUserId = "1";
+        UserHoyopass userHoyopass = registerHoyopasses(botUserId, validHoyopass, validHoyopass2);
+
+        hoyopassRegistration.deleteHoyopass(botUserId, 0);
+
+        List<Hoyopass> hoyopasses = hoyopassRegistration.listHoyopasses(botUserId);
+        assertThat(hoyopasses.size()).isEqualTo(1);
+    }
+
+    private UserHoyopass registerHoyopass(String botUserId, LtuidLtoken ltuidLtoken) {
+        UserHoyopass userHoyopass = hoyopassRegistration.registerHoyopass(
+                botUserId, ltuidLtoken.getLtuid(), ltuidLtoken.getLtoken());
+
+        assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
+        return userHoyopass;
+    }
+
+    private UserHoyopass registerHoyopasses(String botUserId, LtuidLtoken... ltuidLtokens) {
+        UserHoyopass userHoyopass = null;
+        for (LtuidLtoken ltuidLtoken : ltuidLtokens)
+            userHoyopass = this.registerHoyopass(botUserId, ltuidLtoken);
+
+        if (userHoyopass != null)
+            assertThat(userHoyopass.getCount()).isEqualTo(ltuidLtokens.length);
+
+        return userHoyopass;
     }
 }

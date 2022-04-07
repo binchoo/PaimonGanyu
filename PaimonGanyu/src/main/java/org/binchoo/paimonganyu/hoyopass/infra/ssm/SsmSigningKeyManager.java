@@ -6,7 +6,6 @@ import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,16 +29,11 @@ import java.util.stream.Stream;
 public class SsmSigningKeyManager implements SigningKeyManagerPort {
 
     private static final String ALGORITHM = "RSA";
-
     private static final KeyFactory keyFactory;
     private static final Base64.Decoder base64Decoder;
 
-    @Value("${aws.ssm.publickeyname}")
     private final String publicKeyName;
-
-    @Value("${aws.ssm.privatekeyname}")
     private final String privateKeyName;
-
     private final AWSSimpleSystemsManagement ssmClient;
 
     private PublicKey publicKey;
