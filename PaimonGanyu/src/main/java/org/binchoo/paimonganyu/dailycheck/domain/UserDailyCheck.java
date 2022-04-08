@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.dynamo.LocalDateTimeStringConverter;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.SignInException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,7 +54,8 @@ public class UserDailyCheck {
         return this.changeStatus(UserDailyCheckStatus.COMPLETED);
     }
 
-    public UserDailyCheck markFail() {
+    public UserDailyCheck markFail(Throwable t) {
+        log.error("Received an exception.", t);
         return this.changeStatus(UserDailyCheckStatus.FAILED);
     }
 
@@ -63,7 +65,7 @@ public class UserDailyCheck {
 
     private UserDailyCheck changeStatus(UserDailyCheckStatus status) {
         UserDailyCheck userDailyCheck = this.toBuilder().status(status).build();
-        log.info("marked as {}: {}", status, userDailyCheck);
+        log.info("Marked the status as {}: {}", status, userDailyCheck);
         return userDailyCheck;
     }
 

@@ -23,28 +23,26 @@ public class DailyCheckService {
     private final UserDailyCheckDynamoRepository userDailyCheckRepository;
 
     public void claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
-        UserDailyCheck userDailyCheck = createNewUserDailyCheck(botUserId, ltuid);
+        final UserDailyCheck userDailyCheck = queueUserDailyCheck(botUserId, ltuid);
+        final UserDailyCheck statusModified = claimAndModifyStatus(userDailyCheck, ltoken);
+        save(statusModified);
+    }
+
+    private UserDailyCheck queueUserDailyCheck(String botUserId, String ltuid) {
+        return userDailyCheckRepository.save(UserDailyCheck.queued(botUserId, ltuid));
+    }
+
+    private UserDailyCheck claimAndModifyStatus(UserDailyCheck userDailyCheck, String ltoken) {
         try {
-            sendRequest(ltuid, ltoken);
-            userDailyCheck = userDailyCheck.markComplete();
+            HoyoResponse<DailyCheckResult> response =
+                    dailyCheckApi.claimDailyCheck(new LtuidLtoken(userDailyCheck.getLtuid(), ltoken));
+            log.info("Response message: {}", response.getMessage());
         } catch (SignInException e) {
-            log.info(e.getMessage(), e);
-            userDailyCheck = userDailyCheck.markDuplicate();
+            return userDailyCheck.markDuplicate();
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
-            userDailyCheck = userDailyCheck.markFail();
+            return userDailyCheck.markFail(e);
         }
-        save(userDailyCheck);
-    }
-
-    private UserDailyCheck createNewUserDailyCheck(String botUserId, String ltuid) {
-        UserDailyCheck userDailyCheck = UserDailyCheck.queued(botUserId, ltuid);
-        return userDailyCheckRepository.save(userDailyCheck);
-    }
-
-    private void sendRequest(String ltuid, String ltoken) {
-        HoyoResponse<DailyCheckResult> response = dailyCheckApi.claimDailyCheck(new LtuidLtoken(ltuid, ltoken));
-        System.out.println(response);
+        return userDailyCheck.markComplete();
     }
 
     private void save(UserDailyCheck userDailyCheck) {
