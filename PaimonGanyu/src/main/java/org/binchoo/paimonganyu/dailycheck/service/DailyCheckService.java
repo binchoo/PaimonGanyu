@@ -34,9 +34,7 @@ public class DailyCheckService {
 
     private UserDailyCheck claimAndModifyStatus(UserDailyCheck userDailyCheck, String ltoken) {
         try {
-            HoyoResponse<DailyCheckResult> response =
-                    dailyCheckApi.claimDailyCheck(new LtuidLtoken(userDailyCheck.getLtuid(), ltoken));
-            log.info("Response message: {}", response.getMessage());
+            sendRequest(userDailyCheck.getLtuid(), ltoken);
         } catch (SignInException e) {
             return userDailyCheck.markDuplicate();
         } catch (Exception e) {
@@ -45,9 +43,14 @@ public class DailyCheckService {
         return userDailyCheck.markComplete();
     }
 
+    private void sendRequest(String ltuid, String ltoken) {
+        HoyoResponse<DailyCheckResult> response = dailyCheckApi.claimDailyCheck(new LtuidLtoken(ltuid, ltoken));
+        log.info("Response message: {}", response.getMessage());
+    }
+
     private void save(UserDailyCheck userDailyCheck) {
         userDailyCheckRepository.save(userDailyCheck);
-        log.info("saved: {}", userDailyCheck);
+        log.info("Saved: {}", userDailyCheck);
     }
 
     public boolean hasCheckedInToday(String botUserId, String ltuid) {
