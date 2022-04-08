@@ -55,7 +55,7 @@ public class UserDailyCheck {
     }
 
     public UserDailyCheck markFail(Throwable t) {
-        log.error("Received an exception.", t);
+        log.warn("Received an exception.", t);
         return this.changeStatus(UserDailyCheckStatus.FAILED);
     }
 
