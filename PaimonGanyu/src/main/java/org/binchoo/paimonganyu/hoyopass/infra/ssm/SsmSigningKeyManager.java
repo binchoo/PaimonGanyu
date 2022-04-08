@@ -17,9 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,10 +55,9 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
     }
 
     private void validateFields(Object... objects) {
-        Stream<Object> fields = Stream.of(objects);
-        Stream<Object> nullFields = null;
-        if ((nullFields = fields.filter(Objects::isNull)).count() > 0) {
-            String message = String.format("Field validation failed: %s", nullFields.collect(Collectors.toSet()));
+        Set<Object> nullFields = Arrays.stream(objects).filter(Objects::isNull).collect(Collectors.toSet());
+        if (nullFields.size() > 0) {
+            String message = String.format("Field validation failed: %s", nullFields);
             RuntimeException ex = new RuntimeException(message);
             log.error(message, ex);
             throw ex;
