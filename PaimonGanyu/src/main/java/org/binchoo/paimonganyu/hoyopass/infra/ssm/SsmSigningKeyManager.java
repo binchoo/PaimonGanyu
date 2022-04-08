@@ -66,14 +66,13 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
 
     private void acquireKeys() {
         List<Parameter> ssmParameters = this.acquireSsmParameters();
-
         for (Parameter parameter : ssmParameters) {
             String name = parameter.getName();
             byte[] base64Decoded = base64Decoder.decode(parameter.getValue());
             if (publicKeyName.equals(name)) {
-                savePublicKeyWithin(new X509EncodedKeySpec(base64Decoded));
+                savePublicKeyWithin(base64Decoded);
             } else if (privateKeyName.equals(name)) {
-                savePrivateKeyWithin(new PKCS8EncodedKeySpec(base64Decoded));
+                savePrivateKeyWithin(base64Decoded);
             }
         }
     }
@@ -83,8 +82,8 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
                 .withNames(publicKeyName, privateKeyName).withWithDecryption(true)).getParameters();
     }
 
-    private void savePublicKeyWithin(KeySpec keySpec) {
-        this.publicKey = generatePublicKey(keySpec);
+    private void savePublicKeyWithin(byte[] x509Encoded) {
+        this.publicKey = generatePublicKey(new X509EncodedKeySpec(x509Encoded));
     }
 
     private PublicKey generatePublicKey(KeySpec keySpec) {
@@ -96,8 +95,8 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
         return null;
     }
 
-    private void savePrivateKeyWithin(KeySpec keySpec) {
-        this.privateKey = generatePrivateKey(keySpec);
+    private void savePrivateKeyWithin(byte[] pkcs8Encoded) {
+        this.privateKey = generatePrivateKey(new PKCS8EncodedKeySpec(pkcs8Encoded));
     }
 
     private PrivateKey generatePrivateKey(KeySpec keySpec) {
