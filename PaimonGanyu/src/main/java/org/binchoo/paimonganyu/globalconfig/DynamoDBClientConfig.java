@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DynomdbClientConfig {
+public class DynamoDBClientConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {

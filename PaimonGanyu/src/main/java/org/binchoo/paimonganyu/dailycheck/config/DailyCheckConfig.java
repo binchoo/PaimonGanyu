@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.dailycheck.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.globalconfig.DynomdbClientConfig;
+import org.binchoo.paimonganyu.globalconfig.DynamoDBClientConfig;
 import org.binchoo.paimonganyu.globalconfig.HoyoApiConfig;
 import org.binchoo.paimonganyu.globalconfig.SqsClientConfig;
 import org.binchoo.paimonganyu.hoyopass.config.UserHoyopassTableConfig;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
         "org.binchoo.paimonganyu.hoyopass.infra.dynamo.repository"
 })
 @Import({
-        HoyoApiConfig.class, DynomdbClientConfig.class, SqsClientConfig.class,
+        HoyoApiConfig.class, DynamoDBClientConfig.class, SqsClientConfig.class,
         UserHoyopassTableConfig.class
 })
 @Configuration
