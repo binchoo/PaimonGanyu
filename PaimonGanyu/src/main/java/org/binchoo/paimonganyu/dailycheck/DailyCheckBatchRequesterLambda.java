@@ -20,7 +20,7 @@ public class DailyCheckBatchRequesterLambda {
     private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
     private DailyCheckService dailyCheckService;
-    private UserHoyopassCrudPort crudPort;
+    private UserHoyopassCrudPort hoyopassCrudPort;
 
     public DailyCheckBatchRequesterLambda() {
         this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckConfig.class));
@@ -30,14 +30,14 @@ public class DailyCheckBatchRequesterLambda {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.dailyCheckService = context.getBean(DailyCheckService.class);
-        this.crudPort = context.getBean(UserHoyopassCrudPort.class);
+        this.hoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
         Objects.requireNonNull(dailyCheckService);
         Objects.requireNonNull(dailyCheckService.getUserDailyCheckRepository());
-        Objects.requireNonNull(crudPort);
+        Objects.requireNonNull(hoyopassCrudPort);
     }
 
     public void handler(ScheduledEvent event, Context context) {
-        crudPort.findAll().stream().map(DailyCheckTaskSpec::getList)
+        hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::getList)
                 .flatMap(List::stream)
                 .filter(task-> !dailyCheckService.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
                 .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.getJson(objectMapper)));

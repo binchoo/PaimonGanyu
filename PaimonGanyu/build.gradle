@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.4.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.sonarqube' version '3.3'
+    id 'jacoco'
 }
 
 repositories {
@@ -14,17 +16,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-    /*AWS SDKs*/
-
     // Amazon DynamoDB
-    implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
-    implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.914'
+    implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.914') {
+        because 'All workflows use the Amazon DynamoDB as their persistence system.'
+    }
+    implementation ('com.github.derjust:spring-data-dynamodb:5.1.0') {
+        because 'To automatically create some DynamoDB repositories.'
+    }
 
     // Amazon SNS
-    implementation 'com.amazonaws:aws-java-sdk-sns:1.11.914'
+    implementation ('com.amazonaws:aws-java-sdk-sns:1.11.914') {
+        because 'Hoyopass fanout leverages an SNS topic.'
+    }
 
     // AWS Systems Manager
-    implementation 'com.amazonaws:aws-java-sdk-ssm:1.11.914'
+    implementation ('com.amazonaws:aws-java-sdk-ssm:1.11.914') {
+        because 'Hoyopass could digest secured (RSA-signed) hoyopass strings.'
+    }
 
     // AWS Lambda
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
@@ -53,7 +61,10 @@ task buildZip(type: Zip) {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
+
+jacocoTestReport.dependsOn test
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
