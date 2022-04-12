@@ -15,8 +15,8 @@ class RetcodeExceptionBootstrapper {
 
     private static final Logger logger = LoggerFactory.getLogger(RetcodeExceptionBootstrapper.class);
 
-    protected static final String packageName = RetcodeExceptionBootstrapper.class.getPackage().getName();
-    protected static final String excecptionPackageName = packageName + ".exceptions";
+    protected static final String PACKAGE_NAME = RetcodeExceptionBootstrapper.class.getPackage().getName();
+    protected static final String EXCECPTION_PACKAGE_NAME = PACKAGE_NAME + ".exceptions";
 
     private static final ClassPathScanningCandidateComponentProvider provider
             = new ClassPathScanningCandidateComponentProvider(false);
@@ -56,7 +56,7 @@ class RetcodeExceptionBootstrapper {
 
     private static List<Class<RetcodeException>> scanExceptionPackage() {
         Set<BeanDefinition> beanDefinitions =
-                provider.findCandidateComponents(excecptionPackageName);
+                provider.findCandidateComponents(EXCECPTION_PACKAGE_NAME);
 
         List<Class<RetcodeException>> exceptions = new LinkedList<>();
         for (BeanDefinition bdf : beanDefinitions) {
@@ -65,7 +65,7 @@ class RetcodeExceptionBootstrapper {
                         = (Class<RetcodeException>) Class.forName(bdf.getBeanClassName());
                 exceptions.add(retcodeExceptionClass);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.warn("Error loading a retcode exception class.", e);
             }
         }
         return exceptions;
