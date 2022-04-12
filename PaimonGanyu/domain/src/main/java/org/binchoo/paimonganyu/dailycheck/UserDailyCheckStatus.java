@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.dailycheck.domain;
+package org.binchoo.paimonganyu.dailycheck;
 
 public enum UserDailyCheckStatus {
     /** This dailycheck is completed successfully. */

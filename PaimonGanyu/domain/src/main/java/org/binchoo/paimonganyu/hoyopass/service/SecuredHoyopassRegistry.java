@@ -1,14 +1,14 @@
-package org.binchoo.paimonganyu.hoyopass.services;
+package org.binchoo.paimonganyu.hoyopass.service;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.SecureHoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.HoyopassRegistryPort;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.SecuredHoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.SecureHoyopass;
+import org.binchoo.paimonganyu.hoyopass.Uid;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

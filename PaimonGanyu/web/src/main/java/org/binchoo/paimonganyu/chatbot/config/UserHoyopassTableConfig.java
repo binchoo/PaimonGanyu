@@ -1,10 +1,10 @@
-package org.binchoo.paimonganyu.hoyopass.config;
+package org.binchoo.paimonganyu.chatbot.config;
 
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.context.annotation.Configuration;
 
 @EnableDynamoDBRepositories(
-        basePackages = "org.binchoo.paimonganyu.hoyopass.infra.dynamo")
+        basePackages = "org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository")
 @Configuration
 public class UserHoyopassTableConfig {
 }

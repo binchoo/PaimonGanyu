@@ -1,10 +1,10 @@
-package org.binchoo.paimonganyu.hoyopass.infra.ssm;
+package org.binchoo.paimonganyu.infra.hoyopass.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest;
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
+import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyFactory;

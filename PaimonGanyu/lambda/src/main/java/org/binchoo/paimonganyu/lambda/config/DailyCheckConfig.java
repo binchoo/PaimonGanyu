@@ -1,10 +1,6 @@
-package org.binchoo.paimonganyu.dailycheck.config;
+package org.binchoo.paimonganyu.lambda.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.globalconfig.DynamoDBClientConfig;
-import org.binchoo.paimonganyu.globalconfig.HoyoApiConfig;
-import org.binchoo.paimonganyu.globalconfig.SqsClientConfig;
-import org.binchoo.paimonganyu.hoyopass.config.UserHoyopassTableConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

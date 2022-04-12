@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.domain.driven;
+package org.binchoo.paimonganyu.hoyopass.driven;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

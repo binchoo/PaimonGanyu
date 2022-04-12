@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.item;
+package org.binchoo.paimonganyu.infra.hoyopass.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.binchoo.paimonganyu.awsutils.dynamo.LocalDateTimeStringConverter;
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 
 import java.time.LocalDateTime;
 import java.util.List;

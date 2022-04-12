@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.item;
+package org.binchoo.paimonganyu.infra.hoyopass.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.List;
 import java.util.stream.Collectors;

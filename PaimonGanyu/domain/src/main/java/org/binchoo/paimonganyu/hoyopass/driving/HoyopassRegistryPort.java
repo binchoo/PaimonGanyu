@@ -1,8 +1,8 @@
-package org.binchoo.paimonganyu.hoyopass.domain.driving;
+package org.binchoo.paimonganyu.hoyopass.driving;
 
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.Uid;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.List;
 

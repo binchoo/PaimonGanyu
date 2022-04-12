@@ -1,9 +1,9 @@
-package org.binchoo.paimonganyu.hoyopass.domain.driving;
+package org.binchoo.paimonganyu.hoyopass.driving;
 
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 /**
- * packageName : org.binchoo.paimonganyu.hoyopass.domain.driving
+ * packageName : org.binchoo.paimonganyu.hoyopass.driving
  * fileName : HoyopassSecurityLayer
  * author : jbinchoo
  * date : 2022-04-07

@@ -1,12 +1,12 @@
-package org.binchoo.paimonganyu.dailycheck;
+package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.lambda.hoyopass.UserHoyopassMessage;
 
 import java.util.Arrays;
 import java.util.List;

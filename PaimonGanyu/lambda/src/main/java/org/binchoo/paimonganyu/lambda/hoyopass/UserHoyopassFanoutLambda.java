@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.fanout;
+package org.binchoo.paimonganyu.lambda.hoyopass;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -8,8 +8,8 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.infra.dynamo.item.UserHoyopassItem;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 
 public class UserHoyopassFanoutLambda {
 

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.testconfig;
+package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import lombok.Builder;
 import lombok.Getter;

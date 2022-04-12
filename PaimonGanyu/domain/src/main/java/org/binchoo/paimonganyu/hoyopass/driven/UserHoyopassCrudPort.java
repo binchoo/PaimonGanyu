@@ -1,6 +1,6 @@
-package org.binchoo.paimonganyu.hoyopass.domain.driven;
+package org.binchoo.paimonganyu.hoyopass.driven;
 
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.List;
 import java.util.Optional;

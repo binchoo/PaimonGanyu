@@ -1,6 +1,6 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.repository;
+package org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository;
 
-import org.binchoo.paimonganyu.hoyopass.infra.dynamo.item.UserHoyopassItem;
+import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 

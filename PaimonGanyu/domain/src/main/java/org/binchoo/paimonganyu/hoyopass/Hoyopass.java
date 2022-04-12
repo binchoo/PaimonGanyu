@@ -1,10 +1,9 @@
-package org.binchoo.paimonganyu.hoyopass.domain;
+package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchPort;
 
 import java.time.LocalDateTime;
 import java.util.List;

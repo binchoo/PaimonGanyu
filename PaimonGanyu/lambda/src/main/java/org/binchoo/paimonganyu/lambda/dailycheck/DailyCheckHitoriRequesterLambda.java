@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.dailycheck;
+package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
 import org.binchoo.paimonganyu.dailycheck.config.DailyCheckConfig;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
-import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
+import org.binchoo.paimonganyu.lambda.hoyopass.UserHoyopassMessage;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -30,7 +30,7 @@ public class DailyCheckHitoriRequesterLambda {
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.dailyCheckService = context.getBean(DailyCheckService.class);
         Objects.requireNonNull(dailyCheckService);
-        Objects.requireNonNull(dailyCheckService.getUserDailyCheckRepository());
+        Objects.requireNonNull(dailyCheckService.getRepository());
     }
 
     public void handler(SNSEvent snsEvent) {

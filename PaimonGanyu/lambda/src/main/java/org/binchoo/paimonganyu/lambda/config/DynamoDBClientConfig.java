@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.globalconfig;
+package org.binchoo.paimonganyu.lambda.config;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;

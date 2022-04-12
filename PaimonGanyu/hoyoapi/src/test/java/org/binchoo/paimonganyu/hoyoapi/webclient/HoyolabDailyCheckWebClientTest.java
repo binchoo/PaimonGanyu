@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import org.assertj.core.util.Arrays;
-import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.hoyoapi.error.Retcode;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;

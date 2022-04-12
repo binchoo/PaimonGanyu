@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.chatbot;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.domain.driving.SecuredHoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.http.ResponseEntity;

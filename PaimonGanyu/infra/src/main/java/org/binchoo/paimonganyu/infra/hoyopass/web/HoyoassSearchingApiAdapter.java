@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.web;
+package org.binchoo.paimonganyu.infra.hoyopass.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,10 +6,10 @@ import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.Region;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.Region;
+import org.binchoo.paimonganyu.hoyopass.Uid;
+import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchPort;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 

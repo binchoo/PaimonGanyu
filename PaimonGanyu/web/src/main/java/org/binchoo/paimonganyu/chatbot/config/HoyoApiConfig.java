@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.lambda.config;
+package org.binchoo.paimonganyu.chatbot.config;
 
 import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
 import org.springframework.context.annotation.Bean;

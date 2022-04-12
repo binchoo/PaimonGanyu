@@ -1,17 +1,18 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabConstant;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckMonthlyReport;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
+import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.COOKIE_LTOKEN;
+import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.COOKIE_LTUID;
 
 @Component
 public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {

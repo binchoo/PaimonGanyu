@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass;
+package org.binchoo.paimonganyu.chatbot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

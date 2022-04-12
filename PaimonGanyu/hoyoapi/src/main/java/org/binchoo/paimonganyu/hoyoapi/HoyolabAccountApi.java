@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.hoyoapi;
 
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
-import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 
 public interface HoyolabAccountApi extends HoyolabApi {
 

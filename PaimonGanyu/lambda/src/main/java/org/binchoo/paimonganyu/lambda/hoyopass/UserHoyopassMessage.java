@@ -1,8 +1,7 @@
-package org.binchoo.paimonganyu.hoyopass.infra.fanout;
+package org.binchoo.paimonganyu.lambda.hoyopass;
 
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
-import org.binchoo.paimonganyu.hoyopass.domain.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.Arrays;
 

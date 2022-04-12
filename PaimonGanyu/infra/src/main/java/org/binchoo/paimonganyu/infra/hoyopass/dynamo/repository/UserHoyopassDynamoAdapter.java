@@ -1,9 +1,9 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.repository;
+package org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.hoyopass.infra.dynamo.item.UserHoyopassItem;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
+import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

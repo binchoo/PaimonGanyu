@@ -1,11 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.testconfig.TestAccountConfig;
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
-import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
-import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
-import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
-import org.binchoo.paimonganyu.hoyopass.domain.Region;
+import org.binchoo.paimonganyu.hoyoapi.pojo.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,8 +29,8 @@ class HoyolabAccountWebClientTest {
         List<UserGameRole> userRoles = response.getData().getList();
 
         boolean hasAsiaAndUsaRole = 2 == userRoles.stream().filter(ugr ->
-                ugr.getRegion().equals(Region.OS_ASIA.lowercase())
-                        || ugr.getRegion().equals(Region.OS_USA.lowercase())).count();
+                ugr.getRegion().equals(UidRegion.OS_ASIA.lowercase())
+                        || ugr.getRegion().equals(UidRegion.OS_USA.lowercase())).count();
 
         assertThat(hasAsiaAndUsaRole).isTrue();
     }
@@ -54,7 +49,7 @@ class HoyolabAccountWebClientTest {
         List<UserGameRole> userRoles = response.getData().getList();
 
         boolean hasAsiaUid = userRoles.stream().anyMatch(ugr ->
-                ugr.getRegion().equals(Region.OS_ASIA.lowercase()));
+                ugr.getRegion().equals(UidRegion.OS_ASIA.lowercase()));
 
         assertThat(hasAsiaUid).isTrue();
     }
@@ -65,7 +60,7 @@ class HoyolabAccountWebClientTest {
         List<UserGameRole> userRoles = response.getData().getList();
 
         boolean hasUsaUid = userRoles.stream().anyMatch(ugr ->
-                ugr.getRegion().equals(Region.OS_USA.lowercase()));
+                ugr.getRegion().equals(UidRegion.OS_USA.lowercase()));
 
         assertThat(hasUsaUid).isTrue();
     }
@@ -73,21 +68,21 @@ class HoyolabAccountWebClientTest {
     @Test
     void whenSearchingAsia_getUserGameRoleByRegion_onlyReturnsAsiaUid() {
         HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(validAccount,
-                Region.OS_ASIA.lowercase());
+                UidRegion.OS_ASIA.lowercase());
         List<UserGameRole> userRoles = response.getData().getList();
 
         System.out.println(userRoles);
         assertThat(userRoles.size()).isEqualTo(1);
-        assertThat(Region.fromString(userRoles.get(0).getRegion())).isEqualTo(Region.OS_ASIA);
+        assertThat(UidRegion.fromString(userRoles.get(0).getRegion())).isEqualTo(UidRegion.OS_ASIA);
     }
 
     @Test
     void whenSearchingUsa_getUserGameRoleByRegion_onlyReturnsUsaUid() {
         HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(validAccount,
-                Region.OS_USA.lowercase());
+                UidRegion.OS_USA.lowercase());
         List<UserGameRole> userRoles = response.getData().getList();
 
         assertThat(userRoles.size()).isEqualTo(1);
-        assertThat(Region.fromString(userRoles.get(0).getRegion())).isEqualTo(Region.OS_USA);
+        assertThat(UidRegion.fromString(userRoles.get(0).getRegion())).isEqualTo(UidRegion.OS_USA);
     }
 }

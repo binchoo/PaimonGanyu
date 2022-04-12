@@ -17,10 +17,9 @@ public class RetcodeExceptionMappings {
         if (this.contains(retcode)) {
             Class<RetcodeException> clazz = this.getMapping(retcode);
             try {
-                ex = clazz.getDeclaredConstructor((Class<?>) null).newInstance();
+                ex = clazz.newInstance();
                 ex.setMessage(clazz.getName() + "(" + message + ")");
-            } catch (InstantiationException | NoSuchMethodException
-                    | IllegalAccessException | InvocationTargetException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }

@@ -1,18 +1,16 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.globalconfig.HoyoApiConfig;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeExceptionMappings;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.mockito.MockitoAnnotations;
+
 
 import java.util.Map;
 
@@ -20,14 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@SpringJUnitConfig(classes = {HoyoApiConfig.class})
-@ExtendWith(MockitoExtension.class)
 class HoyoResponseInspectionAspectTest {
 
-    @Autowired
-    HoyoResponseInspectionAspect hoyoResponseInspectionAspect;
+    HoyoResponseInspectionAspect hoyoResponseInspectionAspect = new HoyoResponseInspectionAspect();
 
-    @MockBean
+    @Mock
     HoyoResponse<Object> badHoyoResponse;
 
     /**
@@ -37,6 +32,11 @@ class HoyoResponseInspectionAspectTest {
     @BeforeAll
     public static void bootstrapRetcodeMappings() {
         RetcodeException foobar = new RetcodeException();
+    }
+
+    @BeforeEach
+    public void initMock() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -51,10 +51,20 @@ class HoyoResponseInspectionAspectTest {
         when(badHoyoResponse.getRetcode()).thenReturn(retcode);
 
         assertThrows(expectedExceptionClass, () -> {
-            hoyoResponseInspectionAspect.inspectRetcode(badHoyoResponse);
+            hoyoResponseInspectionAspect.inspectResponse(badHoyoResponse);
         });
 
         Mockito.reset(badHoyoResponse);
         log.info(String.format("retcode %d is handled to throw %s", retcode, expectedExceptionClass));
+    }
+
+    @Test
+    void inspectData() throws ClassNotFoundException {
+        when(badHoyoResponse.getRetcode()).thenReturn(0);
+        when(badHoyoResponse.getData()).thenReturn(null);
+
+        assertThrows(NullPointerException.class, ()-> {
+           hoyoResponseInspectionAspect.inspectResponse(badHoyoResponse);
+        });
     }
 }

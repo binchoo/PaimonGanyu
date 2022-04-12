@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.domain;
+package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

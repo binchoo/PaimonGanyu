@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.testconfig;
+package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.fanout;
+package org.binchoo.paimonganyu.lambda.hoyopass;
 
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import org.binchoo.paimonganyu.awsutils.sns.FanoutReactor;

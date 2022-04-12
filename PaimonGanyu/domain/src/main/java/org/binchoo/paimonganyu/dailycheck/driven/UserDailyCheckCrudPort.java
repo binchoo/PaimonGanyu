@@ -1,8 +1,7 @@
-package org.binchoo.paimonganyu.dailycheck.domain.driven;
+package org.binchoo.paimonganyu.dailycheck.driven;
 
-import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheck;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface UserDailyCheckCrudPort {

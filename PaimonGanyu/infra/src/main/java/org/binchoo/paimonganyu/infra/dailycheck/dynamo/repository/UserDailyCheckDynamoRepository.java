@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.infra.dailycheck;
+package org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository;
 
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.item.UserDailyCheckItem;

@@ -1,9 +1,9 @@
-package org.binchoo.paimonganyu.dailycheck;
+package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
-import org.binchoo.paimonganyu.dailycheck.config.DailyCheckConfig;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
+import org.binchoo.paimonganyu.lambda.config.DailyCheckConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -20,7 +20,7 @@ public class DailyCheckWorkerLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.dailyCheckService = context.getBean(DailyCheckService.class);
         Objects.requireNonNull(dailyCheckService);
-        Objects.requireNonNull(dailyCheckService.getUserDailyCheckRepository());
+        Objects.requireNonNull(dailyCheckService.getRepository());
     }
 
     public void handler(SQSEvent event) {

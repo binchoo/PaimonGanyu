@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.domain;
+package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.extern.slf4j.Slf4j;
 

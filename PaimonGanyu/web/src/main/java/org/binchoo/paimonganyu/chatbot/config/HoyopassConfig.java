@@ -1,8 +1,5 @@
-package org.binchoo.paimonganyu.hoyopass.config;
+package org.binchoo.paimonganyu.chatbot.config;
 
-import org.binchoo.paimonganyu.globalconfig.DynamoDBClientConfig;
-import org.binchoo.paimonganyu.globalconfig.HoyoApiConfig;
-import org.binchoo.paimonganyu.globalconfig.SsmClientConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

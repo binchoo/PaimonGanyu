@@ -1,9 +1,16 @@
-package org.binchoo.paimonganyu.lambda.hoyopass;/** 
-* packageName : org.binchoo.paimonganyu.lambda.hoyopass 
-* fileName : LtuidLtoken 
-* author : jbinchoo
-* date : 2022-04-12 
-* description : 
-*/
+package org.binchoo.paimonganyu.lambda.hoyopass;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class LtuidLtoken {
+
+    private String ltuid;
+    private String ltoken;
 }

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.infra.dynamo.item;
+package org.binchoo.paimonganyu.infra.hoyopass.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBConvertedBool;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.binchoo.paimonganyu.hoyopass.domain.Region;
-import org.binchoo.paimonganyu.hoyopass.domain.Uid;
+import org.binchoo.paimonganyu.hoyopass.Region;
+import org.binchoo.paimonganyu.hoyopass.Uid;
 
 @Setter
 @Getter
