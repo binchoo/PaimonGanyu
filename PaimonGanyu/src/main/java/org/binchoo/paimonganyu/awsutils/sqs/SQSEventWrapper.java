@@ -18,6 +18,6 @@ public class SQSEventWrapper extends JsonPayloadAwsEventWrapper<SQSEvent> {
 
     @Override
     protected Stream<String> getJsonStream(SQSEvent event) {
-        return event.getRecords().stream().map(sqsRecord-> sqsRecord.getBody());
+        return event.getRecords().stream().map(SQSEvent.SQSMessage::getBody);
     }
 }

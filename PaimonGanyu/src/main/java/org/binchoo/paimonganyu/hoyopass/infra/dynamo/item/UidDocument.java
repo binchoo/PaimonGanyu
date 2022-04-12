@@ -44,7 +44,9 @@ public class UidDocument {
     @DynamoDBConvertedBool(DynamoDBConvertedBool.Format.Y_N)
     private Boolean isLumine;
 
-    public UidDocument() { }
+    public UidDocument() {
+        // required for dynamodb mapper
+    }
 
     public Uid toDomain() {
         return Uid.builder()

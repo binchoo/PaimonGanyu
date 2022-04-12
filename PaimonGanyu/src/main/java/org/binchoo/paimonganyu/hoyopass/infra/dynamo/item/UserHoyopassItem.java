@@ -31,7 +31,9 @@ public class UserHoyopassItem {
     @DynamoDBAttribute
     private List<HoyopassDocument> hoyopasses;
 
-    public UserHoyopassItem() { }
+    public UserHoyopassItem() {
+        // required for dynamodb mapper
+    }
 
     public UserHoyopass toDomain() {
         return UserHoyopass.builder()

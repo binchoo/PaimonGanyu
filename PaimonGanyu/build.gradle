@@ -61,10 +61,11 @@ task buildZip(type: Zip) {
 
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
-
-jacocoTestReport.dependsOn test
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+jacocoTestReport.dependsOn test
+test.finalizedBy jacocoTestReport
+

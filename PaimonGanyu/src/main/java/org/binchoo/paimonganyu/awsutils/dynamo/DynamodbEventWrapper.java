@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * This utility class can convert the NewImage JSONs of DynamodbEvent to a list of java POJO.
  */
-public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
+public class DynamodbEventWrapper implements AwsEventWrapper {
 
     private static final DynamodbEventName[] defaultAllowedEventNames
             = {DynamodbEventName.MODIFY, DynamodbEventName.INSERT};
@@ -52,8 +52,8 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
                 .collect(Collectors.toList());
     }
 
-    private boolean recordEventNameFilter(DynamodbEvent.DynamodbStreamRecord record) {
-        DynamodbEventName eventName = DynamodbEventName.valueOf(record.getEventName());
+    private boolean recordEventNameFilter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
+        DynamodbEventName eventName = DynamodbEventName.valueOf(streamRecord.getEventName());
         for (DynamodbEventName allowedEventName : allowedEventNames) {
             if (eventName.equals(allowedEventName)) {
                 return true;
@@ -62,7 +62,7 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
         return false;
     }
 
-    private Map<String, AttributeValue> recordNewImageGetter(DynamodbEvent.DynamodbStreamRecord record) {
-        return record.getDynamodb().getNewImage();
+    private Map<String, AttributeValue> recordNewImageGetter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
+        return streamRecord.getDynamodb().getNewImage();
     }
 }

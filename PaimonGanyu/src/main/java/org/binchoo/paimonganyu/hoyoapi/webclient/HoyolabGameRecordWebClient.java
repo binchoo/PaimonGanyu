@@ -26,12 +26,12 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
     /**
      * 원신 전적 API - 보유 캐릭터 조회 - POST API
      */
-    private final String GAME_RECORD_CHARACTER = "/character";
+    private static final String GAME_RECORD_CHARACTER = "/character";
 
     /**
      * 원신 전적 API - 현재 게임 스테이터스 조회 (레진, 파견의뢰, 선계보화 등)
      */
-    private final String GAME_RECORD_DAILYNOTE = "/dailyNote";
+    private static final String GAME_RECORD_DAILYNOTE = "/dailyNote";
 
     private final DsHeaderGenerator dsHeaderGenerator;
 

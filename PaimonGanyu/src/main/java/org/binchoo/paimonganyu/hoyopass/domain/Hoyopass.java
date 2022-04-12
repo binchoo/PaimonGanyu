@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
@@ -35,16 +36,21 @@ public class Hoyopass {
     private LocalDateTime createAt = LocalDateTime.now();
 
     public void fillUids(HoyopassSearchPort hoyopassSearchPort) {
-        List<Uid> uids = hoyopassSearchPort.findUids(this);
-        this.uids = uids;
+        List<Uid> findResult = hoyopassSearchPort.findUids(this);
+        this.uids = findResult;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Hoyopass) {
             Hoyopass other = (Hoyopass) obj;
-            return this.ltuid.equals(other.getLtuid());
+            return ltuid.equals(other.getLtuid());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return ltuid.hashCode();
     }
 }

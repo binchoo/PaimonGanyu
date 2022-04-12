@@ -1,12 +1,13 @@
 package org.binchoo.paimonganyu.dailycheck;
 
-import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.config.DailyCheckConfig;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.UserHoyopassCrudPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 public class DailyCheckBatchRequesterLambda {
 
+    private static final Logger logger = LoggerFactory.getLogger(DailyCheckBatchRequesterLambda.class);
     private static final String DAILYCHECK_QUEUE_URL = System.getenv("DAILYCHECK_QUEUE_URL");
 
     private AmazonSQS sqsClient;
@@ -36,7 +38,8 @@ public class DailyCheckBatchRequesterLambda {
         Objects.requireNonNull(hoyopassCrudPort);
     }
 
-    public void handler(ScheduledEvent event, Context context) {
+    public void handler(ScheduledEvent event) {
+        logger.info("SchedueldEvent triggered at {}.", event.getTime());
         hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::getList)
                 .flatMap(List::stream)
                 .filter(task-> !dailyCheckService.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))

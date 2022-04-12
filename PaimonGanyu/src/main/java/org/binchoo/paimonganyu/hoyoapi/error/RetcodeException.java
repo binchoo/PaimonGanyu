@@ -6,7 +6,11 @@ import java.util.Optional;
 
 public class RetcodeException extends RuntimeException {
 
-    private String message = "";
+    private String message;
+
+    public RetcodeException() {
+        this.message = "";
+    }
 
     @Override
     public String getMessage() {

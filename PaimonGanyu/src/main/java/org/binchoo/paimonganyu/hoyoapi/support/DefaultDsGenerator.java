@@ -18,7 +18,9 @@ import java.util.Random;
  */
 public class DefaultDsGenerator implements DsGenerator {
 
-    private final static String DS_SALT = "6s25p5ox5y14umn1p61aqyyvbvvl3lrt";
+    private static final String DS_SALT = "6s25p5ox5y14umn1p61aqyyvbvvl3lrt";
+
+    private final Random random;
 
     private MessageDigest messageDigest;
 
@@ -26,9 +28,9 @@ public class DefaultDsGenerator implements DsGenerator {
         try {
             messageDigest = MessageDigest.getInstance(MessageDigestAlgorithms.MD5);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not found MD5 MessageDigestAlgorithm class.");
+            throw new IllegalStateException("Could not found MD5 MessageDigestAlgorithm class.");
         }
+        this.random = new Random();
     }
 
     @Override
@@ -38,22 +40,22 @@ public class DefaultDsGenerator implements DsGenerator {
 
     @Override
     public String generateDs(String salt) {
-        final long t = T();
-        final String r = R();
-        final String h = H(salt, t, r);
+        final long t = timestamp();
+        final String r = asciiRandoms(6);
+        final String h = hexDigest(salt, t, r);
         return String.format("%s,%s,%s", t, r, h);
     }
 
-    private long T() {
+    private long timestamp() {
         return Instant.now().getEpochSecond();
     }
 
-    private String R() {
-        return new Random().ints(6, 'a', 'z')
+    private String asciiRandoms(int length) {
+        return random.ints(length, 'a', 'z')
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
     }
 
-    private String H(String salt, long t, String r) {
+    private String hexDigest(String salt, long t, String r) {
         byte[] digest = messageDigest.digest(
                 String.format("salt=%s&t=%s&r=%s", salt, t, r).getBytes());
         return DatatypeConverter.printHexBinary(digest).toLowerCase(); // must be a lowercase string

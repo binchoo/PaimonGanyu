@@ -35,7 +35,7 @@ public class UserHoyopassFanoutLambda {
         try {
             snsClient.publish(USERHOYOPASS_TOPIC, objectMapper.writeValueAsString(messsage));
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(
+            throw new IllegalArgumentException(
                     String.format("Error occurred while serializing a UserHoyopassMessage: %s", messsage), e);
         }
     }

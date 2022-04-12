@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.hoyoapi;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;

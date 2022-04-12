@@ -38,7 +38,9 @@ public class HoyopassDocument {
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
     private LocalDateTime createAt;
 
-    public HoyopassDocument() { }
+    public HoyopassDocument() {
+        // required for dynamodb mapper
+    }
 
     public Hoyopass toDomain() {
         return Hoyopass.builder()

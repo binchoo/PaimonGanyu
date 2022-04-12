@@ -31,14 +31,14 @@ class DailyCheckServiceTest {
     UserDailyCheckDynamoRepository repository;
 
     @Test
-    public void withInvalidHoyopass_claimDailyCheckIn_savesFailedUserDailyCheck() {
+    void withInvalidHoyopass_claimDailyCheckIn_savesFailedUserDailyCheck() {
         String botUserId = RandomString.make();
         String ltuid = RandomString.make();
 
         dailyCheckService.claimDailyCheckIn(botUserId, ltuid, "foobar");
 
         List<UserDailyCheck> findResult = repository.findByBotUserIdLtuid(botUserId + "-" + ltuid);
-        assertThat(findResult.size()).isEqualTo(1);
+        assertThat(findResult).hasSize(1);
 
         UserDailyCheck saved = findResult.get(0);
         assertThat(saved.getBotUserId()).isEqualTo(botUserId);
@@ -50,14 +50,14 @@ class DailyCheckServiceTest {
 
     @Disabled("Integration test for real daily check-in is only meaningful once a day.")
     @Test
-    public void withInvalidHoyopass_claimDailyCheckIn_savesCompledtedUserDailyCheck() {
+    void withInvalidHoyopass_claimDailyCheckIn_savesCompledtedUserDailyCheck() {
         String botUserId = RandomString.make();
         String ltuid = validHoyopass.getLtuid();
 
         dailyCheckService.claimDailyCheckIn(botUserId, ltuid, validHoyopass.getLtoken());
 
         List<UserDailyCheck> findResult = repository.findByBotUserIdLtuid(botUserId + "-" + ltuid);
-        assertThat(findResult.size()).isEqualTo(1);
+        assertThat(findResult).hasSize(1);
 
         UserDailyCheck saved = findResult.get(0);
         assertThat(saved.getBotUserId()).isEqualTo(botUserId);

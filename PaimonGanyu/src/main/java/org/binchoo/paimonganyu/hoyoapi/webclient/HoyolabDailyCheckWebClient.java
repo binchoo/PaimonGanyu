@@ -19,12 +19,12 @@ public class HoyolabDailyCheckWebClient implements HoyolabDailyCheckApi {
     /**
      * 원신 일일 체크 API - POST API
      */
-    private final String CLAIM_URL = "/sign";
+    private static final String CLAIM_URL = "/sign";
 
     /**
      * 원신 일일 체크 현황 API - GET API
      */
-    private final String MONTHLY_REPORT_URL = "/info";
+    private static final String MONTHLY_REPORT_URL = "/info";
 
     private WebClient webClient;
 

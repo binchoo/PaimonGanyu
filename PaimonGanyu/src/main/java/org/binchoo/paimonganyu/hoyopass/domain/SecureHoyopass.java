@@ -35,7 +35,7 @@ public class SecureHoyopass {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                     | BadPaddingException | IllegalBlockSizeException e) {
             log.error("Could not process a decryption for Hoyopass", e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

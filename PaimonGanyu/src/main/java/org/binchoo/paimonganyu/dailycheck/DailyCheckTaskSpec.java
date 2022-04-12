@@ -1,12 +1,10 @@
 package org.binchoo.paimonganyu.dailycheck;
 
-import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.domain.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassMessage;
 
@@ -70,19 +68,18 @@ public class DailyCheckTaskSpec {
         try {
           return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to serialize a DailyCheckTaskSpec", e);
+            throw new IllegalStateException("Failed to serialize a DailyCheckTaskSpec", e);
         }
     }
 
-    static public List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {
+    public static List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {
         String botUserId = userHoyopassMessage.getBotUserId();
         return Arrays.stream(userHoyopassMessage.getLtuidLtokens())
                 .map(it-> new DailyCheckTaskSpec(botUserId, it.getLtuid(), it.getLtoken()))
                 .collect(Collectors.toList());
     }
 
-    static public List<DailyCheckTaskSpec> getList(UserHoyopass userHoyopass) {
+    public static List<DailyCheckTaskSpec> getList(UserHoyopass userHoyopass) {
         UserHoyopassMessage userHoyopassMessage = new UserHoyopassMessage(userHoyopass);
         return DailyCheckTaskSpec.getList(userHoyopassMessage);
     }

@@ -11,18 +11,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper<E> {
+public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonPayloadAwsEventWrapper.class);
 
     private final E event;
     private final ObjectMapper objectMapper;
 
-    public JsonPayloadAwsEventWrapper(E event) {
+    protected JsonPayloadAwsEventWrapper(E event) {
        this(event, new ObjectMapper());
     }
 
-    public JsonPayloadAwsEventWrapper(E event, ObjectMapper objectMapper) {
+    protected JsonPayloadAwsEventWrapper(E event, ObjectMapper objectMapper) {
         this.event = event;
         this.objectMapper = objectMapper;
     }
@@ -43,8 +43,7 @@ public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper<E
         try {
             return objectMapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
-            logger.warn(String.format("Failed to deserialize a message: %s", json));
-            e.printStackTrace();
+            logger.warn(String.format("Failed to deserialize a message: %s", json), e);
         }
         return null;
     }

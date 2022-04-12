@@ -8,10 +8,10 @@ import org.springframework.util.MultiValueMap;
 @Builder
 public final class DsHeaderGenerator {
 
-    private final static String HEADER_DS = "DS";
-    private final static String HEADER_X_RPC_LANGUAGE = "x-rpc-language";
-    private final static String HEADER_X_RPC_APP_VERSION = "x-rpc-app_version";
-    private final static String HEADER_X_RPC_CLIENT_TYPE = "x-rpc-client_type";
+    private static final String HEADER_DS = "DS";
+    private static final String HEADER_X_RPC_LANGUAGE = "x-rpc-language";
+    private static final String HEADER_X_RPC_APP_VERSION = "x-rpc-app_version";
+    private static final String HEADER_X_RPC_CLIENT_TYPE = "x-rpc-client_type";
 
     @Builder.Default
     private final DsGenerator dsGenerator = new DefaultDsGenerator();

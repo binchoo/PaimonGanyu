@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.HoyopassSearchPort;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 public class UserHoyopass {
 
-    private final int MAX_HOYOPASS_COUNT = 2;
+    private static final int MAX_HOYOPASS_COUNT = 2;
 
     /**
      * 카카오 챗봇이 식별한 유저 고유 아이디
@@ -83,12 +84,12 @@ public class UserHoyopass {
     /**
      * 지정한 통행증과 연결된 모든 {@link Uid} 리스트를 얻습니다.
      * @param i 번째 통행증을 지정
-     * @return {@link Uid} 리스트, 잘못된 i 지정일 시 null 반환.
+     * @return {@link Uid} 리스트, 잘못된 i 지정일 시 길이 0인 리스트
      */
     public List<Uid> listUids(int i) {
         if (0 <= i && i < this.hoyopasses.size())
             return this.hoyopasses.get(i).getUids();
-        return null;
+        return Collections.emptyList();
     }
 
     public Hoyopass deleteAt(int i) {

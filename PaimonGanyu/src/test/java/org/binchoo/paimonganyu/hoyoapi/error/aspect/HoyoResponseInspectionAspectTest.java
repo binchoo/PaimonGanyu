@@ -40,7 +40,7 @@ class HoyoResponseInspectionAspectTest {
     }
 
     @Test
-    public void inspectRetcode() throws ClassNotFoundException {
+    void inspectRetcode() throws ClassNotFoundException {
         RetcodeExceptionMappings mappings = RetcodeExceptionMappings.getInstance();
         for (Map.Entry<Integer, Class<RetcodeException>> entry : mappings.entrySet()) {
             testRetcodeHandling(entry.getKey(),entry.getValue());

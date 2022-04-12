@@ -2,6 +2,8 @@ package org.binchoo.paimonganyu.hoyoapi;
 
 public class HoyolabConstant {
 
+    private HoyolabConstant() {}
+
     public static final String PARAM_GAME_BIZ = "game_biz";
     public static final String PARAM_REGION = "region";
     public static final String PARAM_ROLE_ID = "role_id"; // equals to UID

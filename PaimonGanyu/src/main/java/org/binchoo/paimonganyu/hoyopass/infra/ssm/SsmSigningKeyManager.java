@@ -3,12 +3,10 @@ package org.binchoo.paimonganyu.hoyopass.infra.ssm;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest;
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.domain.driven.SigningKeyManagerPort;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -19,10 +17,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class SsmSigningKeyManager implements SigningKeyManagerPort {
 
@@ -42,12 +38,18 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
             keyFactory = KeyFactory.getInstance(ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             log.error(e.getLocalizedMessage(), e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         base64Decoder = Base64.getDecoder();
     }
 
-    @PostConstruct
+    public SsmSigningKeyManager(String publicKeyName, String privateKeyName, AWSSimpleSystemsManagement ssmClient) {
+        this.publicKeyName = publicKeyName;
+        this.privateKeyName = privateKeyName;
+        this.ssmClient = ssmClient;
+        init();
+    }
+
     private void init() {
         validateFields(base64Decoder, keyFactory, publicKeyName, privateKeyName);
         acquireKeys();
@@ -56,9 +58,9 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
 
     private void validateFields(Object... objects) {
         Set<Object> nullFields = Arrays.stream(objects).filter(Objects::isNull).collect(Collectors.toSet());
-        if (nullFields.size() > 0) {
+        if (!nullFields.isEmpty()) {
             String message = String.format("Field validation failed: %s", nullFields);
-            RuntimeException ex = new RuntimeException(message);
+            IllegalStateException ex = new IllegalStateException(message);
             log.error(message, ex);
             throw ex;
         }
@@ -90,7 +92,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
         try {
             return keyFactory.generatePublic(keySpec);
         } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
+            log.warn("Could not import a public key", e);
         }
         return null;
     }
@@ -103,7 +105,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
         try {
             return keyFactory.generatePrivate(keySpec);
         } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
+            log.warn("Could not import a private key", e);
         }
         return null;
     }

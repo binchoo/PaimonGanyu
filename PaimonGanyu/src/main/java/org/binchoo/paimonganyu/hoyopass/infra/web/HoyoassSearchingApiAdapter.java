@@ -41,8 +41,12 @@ public class HoyoassSearchingApiAdapter implements HoyopassSearchPort {
         HoyoResponse<UserGameRoles> apiResponse = accountApi.getUserGameRoles(ltuidLtoken);
         List<UserGameRole> userGameRoles = apiResponse.getData().getList();
 
-        List<Uid> uids = userGameRoles.stream()
-                .map(ugr-> Uid.builder()
+        return mapToUid(userGameRoles, ltuidLtoken);
+    }
+
+    private List<Uid> mapToUid(List<UserGameRole> userGameRoles, LtuidLtoken ltuidLtoken) {
+        return userGameRoles.stream()
+                .map(ugr -> Uid.builder()
                         .uidString(ugr.getGameUid())
                         .characterLevel(ugr.getLevel())
                         .characterName(ugr.getNickname())
@@ -50,8 +54,6 @@ public class HoyoassSearchingApiAdapter implements HoyopassSearchPort {
                         .isLumine(containsLumine(ltuidLtoken, ugr.getGameUid(), ugr.getRegion()))
                         .build())
                 .collect(Collectors.toList());
-
-        return uids;
     }
 
     private LtuidLtoken getLtuidLtoken(Hoyopass hoyopass) {

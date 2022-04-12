@@ -46,14 +46,14 @@ class HoyopassRegistry implements HoyopassRegistryPort {
 
     @Override
     public List<Uid> listUids(String botUserId, int order) {
-        return userHoyopassCrudPort.findByBotUserId(botUserId).map((userHoyopass)-> userHoyopass.listUids(order))
+        return userHoyopassCrudPort.findByBotUserId(botUserId).map(userHoyopass-> userHoyopass.listUids(order))
                 .orElse(new ArrayList<>());
     }
 
     @Override
     public void deleteHoyopass(String botUserId, int order) {
         userHoyopassCrudPort.findByBotUserId(botUserId)
-                .ifPresent((userHoyopass)-> {
+                .ifPresent(userHoyopass-> {
                     if (userHoyopass.deleteAt(order) != null) {
                         userHoyopassCrudPort.save(userHoyopass);
                     }

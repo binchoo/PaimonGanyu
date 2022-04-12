@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.error;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,9 +17,10 @@ public class RetcodeExceptionMappings {
         if (this.contains(retcode)) {
             Class<RetcodeException> clazz = this.getMapping(retcode);
             try {
-                ex = clazz.newInstance();
+                ex = clazz.getDeclaredConstructor((Class<?>) null).newInstance();
                 ex.setMessage(clazz.getName() + "(" + message + ")");
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException | NoSuchMethodException
+                    | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
