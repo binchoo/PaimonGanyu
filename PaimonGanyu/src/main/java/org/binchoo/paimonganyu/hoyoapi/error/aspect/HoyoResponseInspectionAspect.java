@@ -25,7 +25,7 @@ public class HoyoResponseInspectionAspect {
     }
 
     protected void inspectRetcode(HoyoResponse<?> response) {
-        RetcodeException.findMapping(response).ifPresent((ex)-> { throw ex; });
+        RetcodeException.findMapping(response).ifPresent(ex-> { throw ex; });
     }
 
     protected void inspectResponseData(HoyoResponse<?> response) {
