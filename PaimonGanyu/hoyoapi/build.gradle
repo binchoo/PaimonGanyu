@@ -2,9 +2,14 @@ plugins {
     id 'java-library'
 }
 
+ext {
+    jacksonVersion = '2.13.2'
+}
+
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.2'
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
     implementation 'commons-codec:commons-codec:1.15'
