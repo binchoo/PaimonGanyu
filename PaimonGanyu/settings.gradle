@@ -1,3 +1,3 @@
 rootProject.name = 'PaimonGanyu'
-include 'web', 'domain', 'infra', 'hoyoapi', 'awsutils', 'ikakao', 'lambda'
+include 'application', 'domain', 'hoyoapi', 'awsutils', 'ikakao'
 

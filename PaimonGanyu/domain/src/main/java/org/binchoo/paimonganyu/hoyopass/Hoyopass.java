@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,8 +34,8 @@ public class Hoyopass {
     @Builder.Default
     private LocalDateTime createAt = LocalDateTime.now();
 
-    public void fillUids(HoyopassSearchPort hoyopassSearchPort) {
-        List<Uid> findResult = hoyopassSearchPort.findUids(this);
+    public void fillUids(HoyopassSearchClientPort hoyopassSearchClientPort) {
+        List<Uid> findResult = hoyopassSearchClientPort.findUids(this);
         this.uids = findResult;
     }
 

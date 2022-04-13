@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 class HoyopassRegistry implements HoyopassRegistryPort {
 
-    private final HoyopassSearchPort hoyopassSearchPort;
+    private final HoyopassSearchClientPort hoyopassSearchClientPort;
     private final UserHoyopassCrudPort userHoyopassCrudPort;
 
     @Override
@@ -26,7 +26,7 @@ class HoyopassRegistry implements HoyopassRegistryPort {
         UserHoyopass userHoyopass = userHoyopassCrudPort.findByBotUserId(botUserId)
                 .orElse(new UserHoyopass(botUserId));
 
-        userHoyopass.addHoyopass(ltuid, ltoken, hoyopassSearchPort);
+        userHoyopass.addHoyopass(ltuid, ltoken, hoyopassSearchClientPort);
 
         return userHoyopassCrudPort.save(userHoyopass);
     }

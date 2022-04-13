@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchPort;
+import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,12 +68,12 @@ public class UserHoyopass {
         }
     }
 
-    public void addHoyopass(String ltuid, String ltoken, HoyopassSearchPort hoyopassSearchPort) {
+    public void addHoyopass(String ltuid, String ltoken, HoyopassSearchClientPort hoyopassSearchClientPort) {
         Hoyopass newHoyopass = Hoyopass.builder()
                 .ltuid(ltuid).ltoken(ltoken).build();
 
         this.addHoyopass(newHoyopass);
-        newHoyopass.fillUids(hoyopassSearchPort);
+        newHoyopass.fillUids(hoyopassSearchClientPort);
     }
 
     public List<Uid> listUids() {

@@ -1,12 +1,25 @@
 plugins {
     id 'java-library'
+    id "org.springframework.boot" version "${bootVersion}"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
 }
 
-ext {
-    jacksonVersion = '2.13.2'
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+test {
+    ignoreFailures = true
 }
 
 dependencies {
+    api 'org.springframework.boot:spring-boot-starter-webflux'
+    api 'org.springframework.boot:spring-boot-starter-aop'
+
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
@@ -14,6 +27,7 @@ dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
     implementation 'commons-codec:commons-codec:1.15'
 
-    api 'org.springframework.boot:spring-boot-starter-webflux'
-    api 'org.springframework.boot:spring-boot-starter-aop'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 }

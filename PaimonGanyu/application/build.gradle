@@ -1,0 +1,37 @@
+plugins {
+    id "org.springframework.boot" version "${bootVersion}"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Amazon DynamoDB
+    implementation ("com.amazonaws:aws-java-sdk-dynamodb:${awsSdkVersion}") {
+        because 'All workflows use the Amazon DynamoDB as their persistence system.'
+    }
+    implementation ('com.github.derjust:spring-data-dynamodb:5.1.0') {
+        because 'To automatically create some DynamoDB repositories.'
+    }
+
+    // Amazon SNS
+    implementation ("com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}") {
+        because 'Hoyopass fanout leverages an SNS topic.'
+    }
+
+    // AWS Systems Manager
+    implementation ("com.amazonaws:aws-java-sdk-ssm:${awsSdkVersion}") {
+        because 'Hoyopass could digest secured (RSA-signed) hoyopass strings.'
+    }
+
+    // AWS lambda
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+
+    runtimeOnly 'com.h2database:h2'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
