@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
+import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class DailyCheckService {
+public class DailyCheckServiceImpl implements DailyCheckService {
 
     private final DailyCheckClientPort dailyCheckClientPort;
     private final UserDailyCheckCrudPort repository;

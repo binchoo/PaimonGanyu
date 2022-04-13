@@ -8,6 +8,7 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.webclient.HoyolabDailyCheckWebClient;
 import org.binchoo.paimonganyu.lambda.config.HoyoApiConfig;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -27,6 +28,8 @@ public class DailyCheckClientAdapterIntegrationTest {
 
     private DailyCheckClientAdapter dailyCheckClientAdapter = new DailyCheckClientAdapter(dailyCheckApi);
 
+    // TODO: import test accounts from 'accounts.properties'
+    @Disabled("Until test accounts are prepared.")
     @Test
     void givenNoError_sendRequest_setResultCompleted() {
         LtuidLtoken duplicatedDailyCheckUser = givenValidDailyCheckUser();

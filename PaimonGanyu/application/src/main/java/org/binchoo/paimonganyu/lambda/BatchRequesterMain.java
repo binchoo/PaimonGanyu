@@ -5,7 +5,8 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
-import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
+import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
+import org.binchoo.paimonganyu.dailycheck.service.DailyCheckServiceImpl;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheckDynamoAdapter;
@@ -14,7 +15,6 @@ import org.binchoo.paimonganyu.infra.dailycheck.web.DailyCheckClientAdapter;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoAdapter;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoRepository;
 import org.binchoo.paimonganyu.lambda.config.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,19 +24,7 @@ import org.springframework.context.annotation.Import;
         DynamoDBClientConfig.class, UserHoyopassTableConfig.class, UserDailyCheckTableConfig.class
 })
 @Configuration
-public class BatchDailyCheckLambdaMain {
-
-    /**
-     * from {@link SqsClientConfig}
-     */
-    @Autowired
-    private AmazonSQS sqsClient;
-
-    /**
-     * from {@link DynamoDBClientConfig}
-     */
-    @Autowired
-    private AmazonDynamoDB dynamoDBClient;
+public class BatchRequesterMain {
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -44,31 +32,15 @@ public class BatchDailyCheckLambdaMain {
     }
 
     /**
-     * @param dailyCheckClientPort from this config.
-     * @param repository from this config.
-     * @return
-     */
-    @Bean
-    public DailyCheckService dailyCheckService(DailyCheckClientPort dailyCheckClientPort,
-                                               UserDailyCheckCrudPort repository) {
-        return new DailyCheckService(dailyCheckClientPort, repository);
-    }
-
-    /**
      * @param dailyCheckApi from {@link HoyoApiConfig}
-     */
-    @Bean
-    public DailyCheckClientPort dailyCheckClientPort(HoyolabDailyCheckApi dailyCheckApi) {
-        // from HoyoApiConfig
-        return new DailyCheckClientAdapter(dailyCheckApi);
-    }
-
-    /**
      * @param repository from {@link UserDailyCheckTableConfig}
      */
     @Bean
-    public UserDailyCheckCrudPort userDailyCheckCrudPort(UserDailyCheckDynamoRepository repository) {
-        return new UserDailyCheckDynamoAdapter(repository);
+    public DailyCheckService dailyCheckService(HoyolabDailyCheckApi dailyCheckApi,
+                                               UserDailyCheckDynamoRepository repository) {
+        return new DailyCheckServiceImpl(
+                new DailyCheckClientAdapter(dailyCheckApi),
+                new UserDailyCheckDynamoAdapter(repository));
     }
 
     /**

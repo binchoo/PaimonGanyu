@@ -4,8 +4,8 @@ import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
-import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
-import org.binchoo.paimonganyu.lambda.HitoriDailyCheckLambdaMain;
+import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
+import org.binchoo.paimonganyu.lambda.HitoriRequesterMain;
 import org.binchoo.paimonganyu.lambda.dto.UserHoyopassMessage;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
@@ -22,7 +22,7 @@ public class DailyCheckHitoriRequesterLambda {
     private DailyCheckService dailyCheckService;
 
     public DailyCheckHitoriRequesterLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(HitoriDailyCheckLambdaMain.class));
+        this.lookupDependencies(new AnnotationConfigApplicationContext(HitoriRequesterMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
@@ -30,7 +30,6 @@ public class DailyCheckHitoriRequesterLambda {
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.dailyCheckService = context.getBean(DailyCheckService.class);
         Objects.requireNonNull(dailyCheckService);
-        Objects.requireNonNull(dailyCheckService.getRepository());
     }
 
     public void handler(SNSEvent snsEvent) {

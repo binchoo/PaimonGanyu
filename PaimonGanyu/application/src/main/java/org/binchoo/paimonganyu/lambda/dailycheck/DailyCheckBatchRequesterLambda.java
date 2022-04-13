@@ -3,9 +3,9 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
+import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.lambda.BatchDailyCheckLambdaMain;
+import org.binchoo.paimonganyu.lambda.BatchRequesterMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -25,7 +25,7 @@ public class DailyCheckBatchRequesterLambda {
     private UserHoyopassCrudPort hoyopassCrudPort;
 
     public DailyCheckBatchRequesterLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(BatchDailyCheckLambdaMain.class));
+        this.lookupDependencies(new AnnotationConfigApplicationContext(BatchRequesterMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
@@ -34,7 +34,6 @@ public class DailyCheckBatchRequesterLambda {
         this.dailyCheckService = context.getBean(DailyCheckService.class);
         this.hoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
         Objects.requireNonNull(dailyCheckService);
-        Objects.requireNonNull(dailyCheckService.getRepository());
         Objects.requireNonNull(hoyopassCrudPort);
     }
 

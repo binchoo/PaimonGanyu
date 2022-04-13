@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.dailycheck;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
-import org.binchoo.paimonganyu.dailycheck.service.DailyCheckService;
+import org.binchoo.paimonganyu.dailycheck.service.DailyCheckServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,10 +21,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DailyCheckServiceTest {
+class DailyCheckServiceImplTest {
 
     @InjectMocks
-    DailyCheckService dailyCheckService;
+    DailyCheckServiceImpl dailyCheckServiceImpl;
 
     @Mock
     UserDailyCheckCrudPort userDailyCheckCrudPort;
@@ -45,7 +45,7 @@ class DailyCheckServiceTest {
         when(userDailyCheckCrudPort.save(any())).thenReturn(userDailyCheck);
         when(userDailyCheck.doRequest(dailyCheckClientPort)).thenReturn(updatedUserDailyCheck);
 
-        dailyCheckService.claimDailyCheckIn(random, random, random);
+        dailyCheckServiceImpl.claimDailyCheckIn(random, random, random);
         verify(userDailyCheckCrudPort).save(updatedUserDailyCheck);
     }
 
@@ -58,7 +58,7 @@ class DailyCheckServiceTest {
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(userDailyCheck));
 
-        boolean hasCheckedInToday = dailyCheckService.hasCheckedIn(random, random, someDay);
+        boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedIn(random, random, someDay);
         assertThat(hasCheckedInToday).isTrue();
     }
 
@@ -78,7 +78,7 @@ class DailyCheckServiceTest {
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(userDailyCheck));
 
-        boolean hasCheckedInToday = dailyCheckService.hasCheckedIn(random, random, someDay);
+        boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedIn(random, random, someDay);
         assertThat(hasCheckedInToday).isFalse();
     }
 
@@ -91,7 +91,7 @@ class DailyCheckServiceTest {
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(userDailyCheck));
 
-        boolean hasCheckedInToday = dailyCheckService.hasCheckedInToday(random, random);
+        boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedInToday(random, random);
         assertThat(hasCheckedInToday).isTrue();
     }
 
@@ -104,17 +104,17 @@ class DailyCheckServiceTest {
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(userDailyCheck));
 
-        boolean hasCheckedInToday = dailyCheckService.hasCheckedInToday(random, random);
+        boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedInToday(random, random);
         assertThat(hasCheckedInToday).isFalse();
     }
 
     @Test
     void getDailyCheckClientPort() {
-        assertThat(dailyCheckService.getDailyCheckClientPort()).isEqualTo(dailyCheckClientPort);
+        assertThat(dailyCheckServiceImpl.getDailyCheckClientPort()).isEqualTo(dailyCheckClientPort);
     }
 
     @Test
     void getRepository() {
-        assertThat(dailyCheckService.getRepository()).isEqualTo(userDailyCheckCrudPort);
+        assertThat(dailyCheckServiceImpl.getRepository()).isEqualTo(userDailyCheckCrudPort);
     }
 }
