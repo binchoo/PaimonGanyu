@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web:${bootVersion}"
+    api "org.springframework.boot:spring-boot-starter-web:${bootVersion}"
     //implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'
 }

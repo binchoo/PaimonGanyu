@@ -39,7 +39,7 @@ class UserDailyCheckDynamoAdapterTest {
         UserDailyCheck saved = userDailyCheckDynamoAdapter.save(originalEntity);
         assertThat(saved.getBotUserId()).isEqualTo(originalEntity.getBotUserId());
         assertThat(saved.getLtuid()).isEqualTo(originalEntity.getLtuid());
-        assertThat(saved.getLtoken()).isEqualTo(null);
+        assertThat(saved.getLtoken()).isNull();
         assertThat(saved.getStatus()).isEqualTo(originalEntity.getStatus());
         assertThat(saved.getTimestamp()).isEqualTo(originalEntity.getTimestamp());
     }
@@ -72,7 +72,7 @@ class UserDailyCheckDynamoAdapterTest {
         found.stream().forEach(it-> {
             assertThat(it.getBotUserId()).isEqualTo(originalEntity.getBotUserId());
             assertThat(it.getLtuid()).isEqualTo(originalEntity.getLtuid());
-            assertThat(it.getLtoken()).isEqualTo(null);
+            assertThat(it.getLtoken()).isNull();
             assertThat(it.getStatus()).isEqualTo(originalEntity.getStatus());
             assertThat(it.getTimestamp()).isEqualTo(originalEntity.getTimestamp());
         });

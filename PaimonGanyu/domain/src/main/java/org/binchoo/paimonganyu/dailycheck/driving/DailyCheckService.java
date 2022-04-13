@@ -1,9 +1,5 @@
 package org.binchoo.paimonganyu.dailycheck.driving;
 
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
-import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
-import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
-
 import java.time.LocalDate;
 
 /**

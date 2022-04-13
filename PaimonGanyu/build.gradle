@@ -15,6 +15,7 @@ allprojects {
         bootVersion = '2.4.2'
         awsSdkVersion = '1.11.914'
         jacksonVersion = '2.13.2'
+        lombokVersion = '1.18.22'
     }
 
     repositories {
@@ -24,10 +25,10 @@ allprojects {
     dependencies {
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
-        compileOnly 'org.projectlombok:lombok:1.18.22'
-        annotationProcessor 'org.projectlombok:lombok:1.18.22'
-        testCompileOnly 'org.projectlombok:lombok:1.18.22'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
         testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
         testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
@@ -55,7 +56,7 @@ project(':application').dependencies {
     implementation project(':hoyoapi')
     implementation project(':awsutils')
     implementation (project(':ikakao')) {
-        because 'To render Kakao chatbot views'
+        because 'to render KAKAO chatbot views'
     }
     implementation project(':domain')
 }

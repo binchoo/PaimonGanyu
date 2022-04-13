@@ -1,19 +1,16 @@
 package org.binchoo.paimonganyu.lambda;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
-import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.binchoo.paimonganyu.dailycheck.service.DailyCheckServiceImpl;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
-import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheckDynamoAdapter;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheckDynamoRepository;
 import org.binchoo.paimonganyu.infra.dailycheck.web.DailyCheckClientAdapter;
-import org.binchoo.paimonganyu.lambda.config.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.binchoo.paimonganyu.lambda.config.DynamoDBClientConfig;
+import org.binchoo.paimonganyu.lambda.config.HoyoApiConfig;
+import org.binchoo.paimonganyu.lambda.config.SqsClientConfig;
+import org.binchoo.paimonganyu.lambda.config.UserDailyCheckTableConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

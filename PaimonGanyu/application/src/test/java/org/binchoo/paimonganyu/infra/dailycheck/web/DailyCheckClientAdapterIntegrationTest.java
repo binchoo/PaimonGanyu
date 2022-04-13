@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
  * @since : 2022-04-13
  */
 @SpringJUnitConfig({HoyoApiConfig.class})
-public class DailyCheckClientAdapterIntegrationTest {
+class DailyCheckClientAdapterIntegrationTest {
 
     private HoyolabDailyCheckApi dailyCheckApi = new HoyolabDailyCheckWebClient();
 
