@@ -44,10 +44,7 @@ allprojects {
     }
 
     task copyBuiltZip(type: Copy) {
-        def pathOut = '../'
-        project.depth.times {
-            pathOut += pathOut
-        }
+        def pathOut = '../'.repeat(project.depth)
         from buildZip
         into("${pathOut}.aws-sam/build")
     }
