@@ -92,9 +92,9 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
     private void fetchKeyWithin(Parameter parameter, boolean isPublicKey) {
         byte[] base64Decoded = decodeBase64(parameter);
         if (isPublicKey)
-            this.publicKey = (PublicKey) extractPublicKey(base64Decoded);
+            this.publicKey = extractPublicKey(base64Decoded);
         else
-            this.privateKey = (PrivateKey) extractPrivateKey(base64Decoded);
+            this.privateKey = extractPrivateKey(base64Decoded);
     }
 
     private byte[] decodeBase64(Parameter parameter) {
@@ -107,7 +107,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
         }
     }
 
-    private Key extractPublicKey(byte[] x509Encoded) {
+    private PublicKey extractPublicKey(byte[] x509Encoded) {
         return generatePublicKey(new X509EncodedKeySpec(x509Encoded));
     }
 
@@ -120,7 +120,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
         return null;
     }
 
-    private Key extractPrivateKey(byte[] pkcs8Encoded) {
+    private PrivateKey extractPrivateKey(byte[] pkcs8Encoded) {
         return generatePrivateKey(new PKCS8EncodedKeySpec(pkcs8Encoded));
     }
 
