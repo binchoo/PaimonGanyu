@@ -20,9 +20,15 @@ public class DailyCheckServiceImpl implements DailyCheckService {
     private final UserDailyCheckCrudPort repository;
 
     public void claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
-        final UserDailyCheck userDailyCheck = repository.save(UserDailyCheck.getInitialized(botUserId, ltuid, ltoken));
+        final UserDailyCheck userDailyCheck = initiateUserDailyCheck(botUserId, ltuid, ltoken);
         final UserDailyCheck statusUpdated = userDailyCheck.doRequest(dailyCheckClientPort);
         saveFinal(statusUpdated);
+    }
+
+    private UserDailyCheck initiateUserDailyCheck(String botUserId, String ltuid, String ltoken) {
+        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(botUserId, ltuid, ltoken);
+        repository.save(userDailyCheck);
+        return userDailyCheck;
     }
 
     private void saveFinal(UserDailyCheck userDailyCheck) {

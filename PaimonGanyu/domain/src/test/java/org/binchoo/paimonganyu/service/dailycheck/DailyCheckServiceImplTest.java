@@ -2,10 +2,8 @@ package org.binchoo.paimonganyu.service.dailycheck;
 
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
-import org.binchoo.paimonganyu.service.dailycheck.DailyCheckServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,8 +16,6 @@ import java.util.Random;
 
 import static java.lang.Math.abs;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,30 +31,16 @@ class DailyCheckServiceImplTest {
     DailyCheckClientPort dailyCheckClientPort;
 
     @Mock
-    UserDailyCheck userDailyCheck;
-
-    @Test
-    void afterSendingRequest_claimDailyCheckIn_savesUpdatedUserDailyCheckToRepository() {
-        String random = RandomString.make();
-        UserDailyCheck updatedUserDailyCheck = UserDailyCheck.builder()
-                .botUserId(random).ltoken(random).ltuid(random)
-                .status(UserDailyCheckStatus.COMPLETED).build();
-
-        when(userDailyCheckCrudPort.save(any())).thenReturn(userDailyCheck);
-        when(userDailyCheck.doRequest(dailyCheckClientPort)).thenReturn(updatedUserDailyCheck);
-
-        dailyCheckServiceImpl.claimDailyCheckIn(random, random, random);
-        verify(userDailyCheckCrudPort).save(updatedUserDailyCheck);
-    }
+    UserDailyCheck mockUserDailyCheck;
 
     @Test
     void whenUserDailyCheckDone_hasCheckedIn_returnsTrue() {
         String random = RandomString.make();
         LocalDate someDay = getRandomDate();
 
-        when(userDailyCheck.isDoneOn(someDay)).thenReturn(true);
+        when(mockUserDailyCheck.isDoneOn(someDay)).thenReturn(true);
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
-                Collections.singletonList(userDailyCheck));
+                Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedIn(random, random, someDay);
         assertThat(hasCheckedInToday).isTrue();
@@ -76,9 +58,9 @@ class DailyCheckServiceImplTest {
         String random = RandomString.make();
         LocalDate someDay = getRandomDate();
 
-        when(userDailyCheck.isDoneOn(someDay)).thenReturn(false);
+        when(mockUserDailyCheck.isDoneOn(someDay)).thenReturn(false);
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
-                Collections.singletonList(userDailyCheck));
+                Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedIn(random, random, someDay);
         assertThat(hasCheckedInToday).isFalse();
@@ -89,9 +71,9 @@ class DailyCheckServiceImplTest {
         String random = RandomString.make();
         LocalDate today = LocalDate.now();
 
-        when(userDailyCheck.isDoneOn(today)).thenReturn(true);
+        when(mockUserDailyCheck.isDoneOn(today)).thenReturn(true);
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
-                Collections.singletonList(userDailyCheck));
+                Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedInToday(random, random);
         assertThat(hasCheckedInToday).isTrue();
@@ -102,9 +84,9 @@ class DailyCheckServiceImplTest {
         String random = RandomString.make();
         LocalDate today = LocalDate.now();
 
-        when(userDailyCheck.isDoneOn(today)).thenReturn(false);
+        when(mockUserDailyCheck.isDoneOn(today)).thenReturn(false);
         when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
-                Collections.singletonList(userDailyCheck));
+                Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckServiceImpl.hasCheckedInToday(random, random);
         assertThat(hasCheckedInToday).isFalse();

@@ -44,9 +44,12 @@ allprojects {
     }
 
     task copyBuiltZip(type: Copy) {
-        def pathOut = '../'.repeat(project.depth)
+        def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
         from buildZip
-        into("${pathOut}.aws-sam/build")
+        into(dest)
+        doLast {
+            println "$project.name:$name has moved artifacts into $dest"
+        }
     }
 
     test {
