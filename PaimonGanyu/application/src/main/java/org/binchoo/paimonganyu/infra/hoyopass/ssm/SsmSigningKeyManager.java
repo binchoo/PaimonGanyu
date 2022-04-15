@@ -79,8 +79,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
     private void acquireKeys() {
         List<Parameter> ssmParameters = this.acquireSsmParameters();
         for (Parameter parameter : ssmParameters) {
-            boolean isPublicKey = publicKeyName.equals(parameter.getName());
-            fetchKeyWithin(parameter, isPublicKey);
+            fetchKeyWithin(parameter);
         }
     }
 
@@ -89,8 +88,9 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
                 .withNames(publicKeyName, privateKeyName).withWithDecryption(true)).getParameters();
     }
 
-    private void fetchKeyWithin(Parameter parameter, boolean isPublicKey) {
+    private void fetchKeyWithin(Parameter parameter) {
         byte[] base64Decoded = decodeBase64(parameter);
+        boolean isPublicKey = publicKeyName.equals(parameter.getName());
         if (isPublicKey)
             this.publicKey = extractPublicKey(base64Decoded);
         else
