@@ -43,12 +43,24 @@ allprojects {
         }
     }
 
+    task copyBuiltZip(type: Copy) {
+        def pathOut = '../'
+        project.depth.times {
+            pathOut += pathOut
+        }
+        from buildZip
+        into("${pathOut}.aws-sam/build")
+    }
+
     test {
         useJUnitPlatform()
     }
 
     jacocoTestReport.dependsOn test
     test.finalizedBy jacocoTestReport
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 project(':application').dependencies {

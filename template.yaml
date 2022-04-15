@@ -7,9 +7,9 @@ Description: >
 
 Globals:
   Function:
-    CodeUri: ../../PaimonGanyu/build/distributions/PaimonGanyu.zip
+    CodeUri: application-0.5.zip # .aws-sam/build/application-${version}.zip
     Timeout: 60
-    Runtime: java8
+    Runtime: java11
     MemorySize: 512
     Architectures:
       - x86_64
@@ -54,7 +54,7 @@ Resources:
   UserHoyopassFanoutFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassFanoutLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.fanout.UserHoyopassFanoutLambda::handler
       Events:
         NewUserHoyopassEvent:
           Type: DynamoDB
@@ -155,7 +155,7 @@ Resources:
   DailyCheckHitoriRequesterFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckHitoriRequesterLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckHitoriRequesterLambda::handler
       Events:
         NewUserHoyopassEvent:
           Type: SNS
@@ -173,7 +173,7 @@ Resources:
   DailyCheckBatchRequesterFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckBatchRequesterLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckBatchRequesterLambda::handler
       Events:
         BatchDailyCheckEvent:
           Type: Schedule
@@ -197,7 +197,7 @@ Resources:
   DailyCheckWorkerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckWorkerLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckWorkerLambda::handler
       Events:
         DailyCheckRequestQueueEvent:
           Type: SQS

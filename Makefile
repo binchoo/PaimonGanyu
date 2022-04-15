@@ -3,5 +3,5 @@ main: deploy
 deploy: build
 	sam deploy --profile serverless
 build:
-	cd PaimonGanyu; ./gradlew -x test clean build; ./gradlew buildZip
 	sam build --profile serverless
+	cd PaimonGanyu; ./gradlew -x test clean :application:copyBuiltZip
