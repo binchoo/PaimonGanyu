@@ -5,10 +5,14 @@ import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -52,7 +56,9 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
      * @throws IllegalStateException SSM 파라미터에 저장된 값이 Base64 인코딩 형식이 아닐 때,
      * SSM 파라미터 값 분석 결과 RSA 공개키/사설키 형식이 아닐 때, publickKey나 privateKey 필드 작성에 실패했을 때.
      */
-    public SsmSigningKeyManager(String publicKeyName, String privateKeyName, AWSSimpleSystemsManagement ssmClient) {
+    public SsmSigningKeyManager(@Value("${amazon.ssm.hoyopass.publickeyname}") String publicKeyName,
+                                @Value("${amazon.ssm.hoyopass.privatekeyname}")String privateKeyName,
+                                AWSSimpleSystemsManagement ssmClient) {
         this.publicKeyName = publicKeyName;
         this.privateKeyName = privateKeyName;
         this.ssmClient = ssmClient;
