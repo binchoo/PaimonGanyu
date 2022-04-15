@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.infra.hoyopass.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
+import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
 import org.binchoo.paimonganyu.testamazonclients.TestAmazonClientsConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,14 @@ class SsmSigningKeyManagerIntegTest {
 
     @Lazy
     @Bean
-    SsmSigningKeyManager ssmSigningKeyManager(
+    SigningKeyManagerPort ssmSigningKeyManager(
             @Value("${amazon.ssm.hoyopass.publickeyname}") String publicKeyName,
-            @Value("${amazon.ssm.hoyopass.privatekeyname}") String privateKeyName,
-            AWSSimpleSystemsManagement ssmClient) {
+            @Value("${amazon.ssm.hoyopass.privatekeyname}") String privateKeyName, AWSSimpleSystemsManagement ssmClient) {
         return new SsmSigningKeyManager(publicKeyName, privateKeyName, ssmClient);
     }
 
     @Autowired
-    SsmSigningKeyManager ssmSigningKeyManager;
+    SigningKeyManagerPort ssmSigningKeyManager;
 
     @Test
     void getPublicKey() {
