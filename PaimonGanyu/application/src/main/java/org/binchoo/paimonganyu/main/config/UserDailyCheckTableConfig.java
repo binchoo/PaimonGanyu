@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.lambda.config;
+package org.binchoo.paimonganyu.main.config;
 
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.context.annotation.Configuration;

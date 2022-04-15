@@ -1,9 +1,11 @@
-package org.binchoo.paimonganyu.dailycheck;
+package org.binchoo.paimonganyu.service.dailycheck;
 
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
-import org.binchoo.paimonganyu.dailycheck.service.DailyCheckServiceImpl;
+import org.binchoo.paimonganyu.service.dailycheck.DailyCheckServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

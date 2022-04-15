@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyopass.service;
+package org.binchoo.paimonganyu.service.hoyopass;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

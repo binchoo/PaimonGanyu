@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.dailycheck.service;
+package org.binchoo.paimonganyu.service;
 
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.dailycheck.domain.UserDailyCheck;

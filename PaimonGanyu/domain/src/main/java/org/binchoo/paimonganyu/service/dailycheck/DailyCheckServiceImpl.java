@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.dailycheck.service;
+package org.binchoo.paimonganyu.service.dailycheck;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;

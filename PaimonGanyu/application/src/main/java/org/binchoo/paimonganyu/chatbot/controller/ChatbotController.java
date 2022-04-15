@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot;
+package org.binchoo.paimonganyu.chatbot.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;

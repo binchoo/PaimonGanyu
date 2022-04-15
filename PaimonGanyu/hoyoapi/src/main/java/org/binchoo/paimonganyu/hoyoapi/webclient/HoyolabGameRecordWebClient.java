@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.hoyoapi.webclient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
@@ -42,6 +43,9 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
         this.dsHeaderGenerator = dsHeaderGenerator;
     }
 
+    /**
+     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
+     */
     @Override
     public HoyoResponse<GenshinAvatars> getAllAvartar(LtuidLtoken ltuidLtoken, String uid, String server) {
         ResponseEntity<HoyoResponse<GenshinAvatars>> response = webClient.post()
@@ -105,6 +109,9 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
         List<Long> characterIds;
     }
 
+    /**
+     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
+     */
     @Override
     public HoyoResponse<DailyNote> getDailyNote(LtuidLtoken ltuidLtoken, String uid, String server) {
         ResponseEntity<HoyoResponse<DailyNote>> response = webClient.get()

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.lambda.config;
+package org.binchoo.paimonganyu.main.config;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;

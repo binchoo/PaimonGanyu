@@ -101,4 +101,13 @@ public class UserHoyopass {
     public int getCount() {
         return hoyopasses.size();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserHoyopass) {
+            UserHoyopass other = (UserHoyopass) obj;
+            return botUserId.equals(other.botUserId) && hoyopasses.equals(other.hoyopasses);
+        }
+        return false;
+    }
 }
