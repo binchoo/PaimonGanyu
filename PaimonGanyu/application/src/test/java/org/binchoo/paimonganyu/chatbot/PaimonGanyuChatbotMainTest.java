@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author : jbinchoo
  * @since : 2022-04-15
  */
-@SpringBootTest(classes = PaimonGanyuChatbot.class)
-class PaimonGanyuChatbotTest {
+@SpringBootTest(classes = PaimonGanyuChatbotMain.class)
+class PaimonGanyuChatbotMainTest {
 
 //    @Test
 //    void bootstrap() {

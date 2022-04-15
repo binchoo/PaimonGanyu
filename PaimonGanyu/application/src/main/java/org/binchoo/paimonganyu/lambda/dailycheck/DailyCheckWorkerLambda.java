@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
-import org.binchoo.paimonganyu.main.WorkerMain;
+import org.binchoo.paimonganyu.lambda.WorkerMain;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 

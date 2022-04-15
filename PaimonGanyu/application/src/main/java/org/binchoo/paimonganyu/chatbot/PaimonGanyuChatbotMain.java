@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "org.binchoo.paimonganyu.infra.hoyopass",
         "org.binchoo.paimonganyu.service.hoyopass",
 })
-public class PaimonGanyuChatbot {
+public class PaimonGanyuChatbotMain {
 
     @Bean
     public String publicKeyName(@Value("${hoyopass.security.publickeyname}") String publicKeyName) {
@@ -25,6 +25,6 @@ public class PaimonGanyuChatbot {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(PaimonGanyuChatbot.class);
+        SpringApplication.run(PaimonGanyuChatbotMain.class);
     }
 }

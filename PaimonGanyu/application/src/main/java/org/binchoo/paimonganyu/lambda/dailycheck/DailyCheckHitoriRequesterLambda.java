@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.binchoo.paimonganyu.lambda.dto.UserHoyopassMessage;
-import org.binchoo.paimonganyu.main.HitoriRequesterMain;
+import org.binchoo.paimonganyu.lambda.HitoriRequesterMain;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 

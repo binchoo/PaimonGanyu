@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.main.config;
+package org.binchoo.paimonganyu.lambda.config;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
