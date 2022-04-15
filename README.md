@@ -19,19 +19,22 @@
 ### buildZip and copyBuiltZip tasks
 `paimonganyu/PaimonGanyu/build.gradle`
 ```groovy
-    task buildZip(type: Zip) {
-        from compileJava
-        from processResources
-        into('lib') {
-            from configurations.runtimeClasspath
-        }
-    }
+task buildZip(type: Zip) {
+   from compileJava
+   from processResources
+   into('lib') {
+      from configurations.runtimeClasspath
+   }
+}
 
-    task copyBuiltZip(type: Copy) {
-        def pathOut = '../'.repeat(project.depth)
-        from buildZip
-        into("${pathOut}.aws-sam/build")
-    }
+task copyBuiltZip(type: Copy) {
+   def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
+   from buildZip
+   into(dest)
+   doLast {
+      println "$project.name:$name has moved artifacts into $dest"
+   }
+}
 ```
 
 #### buildZip
