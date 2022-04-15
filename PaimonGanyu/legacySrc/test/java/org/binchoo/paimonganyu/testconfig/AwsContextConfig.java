@@ -12,14 +12,4 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:application.properties")
 public class AwsContextConfig {
 
-    @Value("${amazon.aws.accesskey}")
-    private String accessKey;
-
-    @Value("${amazon.aws.secretkey}")
-    private String secretKey;
-
-    @Bean
-    public AWSCredentialsProvider awsCredentialsProvider() {
-        return new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey));
-    }
 }
