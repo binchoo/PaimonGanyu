@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.testamazonclients;
+package org.binchoo.paimonganyu.testconfig;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

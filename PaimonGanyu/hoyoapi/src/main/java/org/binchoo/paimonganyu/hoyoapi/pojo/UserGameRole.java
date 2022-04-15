@@ -1,13 +1,15 @@
 package org.binchoo.paimonganyu.hoyoapi.pojo;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @ToString
+@Setter
 @Getter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserGameRole {
 
     String gameUid;

@@ -9,7 +9,7 @@ public interface HoyopassSearchClientPort {
 
     /**
      * 주어진 {@link Hoyopass} 객체와 연관된 {@link Uid}를 색인하여 채워넣습니다.
-     * @param hoyopass
+     * @param hoyopass 통행증 객체
      * @return {@link Uid} 값이 채워진 {@link Hoyopass} 객체
      */
     List<Uid> findUids(Hoyopass hoyopass);

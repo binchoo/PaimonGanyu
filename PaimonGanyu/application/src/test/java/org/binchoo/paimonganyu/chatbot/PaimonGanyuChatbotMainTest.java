@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.chatbot;
 
-import org.binchoo.paimonganyu.testamazonclients.TestAmazonClientsConfig;
+import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

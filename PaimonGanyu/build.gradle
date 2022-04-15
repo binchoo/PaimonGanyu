@@ -13,7 +13,7 @@ allprojects {
     ext {
         bootVersion = '2.4.2'
         awsSdkVersion = '1.11.914'
-        jacksonVersion = '2.13.2'
+        jacksonVersion = '2.11.4'
         lombokVersion = '1.18.22'
     }
 

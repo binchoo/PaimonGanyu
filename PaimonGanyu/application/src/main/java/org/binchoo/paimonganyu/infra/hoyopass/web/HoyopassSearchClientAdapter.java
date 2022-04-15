@@ -10,12 +10,8 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +23,10 @@ public class HoyopassSearchClientAdapter implements HoyopassSearchClientPort {
     private final HoyolabAccountApi accountApi;
     private final HoyolabGameRecordApi gameRecordApi;
 
+    /**
+     * @throws org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError 유효하지 않은 통행증이거나
+     * HoYoLab에 닉네임을 등록하지 않은 통행증일 때
+     */
     @Override
     public List<Uid> findUids(Hoyopass hoyopass) {
         LtuidLtoken ltuidLtoken = getLtuidLtoken(hoyopass);

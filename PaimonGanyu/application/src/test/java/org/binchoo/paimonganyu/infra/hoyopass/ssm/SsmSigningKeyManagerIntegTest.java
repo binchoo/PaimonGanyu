@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.infra.hoyopass.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
-import org.binchoo.paimonganyu.testamazonclients.TestAmazonClientsConfig;
+import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

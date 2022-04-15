@@ -1,15 +1,17 @@
 package org.binchoo.paimonganyu.hoyoapi.pojo;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
 
 @ToString
+@Setter
 @Getter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class GenshinAvatar {
 
     private long id;
@@ -35,8 +37,9 @@ public class GenshinAvatar {
     }
 
     @ToString
+    @Setter
     @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Weapon {
 
         private long id;
@@ -52,8 +55,9 @@ public class GenshinAvatar {
     }
 
     @ToString
+    @Setter
     @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Reliquary {
 
         private long id;
@@ -75,7 +79,7 @@ public class GenshinAvatar {
 
             @ToString
             @Getter
-            @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+            @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
             public static class Affix {
 
                 private int activationNumber; // 성유물 세트 효과 발동 조건
@@ -85,8 +89,9 @@ public class GenshinAvatar {
     }
 
     @ToString
+    @Setter
     @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Constellation {
 
         private long id;
@@ -98,6 +103,7 @@ public class GenshinAvatar {
     }
 
     @ToString
+    @Setter
     @Getter
     public static class Costume {
 

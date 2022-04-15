@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.pojo;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,8 +12,9 @@ import lombok.ToString;
 import java.util.List;
 
 @ToString
+@Setter
 @Getter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class DailyNote {
 
     /**
@@ -88,7 +89,7 @@ public class DailyNote {
     @ToString
     @Setter
     @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Expedition {
 
         /**
