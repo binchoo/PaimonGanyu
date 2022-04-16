@@ -34,3 +34,25 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 }
+
+task stopRunningDynamoDBContainer(type: Exec) {
+    standardOutput = new ByteArrayOutputStream()
+    commandLine = ['bash', '-c',
+                   'docker ps -q | while read line; do if [[ $(docker port $line) == *"3306"* ]]; then docker stop $line; fi; done;']
+    doLast {
+        println "Container stopped: ${standardOutput.toString()}"
+    }
+}
+
+task startDynamoDBContainer(type: Exec) {
+    dependsOn stopRunningDynamoDBContainer
+    standardOutput = new ByteArrayOutputStream()
+    commandLine = ['docker', 'run', '-p', '3306:8000', '-d', 'amazon/dynamodb-local']
+    doLast {
+        println "Container started: ${standardOutput.toString()}"
+    }
+}
+
+test {
+    dependsOn startDynamoDBContainer
+}

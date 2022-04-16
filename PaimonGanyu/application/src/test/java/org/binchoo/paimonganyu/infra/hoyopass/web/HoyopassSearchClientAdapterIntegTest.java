@@ -3,18 +3,15 @@ package org.binchoo.paimonganyu.infra.hoyopass.web;
 import org.binchoo.paimonganyu.chatbot.config.HoyoApiConfig;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
-import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
+import org.binchoo.paimonganyu.testconfig.TestLtuidLtokenConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.List;
@@ -23,8 +20,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig(classes = {HoyoApiConfig.class, HoyopassSearchClientAdapterIntegTest.class})
-@TestPropertySource("classpath:accounts.properties")
+@SpringJUnitConfig(classes = {HoyoApiConfig.class, TestLtuidLtokenConfig.class})
 class HoyopassSearchClientAdapterIntegTest {
 
     @Autowired
@@ -33,13 +29,14 @@ class HoyopassSearchClientAdapterIntegTest {
     @Autowired
     HoyolabGameRecordApi gameRecordApi;
 
+    @Autowired
+    @Qualifier("valid0")
+    TestLtuidLtokenConfig.ValidLtuidLtoken valid0;
+
+    @Autowired
+    TestLtuidLtokenConfig.InvalidLtuidLtoken invalid0;
+
     HoyopassSearchClientAdapter hoyopassSearchClientAdapter;
-
-    @Autowired
-    ValidLtuidLtoken validLtuidLtoken;
-
-    @Autowired
-    InvalidLtuidLtoken invalidLtuidLtoken;
 
     @BeforeEach
     public void setup() {
@@ -51,11 +48,11 @@ class HoyopassSearchClientAdapterIntegTest {
     @Test
     void givenValidHoyopass_findUids_returnsMatchingUids() {
         Hoyopass validHoyopass = Hoyopass.builder()
-                .ltuid(validLtuidLtoken.getLtuid())
-                .ltoken(validLtuidLtoken.getLtoken())
+                .ltuid(valid0.getLtuid())
+                .ltoken(valid0.getLtoken())
                 .build();
 
-        List<UserGameRole> realUserGameRoles = accountApi.getUserGameRoles(validLtuidLtoken)
+        List<UserGameRole> realUserGameRoles = accountApi.getUserGameRoles(valid0)
                 .getData().getList();
 
         var uids = hoyopassSearchClientAdapter.findUids(validHoyopass);
@@ -78,36 +75,11 @@ class HoyopassSearchClientAdapterIntegTest {
     @Test
     void givenInvalidHoyopass_findUids_throwsError() {
         Hoyopass validHoyopass = Hoyopass.builder()
-                .ltuid(invalidLtuidLtoken.getLtuid())
-                .ltoken(invalidLtuidLtoken.getLtoken())
+                .ltuid(invalid0.getLtuid())
+                .ltoken(invalid0.getLtoken())
                 .build();
 
         assertThrows(IllegalArgumentException.class, ()->
                 hoyopassSearchClientAdapter.findUids(validHoyopass));
-    }
-
-    private static class ValidLtuidLtoken extends LtuidLtoken {
-
-        public ValidLtuidLtoken(String ltuid, String ltoken) {
-            super(ltuid, ltoken);
-        }
-    }
-
-    private static class InvalidLtuidLtoken extends LtuidLtoken {
-
-        public InvalidLtuidLtoken(String ltuid, String ltoken) {
-            super(ltuid, ltoken);
-        }
-    }
-
-    @Bean
-    public ValidLtuidLtoken validHoyopassData(@Value("${valid.ltuid}") String ltuid,
-                                              @Value("${valid.ltoken}") String ltoken){
-        return new ValidLtuidLtoken(ltuid, ltoken);
-    }
-
-    @Bean
-    public InvalidLtuidLtoken invalidLtuidLtoken(){
-        return new InvalidLtuidLtoken("foo", "bar");
     }
 }
