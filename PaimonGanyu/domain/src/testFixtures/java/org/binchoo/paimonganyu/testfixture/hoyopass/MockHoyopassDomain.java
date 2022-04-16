@@ -1,6 +1,5 @@
-package org.binchoo.paimonganyu.infra.hoyopass.testfixture;
+package org.binchoo.paimonganyu.testfixture.hoyopass;
 
-import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
@@ -13,12 +12,14 @@ import java.util.Random;
  * @author : jbinchoo
  * @since : 2022-04-15
  */
-public class MockDomain {
+public class MockHoyopassDomain {
 
-    private MockDomain() { }
+    private static final Random random = new Random();
+
+    private MockHoyopassDomain() { }
 
     public static UserHoyopass getMockUserHoyopass() {
-        String botUserId = RandomString.make();
+        String botUserId = generateRandom();
         return UserHoyopass.builder()
                 .botUserId(botUserId)
                 .hoyopasses(Arrays.asList(getMockHoyopass(), getMockHoyopass()))
@@ -26,8 +27,8 @@ public class MockDomain {
     }
 
     public static Hoyopass getMockHoyopass() {
-        String ltoken = RandomString.make();
-        String ltuid = RandomString.make();
+        String ltoken = generateRandom();
+        String ltuid = generateRandom();
         return Hoyopass.builder()
                 .ltoken(ltoken)
                 .ltuid(ltuid)
@@ -36,7 +37,7 @@ public class MockDomain {
     }
 
     public static Uid getMockUid() {
-        String characterName = "CharacterName_" + RandomString.make();
+        String characterName = "MockCharacterName-" + generateRandom();
         Random rand = new Random();
         boolean isLumie = rand.nextBoolean();
         int characterLevel = rand.nextInt();
@@ -47,5 +48,15 @@ public class MockDomain {
                 .characterLevel(characterLevel)
                 .region(Region.values()[regionIdx])
                 .build();
+    }
+
+    private static String generateRandom() {
+        int leftLimit = 97;
+        int rightLimit = 122;
+        int targetStringLength = 10;
+        return random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

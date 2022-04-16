@@ -82,7 +82,8 @@ class HoyopassSearchClientAdapterIntegTest {
                 .ltoken(invalidLtuidLtoken.getLtoken())
                 .build();
 
-        assertThrows(NotLoggedInError.class, ()-> hoyopassSearchClientAdapter.findUids(validHoyopass));
+        assertThrows(IllegalArgumentException.class, ()->
+                hoyopassSearchClientAdapter.findUids(validHoyopass));
     }
 
     private static class ValidLtuidLtoken extends LtuidLtoken {

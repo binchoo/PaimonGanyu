@@ -70,4 +70,5 @@ project(':application').dependencies {
         because 'to render KAKAO chatbot views'
     }
     implementation project(':domain')
+    testImplementation(testFixtures(project(':domain')))
 }

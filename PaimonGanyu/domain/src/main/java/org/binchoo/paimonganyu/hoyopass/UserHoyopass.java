@@ -37,11 +37,16 @@ public class UserHoyopass {
     }
 
     public UserHoyopass(String botUserId, List<Hoyopass> hoyopasses) {
-        this.botUserId = botUserId;
-        this.hoyopasses = hoyopasses;
+        this(botUserId);
+        this.hoyopasses.addAll(hoyopasses);
     }
 
-    public void addHoyopass(Hoyopass hoyopass) {
+    /**
+     * @throws IllegalStateException 최대 소지 개수 이상의 통행증을 이 유저에게 등록하려 할 경우,
+     * 유저에게 중복된 통행증을 등록하려 할 경우
+     * @param hoyopass 통행증 객체
+     */
+    public void addVerifiedHoyopass(Hoyopass hoyopass) {
         this.checkHoyopassAppendable(hoyopass);
         hoyopasses.add(hoyopass);
     }
@@ -68,11 +73,19 @@ public class UserHoyopass {
         }
     }
 
-    public void addHoyopass(String ltuid, String ltoken, HoyopassSearchClientPort hoyopassSearchClientPort) {
+    /**
+     * @throws IllegalStateException 최대 소지 개수 이상의 통행증을 이 유저에게 등록하려 할 경우,
+     * 유저에게 중복된 통행증을 등록하려 할 경우
+     * @throws IllegalArgumentException 입력한 값이 실제 미호요와 상호작용 할 수 있는 통행증이 아닐 경우
+     * @param ltuid 통행증 ID
+     * @param ltoken 통행증 크레덴셜 토큰
+     * @param hoyopassSearchClientPort 미호요 통행증 실제 조회를 위한 검색 서비스 객체
+     */
+    public void addUnverifiedHoyopass(String ltuid, String ltoken, HoyopassSearchClientPort hoyopassSearchClientPort) {
         Hoyopass newHoyopass = Hoyopass.builder()
                 .ltuid(ltuid).ltoken(ltoken).build();
 
-        this.addHoyopass(newHoyopass);
+        this.addVerifiedHoyopass(newHoyopass);
         newHoyopass.fillUids(hoyopassSearchClientPort);
     }
 
@@ -92,10 +105,11 @@ public class UserHoyopass {
         return Collections.emptyList();
     }
 
+    /**
+     * @throws IndexOutOfBoundsException – i < 0 || i >= getCount() 일 때
+     */
     public Hoyopass deleteAt(int i) {
-        if (0 < this.getCount())
-            return hoyopasses.remove(i);
-        return null;
+        return hoyopasses.remove(i);
     }
 
     public int getCount() {

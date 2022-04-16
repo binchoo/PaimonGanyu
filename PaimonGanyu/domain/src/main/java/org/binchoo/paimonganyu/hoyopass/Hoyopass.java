@@ -34,6 +34,10 @@ public class Hoyopass {
     @Builder.Default
     private LocalDateTime createAt = LocalDateTime.now();
 
+    /**
+     * @param hoyopassSearchClientPort UID 색인 서비스 객체
+     * @throws IllegalArgumentException 이 통행증으로 UID를 색인하는 데 실패했을 경우
+     */
     public void fillUids(HoyopassSearchClientPort hoyopassSearchClientPort) {
         List<Uid> findResult = hoyopassSearchClientPort.findUids(this);
         this.uids = findResult;

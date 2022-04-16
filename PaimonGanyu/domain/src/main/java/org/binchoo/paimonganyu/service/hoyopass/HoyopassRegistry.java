@@ -26,7 +26,7 @@ public class HoyopassRegistry implements HoyopassRegistryPort {
         UserHoyopass userHoyopass = userHoyopassCrudPort.findByBotUserId(botUserId)
                 .orElse(new UserHoyopass(botUserId));
 
-        userHoyopass.addHoyopass(ltuid, ltoken, hoyopassSearchClientPort);
+        userHoyopass.addUnverifiedHoyopass(ltuid, ltoken, hoyopassSearchClientPort);
 
         return userHoyopassCrudPort.save(userHoyopass);
     }
