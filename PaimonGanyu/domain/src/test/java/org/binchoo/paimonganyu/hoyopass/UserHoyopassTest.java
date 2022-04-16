@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.binchoo.paimonganyu.testfixture.hoyopass.MockHoyopassDomain.*;
+import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.*;
 
 /**
  * @author : jbinchoo

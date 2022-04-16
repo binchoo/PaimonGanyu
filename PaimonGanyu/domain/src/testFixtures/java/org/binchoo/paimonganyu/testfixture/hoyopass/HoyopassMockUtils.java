@@ -12,11 +12,11 @@ import java.util.Random;
  * @author : jbinchoo
  * @since : 2022-04-15
  */
-public class MockHoyopassDomain {
+public class HoyopassMockUtils {
 
     private static final Random random = new Random();
 
-    private MockHoyopassDomain() { }
+    private HoyopassMockUtils() { }
 
     public static UserHoyopass getMockUserHoyopass() {
         String botUserId = generateRandom();
