@@ -47,3 +47,24 @@ See also, [Deploy Java Lambda functions with .zip or JAR file archives (AWS Docs
 
 `CodeUri` property of lambdas in `template.yaml` means the place where the relating fat-zip or fat-jar is located. That path is relative to `.aws-sam/build` when not pointing to the root project folder.
 Task `copyBuiltZip` moves the artifact which `buildZip` generated into the `.aws-sam/build/` directory. This is to shorten the path string for the `CodeUri`.
+
+### Running local dynamoDB container for system test
+Some functionalities need to be verified with real-running infrastructures. eg. a service layer depending on a DynamoDB table.
+
+A docker container can be created from `amazon/dynamodb-local` image, 
+and system test classses can use its endpoint url (`http://localhost:3306`) to interact with dynamodb tables.
+
+Running the container and including/excluding test classes for system test runs
+are managed by the build script of `:application`.
+
+To start a local system test, provide an argument named `-PlocalTest` and set this to be true.
+This will run a dynamodb container before the test runs.
+```bash
+./gradlew -PlocalTest=true :application:test
+---
+> Task :application:stopRunningDynamoDBContainer
+Container stopped: c02efd80497c
+
+> Task :application:startDynamoDBContainer
+Container started: fdd3f9b691ef9f026935ef2429d7d067c037b80fe4559225f58fbe12ae6b0394
+```
