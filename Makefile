@@ -1,5 +1,5 @@
 main: deploy
-	cd PaimonGanyu; ./gradlew test
+	cd PaimonGanyu; ./gradlew -PlocalTest=true :application:test
 deploy: build
 	sam deploy --profile serverless
 build:

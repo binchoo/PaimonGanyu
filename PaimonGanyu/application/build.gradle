@@ -53,6 +53,16 @@ task startDynamoDBContainer(type: Exec) {
     }
 }
 
+/**
+ * @parameter -PlocalTest = true | false
+ */
 test {
-    dependsOn startDynamoDBContainer
+    def isLocalTest = Boolean.parseBoolean(project.findProperty("localTest"))
+    if (isLocalTest)
+        dependsOn startDynamoDBContainer
+    else {
+        filter {
+            excludeTestsMatching("org.binchoo.paimonganyu.infra.hoyopass.SecuredHoyopassRegistryLocalSystemTest")
+        }
+    }
 }
