@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
+public class CodeRedeemBloomFilterService implements CodeRedeemHistoryService {
 
     private static final int DEFAULT_BLOOMFILTER_SIZE = 500;
 
@@ -34,11 +34,11 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
     private BloomFilter<UserCodeRedeemComposite> bloomFilter;
     private List<UserCodeRedeem> snapshot;
 
-    public CodeRedeemSnapshotBloomFilter(UserCodeRedeemCrudPort repository) {
+    public CodeRedeemBloomFilterService(UserCodeRedeemCrudPort repository) {
         this(DEFAULT_BLOOMFILTER_SIZE, repository);
     }
 
-    public CodeRedeemSnapshotBloomFilter(int bloomFilterSize, UserCodeRedeemCrudPort repository) {
+    public CodeRedeemBloomFilterService(int bloomFilterSize, UserCodeRedeemCrudPort repository) {
         this.bloomFilterSize = bloomFilterSize;
         this.repository = repository;
         this.takeSnapshot();
@@ -58,10 +58,14 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
     @Override
     public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
         UserCodeRedeem userCodeRedeem = new UserCodeRedeem(botUserId, ltuid, redeemCode);
+        return hasTrulyRedeemed(userCodeRedeem);
+    }
+
+    private boolean hasTrulyRedeemed(UserCodeRedeem userCodeRedeem) {
         UserCodeRedeemComposite composite = new UserCodeRedeemComposite(userCodeRedeem);
-        if (bloomFilter.assumeExists(composite)) {
-            // 아이템 삽입이 보장되지 않으므로 실제로 스냅샷을 조회해보아야 한다.
-            return snapshot.contains(userCodeRedeem);
+        if (bloomFilter.contains(composite)) {
+            // 아이템 삽입이 보장되지 않으므로 실제로 조회해보아야 한다.
+            return repository.existsRedeemHistory(userCodeRedeem);
         } else {
             // 아이템 미삽입이 보장되므로 바로 반환한다.
             return false;
@@ -73,7 +77,7 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
         return !this.hasRedeemed(botUserId, ltuid, redeemCode);
     }
 
-    private final class UserCodeRedeemComposite implements MultiHashable {
+    private static final class UserCodeRedeemComposite implements MultiHashable {
 
         private final StringBuilder stringBuilder = new StringBuilder();
         private int[] hashes = null;
@@ -102,5 +106,9 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
             assert hashes != null;
             return hashes;
         }
+    }
+
+    public int getBloomFilterSize() {
+        return this.bloomFilterSize;
     }
 }

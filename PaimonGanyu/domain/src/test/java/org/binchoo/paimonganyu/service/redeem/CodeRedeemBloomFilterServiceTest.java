@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-class CodeRedeemSnapshotBloomFilterTest {
+class CodeRedeemBloomFilterServiceTest {
 
     @Test
     void insertAndExists() {

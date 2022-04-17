@@ -14,7 +14,7 @@ public class BloomFilter<T extends MultiHashable> {
     }
 
     public void insert(T item) {
-        if (!assumeExists(item)) {
+        if (!contains(item)) {
             for (int h : item.getHashes()) {
                 int i = h % filterSize;
                 bloomFilter[Math.abs(i)] = true;
@@ -22,7 +22,7 @@ public class BloomFilter<T extends MultiHashable> {
         }
     }
 
-    public boolean assumeExists(T item) {
+    public boolean contains(T item) {
         for (int h : item.getHashes()) {
             int i = h % filterSize;
             if (!bloomFilter[Math.abs(i)])
