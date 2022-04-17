@@ -7,11 +7,12 @@ import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.CodeRedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.CodeRedeemEstimation;
-import org.binchoo.paimonganyu.redeem.driving.CodeRedeemService;
+import org.binchoo.paimonganyu.redeem.driving.CodeRedeemHistoryService;
 import org.binchoo.paimonganyu.redeem.options.EstimationOption;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author : jbinchoo
@@ -21,30 +22,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CodeRedeemEstimationImpl implements CodeRedeemEstimation {
 
-    private final CodeRedeemService codeRedeemService;
+    private final CodeRedeemHistoryService codeRedeemHistoryService;
 
     @Override
     public List<CodeRedeemTask> generate(EstimationOption estimationOption) {
         List<UserHoyopass> users = estimationOption.getUsers();
         List<RedeemCode> codes = estimationOption.getCodes();
-        return this.multiply(users, codes);
+        return this.multiply(users, codes).stream()
+                .filter(this::deduplication)
+                .collect(Collectors.toList());
     }
 
     private List<CodeRedeemTask> multiply(List<UserHoyopass> users,
                                           List<RedeemCode> codes) {
         List<CodeRedeemTask> tasks = new ArrayList<>();
-        for (UserHoyopass u : users) {
-            String botUserId = u.getBotUserId();
-            for (Hoyopass h : u.getHoyopasses()) {
-                String ltuid = h.getLtuid();
-                String ltoken = h.getLtoken();
+        for (UserHoyopass user : users) {
+            String userId = user.getBotUserId();
+            for (Hoyopass hoyopass : user.getHoyopasses()) {
+                String ltuid = hoyopass.getLtuid();
+                String ltoken = hoyopass.getLtoken();
                 for (RedeemCode code : codes) {
-                    if (codeRedeemService.hasNotRedeemed(botUserId, ltuid, code)) {
-                        tasks.add(new CodeRedeemTask(botUserId, ltuid, ltoken, code));
-                    }
+                    tasks.add(new CodeRedeemTask(userId, ltuid, ltoken, code));
                 }
             }
         }
         return tasks;
+    }
+
+    private boolean deduplication(CodeRedeemTask codeRedeemTask) {
+        return codeRedeemHistoryService
+                .hasNotRedeemed(codeRedeemTask.getBotUserId(),
+                        codeRedeemTask.getLtuid(), codeRedeemTask.getRedeemCode());
     }
 }

@@ -5,7 +5,7 @@ import org.binchoo.paimonganyu.redeem.UserCodeRedeem;
 import java.util.List;
 
 /**
- * 코드 리딤 이력에 접근하는 포트입니다.
+ * 유저의 코드 리딤 이력 저장소에 접근하는 포트입니다.
  * @author : jbinchoo
  * @since : 2022/04/17
  */

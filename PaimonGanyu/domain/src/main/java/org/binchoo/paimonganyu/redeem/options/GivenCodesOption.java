@@ -11,7 +11,7 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public class GivenCodesOption implements EstimationOption{
+public class GivenCodesOption implements EstimationOption {
 
     private final UserHoyopassCrudPort userHoyopassCrudPort;
     private final List<RedeemCode> redeemCodes;
