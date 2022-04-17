@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.lambda.dto;
+package org.binchoo.paimonganyu.lambda.dailycheck.dto;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
-import org.binchoo.paimonganyu.lambda.dto.UserHoyopassMessage;
+import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 
 /**
  * Fanout lambda should start fast, so do not use spring context.

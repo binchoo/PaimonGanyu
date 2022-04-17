@@ -5,8 +5,8 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
-import org.binchoo.paimonganyu.lambda.dto.UserHoyopassMessage;
-import org.binchoo.paimonganyu.lambda.HitoriRequesterMain;
+import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
+import org.binchoo.paimonganyu.lambda.DailyCheckHitoriRequesterMain;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -22,7 +22,7 @@ public class DailyCheckHitoriRequesterLambda {
     private DailyCheckService dailyCheckService;
 
     public DailyCheckHitoriRequesterLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(HitoriRequesterMain.class));
+        this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckHitoriRequesterMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {

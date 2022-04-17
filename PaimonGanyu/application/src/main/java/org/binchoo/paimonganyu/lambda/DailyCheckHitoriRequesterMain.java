@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
         DynamoDBClientConfig.class, UserDailyCheckTableConfig.class
 })
 @Configuration
-public class HitoriRequesterMain {
+public class DailyCheckHitoriRequesterMain {
 
     @Bean
     public ObjectMapper objectMapper() {

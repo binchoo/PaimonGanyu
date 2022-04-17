@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.awsutils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +10,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @param <E> One of AWS lambda's event types
+ */
 @Slf4j
 public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper {
 

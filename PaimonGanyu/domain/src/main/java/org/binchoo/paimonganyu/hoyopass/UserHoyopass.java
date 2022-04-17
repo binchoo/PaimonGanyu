@@ -82,16 +82,16 @@ public class UserHoyopass {
      * @param hoyopassSearchClientPort 미호요 통행증 실제 조회를 위한 검색 서비스 객체
      */
     public void addUnverifiedHoyopass(String ltuid, String ltoken, HoyopassSearchClientPort hoyopassSearchClientPort) {
-        Hoyopass newHoyopass = Hoyopass.builder()
-                .ltuid(ltuid).ltoken(ltoken).build();
-
+        Hoyopass newHoyopass = Hoyopass.builder().ltuid(ltuid).ltoken(ltoken).build();
         this.addVerifiedHoyopass(newHoyopass);
         newHoyopass.fillUids(hoyopassSearchClientPort);
     }
 
     public List<Uid> listUids() {
-        return this.hoyopasses.stream().map(Hoyopass::getUids)
-                .flatMap(List::stream).collect(Collectors.toList());
+        return this.hoyopasses.stream()
+                .map(Hoyopass::getUids)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
     /**

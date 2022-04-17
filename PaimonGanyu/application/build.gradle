@@ -54,7 +54,7 @@ task startDynamoDBContainer(type: Exec) {
 }
 
 /**
- * @parameter -PlocalTest = true | false
+ * @param -PlocalTest=true|false
  */
 test {
     def isLocalTest = Boolean.parseBoolean(project.findProperty("localTest"))

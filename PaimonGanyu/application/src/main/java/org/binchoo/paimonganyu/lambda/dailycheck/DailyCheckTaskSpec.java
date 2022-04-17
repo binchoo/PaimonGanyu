@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.lambda.dto.UserHoyopassMessage;
+import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 
 import java.util.Arrays;
 import java.util.List;
