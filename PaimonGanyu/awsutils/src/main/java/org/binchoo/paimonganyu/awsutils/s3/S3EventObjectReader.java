@@ -12,20 +12,22 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
+ * Reads all s3 objects that S3Event refers, and convert their contents to java POJOs.
+ * It assumes that those s3 objects have json formatted contents.
  * @author : jbinchoo
  * @since : 2022/04/17
  */
 @Slf4j
-public class S3EventJsonPayloadWrapper extends JsonPayloadAwsEventWrapper<S3Event> {
+public class S3EventObjectReader extends JsonPayloadAwsEventWrapper<S3Event> {
 
     private final AmazonS3 s3Client;
 
-    public S3EventJsonPayloadWrapper(S3Event event, AmazonS3 s3Client) {
+    public S3EventObjectReader(S3Event event, AmazonS3 s3Client) {
         super(event);
         this.s3Client = s3Client;
     }
 
-    public S3EventJsonPayloadWrapper(S3Event event, AmazonS3 s3Client, ObjectMapper objectMapper) {
+    public S3EventObjectReader(S3Event event, AmazonS3 s3Client, ObjectMapper objectMapper) {
         super(event, objectMapper);
         this.s3Client = s3Client;
     }
@@ -46,7 +48,7 @@ public class S3EventJsonPayloadWrapper extends JsonPayloadAwsEventWrapper<S3Even
         try (inputStream) {
             return new String(inputStream.readAllBytes());
         } catch (IOException e) {
-            log.error("Could not read s3 object {}¥¥{}", bucketName, objectKey);
+            log.error("Could not read s3 object {}/{}", bucketName, objectKey);
             log.error("With exception", e);
         }
         return null;

@@ -9,16 +9,15 @@ import org.binchoo.paimonganyu.redeem.driven.UserCodeRedeemCrudPort;
 import org.binchoo.paimonganyu.redeem.driving.CodeRedeemHistoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * <p> 블룸필터를 사용하는 {@link CodeRedeemHistoryService} 구현체.
- * <p> 코드 리딤 이력의 존재 여부를 확인할 때 DB에만 의존할 경우, 최대 (유저 수)x(코드 수) 만큼의 쿼리가 발생하므로 좋지 않습니다.
- * <p> 이 구현체는 DB 접근을 1회의 스냅샷을 얻는 때로 한정하고 이후는 블룸필터와 스냅샷만을 비교합니다.
- * <p> 스냅샷을 쓰는 결정은 유효합니다. FalseNegative(했는데 안했다고 판단)는 코드 리딤 요청을 누락시키지 않기 때문입니다.
- * <p> 블룸필터를 쓰는 결정은 유효합니다. FalsePositive(안했는데 했다고 판단)인 경우에만 스냅샷을 확인하면 되는데
- * '했다고 판단'할 확률이 상대적으로 낮기 때문입니다. 자세한 내용은 블룸필터를 참조하십시오.
+ * <p> 이 구현체는 각 리딤코드 별로 {@link BloomFilter}를 지연 생성하므로 쿼리 수를 줄입니다. 싱글턴으로 사용되도록 의도되었습니다.
+ * <p> 스냅샷을 쓰는 결정은 유효합니다. {@code FalseNegative}는 코드 리딤 요청을 누락시키지 않기 때문입니다.
+ * <p> 블룸필터를 쓰는 결정은 유효합니다. {@code FalsePositive}인 경우에만 DB 쿼리를 하면 되는데
+ * '했다고 판단'할 확률이 상대적으로 낮기 때문입니다.
+ * <p> 블룸필터는 고정된 크기로 기능을 달성합니다. 자세한 내용은 블룸필터를 참조하십시오.
  * @author : jbinchoo
  * @since : 2022/04/17
  */
@@ -26,46 +25,45 @@ import java.util.List;
 @Service
 public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
 
-    private static final int DEFAULT_BLOOMFILTER_SIZE = 500;
+    private static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
-    private final UserCodeRedeemCrudPort repository;
     private final int bloomFilterSize;
+    private final UserCodeRedeemCrudPort userCodeRedeemCrudPort;
+    private final Map<RedeemCode, BloomFilter<UserCodeRedeemComposite>> bloomFilters;
 
-    private BloomFilter<UserCodeRedeemComposite> bloomFilter;
-    private List<UserCodeRedeem> snapshot;
-
-    public CodeRedeemSnapshotBloomFilter(UserCodeRedeemCrudPort repository) {
-        this(DEFAULT_BLOOMFILTER_SIZE, repository);
+    public CodeRedeemSnapshotBloomFilter(UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
+        this(DEFAULT_BLOOMFILTER_SIZE, userCodeRedeemCrudPort);
     }
 
-    public CodeRedeemSnapshotBloomFilter(int bloomFilterSize, UserCodeRedeemCrudPort repository) {
+    public CodeRedeemSnapshotBloomFilter(int bloomFilterSize, UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
         this.bloomFilterSize = bloomFilterSize;
-        this.repository = repository;
-        this.takeSnapshot();
-        this.initBloomFilter();
-    }
-
-    private void takeSnapshot() {
-        this.snapshot = Collections.unmodifiableList(repository.findAll());
-    }
-
-    private void initBloomFilter() {
-        bloomFilter = new BloomFilter<>(bloomFilterSize);
-        snapshot.stream().map(UserCodeRedeemComposite::new)
-                .forEach(composite-> bloomFilter.insert(composite));
+        this.bloomFilters = new HashMap<>();
+        this.userCodeRedeemCrudPort = userCodeRedeemCrudPort;
     }
 
     @Override
     public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        UserCodeRedeem userCodeRedeem = new UserCodeRedeem(botUserId, ltuid, redeemCode);
-        UserCodeRedeemComposite composite = new UserCodeRedeemComposite(userCodeRedeem);
-        if (bloomFilter.assumeExists(composite)) {
+        var userCodeRedeem = new UserCodeRedeem(botUserId, ltuid, redeemCode);
+        var composite = new UserCodeRedeemComposite(userCodeRedeem);
+        if (getOrCreateBloomFilter(redeemCode).assumeExists(composite)) {
+            return userCodeRedeemCrudPort.existMatches(userCodeRedeem);
             // 아이템 삽입이 보장되지 않으므로 실제로 스냅샷을 조회해보아야 한다.
-            return snapshot.contains(userCodeRedeem);
         } else {
-            // 아이템 미삽입이 보장되므로 바로 반환한다.
             return false;
+            // 아이템 미삽입이 보장되므로 바로 반환한다.
         }
+    }
+
+    private BloomFilter<UserCodeRedeemComposite> getOrCreateBloomFilter(RedeemCode key) {
+        return bloomFilters.computeIfAbsent(key, this::createBloomFilter);
+    }
+
+    private BloomFilter<UserCodeRedeemComposite> createBloomFilter(RedeemCode redeemCode) {
+        var bloomFilter =  new BloomFilter<UserCodeRedeemComposite>(bloomFilterSize);
+        userCodeRedeemCrudPort.findByRedeemCode(redeemCode).stream()
+                .map(UserCodeRedeemComposite::new)
+                .forEach(bloomFilter::insert);
+        return bloomFilter;
     }
 
     @Override
@@ -73,34 +71,32 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
         return !this.hasRedeemed(botUserId, ltuid, redeemCode);
     }
 
-    private final class UserCodeRedeemComposite implements MultiHashable {
+    /**
+     * {@link UserCodeRedeem}을 멀티 해싱하기 위한 클래스.
+     * StringBuilder를 공유하므로 스레드 세이프하지 않음.
+     */
+    private static final class UserCodeRedeemComposite implements MultiHashable {
 
-        private final StringBuilder stringBuilder = new StringBuilder();
-        private int[] hashes = null;
+        private static final StringBuilder stringBuilder = new StringBuilder();
+
+        private final String botUserId;
+        private final String ltuid;
+        private final String code;
 
         public UserCodeRedeemComposite(UserCodeRedeem userCodeRedeem) {
-            calcHashes(userCodeRedeem);
-        }
-
-        private void calcHashes(UserCodeRedeem userCodeRedeem) {
-            String botUserId = userCodeRedeem.getBotUserId();
-            String ltuid = userCodeRedeem.getLtuid();
-            String redeemCode = userCodeRedeem.getRedeemCode().getCode();
-            int h0 = userCodeRedeem.hashCode();
-            String s1 = stringBuilder.append(botUserId).append(ltuid).append(redeemCode).toString();
-            String s2 = stringBuilder.reverse().toString();
-            String s3 = stringBuilder.append(h0).toString();
-            this.setHashes(h0, s1, s2, s3);
-        }
-
-        private void setHashes(int h0, String s1, String s2, String s3) {
-            this.hashes =  new int[] {h0, h0 * s1.hashCode(), s2.hashCode(), h0 - s3.hashCode()};
+            this.botUserId = userCodeRedeem.getBotUserId();
+            this.ltuid = userCodeRedeem.getLtuid();
+            this.code = userCodeRedeem.getRedeemCode().getCode();
         }
 
         @Override
         public int[] getHashes() {
-            assert hashes != null;
-            return hashes;
+            var s0 = stringBuilder.append(botUserId).append(ltuid).toString();
+            var s1 = stringBuilder.append(botUserId).append(ltuid).append(code).toString();
+            stringBuilder.setLength(0);
+            return new int[] {
+                    s0.hashCode(), s0.hashCode() * s1.hashCode(),
+            };
         }
     }
 }

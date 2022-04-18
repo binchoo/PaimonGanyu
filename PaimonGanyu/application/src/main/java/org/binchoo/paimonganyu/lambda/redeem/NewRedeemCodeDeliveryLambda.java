@@ -5,12 +5,12 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.s3.S3EventJsonPayloadWrapper;
+import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.redeem.CodeRedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.CodeRedeemEstimation;
-import org.binchoo.paimonganyu.redeem.options.GivenCodesOption;
+import org.binchoo.paimonganyu.redeem.options.RedeemAllUsers;
 import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.List;
@@ -40,13 +40,13 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     public void handler(S3Event s3Event) {
-        List<RedeemCode> codes = new S3EventJsonPayloadWrapper(s3Event, s3Client).extractPojos(RedeemCode.class);
+        List<RedeemCode> codes = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
         sendTasks(generateRedeemTasks(codes));
     }
 
     private List<CodeRedeemTask> generateRedeemTasks(List<RedeemCode> codes) {
         return codeRedeemEstimation.generate(
-                new GivenCodesOption(userHoyopassCrudPort, codes));
+                new RedeemAllUsers(userHoyopassCrudPort, codes));
     }
 
     private void sendTasks(List<CodeRedeemTask> tasks) {
