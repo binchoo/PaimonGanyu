@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.redeem.driving;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 
 /**
- * 특정 통행증과 리딤 코드에 대해서 코드 리딤 이력이 존재하는지 여부를 제공합니다.
+ * 특정 통행증과 리딤 코드를 사용한 코드 리딤 이력이 존재하는지 여부를 제공합니다.
  * @author : jbinchoo
  * @since : 2022/04/17
  */

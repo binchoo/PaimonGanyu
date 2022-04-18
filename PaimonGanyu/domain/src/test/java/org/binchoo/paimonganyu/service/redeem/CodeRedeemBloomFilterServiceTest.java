@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
  * @since : 2022/04/17
  */
 @ExtendWith(MockitoExtension.class)
-class CodeRedeemSnapshotBloomFilterTest {
+class CodeRedeemBloomFilterServiceTest {
 
     @Mock
     RedeemCode mockRedeemCode;
@@ -34,12 +34,12 @@ class CodeRedeemSnapshotBloomFilterTest {
     @Mock
     UserCodeRedeemCrudPort userCodeRedeemCrudPort;
 
-    CodeRedeemSnapshotBloomFilter codeRedeemSnapshotBloomFilter;
+    CodeRedeemBloomFilterService codeRedeemSnapshotBloomFilter;
     UserCodeRedeem userCodeRedeem;
 
     @BeforeEach
     public void init() {
-        codeRedeemSnapshotBloomFilter = new CodeRedeemSnapshotBloomFilter(userCodeRedeemCrudPort);
+        codeRedeemSnapshotBloomFilter = new CodeRedeemBloomFilterService(userCodeRedeemCrudPort);
         userCodeRedeem = new UserCodeRedeem("user", "ltuid", mockRedeemCode);
     }
 

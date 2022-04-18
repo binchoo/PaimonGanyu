@@ -52,7 +52,7 @@ Task `copyBuiltZip` moves the artifact which `buildZip` generated into the `.aws
 Some functionalities need to be verified with real-running infrastructures. eg. a service layer depending on a DynamoDB table.
 
 A docker container can be created from `amazon/dynamodb-local` image, 
-and system test classses can use its endpoint url (`http://localhost:3306`) to interact with dynamodb tables.
+and system test classes can use its endpoint url (`http://localhost:3306`) to interact with dynamodb tables.
 
 Running the container and including/excluding test classes for system test runs
 are managed by the build script of `:application`.

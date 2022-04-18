@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
+public class CodeRedeemBloomFilterService implements CodeRedeemHistoryService {
 
     private static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
@@ -31,11 +31,11 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
     private final UserCodeRedeemCrudPort userCodeRedeemCrudPort;
     private final Map<RedeemCode, BloomFilter<UserCodeRedeemComposite>> bloomFilters;
 
-    public CodeRedeemSnapshotBloomFilter(UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
+    public CodeRedeemBloomFilterService(UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
         this(DEFAULT_BLOOMFILTER_SIZE, userCodeRedeemCrudPort);
     }
 
-    public CodeRedeemSnapshotBloomFilter(int bloomFilterSize, UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
+    public CodeRedeemBloomFilterService(int bloomFilterSize, UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
         this.bloomFilterSize = bloomFilterSize;
         this.bloomFilters = new HashMap<>();
         this.userCodeRedeemCrudPort = userCodeRedeemCrudPort;
@@ -98,5 +98,9 @@ public class CodeRedeemSnapshotBloomFilter implements CodeRedeemHistoryService {
                     s0.hashCode(), s0.hashCode() * s1.hashCode(),
             };
         }
+    }
+
+    public int getBloomFilterSize() {
+        return this.bloomFilterSize;
     }
 }
