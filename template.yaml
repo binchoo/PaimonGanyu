@@ -99,10 +99,10 @@ Resources:
               S3Key:
                 Rules:
                   - Name: suffix
-                    Value: .json
+                    Value: json
       Policies:
         - S3ReadPolicy:
-            BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+            BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
         - DynamoDBReadPolicy:
             TableName: !Ref UserHoyopassTable
         - DynamoDBReadPolicy:
