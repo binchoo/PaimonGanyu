@@ -9,7 +9,6 @@ import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
