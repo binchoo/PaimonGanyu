@@ -8,7 +8,7 @@ import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryService;
-import org.binchoo.paimonganyu.redeem.options.EstimationOption;
+import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationService {
     private final RedeemHistoryService redeemHistoryService;
 
     @Override
-    public List<RedeemTask> generateTasks(EstimationOption estimationOption) {
+    public List<RedeemTask> generateTasks(RedeemTaskEstimationOption estimationOption) {
         List<UserHoyopass> users = estimationOption.getUsers();
         List<RedeemCode> codes = estimationOption.getCodes();
         return this.multiply(users, codes).stream()

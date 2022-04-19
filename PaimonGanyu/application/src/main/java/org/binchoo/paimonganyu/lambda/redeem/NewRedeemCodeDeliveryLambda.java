@@ -6,14 +6,19 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
+import org.binchoo.paimonganyu.lambda.NewRedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
+import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author : jbinchoo
@@ -22,7 +27,7 @@ import java.util.List;
 @Slf4j
 public class NewRedeemCodeDeliveryLambda {
 
-    private static final String CODEREDEEM_QUEUE_URL = System.getenv("CODEREDEEM_QUEUE_URL");
+    private static final String REDEEM_QUEUE_URL = System.getenv("REDEEM_QUEUE_URL");
 
     private AmazonSQS sqsClient;
     private AmazonS3 s3Client;
@@ -31,12 +36,17 @@ public class NewRedeemCodeDeliveryLambda {
     private UserHoyopassCrudPort userHoyopassCrudPort;
 
     public NewRedeemCodeDeliveryLambda() {
-//        this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckHitoriRequesterMain.class));
+        this.lookupDependencies(new AnnotationConfigApplicationContext(NewRedeemCodeDeliveryMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
+        this.s3Client = context.getBean(AmazonS3.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
+        this.redeemTaskEstimationService = context.getBean(RedeemTaskEstimationService.class);
+        this.userHoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
+        Objects.requireNonNull(this.redeemTaskEstimationService);
+        Objects.requireNonNull(this.userHoyopassCrudPort);
     }
 
     public void handler(S3Event s3Event) {
@@ -49,6 +59,6 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     private void sendTasks(List<RedeemTask> tasks) {
-        tasks.forEach(task-> sqsClient.sendMessage(CODEREDEEM_QUEUE_URL, task.getJson(objectMapper)));
+        tasks.forEach(task-> sqsClient.sendMessage(REDEEM_QUEUE_URL, task.getJson(objectMapper)));
     }
 }

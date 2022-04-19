@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.redeem.driving;
 
 import org.binchoo.paimonganyu.redeem.RedeemTask;
-import org.binchoo.paimonganyu.redeem.options.EstimationOption;
+import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * <p> 코드 리딤 태스크를 견적냅니다. 견적에 필요한 정보는 두 가지 입니다.
  * <p> {@code 1)코드 리딤 대상인 유저}
  * <p> {@code 2)코드 리딤 대상인 리딤 코드}
- * <p> 두 정보는 {@link EstimationOption}로부터 제공받습니다.
+ * <p> 두 정보는 {@link RedeemTaskEstimationOption}로부터 제공받습니다.
  * @author : jbinchoo
  * @since : 2022/04/17
  */
@@ -22,5 +22,5 @@ public interface RedeemTaskEstimationService {
      * @param estimationOption 견적 옵션
      * @return 산출된 {@link RedeemTask} 목록
      */
-    List<RedeemTask> generateTasks(EstimationOption estimationOption);
+    List<RedeemTask> generateTasks(RedeemTaskEstimationOption estimationOption);
 }

@@ -2,7 +2,6 @@ package org.binchoo.paimonganyu.infra.redeem.dynamo.repository;
 
 import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;

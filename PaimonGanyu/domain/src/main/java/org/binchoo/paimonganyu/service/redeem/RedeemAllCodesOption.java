@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.service.redeem;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
-import org.binchoo.paimonganyu.redeem.options.EstimationOption;
+import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public class RedeemAllCodesOption implements EstimationOption {
+public class RedeemAllCodesOption implements RedeemTaskEstimationOption {
 
     private final RedeemCodeCrudPort redeemCodeCrudPort;
     private final List<UserHoyopass> userHoyopasses;

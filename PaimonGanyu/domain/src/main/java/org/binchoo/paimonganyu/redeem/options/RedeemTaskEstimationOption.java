@@ -11,7 +11,7 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public interface EstimationOption {
+public interface RedeemTaskEstimationOption {
 
     /**
      * @return 코드 리딤 대상자들

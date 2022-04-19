@@ -1,8 +1,6 @@
 package org.binchoo.paimonganyu.infra.redeem.dynamo.item;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.*;
 import org.binchoo.paimonganyu.infra.utils.LocalDateTimeStringConverter;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
@@ -27,8 +25,13 @@ public class UserRedeemItem {
 
     public static final String TABLE_NAME = "UserRedeem";
 
+    @DynamoDBHashKey
     private String botUserId;
+
+    @DynamoDBAttribute
     private String ltuid;
+
+    @DynamoDBAttribute
     private String code;
 
     @DynamoDBTypeConvertedEnum
