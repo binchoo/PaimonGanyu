@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class RedeemBloomFilterService implements RedeemHistoryService {
+public class RedeemBloomFilter implements RedeemHistoryService {
 
     private static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
@@ -31,11 +31,11 @@ public class RedeemBloomFilterService implements RedeemHistoryService {
     private final UserRedeemCrudPort userRedeemCrudPort;
     private final Map<RedeemCode, BloomFilter<UserRedeemSearchWord>> bloomFilters;
 
-    public RedeemBloomFilterService(UserRedeemCrudPort userRedeemCrudPort) {
+    public RedeemBloomFilter(UserRedeemCrudPort userRedeemCrudPort) {
         this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrudPort);
     }
 
-    public RedeemBloomFilterService(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
+    public RedeemBloomFilter(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
         this.bloomFilterSize = bloomFilterSize;
         this.bloomFilters = new HashMap<>();
         this.userRedeemCrudPort = userRedeemCrudPort;

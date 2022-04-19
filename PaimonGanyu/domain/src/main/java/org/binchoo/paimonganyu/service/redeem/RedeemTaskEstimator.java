@@ -6,7 +6,7 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimation;
+import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryService;
 import org.binchoo.paimonganyu.redeem.options.EstimationOption;
 
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class RedeemTaskEstimationImpl implements RedeemTaskEstimation {
+public class RedeemTaskEstimator implements RedeemTaskEstimationService {
 
     private final RedeemHistoryService redeemHistoryService;
 

@@ -9,8 +9,8 @@ import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimation;
-import org.binchoo.paimonganyu.redeem.options.RedeemAllUsers;
+import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
+import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
 import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class NewRedeemCodeDeliveryLambda {
     private AmazonSQS sqsClient;
     private AmazonS3 s3Client;
     private ObjectMapper objectMapper;
-    private RedeemTaskEstimation redeemTaskEstimation;
+    private RedeemTaskEstimationService redeemTaskEstimationService;
     private UserHoyopassCrudPort userHoyopassCrudPort;
 
     public NewRedeemCodeDeliveryLambda() {
@@ -45,7 +45,7 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     private List<RedeemTask> generateRedeemTasks(List<RedeemCode> codes) {
-        return redeemTaskEstimation.generateTasks(new RedeemAllUsers(userHoyopassCrudPort, codes));
+        return redeemTaskEstimationService.generateTasks(new RedeemAllUsersOption(userHoyopassCrudPort, codes));
     }
 
     private void sendTasks(List<RedeemTask> tasks) {

@@ -1,8 +1,9 @@
-package org.binchoo.paimonganyu.redeem.options;
+package org.binchoo.paimonganyu.service.redeem;
 
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
+import org.binchoo.paimonganyu.redeem.options.EstimationOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public class RedeemAllUsers implements EstimationOption {
+public class RedeemAllUsersOption implements EstimationOption {
 
     private final UserHoyopassCrudPort userHoyopassCrudPort;
     private final List<RedeemCode> redeemCodes;
@@ -23,7 +24,7 @@ public class RedeemAllUsers implements EstimationOption {
      * @param userHoyopassCrudPort 모든 유저를 조회하기 위한 포트
      * @param givenCodes 리딤에 사용할 코드
      */
-    public RedeemAllUsers(UserHoyopassCrudPort userHoyopassCrudPort, List<RedeemCode> givenCodes) {
+    public RedeemAllUsersOption(UserHoyopassCrudPort userHoyopassCrudPort, List<RedeemCode> givenCodes) {
         this.userHoyopassCrudPort = userHoyopassCrudPort;
         this.redeemCodes = new ArrayList<>();
         this.redeemCodes.addAll(givenCodes);

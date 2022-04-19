@@ -3,7 +3,6 @@ package org.binchoo.paimonganyu.service.redeem;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.verify;
  */
 @DisplayName("[코드리딤 이력 서비스] 블룸필터 구현체")
 @ExtendWith(MockitoExtension.class)
-class RedeemBloomFilterServiceTest {
+class RedeemBloomFilterTest {
 
     @Mock
     RedeemCode mockRedeemCode;
@@ -37,12 +36,12 @@ class RedeemBloomFilterServiceTest {
     @Mock
     UserRedeemCrudPort userRedeemCrudPort;
 
-    RedeemBloomFilterService redeemBloomFilterService;
+    RedeemBloomFilter redeemBloomFilter;
     UserRedeem userRedeemDone;
 
     @BeforeEach
     public void init() {
-        redeemBloomFilterService = new RedeemBloomFilterService(userRedeemCrudPort);
+        redeemBloomFilter = new RedeemBloomFilter(userRedeemCrudPort);
         userRedeemDone = new UserRedeem("user", "ltuid", mockRedeemCode);
         userRedeemDone.assumeDone();
     }
@@ -52,7 +51,7 @@ class RedeemBloomFilterServiceTest {
     void givenEmptyHistories_hasRedeemed_returnsFalse() {
         given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
 
-        boolean hasRedeemed = redeemBloomFilterService.hasRedeemed("foo", "bar", mockRedeemCode);
+        boolean hasRedeemed = redeemBloomFilter.hasRedeemed("foo", "bar", mockRedeemCode);
 
         assertThat(hasRedeemed).isFalse();
     }
@@ -62,7 +61,7 @@ class RedeemBloomFilterServiceTest {
     void givenEmptyHistories_hasNotRedeemed_returnsTrue() {
         given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
 
-        boolean hasNotRedeemed = redeemBloomFilterService.hasNotRedeemed("foo", "bar", mockRedeemCode);
+        boolean hasNotRedeemed = redeemBloomFilter.hasNotRedeemed("foo", "bar", mockRedeemCode);
 
         assertThat(hasNotRedeemed).isTrue();
     }
@@ -76,7 +75,7 @@ class RedeemBloomFilterServiceTest {
         lenient().when(userRedeemCrudPort.existMatches(userRedeemDone))
                 .thenReturn(false);
 
-        boolean hasRedeemed = redeemBloomFilterService
+        boolean hasRedeemed = redeemBloomFilter
                 .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
 
         assertThat(hasRedeemed).isFalse();
@@ -98,7 +97,7 @@ class RedeemBloomFilterServiceTest {
         given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
                 .willReturn(inclusiveSet(100000));
 
-        redeemBloomFilterService
+        redeemBloomFilter
                 .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
 
         verify(userRedeemCrudPort).existMatches(userRedeemDone);
