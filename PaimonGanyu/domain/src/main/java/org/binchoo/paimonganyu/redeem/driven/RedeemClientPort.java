@@ -5,5 +5,5 @@ package org.binchoo.paimonganyu.redeem.driven;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public interface CodeRedeemClientPort {
+public interface RedeemClientPort {
 }

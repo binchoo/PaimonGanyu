@@ -4,7 +4,7 @@ package org.binchoo.paimonganyu.redeem;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public enum UserCodeRedeemStatus {
+public enum UserRedeemStatus {
     /** This coderedeem is completed successfully. */
     COMPLETED,
     /** This coderedeem has failed due to unknown errors. */

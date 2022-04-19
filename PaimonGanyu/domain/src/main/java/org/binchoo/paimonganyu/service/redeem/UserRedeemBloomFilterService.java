@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.algorithm.BloomFilter;
 import org.binchoo.paimonganyu.algorithm.MultiHashable;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.UserCodeRedeem;
-import org.binchoo.paimonganyu.redeem.driven.UserCodeRedeemCrudPort;
-import org.binchoo.paimonganyu.redeem.driving.CodeRedeemHistoryService;
+import org.binchoo.paimonganyu.redeem.UserRedeem;
+import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
+import org.binchoo.paimonganyu.redeem.driving.UserRedeemHistoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,31 +23,31 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class CodeRedeemBloomFilterService implements CodeRedeemHistoryService {
+public class UserRedeemBloomFilterService implements UserRedeemHistoryService {
 
     private static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
     private final int bloomFilterSize;
-    private final UserCodeRedeemCrudPort userCodeRedeemCrudPort;
+    private final UserRedeemCrudPort userRedeemCrudPort;
     private final Map<RedeemCode, BloomFilter<UserCodeRedeemComposite>> bloomFilters;
 
-    public CodeRedeemBloomFilterService(UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
-        this(DEFAULT_BLOOMFILTER_SIZE, userCodeRedeemCrudPort);
+    public UserRedeemBloomFilterService(UserRedeemCrudPort userRedeemCrudPort) {
+        this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrudPort);
     }
 
-    public CodeRedeemBloomFilterService(int bloomFilterSize, UserCodeRedeemCrudPort userCodeRedeemCrudPort) {
+    public UserRedeemBloomFilterService(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
         this.bloomFilterSize = bloomFilterSize;
         this.bloomFilters = new HashMap<>();
-        this.userCodeRedeemCrudPort = userCodeRedeemCrudPort;
+        this.userRedeemCrudPort = userRedeemCrudPort;
     }
 
     @Override
     public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        var userCodeRedeem = new UserCodeRedeem(botUserId, ltuid, redeemCode);
+        var userCodeRedeem = new UserRedeem(botUserId, ltuid, redeemCode);
         var composite = new UserCodeRedeemComposite(userCodeRedeem);
         if (getOrCreateBloomFilter(redeemCode).assumeExists(composite)) {
-            return userCodeRedeemCrudPort.existMatches(userCodeRedeem);
-            // 아이템 삽입이 보장되지 않으므로 실제로 스냅샷을 조회해보아야 한다.
+            return userRedeemCrudPort.existMatches(userCodeRedeem);
+            // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
             return false;
             // 아이템 미삽입이 보장되므로 바로 반환한다.
@@ -60,7 +60,7 @@ public class CodeRedeemBloomFilterService implements CodeRedeemHistoryService {
 
     private BloomFilter<UserCodeRedeemComposite> createBloomFilter(RedeemCode redeemCode) {
         var bloomFilter =  new BloomFilter<UserCodeRedeemComposite>(bloomFilterSize);
-        userCodeRedeemCrudPort.findByRedeemCode(redeemCode).stream()
+        userRedeemCrudPort.findByRedeemCode(redeemCode).stream()
                 .map(UserCodeRedeemComposite::new)
                 .forEach(bloomFilter::insert);
         return bloomFilter;
@@ -72,8 +72,8 @@ public class CodeRedeemBloomFilterService implements CodeRedeemHistoryService {
     }
 
     /**
-     * {@link UserCodeRedeem}을 멀티 해싱하기 위한 클래스.
-     * StringBuilder를 공유하므로 스레드 세이프하지 않음.
+     * {@link UserRedeem}을 멀티 해싱하기 위한 클래스.
+     * {@link StringBuilder}를 공유하므로 스레드 세이프하지 않음.
      */
     private static final class UserCodeRedeemComposite implements MultiHashable {
 
@@ -83,10 +83,10 @@ public class CodeRedeemBloomFilterService implements CodeRedeemHistoryService {
         private final String ltuid;
         private final String code;
 
-        public UserCodeRedeemComposite(UserCodeRedeem userCodeRedeem) {
-            this.botUserId = userCodeRedeem.getBotUserId();
-            this.ltuid = userCodeRedeem.getLtuid();
-            this.code = userCodeRedeem.getRedeemCode().getCode();
+        public UserCodeRedeemComposite(UserRedeem userRedeem) {
+            this.botUserId = userRedeem.getBotUserId();
+            this.ltuid = userRedeem.getLtuid();
+            this.code = userRedeem.getRedeemCode().getCode();
         }
 
         @Override

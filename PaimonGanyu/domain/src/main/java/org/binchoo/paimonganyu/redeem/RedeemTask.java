@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Getter
 @AllArgsConstructor
-public class CodeRedeemTask {
+public class RedeemTask {
 
     private String botUserId;
     private String ltuid;

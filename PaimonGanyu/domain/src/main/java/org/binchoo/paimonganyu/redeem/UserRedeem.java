@@ -16,12 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @Getter
 @RequiredArgsConstructor
-public class UserCodeRedeem {
+public class UserRedeem {
 
     private final String botUserId;
     private final String ltuid;
     private final RedeemCode redeemCode;
-    private UserCodeRedeemStatus status;
+    private UserRedeemStatus status;
 
     /**
      * 이력이 {@code 완료(Completed)} 또는 {@code 중복(Duplicate)}으로 기록되었다면
@@ -33,10 +33,10 @@ public class UserCodeRedeem {
     }
 
     private boolean isCompleted() {
-        return UserCodeRedeemStatus.COMPLETED.equals(this.status);
+        return UserRedeemStatus.COMPLETED.equals(this.status);
     }
 
     private boolean isDuplicate() {
-        return UserCodeRedeemStatus.DUPLICATE.equals(this.status);
+        return UserRedeemStatus.DUPLICATE.equals(this.status);
     }
 }

@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.redeem.CodeRedeemTask;
+import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.driving.CodeRedeemEstimation;
-import org.binchoo.paimonganyu.redeem.driving.CodeRedeemHistoryService;
+import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimation;
+import org.binchoo.paimonganyu.redeem.driving.UserRedeemHistoryService;
 import org.binchoo.paimonganyu.redeem.options.EstimationOption;
 
 import java.util.ArrayList;
@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class CodeRedeemEstimationImpl implements CodeRedeemEstimation {
+public class RedeemTaskEstimationImpl implements RedeemTaskEstimation {
 
-    private final CodeRedeemHistoryService codeRedeemHistoryService;
+    private final UserRedeemHistoryService userRedeemHistoryService;
 
     @Override
-    public List<CodeRedeemTask> generate(EstimationOption estimationOption) {
+    public List<RedeemTask> generate(EstimationOption estimationOption) {
         List<UserHoyopass> users = estimationOption.getUsers();
         List<RedeemCode> codes = estimationOption.getCodes();
         return this.multiply(users, codes).stream()
@@ -33,25 +33,25 @@ public class CodeRedeemEstimationImpl implements CodeRedeemEstimation {
                 .collect(Collectors.toList());
     }
 
-    private List<CodeRedeemTask> multiply(List<UserHoyopass> users,
-                                          List<RedeemCode> codes) {
-        List<CodeRedeemTask> tasks = new ArrayList<>();
+    private List<RedeemTask> multiply(List<UserHoyopass> users,
+                                      List<RedeemCode> codes) {
+        List<RedeemTask> tasks = new ArrayList<>();
         for (UserHoyopass user : users) {
             String userId = user.getBotUserId();
             for (Hoyopass hoyopass : user.getHoyopasses()) {
                 String ltuid = hoyopass.getLtuid();
                 String ltoken = hoyopass.getLtoken();
                 for (RedeemCode code : codes) {
-                    tasks.add(new CodeRedeemTask(userId, ltuid, ltoken, code));
+                    tasks.add(new RedeemTask(userId, ltuid, ltoken, code));
                 }
             }
         }
         return tasks;
     }
 
-    private boolean deduplication(CodeRedeemTask codeRedeemTask) {
-        return codeRedeemHistoryService
-                .hasNotRedeemed(codeRedeemTask.getBotUserId(),
-                        codeRedeemTask.getLtuid(), codeRedeemTask.getRedeemCode());
+    private boolean deduplication(RedeemTask redeemTask) {
+        return userRedeemHistoryService
+                .hasNotRedeemed(redeemTask.getBotUserId(),
+                        redeemTask.getLtuid(), redeemTask.getRedeemCode());
     }
 }

@@ -2,8 +2,8 @@ package org.binchoo.paimonganyu.service.redeem;
 
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.UserCodeRedeem;
-import org.binchoo.paimonganyu.redeem.driven.UserCodeRedeemCrudPort;
+import org.binchoo.paimonganyu.redeem.UserRedeem;
+import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,20 +32,20 @@ class CodeRedeemBloomFilterServiceTest {
     RedeemCode mockRedeemCode;
 
     @Mock
-    UserCodeRedeemCrudPort userCodeRedeemCrudPort;
+    UserRedeemCrudPort userRedeemCrudPort;
 
-    CodeRedeemBloomFilterService codeRedeemSnapshotBloomFilter;
-    UserCodeRedeem userCodeRedeem;
+    UserRedeemBloomFilterService codeRedeemSnapshotBloomFilter;
+    UserRedeem userRedeem;
 
     @BeforeEach
     public void init() {
-        codeRedeemSnapshotBloomFilter = new CodeRedeemBloomFilterService(userCodeRedeemCrudPort);
-        userCodeRedeem = new UserCodeRedeem("user", "ltuid", mockRedeemCode);
+        codeRedeemSnapshotBloomFilter = new UserRedeemBloomFilterService(userRedeemCrudPort);
+        userRedeem = new UserRedeem("user", "ltuid", mockRedeemCode);
     }
 
     @Test
     void givenEmptyHistories_hasRedeemed_returnsFalse() {
-        given(userCodeRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
+        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
 
         boolean hasRedeemed = codeRedeemSnapshotBloomFilter.hasRedeemed("foo", "bar", mockRedeemCode);
 
@@ -54,7 +54,7 @@ class CodeRedeemBloomFilterServiceTest {
 
     @Test
     void givenEmptyHistories_hasNotRedeemed_returnsTrue() {
-        given(userCodeRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
+        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
 
         boolean hasNotRedeemed = codeRedeemSnapshotBloomFilter.hasNotRedeemed("foo", "bar", mockRedeemCode);
 
@@ -64,49 +64,47 @@ class CodeRedeemBloomFilterServiceTest {
     @Test
     void givenComplementHistories_hasRedeemed_returnsFalse() {
         given(mockRedeemCode.getCode()).willReturn("foobarcode");
-        given(userCodeRedeemCrudPort.findByRedeemCode(mockRedeemCode))
-                .willReturn(complementSet(userCodeRedeem, 100000));
-        lenient().when(userCodeRedeemCrudPort.existMatches(userCodeRedeem))
+        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
+                .willReturn(complementSet(userRedeem, 100000));
+        lenient().when(userRedeemCrudPort.existMatches(userRedeem))
                 .thenReturn(false);
 
         boolean hasRedeemed = codeRedeemSnapshotBloomFilter
-                .hasRedeemed(userCodeRedeem.getBotUserId(), userCodeRedeem.getLtuid(), userCodeRedeem.getRedeemCode());
+                .hasRedeemed(userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode());
 
         assertThat(hasRedeemed).isFalse();
     }
 
-    private List<UserCodeRedeem> complementSet(UserCodeRedeem userCodeRedeem, int len) {
-        return IntStream.range(0, len)
-                .mapToObj(it-> {
+    private List<UserRedeem> complementSet(UserRedeem userRedeem, int len) {
+        return IntStream.range(0, len).mapToObj(it-> {
                     String random = RandomString.make();
-                    return new UserCodeRedeem(random, random, userCodeRedeem.getRedeemCode());
+                    return new UserRedeem(random, random, userRedeem.getRedeemCode());
                 })
-                .filter(it-> !it.equals(userCodeRedeem))
+                .filter(it-> !it.equals(userRedeem))
                 .collect(Collectors.toList());
     }
 
     @Test
     void givenInclusiveHistories_hasRedeemed_callExistMatches() {
         given(mockRedeemCode.getCode()).willReturn("foobarcode");
-        given(userCodeRedeemCrudPort.findByRedeemCode(mockRedeemCode))
-                .willReturn(inclusiveSet(userCodeRedeem, 100000));
+        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
+                .willReturn(inclusiveSet(userRedeem, 100000));
 
         codeRedeemSnapshotBloomFilter
-                .hasRedeemed(userCodeRedeem.getBotUserId(), userCodeRedeem.getLtuid(), userCodeRedeem.getRedeemCode());
+                .hasRedeemed(userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode());
 
-        verify(userCodeRedeemCrudPort).existMatches(userCodeRedeem);
+        verify(userRedeemCrudPort).existMatches(userRedeem);
     }
 
-    private List<UserCodeRedeem> inclusiveSet(UserCodeRedeem userCodeRedeem, int len) {
+    private List<UserRedeem> inclusiveSet(UserRedeem userRedeem, int len) {
         final int includeAt = Math.abs(new Random().nextInt()) % len;
-        return IntStream.range(0, len)
-                .mapToObj(it-> {
+        return IntStream.range(0, len).mapToObj(it-> {
                     String random = RandomString.make();
                     if (includeAt == it) {
                         System.out.println("Inserted at " + it);
-                        return userCodeRedeem;
+                        return userRedeem;
                     }
-                    return new UserCodeRedeem(random, random, userCodeRedeem.getRedeemCode());
+                    return new UserRedeem(random, random, userRedeem.getRedeemCode());
                 })
                 .collect(Collectors.toList());
     }
