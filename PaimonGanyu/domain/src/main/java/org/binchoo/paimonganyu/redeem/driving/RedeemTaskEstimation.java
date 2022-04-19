@@ -22,5 +22,5 @@ public interface RedeemTaskEstimation {
      * @param estimationOption 견적 옵션
      * @return 산출된 {@link RedeemTask} 목록
      */
-    List<RedeemTask> generate(EstimationOption estimationOption);
+    List<RedeemTask> generateTasks(EstimationOption estimationOption);
 }

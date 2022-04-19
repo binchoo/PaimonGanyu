@@ -40,17 +40,15 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     public void handler(S3Event s3Event) {
-        List<RedeemCode> codes = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
-        sendTasks(generateRedeemTasks(codes));
+        List<RedeemCode> newRedeemCodes = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
+        sendTasks(generateRedeemTasks(newRedeemCodes));
     }
 
     private List<RedeemTask> generateRedeemTasks(List<RedeemCode> codes) {
-        return redeemTaskEstimation.generate(
-                new RedeemAllUsers(userHoyopassCrudPort, codes));
+        return redeemTaskEstimation.generateTasks(new RedeemAllUsers(userHoyopassCrudPort, codes));
     }
 
     private void sendTasks(List<RedeemTask> tasks) {
-        tasks.forEach(task->
-                sqsClient.sendMessage(CODEREDEEM_QUEUE_URL, task.getJson(objectMapper)));
+        tasks.forEach(task-> sqsClient.sendMessage(CODEREDEEM_QUEUE_URL, task.getJson(objectMapper)));
     }
 }

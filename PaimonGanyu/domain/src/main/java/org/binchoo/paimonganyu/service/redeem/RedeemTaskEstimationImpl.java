@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimation;
-import org.binchoo.paimonganyu.redeem.driving.UserRedeemHistoryService;
+import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryService;
 import org.binchoo.paimonganyu.redeem.options.EstimationOption;
 
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RedeemTaskEstimationImpl implements RedeemTaskEstimation {
 
-    private final UserRedeemHistoryService userRedeemHistoryService;
+    private final RedeemHistoryService redeemHistoryService;
 
     @Override
-    public List<RedeemTask> generate(EstimationOption estimationOption) {
+    public List<RedeemTask> generateTasks(EstimationOption estimationOption) {
         List<UserHoyopass> users = estimationOption.getUsers();
         List<RedeemCode> codes = estimationOption.getCodes();
         return this.multiply(users, codes).stream()
-                .filter(this::deduplication)
+                .filter(this::hasNotRedeemed)
                 .collect(Collectors.toList());
     }
 
@@ -49,8 +49,8 @@ public class RedeemTaskEstimationImpl implements RedeemTaskEstimation {
         return tasks;
     }
 
-    private boolean deduplication(RedeemTask redeemTask) {
-        return userRedeemHistoryService
+    private boolean hasNotRedeemed(RedeemTask redeemTask) {
+        return redeemHistoryService
                 .hasNotRedeemed(redeemTask.getBotUserId(),
                         redeemTask.getLtuid(), redeemTask.getRedeemCode());
     }

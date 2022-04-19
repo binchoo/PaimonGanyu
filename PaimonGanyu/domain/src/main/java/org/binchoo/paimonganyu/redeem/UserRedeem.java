@@ -1,9 +1,6 @@
 package org.binchoo.paimonganyu.redeem;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -21,7 +18,13 @@ public class UserRedeem {
     private final String botUserId;
     private final String ltuid;
     private final RedeemCode redeemCode;
-    private UserRedeemStatus status;
+
+    private UserRedeemStatus status = UserRedeemStatus.QUEUED;
+
+    public UserRedeem(String botUserId, String ltuid, RedeemCode redeemCode, boolean isDone) {
+        this(botUserId, ltuid, redeemCode);
+        if (isDone) this.status = UserRedeemStatus.COMPLETED;
+    }
 
     /**
      * 이력이 {@code 완료(Completed)} 또는 {@code 중복(Duplicate)}으로 기록되었다면

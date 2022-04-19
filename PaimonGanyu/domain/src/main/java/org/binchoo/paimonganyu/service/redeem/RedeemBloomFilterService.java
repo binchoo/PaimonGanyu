@@ -6,7 +6,7 @@ import org.binchoo.paimonganyu.algorithm.MultiHashable;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
-import org.binchoo.paimonganyu.redeem.driving.UserRedeemHistoryService;
+import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class UserRedeemBloomFilterService implements UserRedeemHistoryService {
+public class RedeemBloomFilterService implements RedeemHistoryService {
 
     private static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
@@ -31,11 +31,11 @@ public class UserRedeemBloomFilterService implements UserRedeemHistoryService {
     private final UserRedeemCrudPort userRedeemCrudPort;
     private final Map<RedeemCode, BloomFilter<UserCodeRedeemComposite>> bloomFilters;
 
-    public UserRedeemBloomFilterService(UserRedeemCrudPort userRedeemCrudPort) {
+    public RedeemBloomFilterService(UserRedeemCrudPort userRedeemCrudPort) {
         this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrudPort);
     }
 
-    public UserRedeemBloomFilterService(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
+    public RedeemBloomFilterService(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
         this.bloomFilterSize = bloomFilterSize;
         this.bloomFilters = new HashMap<>();
         this.userRedeemCrudPort = userRedeemCrudPort;
@@ -43,7 +43,7 @@ public class UserRedeemBloomFilterService implements UserRedeemHistoryService {
 
     @Override
     public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        var userCodeRedeem = new UserRedeem(botUserId, ltuid, redeemCode);
+        var userCodeRedeem = new UserRedeem(botUserId, ltuid, redeemCode, true);
         var composite = new UserCodeRedeemComposite(userCodeRedeem);
         if (getOrCreateBloomFilter(redeemCode).assumeExists(composite)) {
             return userRedeemCrudPort.existMatches(userCodeRedeem);
@@ -55,11 +55,11 @@ public class UserRedeemBloomFilterService implements UserRedeemHistoryService {
     }
 
     private BloomFilter<UserCodeRedeemComposite> getOrCreateBloomFilter(RedeemCode key) {
-        return bloomFilters.computeIfAbsent(key, this::createBloomFilter);
+        return bloomFilters.computeIfAbsent(key, this::createBloomFilterOf);
     }
 
-    private BloomFilter<UserCodeRedeemComposite> createBloomFilter(RedeemCode redeemCode) {
-        var bloomFilter =  new BloomFilter<UserCodeRedeemComposite>(bloomFilterSize);
+    private BloomFilter<UserCodeRedeemComposite> createBloomFilterOf(RedeemCode redeemCode) {
+        var bloomFilter = new BloomFilter<UserCodeRedeemComposite>(bloomFilterSize);
         userRedeemCrudPort.findByRedeemCode(redeemCode).stream()
                 .map(UserCodeRedeemComposite::new)
                 .forEach(bloomFilter::insert);
@@ -82,17 +82,19 @@ public class UserRedeemBloomFilterService implements UserRedeemHistoryService {
         private final String botUserId;
         private final String ltuid;
         private final String code;
+        private final boolean isDone;
 
         public UserCodeRedeemComposite(UserRedeem userRedeem) {
             this.botUserId = userRedeem.getBotUserId();
             this.ltuid = userRedeem.getLtuid();
             this.code = userRedeem.getRedeemCode().getCode();
+            this.isDone = userRedeem.isDone();
         }
 
         @Override
         public int[] getHashes() {
             var s0 = stringBuilder.append(botUserId).append(ltuid).toString();
-            var s1 = stringBuilder.append(botUserId).append(ltuid).append(code).toString();
+            var s1 = stringBuilder.append(botUserId).append(ltuid).append(code).append(isDone).toString();
             stringBuilder.setLength(0);
             return new int[] {
                     s0.hashCode(), s0.hashCode() * s1.hashCode(),
