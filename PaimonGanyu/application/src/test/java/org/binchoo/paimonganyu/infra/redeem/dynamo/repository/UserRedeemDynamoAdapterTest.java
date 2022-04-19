@@ -44,7 +44,7 @@ class UserRedeemDynamoAdapterTest {
 
         verify(repository).findByBotUserIdAndLtuidAndCodeAndStatusIn(
                 userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfDone());
+                UserRedeemStatus.groupOfDone);
     }
 
     @DisplayName("완수가 아닌 리딤 이력을 색인할 경우, 완수 아님 그룹의 상태들을 대입하여 색인한다")
@@ -55,7 +55,7 @@ class UserRedeemDynamoAdapterTest {
 
         verify(repository).findByBotUserIdAndLtuidAndCodeAndStatusIn(
                 userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfNotDone());
+                UserRedeemStatus.groupOfNotDone);
     }
 
     @DisplayName("완수 리딤 이력의 존재 여부를 색인할 경우, 완수 그룹의 상태들을 대입하여 색인한다")
@@ -66,7 +66,7 @@ class UserRedeemDynamoAdapterTest {
 
         verify(repository).existsByBotUserIdAndLtuidAndCodeAndStatusIn(
                 userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfDone());
+                UserRedeemStatus.groupOfDone);
     }
 
     @DisplayName("완수가 아닌 리딤 이력의 존재 여부를 색인할 경우, 완수 아님 그룹의 상태들을 대입하여 색인한다")
@@ -77,7 +77,7 @@ class UserRedeemDynamoAdapterTest {
 
         verify(repository).existsByBotUserIdAndLtuidAndCodeAndStatusIn(
                 userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfNotDone());
+                UserRedeemStatus.groupOfNotDone);
     }
 
     @DisplayName("리딤 코드 기준으로 색인할 경우, 리딤 코드를 대입하여 색인한다")

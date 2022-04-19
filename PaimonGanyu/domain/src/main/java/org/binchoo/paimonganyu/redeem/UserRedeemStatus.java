@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.redeem;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,14 +19,6 @@ public enum UserRedeemStatus {
     /** This coderedeem request will be soon processed. */
     QUEUED;
 
-    private final static List<UserRedeemStatus> groupOfDone = Arrays.asList(COMPLETED, DUPLICATE);
-    private final static List<UserRedeemStatus> groupOfNotDone = Arrays.asList(COMPLETED, DUPLICATE);
-
-    public static List<UserRedeemStatus> groupOfDone() {
-        return groupOfDone;
-    }
-
-    public static List<UserRedeemStatus> groupOfNotDone() {
-        return groupOfNotDone;
-    }
+    public final static List<UserRedeemStatus> groupOfDone = List.of(COMPLETED, DUPLICATE);
+    public final static List<UserRedeemStatus> groupOfNotDone = List.of(FAILED, QUEUED);
 }

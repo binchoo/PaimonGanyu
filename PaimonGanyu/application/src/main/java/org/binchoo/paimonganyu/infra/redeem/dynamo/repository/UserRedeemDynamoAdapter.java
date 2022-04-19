@@ -29,7 +29,7 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
         var ltuid = userRedeem.getLtuid();
         var code = userRedeem.getRedeemCode().getCode();
         var statuses = userRedeem.isDone()?
-                UserRedeemStatus.groupOfDone() : UserRedeemStatus.groupOfNotDone();
+                UserRedeemStatus.groupOfDone : UserRedeemStatus.groupOfNotDone;
         return repository.findByBotUserIdAndLtuidAndCodeAndStatusIn(botUserId, ltuid, code, statuses)
                 .stream().map(UserRedeemItem::toDomain)
                 .collect(Collectors.toList());
@@ -41,7 +41,7 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
         var ltuid = userRedeem.getLtuid();
         var code = userRedeem.getRedeemCode().getCode();
         var statuses = userRedeem.isDone()?
-                UserRedeemStatus.groupOfDone() : UserRedeemStatus.groupOfNotDone();
+                UserRedeemStatus.groupOfDone : UserRedeemStatus.groupOfNotDone;
         return repository.existsByBotUserIdAndLtuidAndCodeAndStatusIn(botUserId, ltuid, code, statuses);
     }
 

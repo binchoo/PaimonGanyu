@@ -38,10 +38,10 @@ public class UserRedeem {
      * @return 이 이력이 완수 이력인지 여부
      */
     public boolean isDone() {
-        return UserRedeemStatus.groupOfDone().contains(this.status);
+        return UserRedeemStatus.groupOfDone.contains(this.status);
     }
 
     public void assumeDone() {
-        this.status = UserRedeemStatus.groupOfDone().get(0);
+        this.status = UserRedeemStatus.groupOfDone.get(0);
     }
 }
