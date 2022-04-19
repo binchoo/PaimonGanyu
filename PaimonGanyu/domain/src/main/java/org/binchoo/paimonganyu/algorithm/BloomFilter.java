@@ -16,11 +16,9 @@ public class BloomFilter<T extends MultiHashable> {
     }
 
     public void insert(T item) {
-        if (!assumeExists(item)) {
-            for (int h : item.getHashes()) {
-                int i = h % filterSize;
-                bloomFilter[Math.abs(i)] = true;
-            }
+        for (int h : item.getHashes()) {
+            int i = h % filterSize;
+            bloomFilter[Math.abs(i)] = true;
         }
     }
 

@@ -29,7 +29,7 @@ public class RedeemBloomFilterService implements RedeemHistoryService {
 
     private final int bloomFilterSize;
     private final UserRedeemCrudPort userRedeemCrudPort;
-    private final Map<RedeemCode, BloomFilter<UserCodeRedeemComposite>> bloomFilters;
+    private final Map<RedeemCode, BloomFilter<UserRedeemSearchWord>> bloomFilters;
 
     public RedeemBloomFilterService(UserRedeemCrudPort userRedeemCrudPort) {
         this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrudPort);
@@ -43,10 +43,10 @@ public class RedeemBloomFilterService implements RedeemHistoryService {
 
     @Override
     public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        var userCodeRedeem = new UserRedeem(botUserId, ltuid, redeemCode, true);
-        var composite = new UserCodeRedeemComposite(userCodeRedeem);
-        if (getOrCreateBloomFilter(redeemCode).assumeExists(composite)) {
-            return userRedeemCrudPort.existMatches(userCodeRedeem);
+        var historyToSearch = createUserRedeemToSearch(botUserId, ltuid, redeemCode);
+        var searchWord = createSearchWord(historyToSearch);
+        if (getOrCreateBloomFilter(redeemCode).assumeExists(searchWord)) {
+            return userRedeemCrudPort.existMatches(historyToSearch);
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
             return false;
@@ -54,14 +54,28 @@ public class RedeemBloomFilterService implements RedeemHistoryService {
         }
     }
 
-    private BloomFilter<UserCodeRedeemComposite> getOrCreateBloomFilter(RedeemCode key) {
+    /**
+     * 완수 상태를 표상하는 UserRedeemComposite를 만든다.
+     * 여기서 반환된 객체와 블룸필터를 대조하여서 대응하는 이력의 존재 여부를 확인할 수 있다.
+     */
+    private UserRedeem createUserRedeemToSearch(String botUserId, String ltuid, RedeemCode redeemCode) {
+        var userRedeem = new UserRedeem(botUserId, ltuid, redeemCode);
+        userRedeem.assumeDone();
+        return userRedeem;
+    }
+
+    private UserRedeemSearchWord createSearchWord(UserRedeem toSearch) {
+        return new UserRedeemSearchWord(toSearch);
+    }
+
+    private BloomFilter<UserRedeemSearchWord> getOrCreateBloomFilter(RedeemCode key) {
         return bloomFilters.computeIfAbsent(key, this::createBloomFilterOf);
     }
 
-    private BloomFilter<UserCodeRedeemComposite> createBloomFilterOf(RedeemCode redeemCode) {
-        var bloomFilter = new BloomFilter<UserCodeRedeemComposite>(bloomFilterSize);
+    private BloomFilter<UserRedeemSearchWord> createBloomFilterOf(RedeemCode redeemCode) {
+        var bloomFilter = new BloomFilter<UserRedeemSearchWord>(bloomFilterSize);
         userRedeemCrudPort.findByRedeemCode(redeemCode).stream()
-                .map(UserCodeRedeemComposite::new)
+                .map(UserRedeemSearchWord::new)
                 .forEach(bloomFilter::insert);
         return bloomFilter;
     }
@@ -75,7 +89,7 @@ public class RedeemBloomFilterService implements RedeemHistoryService {
      * {@link UserRedeem}을 멀티 해싱하기 위한 클래스.
      * {@link StringBuilder}를 공유하므로 스레드 세이프하지 않음.
      */
-    private static final class UserCodeRedeemComposite implements MultiHashable {
+    private static final class UserRedeemSearchWord implements MultiHashable {
 
         private static final StringBuilder stringBuilder = new StringBuilder();
 
@@ -84,7 +98,7 @@ public class RedeemBloomFilterService implements RedeemHistoryService {
         private final String code;
         private final boolean isDone;
 
-        public UserCodeRedeemComposite(UserRedeem userRedeem) {
+        public UserRedeemSearchWord(UserRedeem userRedeem) {
             this.botUserId = userRedeem.getBotUserId();
             this.ltuid = userRedeem.getLtuid();
             this.code = userRedeem.getRedeemCode().getCode();

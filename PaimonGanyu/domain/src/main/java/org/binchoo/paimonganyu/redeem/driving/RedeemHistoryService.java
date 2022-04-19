@@ -11,7 +11,7 @@ public interface RedeemHistoryService {
 
     /**
      * 주어진 통행증 ID와  리딤 코드 조합으로
-     * PaimonGanyu 시스템이 코드 리딤을 진행한 이력이 있는지 확인하고, 해당 이력이 {@code 완수(Done)} 상태인지 확인합니다.
+     * 코드 리딤을 진행한 이력이 있는지 확인하고, 해당 이력이 {@code 완수(Done)} 상태인지 확인합니다.
      * @param botUserId 유저 아이디
      * @param ltuid 통행증 ID
      * @param redeemCode 리딤 코드

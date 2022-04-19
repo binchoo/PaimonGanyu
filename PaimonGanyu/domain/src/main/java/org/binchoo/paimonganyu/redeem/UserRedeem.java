@@ -2,9 +2,15 @@ package org.binchoo.paimonganyu.redeem;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.dailycheck.DailyCheckRequestResult;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
+import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
+import org.binchoo.paimonganyu.redeem.driven.RedeemClientPort;
+
+import java.time.LocalDateTime;
 
 /**
- * 코드 리딤 수행 이력을 표상하는 객체입니다.
+ * 코드 리딤 수행과 결과를 표상하는 객체입니다.
  * @author : jbinchoo
  * @since : 2022/04/17
  */
@@ -12,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode
 @ToString
 @Getter
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class UserRedeem {
 
@@ -21,9 +28,8 @@ public class UserRedeem {
 
     private UserRedeemStatus status = UserRedeemStatus.QUEUED;
 
-    public UserRedeem(String botUserId, String ltuid, RedeemCode redeemCode, boolean isDone) {
-        this(botUserId, ltuid, redeemCode);
-        if (isDone) this.status = UserRedeemStatus.COMPLETED;
+    public UserRedeem doRequest(RedeemClientPort redeemClientPort) {
+        return null;
     }
 
     /**
@@ -32,14 +38,10 @@ public class UserRedeem {
      * @return 이 이력이 완수 이력인지 여부
      */
     public boolean isDone() {
-        return isCompleted() || isDuplicate();
+        return UserRedeemStatus.groupOfDone().contains(this.status);
     }
 
-    private boolean isCompleted() {
-        return UserRedeemStatus.COMPLETED.equals(this.status);
-    }
-
-    private boolean isDuplicate() {
-        return UserRedeemStatus.DUPLICATE.equals(this.status);
+    public void assumeDone() {
+        this.status = UserRedeemStatus.groupOfDone().get(0);
     }
 }

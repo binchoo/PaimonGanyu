@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.service.redeem;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
+import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,12 +38,13 @@ class RedeemBloomFilterServiceTest {
     UserRedeemCrudPort userRedeemCrudPort;
 
     RedeemBloomFilterService redeemBloomFilterService;
-    UserRedeem userRedeem;
+    UserRedeem userRedeemDone;
 
     @BeforeEach
     public void init() {
         redeemBloomFilterService = new RedeemBloomFilterService(userRedeemCrudPort);
-        userRedeem = new UserRedeem("user", "ltuid", mockRedeemCode, true);
+        userRedeemDone = new UserRedeem("user", "ltuid", mockRedeemCode);
+        userRedeemDone.assumeDone();
     }
 
     @DisplayName("매칭 이력이 안 내려오면, 이력 완수 여부는 거짓이다")
@@ -70,23 +72,22 @@ class RedeemBloomFilterServiceTest {
     void givenComplementHistories_hasRedeemed_returnsFalse() {
         given(mockRedeemCode.getCode()).willReturn("foobarcode");
         given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
-                .willReturn(complementSet(userRedeem, 100000));
-        lenient().when(userRedeemCrudPort.existMatches(userRedeem))
+                .willReturn(complementSet(100000));
+        lenient().when(userRedeemCrudPort.existMatches(userRedeemDone))
                 .thenReturn(false);
 
         boolean hasRedeemed = redeemBloomFilterService
-                .hasRedeemed(userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode());
+                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
 
         assertThat(hasRedeemed).isFalse();
     }
 
-    private List<UserRedeem> complementSet(UserRedeem userRedeem, int len) {
-        Random r = new Random();
+    private List<UserRedeem> complementSet(int len) {
         return IntStream.range(0, len).mapToObj(it-> {
                     String random = RandomString.make();
-                    return new UserRedeem(random, random, userRedeem.getRedeemCode(), r.nextBoolean());
+                    return new UserRedeem(random, random, userRedeemDone.getRedeemCode());
                 })
-                .filter(it-> !it.equals(userRedeem))
+                .filter(it-> !it.equals(userRedeemDone))
                 .collect(Collectors.toList());
     }
 
@@ -95,24 +96,23 @@ class RedeemBloomFilterServiceTest {
     void givenInclusiveHistories_hasRedeemed_callExistMatches() {
         given(mockRedeemCode.getCode()).willReturn("foobarcode");
         given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
-                .willReturn(inclusiveSet(userRedeem, 100000));
+                .willReturn(inclusiveSet(100000));
 
         redeemBloomFilterService
-                .hasRedeemed(userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode());
+                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
 
-        verify(userRedeemCrudPort).existMatches(userRedeem);
+        verify(userRedeemCrudPort).existMatches(userRedeemDone);
     }
 
-    private List<UserRedeem> inclusiveSet(UserRedeem userRedeem, int len) {
+    private List<UserRedeem> inclusiveSet(int len) {
         final int includeAt = Math.abs(new Random().nextInt()) % len;
-        Random r = new Random();
         return IntStream.range(0, len).mapToObj(it-> {
                     String random = RandomString.make();
                     if (includeAt == it) {
                         System.out.println("Inserted at " + it);
-                        return userRedeem;
+                        return userRedeemDone;
                     }
-                    return new UserRedeem(random, random, userRedeem.getRedeemCode(), r.nextBoolean());
+                    return new UserRedeem(random, random, userRedeemDone.getRedeemCode());
                 })
                 .collect(Collectors.toList());
     }
