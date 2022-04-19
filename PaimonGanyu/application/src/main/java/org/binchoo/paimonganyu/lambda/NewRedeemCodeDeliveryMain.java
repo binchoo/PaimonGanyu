@@ -36,8 +36,7 @@ public class NewRedeemCodeDeliveryMain {
     @Bean
     public RedeemTaskEstimationService redeemTaskEstimationService(UserRedeemDynamoRepository redeemRepository) {
         return new RedeemTaskEstimator(
-                new RedeemBloomFilter(
-                        new UserRedeemDynamoAdapter(redeemRepository)));
+                new RedeemBloomFilter(new UserRedeemDynamoAdapter(redeemRepository)));
     }
 
     @Bean

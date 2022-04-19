@@ -6,13 +6,11 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
-import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.NewRedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
-import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
@@ -27,7 +25,7 @@ import java.util.Objects;
 @Slf4j
 public class NewRedeemCodeDeliveryLambda {
 
-    private static final String REDEEM_QUEUE_URL = System.getenv("REDEEM_QUEUE_URL");
+    private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 
     private AmazonSQS sqsClient;
     private AmazonS3 s3Client;
@@ -51,6 +49,7 @@ public class NewRedeemCodeDeliveryLambda {
 
     public void handler(S3Event s3Event) {
         List<RedeemCode> newRedeemCodes = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
+        newRedeemCodes.forEach(code-> log.debug("New RedeemCode: {}", code));
         sendTasks(generateRedeemTasks(newRedeemCodes));
     }
 
@@ -59,6 +58,6 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     private void sendTasks(List<RedeemTask> tasks) {
-        tasks.forEach(task-> sqsClient.sendMessage(REDEEM_QUEUE_URL, task.getJson(objectMapper)));
+        tasks.forEach(task-> sqsClient.sendMessage(CODEREDEEM_QUEUE_NAME, task.getJson(objectMapper)));
     }
 }
