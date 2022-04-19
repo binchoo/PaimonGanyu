@@ -46,9 +46,11 @@ public class RedeemBloomFilter implements RedeemHistoryService {
         var historyToSearch = createUserRedeemToSearch(botUserId, ltuid, redeemCode);
         var searchWord = createSearchWord(historyToSearch);
         if (getOrCreateBloomFilter(redeemCode).assumeExists(searchWord)) {
+            log.debug("{} seems to been redeemed.", historyToSearch);
             return userRedeemCrudPort.existMatches(historyToSearch);
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
+            log.debug("{} has not been redeemed.", historyToSearch);
             return false;
             // 아이템 미삽입이 보장되므로 바로 반환한다.
         }

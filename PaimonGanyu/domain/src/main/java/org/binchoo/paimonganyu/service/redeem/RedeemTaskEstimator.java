@@ -46,6 +46,7 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationService {
                 }
             }
         }
+        log.debug("Generated Tasks: {}", tasks);
         return tasks;
     }
 

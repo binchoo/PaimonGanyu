@@ -71,11 +71,16 @@ Resources:
 
   # Code Redeem
   UserRedeemTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: botUserId
-        Type: String
+      TableName: UserRedeem
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: botUserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: botUserId
+          KeyType: HASH
 
   CodeBucket:
     Type: AWS::S3::Bucket
