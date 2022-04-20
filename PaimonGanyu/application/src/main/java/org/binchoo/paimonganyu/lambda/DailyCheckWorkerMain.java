@@ -2,20 +2,20 @@ package org.binchoo.paimonganyu.lambda;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
+import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.service.dailycheck.DailyCheckServiceImpl;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheckDynamoAdapter;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheckDynamoRepository;
 import org.binchoo.paimonganyu.infra.dailycheck.web.DailyCheckClientAdapter;
 import org.binchoo.paimonganyu.lambda.config.DynamoDBClientConfig;
-import org.binchoo.paimonganyu.lambda.config.HoyoApiConfig;
 import org.binchoo.paimonganyu.lambda.config.UserDailyCheckTableConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Import({
-        HoyoApiConfig.class,
+        HoyoApiWebClientConfigurer.class,
         DynamoDBClientConfig.class, UserDailyCheckTableConfig.class
 })
 @Configuration
@@ -27,7 +27,7 @@ public class DailyCheckWorkerMain {
     }
 
     /**
-     * @param dailyCheckApi from {@link HoyoApiConfig}
+     * @param dailyCheckApi from {@link HoyoApiWebClientConfigurer}
      * @param repository from {@link UserDailyCheckTableConfig}
      */
     @Bean

@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.lambda;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
+import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.service.dailycheck.DailyCheckServiceImpl;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Import({
-        SqsClientConfig.class, HoyoApiConfig.class,
+        SqsClientConfig.class, HoyoApiWebClientConfigurer.class,
         DynamoDBClientConfig.class, UserHoyopassTableConfig.class, UserDailyCheckTableConfig.class
 })
 @Configuration
@@ -28,7 +29,7 @@ public class DailyCheckBatchRequesterMain {
     }
 
     /**
-     * @param dailyCheckApi from {@link HoyoApiConfig}
+     * @param dailyCheckApi from {@link HoyoApiWebClientConfigurer}
      * @param repository from {@link UserDailyCheckTableConfig}
      */
     @Bean

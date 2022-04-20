@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since : 2022-04-19
  */
 class NewRedeemCodeDeliveryLambdaTest {
+
     @Test
     void bootstrap() {
         new NewRedeemCodeDeliveryLambda();

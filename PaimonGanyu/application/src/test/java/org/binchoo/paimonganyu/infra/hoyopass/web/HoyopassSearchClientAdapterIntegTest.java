@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.infra.hoyopass.web;
 
-import org.binchoo.paimonganyu.chatbot.config.HoyoApiConfig;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Region;
@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig(classes = {HoyoApiConfig.class, TestLtuidLtokenConfig.class})
+@SpringJUnitConfig(classes = {HoyoApiWebClientConfigurer.class, TestLtuidLtokenConfig.class})
 class HoyopassSearchClientAdapterIntegTest {
 
     @Autowired
