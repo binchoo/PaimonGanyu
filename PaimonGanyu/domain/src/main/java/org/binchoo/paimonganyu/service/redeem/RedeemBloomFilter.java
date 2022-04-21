@@ -25,7 +25,7 @@ import java.util.Map;
 @Service
 public class RedeemBloomFilter implements RedeemHistoryService {
 
-    private static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
+    public static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
     private final int bloomFilterSize;
     private final UserRedeemCrudPort userRedeemCrudPort;
@@ -43,31 +43,16 @@ public class RedeemBloomFilter implements RedeemHistoryService {
 
     @Override
     public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        var historyToSearch = createUserRedeemToSearch(botUserId, ltuid, redeemCode);
-        var searchWord = createSearchWord(historyToSearch);
-        if (getOrCreateBloomFilter(redeemCode).assumeExists(searchWord)) {
-            log.debug("{} seems to been redeemed.", historyToSearch);
+        var historyToSearch = new UserRedeem(botUserId, ltuid, redeemCode, true);
+        var searchWord = new UserRedeemSearchWord(historyToSearch);
+        var bloomFilter = getOrCreateBloomFilter(redeemCode);
+        if (bloomFilter.containsProbably(searchWord)) {
             return userRedeemCrudPort.existMatches(historyToSearch);
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
-            log.debug("{} has not been redeemed.", historyToSearch);
             return false;
             // 아이템 미삽입이 보장되므로 바로 반환한다.
         }
-    }
-
-    /**
-     * 완수 상태를 표상하는 UserRedeemComposite를 만든다.
-     * 여기서 반환된 객체와 블룸필터를 대조하여서 대응하는 이력의 존재 여부를 확인할 수 있다.
-     */
-    private UserRedeem createUserRedeemToSearch(String botUserId, String ltuid, RedeemCode redeemCode) {
-        var userRedeem = new UserRedeem(botUserId, ltuid, redeemCode);
-        userRedeem.assumeDone();
-        return userRedeem;
-    }
-
-    private UserRedeemSearchWord createSearchWord(UserRedeem toSearch) {
-        return new UserRedeemSearchWord(toSearch);
     }
 
     private BloomFilter<UserRedeemSearchWord> getOrCreateBloomFilter(RedeemCode key) {
@@ -80,11 +65,6 @@ public class RedeemBloomFilter implements RedeemHistoryService {
                 .map(UserRedeemSearchWord::new)
                 .forEach(bloomFilter::insert);
         return bloomFilter;
-    }
-
-    @Override
-    public boolean hasNotRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        return !this.hasRedeemed(botUserId, ltuid, redeemCode);
     }
 
     /**
@@ -109,13 +89,18 @@ public class RedeemBloomFilter implements RedeemHistoryService {
 
         @Override
         public int[] getHashes() {
-            var s0 = stringBuilder.append(botUserId).append(ltuid).toString();
-            var s1 = stringBuilder.append(botUserId).append(ltuid).append(code).append(isDone).toString();
+            var s0 = stringBuilder.append(botUserId).append(ltuid).append(code).toString();
+            var s1 = stringBuilder.append(isDone).toString();
             stringBuilder.setLength(0);
             return new int[] {
                     s0.hashCode(), s0.hashCode() * s1.hashCode(),
             };
         }
+    }
+
+    @Override
+    public boolean hasNotRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
+        return !this.hasRedeemed(botUserId, ltuid, redeemCode);
     }
 
     public int getBloomFilterSize() {

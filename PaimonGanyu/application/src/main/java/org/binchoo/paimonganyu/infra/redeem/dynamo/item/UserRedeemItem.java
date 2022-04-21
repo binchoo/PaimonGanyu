@@ -5,7 +5,6 @@ import lombok.*;
 import org.binchoo.paimonganyu.infra.utils.LocalDateTimeStringConverter;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 
 import java.time.LocalDateTime;
 
@@ -18,8 +17,8 @@ import static org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem.TA
 @ToString
 @Setter // required for conversion and unconversion, never remove this.
 @Getter
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @DynamoDBTable(tableName = TABLE_NAME)
 public class UserRedeemItem {
 
@@ -37,17 +36,26 @@ public class UserRedeemItem {
     @DynamoDBTypeConvertedEnum
     private UserRedeemStatus status;
 
+    @DynamoDBConvertedBool(DynamoDBConvertedBool.Format.true_false)
+    private boolean done;
+
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
     private LocalDateTime createAt;
 
+    public UserRedeemItem() { }
+
     public static UserRedeem toDomain(UserRedeemItem userRedeemItem) {
         return new UserRedeem(userRedeemItem.botUserId,
-                userRedeemItem.ltuid, new RedeemCode(userRedeemItem.code),
-                userRedeemItem.status);
+                userRedeemItem.ltuid, new RedeemCode(userRedeemItem.code), userRedeemItem.isDone());
     }
 
     public static UserRedeemItem fromDomain(UserRedeem userRedeem) {
-        return new UserRedeemItem(userRedeem.getBotUserId(), userRedeem.getLtuid(),
-                userRedeem.getRedeemCode().getCode(), userRedeem.getStatus(), LocalDateTime.now());
+        return UserRedeemItem.builder()
+                .botUserId(userRedeem.getBotUserId())
+                .ltuid(userRedeem.getLtuid())
+                .code(userRedeem.getRedeemCode().getCode())
+                .status(null)
+                .done(userRedeem.isDone())
+                .build();
     }
 }

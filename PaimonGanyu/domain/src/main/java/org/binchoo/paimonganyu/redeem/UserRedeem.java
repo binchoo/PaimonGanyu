@@ -2,12 +2,6 @@ package org.binchoo.paimonganyu.redeem;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.dailycheck.DailyCheckRequestResult;
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
-import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
-import org.binchoo.paimonganyu.redeem.driven.RedeemClientPort;
-
-import java.time.LocalDateTime;
 
 /**
  * 코드 리딤 수행과 결과를 표상하는 객체입니다.
@@ -25,12 +19,7 @@ public class UserRedeem {
     private final String botUserId;
     private final String ltuid;
     private final RedeemCode redeemCode;
-
-    private UserRedeemStatus status = UserRedeemStatus.QUEUED;
-
-    public UserRedeem doRequest(RedeemClientPort redeemClientPort) {
-        return null;
-    }
+    private boolean done;
 
     /**
      * 이력이 {@code 완료(Completed)} 또는 {@code 중복(Duplicate)}으로 기록되었다면
@@ -38,10 +27,16 @@ public class UserRedeem {
      * @return 이 이력이 완수 이력인지 여부
      */
     public boolean isDone() {
-        return UserRedeemStatus.groupOfDone.contains(this.status);
+        return this.done;
     }
 
-    public void assumeDone() {
-        this.status = UserRedeemStatus.groupOfDone.get(0);
+    protected void setDone(boolean isDone) {
+        this.done = isDone;
+    }
+
+    public UserRedeem markDone() {
+        UserRedeem userRedeemDone = new UserRedeem(botUserId, ltuid, redeemCode);
+        userRedeemDone.setDone(true);
+        return userRedeemDone;
     }
 }

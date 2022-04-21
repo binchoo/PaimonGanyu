@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.springframework.stereotype.Service;
 
@@ -28,35 +27,30 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
         var botUserId= userRedeem.getBotUserId();
         var ltuid = userRedeem.getLtuid();
         var code = userRedeem.getRedeemCode().getCode();
-        var statuses = userRedeem.isDone()?
-                UserRedeemStatus.groupOfDone : UserRedeemStatus.groupOfNotDone;
-        return repository.findByBotUserIdAndLtuidAndCodeAndStatusIn(botUserId, ltuid, code, statuses)
-                .stream().map(UserRedeemItem::toDomain)
-                .collect(Collectors.toList());
+        var done = userRedeem.isDone();
+        return repository.findByBotUserIdAndLtuidAndCodeAndDone(botUserId, ltuid, code, done).stream()
+                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public boolean existMatches(UserRedeem userRedeem) {
-        var botUserId = userRedeem.getBotUserId();
+        var botUserId= userRedeem.getBotUserId();
         var ltuid = userRedeem.getLtuid();
         var code = userRedeem.getRedeemCode().getCode();
-        var statuses = userRedeem.isDone()?
-                UserRedeemStatus.groupOfDone : UserRedeemStatus.groupOfNotDone;
-        return repository.existsByBotUserIdAndLtuidAndCodeAndStatusIn(botUserId, ltuid, code, statuses);
+        var done = userRedeem.isDone();
+        return repository.existsByBotUserIdAndLtuidAndCodeAndDone(botUserId, ltuid, code, done);
     }
 
     @Override
     public List<UserRedeem> findByRedeemCode(RedeemCode redeemCode) {
-        return repository.findByCode(redeemCode)
-                .stream().map(UserRedeemItem::toDomain)
-                .collect(Collectors.toList());
+        return repository.findByCode(redeemCode).stream()
+                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public List<UserRedeem> findAll() {
-        return repository.findAll()
-                .stream().map(UserRedeemItem::toDomain)
-                .collect(Collectors.toList());
+        return repository.findAll().stream()
+                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 
     @Override
