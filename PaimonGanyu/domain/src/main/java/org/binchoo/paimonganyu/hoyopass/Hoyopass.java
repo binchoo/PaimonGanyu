@@ -13,15 +13,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class Hoyopass {
 
-    /**
-     * 통행증 고유의 ltuid
-     */
-    private String ltuid;
-
-    /**
-     * ltuid에 대응하는 ltoken
-     */
-    private String ltoken;
+    private HoyopassCredentials credentials;
 
     /**
      * 이 통행증에 연결된 UID들 리스트
@@ -43,17 +35,29 @@ public class Hoyopass {
         this.uids = findResult;
     }
 
+    public String getLtuid() {
+        return credentials.getLtuid();
+    }
+
+    public String getLtoken() {
+        return credentials.getLtoken();
+    }
+
+    public String getCookieToken() {
+        return credentials.getCookieToken();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Hoyopass) {
             Hoyopass other = (Hoyopass) obj;
-            return ltuid.equals(other.getLtuid());
+            return credentials.equals(other.getCredentials());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return ltuid.hashCode();
+        return credentials.hashCode();
     }
 }

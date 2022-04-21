@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.service.hoyopass;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
@@ -27,11 +28,11 @@ public class HoyopassRegistry implements HoyopassRegistryPort {
      * @throws IllegalArgumentException 입력한 값이 실제 미호요와 상호작용 할 수 있는 통행증이 아닐 경우
      */
     @Override
-    public UserHoyopass registerHoyopass(String botUserId, String ltuid, String ltoken) {
+    public UserHoyopass registerHoyopass(String botUserId, HoyopassCredentials credentials) {
         UserHoyopass userHoyopass = userHoyopassCrudPort.findByBotUserId(botUserId)
                 .orElse(new UserHoyopass(botUserId));
 
-        userHoyopass.addUnverifiedHoyopass(ltuid, ltoken, hoyopassSearchClientPort);
+        userHoyopass.addUnverifiedHoyopass(credentials, hoyopassSearchClientPort);
 
         return userHoyopassCrudPort.save(userHoyopass);
     }

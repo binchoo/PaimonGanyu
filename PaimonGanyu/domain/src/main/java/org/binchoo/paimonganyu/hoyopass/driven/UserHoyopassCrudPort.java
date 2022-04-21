@@ -22,10 +22,10 @@ public interface UserHoyopassCrudPort {
 
     /**
      * 카카오 챗봇 유저의 통행증 정보를 저장소에 저장합니다.
-     * @param entity 카카오 챗봇 유저의 통행증 정보
+     * @param userHoyopass 카카오 챗봇 유저의 통행증 정보
      * @return 저장 완료한 통행증 정보
      */
-    UserHoyopass save(UserHoyopass entity);
+    UserHoyopass save(UserHoyopass userHoyopass);
 
     /**
      * 카카오 챗봇 유저의 모든 통행증 정보를 삭제합니다.

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.infra.utils.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,11 @@ public class HoyopassDocument {
     private String ltoken;
 
     /**
+     * ltuid에 대응하는 cookie_token
+     */
+    private String cookieToken;
+
+    /**
      * 이 통행증에 연결된 UID들 리스트
      */
     private List<UidDocument> uidDocuments;
@@ -47,7 +53,11 @@ public class HoyopassDocument {
 
     public Hoyopass toDomain() {
         return Hoyopass.builder()
-                .ltuid(this.ltuid).ltoken(this.ltoken)
+                .credentials(HoyopassCredentials.builder()
+                        .ltuid(ltuid)
+                        .ltoken(ltoken)
+                        .cookieToken(cookieToken)
+                        .build())
                 .uids(this.uidDocuments.stream()
                         .map(UidDocument::toDomain).collect(Collectors.toList()))
                 .createAt(this.createAt)
@@ -56,7 +66,9 @@ public class HoyopassDocument {
 
     public static HoyopassDocument fromDomain(Hoyopass hoyopass) {
         return HoyopassDocument.builder()
-                .ltuid(hoyopass.getLtuid()).ltoken(hoyopass.getLtoken())
+                .ltuid(hoyopass.getLtuid())
+                .ltoken(hoyopass.getLtoken())
+                .cookieToken(hoyopass.getCookieToken())
                 .uidDocuments(hoyopass.getUids().stream()
                         .map(UidDocument::fromDomain).collect(Collectors.toList()))
                 .createAt(hoyopass.getCreateAt())

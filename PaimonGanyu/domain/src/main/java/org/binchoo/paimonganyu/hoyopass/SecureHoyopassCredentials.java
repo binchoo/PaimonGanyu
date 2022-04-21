@@ -10,27 +10,25 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.Base64;
-import java.util.Objects;
 
 @Slf4j
-public class SecureHoyopass {
+public class SecureHoyopassCredentials {
 
     private static final String DELIMETER = ":";
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
 
-    private final String secureHoyopassString;
+    private final String signedString;
 
-    private String ltuid;
-    private String ltoken;
+    private HoyopassCredentials credentials;
 
-    public SecureHoyopass(String secureHoyopassString) {
-        this.secureHoyopassString = secureHoyopassString;
+    public SecureHoyopassCredentials(String signedString) {
+        this.signedString = signedString;
     }
 
     public void decrypt(PrivateKey privateKey) {
         try {
             byte[] hoyopassComposite = decryptWithin(
-                    base64Decoder.decode(secureHoyopassString), privateKey);
+                    base64Decoder.decode(signedString), privateKey);
             saveToFields(hoyopassComposite);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                     | BadPaddingException | IllegalBlockSizeException e) {
@@ -48,18 +46,15 @@ public class SecureHoyopass {
 
     private void saveToFields(byte[] hoyopassComposite) {
         String[] split = new String(hoyopassComposite).split(DELIMETER);
-        assert split.length == 2;
-        this.ltuid = split[0];
-        this.ltoken = split[1];
+        assert split.length == 3;
+        String ltuid = split[0];
+        String ltoken = split[1];
+        String cookieToken = split[2];
+        this.credentials = HoyopassCredentials.builder()
+                .ltuid(ltuid).ltoken(ltoken).cookieToken(cookieToken).build();
     }
 
-    public String getLtuid() {
-        Objects.requireNonNull(ltuid);
-        return ltuid;
-    }
-
-    public String getLtoken() {
-        Objects.requireNonNull(ltoken);
-        return ltoken;
+    public HoyopassCredentials getCredentials() {
+        return this.credentials;
     }
 }
