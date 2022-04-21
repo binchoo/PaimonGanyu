@@ -114,4 +114,35 @@ class RedeemBloomFilterTest {
                 })
                 .collect(Collectors.toList());
     }
+
+    @DisplayName("블룸필터 사이즈를 별도로 설정하지 않으면, 기본 설정값을 사용한다")
+    @Test
+    void whenBloomFilterSizeNotConfigured_testGetBloomFilterSize_returnsDefaultValue() {
+        var bloomFilterSize = redeemBloomFilter.getBloomFilterSize();
+
+        assertThat(bloomFilterSize).isEqualTo(RedeemBloomFilter.DEFAULT_BLOOMFILTER_SIZE);
+    }
+
+    @DisplayName("블룸필터 사이즈를 음수나 0으로 설정했으면, 기본 설정값을 사용한다")
+    @Test
+    void givenBloomFilterSizeOfNonPositiveValue_testGetBloomFilterSize_returnsTheSameValue() {
+        IntStream.of(-21474836, 0).forEach(myBloomFilterSize-> {
+            RedeemBloomFilter redeemBloomFilter = new RedeemBloomFilter(myBloomFilterSize, userRedeemCrudPort);
+
+            var bloomFilterSize = redeemBloomFilter.getBloomFilterSize();
+
+            assertThat(bloomFilterSize).isEqualTo(RedeemBloomFilter.DEFAULT_BLOOMFILTER_SIZE);
+        });
+    }
+
+    @DisplayName("블룸필터 사이즈를 양수로 설정했으면, 그 설정값을 사용한다")
+    @Test
+    void givenBloomFilterSizeOfPositiveValue_testGetBloomFilterSize_returnsTheSameValue() {
+        int myBloomFilterSize = 10000;
+        RedeemBloomFilter redeemBloomFilter = new RedeemBloomFilter(myBloomFilterSize, userRedeemCrudPort);
+
+        var bloomFilterSize = redeemBloomFilter.getBloomFilterSize();
+
+        assertThat(bloomFilterSize).isEqualTo(myBloomFilterSize);
+    }
 }

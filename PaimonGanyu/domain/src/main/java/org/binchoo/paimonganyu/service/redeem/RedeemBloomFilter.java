@@ -36,7 +36,7 @@ public class RedeemBloomFilter implements RedeemHistoryService {
     }
 
     public RedeemBloomFilter(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
-        this.bloomFilterSize = bloomFilterSize;
+        this.bloomFilterSize = (bloomFilterSize) > 0? bloomFilterSize : DEFAULT_BLOOMFILTER_SIZE;
         this.bloomFilters = new HashMap<>();
         this.userRedeemCrudPort = userRedeemCrudPort;
     }
