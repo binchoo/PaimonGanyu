@@ -1,13 +1,17 @@
 package org.binchoo.paimonganyu.algorithm;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 
 /**
  * @param <T> 블룸필터에 삽입하는 아이템 타입
  */
+@Slf4j
 public class BloomFilter<T extends MultiHashable> {
 
     private final int filterSize;
+
     private boolean[] bloomFilter;
 
     public BloomFilter(int filterSize) {
@@ -17,8 +21,8 @@ public class BloomFilter<T extends MultiHashable> {
 
     public void insert(T item) {
         for (int h : item.getHashes()) {
-            int i = h % filterSize;
-            bloomFilter[Math.abs(i)] = true;
+            int i = Math.abs(h % filterSize);
+            bloomFilter[i] = true;
         }
     }
 
@@ -27,12 +31,15 @@ public class BloomFilter<T extends MultiHashable> {
      * @return {@code true} 블룸필터에 {@code item}이 "존재하는 것 같을때"
      * <p> {@code false} 블룸필터에 {@code item}이 존재하지 않을 때
      */
-    public boolean assumeExists(T item) {
+    public boolean containsProbably(T item) {
         for (int h : item.getHashes()) {
-            int i = h % filterSize;
-            if (!bloomFilter[Math.abs(i)])
+            int i = Math.abs(h % filterSize);
+            if (!bloomFilter[i]) {
+                log.debug("Item {} does not exist", item);
                 return false;
+            }
         }
+        log.debug("Item {} seems to exists", item);
         return true;
     }
 

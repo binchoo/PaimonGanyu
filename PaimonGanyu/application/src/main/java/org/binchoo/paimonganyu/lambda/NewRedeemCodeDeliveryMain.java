@@ -39,6 +39,9 @@ public class NewRedeemCodeDeliveryMain {
                 new RedeemBloomFilter(new UserRedeemDynamoAdapter(redeemRepository)));
     }
 
+    /**
+     * @param hoyopassRepository from {@link UserHoyopassTableConfig}
+     */
     @Bean
     public UserHoyopassCrudPort userHoyopassCrudPort(UserHoyopassDynamoRepository hoyopassRepository) {
         return new UserHoyopassDynamoAdapter(hoyopassRepository);

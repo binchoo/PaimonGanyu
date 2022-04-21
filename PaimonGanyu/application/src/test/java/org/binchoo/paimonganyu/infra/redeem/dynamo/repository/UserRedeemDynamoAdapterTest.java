@@ -4,7 +4,6 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,37 +32,37 @@ class UserRedeemDynamoAdapterTest {
     @InjectMocks
     UserRedeemDynamoAdapter userRedeemDynamoAdapter;
 
-    @DisplayName("완수 리딤 이력을 색인할 경우, 완수 그룹 상태들을 대입하여 색인한다")
+    @DisplayName("완수 리딤 이력을 색인할 경우, done=true 상태를 대입하여 색인한다")
     @Test
     void givenDoneUserRedeem_findMatches_searchesWithDoneGroupStatuses() {
         var userRedeem = givenDoneUserRedeem();
         userRedeemDynamoAdapter.findMatches(userRedeem);
 
-        verify(repository).findByBotUserIdAndLtuidAndCodeAndStatusIn(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfDone);
+        verify(repository).findByBotUserIdAndLtuidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+                userRedeem.getRedeemCode().getCode(), true);
     }
 
-    @DisplayName("완수가 아닌 리딤 이력을 색인할 경우, 완수 아님 그룹의 상태들을 대입하여 색인한다")
+    @DisplayName("완수가 아닌 리딤 이력을 색인할 경우,done=false 상태 대입하여 색인한다")
     @Test
     void givenNotDoneUserRedeem_findMatches_searchesWithNotDoneGroupStatuses() {
         var userRedeem = givenNotDoneUserRedeem();
         userRedeemDynamoAdapter.findMatches(userRedeem);
 
-        verify(repository).findByBotUserIdAndLtuidAndCodeAndStatusIn(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfNotDone);
+        verify(repository).findByBotUserIdAndLtuidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+                userRedeem.getRedeemCode().getCode(),false);
     }
 
-    @DisplayName("완수 리딤 이력의 존재 여부를 색인할 경우, 완수 그룹의 상태들을 대입하여 색인한다")
+    @DisplayName("완수 리딤 이력의 존재 여부를 색인할 경우, done=true 상태를 대입하여 색인한다")
     @Test
     void givenDoneUserRedeem_existMatches_searchesWithDoneGroupStatuses() {
         var userRedeem = givenDoneUserRedeem();
         userRedeemDynamoAdapter.existMatches(userRedeem);
 
-        verify(repository).existsByBotUserIdAndLtuidAndCodeAndStatusIn(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfDone);
+        verify(repository).existsByBotUserIdAndLtuidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+                userRedeem.getRedeemCode().getCode(), true);
     }
 
     @DisplayName("완수가 아닌 리딤 이력의 존재 여부를 색인할 경우, 완수 아님 그룹의 상태들을 대입하여 색인한다")
@@ -75,9 +71,9 @@ class UserRedeemDynamoAdapterTest {
         var userRedeem = givenNotDoneUserRedeem();
         userRedeemDynamoAdapter.existMatches(userRedeem);
 
-        verify(repository).existsByBotUserIdAndLtuidAndCodeAndStatusIn(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(), userRedeem.getRedeemCode().getCode(),
-                UserRedeemStatus.groupOfNotDone);
+        verify(repository).existsByBotUserIdAndLtuidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+                userRedeem.getRedeemCode().getCode(), false);
     }
 
     @DisplayName("리딤 코드 기준으로 색인할 경우, 리딤 코드를 대입하여 색인한다")
@@ -107,7 +103,7 @@ class UserRedeemDynamoAdapterTest {
                         .collect(Collectors.toList()));
     }
 
-    @DisplayName("이력을 저장할 경우, 대응되는 아이템으로 변환해서 이력을 저장한다")
+    @DisplayName("이력을 저장할 경우, 반환되는 이력은 입력과 동등하다")
     @Test
     void save() {
         var userRedeem = randomUserRedeem();
@@ -119,9 +115,7 @@ class UserRedeemDynamoAdapterTest {
     }
 
     private UserRedeem givenDoneUserRedeem() {
-        var userRedeem = randomUserRedeem();
-        userRedeem.assumeDone();
-        return userRedeem;
+        return randomUserRedeem().markDone();
     }
 
     private UserRedeem givenNotDoneUserRedeem() {

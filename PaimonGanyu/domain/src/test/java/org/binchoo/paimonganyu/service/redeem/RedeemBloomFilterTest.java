@@ -40,10 +40,9 @@ class RedeemBloomFilterTest {
     UserRedeem userRedeemDone;
 
     @BeforeEach
-    public void init() {
+    void init() {
         redeemBloomFilter = new RedeemBloomFilter(userRedeemCrudPort);
-        userRedeemDone = new UserRedeem("user", "ltuid", mockRedeemCode);
-        userRedeemDone.assumeDone();
+        userRedeemDone = new UserRedeem("user", "ltuid", mockRedeemCode, true);
     }
 
     @DisplayName("매칭 이력이 안 내려오면, 이력 완수 여부는 거짓이다")
