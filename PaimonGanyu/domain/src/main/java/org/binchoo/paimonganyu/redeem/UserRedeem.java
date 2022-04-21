@@ -2,7 +2,6 @@ package org.binchoo.paimonganyu.redeem;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.redeem.driven.RedeemClientPort;
 
 /**
  * 코드 리딤 수행과 결과를 표상하는 객체입니다.
@@ -21,10 +20,6 @@ public class UserRedeem {
     private final String ltuid;
     private final RedeemCode redeemCode;
     private boolean done;
-
-    public UserRedeem doRequest(RedeemClientPort redeemClientPort) {
-        return null;
-    }
 
     /**
      * 이력이 {@code 완료(Completed)} 또는 {@code 중복(Duplicate)}으로 기록되었다면
