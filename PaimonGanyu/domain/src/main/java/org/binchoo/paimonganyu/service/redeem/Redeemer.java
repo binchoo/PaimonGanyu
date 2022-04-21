@@ -32,7 +32,7 @@ public class Redeemer implements RedeemerService {
 
     @Override
     public List<RedeemResult> redeem(Collection<RedeemTask> redeemTasks) {
-        final List<RedeemResult> resultContainer = new ArrayList<>();
+        List<RedeemResult> resultContainer = new ArrayList<>();
         redeemApiPort.redeem(redeemTasks, resultContainer::add);
         redeemResultCrudPort.saveAll(resultContainer);
         return Collections.unmodifiableList(resultContainer);
