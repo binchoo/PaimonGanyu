@@ -81,9 +81,10 @@ class UserRedeemDynamoAdapterTest {
     void testFindByRedeemCode() {
         var userRedeem = randomUserRedeem();
         var redeemCode = userRedeem.getRedeemCode();
+        var codeString = redeemCode.getCode();
         userRedeemDynamoAdapter.findByRedeemCode(redeemCode);
 
-        verify(repository).findByCode(redeemCode);
+        verify(repository).findByCode(codeString);
     }
 
     @DisplayName("모든 리딤 이력을 색인할 경우, 모든 리딤 이력에 대해 색인한 결과를 반환한다")

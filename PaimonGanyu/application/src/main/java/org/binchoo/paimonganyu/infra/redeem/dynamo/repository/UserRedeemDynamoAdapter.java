@@ -43,7 +43,7 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
 
     @Override
     public List<UserRedeem> findByRedeemCode(RedeemCode redeemCode) {
-        return repository.findByCode(redeemCode).stream()
+        return repository.findByCode(redeemCode.getCode()).stream()
                 .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 

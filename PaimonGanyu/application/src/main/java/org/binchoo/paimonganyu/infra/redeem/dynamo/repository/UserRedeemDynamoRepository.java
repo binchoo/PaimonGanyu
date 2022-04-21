@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.infra.redeem.dynamo.repository;
 
 import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
@@ -20,7 +19,7 @@ public interface UserRedeemDynamoRepository extends CrudRepository<UserRedeemIte
     List<UserRedeemItem> findByBotUserIdAndLtuidAndCodeAndDone(
             String botUserId, String ltuid, String code, boolean done);
 
-    List<UserRedeemItem> findByCode(RedeemCode redeemCode);
+    List<UserRedeemItem> findByCode(String code);
 
     List<UserRedeemItem> findAll();
 
