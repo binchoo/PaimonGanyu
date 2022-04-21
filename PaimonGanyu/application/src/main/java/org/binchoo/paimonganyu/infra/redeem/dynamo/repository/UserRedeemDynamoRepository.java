@@ -2,11 +2,9 @@ package org.binchoo.paimonganyu.infra.redeem.dynamo.repository;
 
 import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.UserRedeemStatus;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,11 +14,11 @@ import java.util.List;
 @EnableScan
 public interface UserRedeemDynamoRepository extends CrudRepository<UserRedeemItem, String> {
 
-    boolean existsByBotUserIdAndLtuidAndCodeAndStatusIn(
-            String botUserId, String ltuid, String code, Collection<UserRedeemStatus> statuses);
+    boolean existsByBotUserIdAndLtuidAndCodeAndDone(
+            String botUserId, String ltuid, String code, boolean done);
 
-    List<UserRedeemItem> findByBotUserIdAndLtuidAndCodeAndStatusIn(
-            String botUserId, String ltuid, String code, Collection<UserRedeemStatus> statuses);
+    List<UserRedeemItem> findByBotUserIdAndLtuidAndCodeAndDone(
+            String botUserId, String ltuid, String code, boolean done);
 
     List<UserRedeemItem> findByCode(RedeemCode redeemCode);
 

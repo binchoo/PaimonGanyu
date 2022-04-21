@@ -1,8 +1,4 @@
-package org.binchoo.paimonganyu.redeem;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+package org.binchoo.paimonganyu.infra.redeem.dynamo.item;
 
 /**
  * @author : jbinchoo
@@ -18,7 +14,4 @@ public enum UserRedeemStatus {
     DUPLICATE,
     /** This coderedeem request will be soon processed. */
     QUEUED;
-
-    public final static List<UserRedeemStatus> groupOfDone = List.of(COMPLETED, DUPLICATE);
-    public final static List<UserRedeemStatus> groupOfNotDone = List.of(FAILED, QUEUED);
 }
