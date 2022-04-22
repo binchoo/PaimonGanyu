@@ -18,7 +18,7 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
      * @param server 조회할 서버
      * @return 해당 uid가 보유한 캐릭터 정보 목록
      */
-    HoyoResponse<GenshinAvatars> getAllAvartar(LtuidLtoken ltuidLtoken, String uid, String server);
+    HoyoResponse<GenshinAvatars> getAllAvartars(LtuidLtoken ltuidLtoken, String uid, String server);
 
     /**
      * @param ltuidLtoken 유저 통행증 쿠키

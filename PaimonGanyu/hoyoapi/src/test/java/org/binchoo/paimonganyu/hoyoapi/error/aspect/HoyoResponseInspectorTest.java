@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-class HoyoResponseInspectionAspectTest {
+class HoyoResponseInspectorTest {
 
-    HoyoResponseInspectionAspect hoyoResponseInspectionAspect = new HoyoResponseInspectionAspect();
+    HoyoResponseInspector hoyoResponseInspector = new HoyoResponseInspector();
 
     @Mock
     HoyoResponse<Object> badHoyoResponse;
@@ -51,7 +51,7 @@ class HoyoResponseInspectionAspectTest {
         when(badHoyoResponse.getRetcode()).thenReturn(retcode);
 
         assertThrows(expectedExceptionClass, () -> {
-            hoyoResponseInspectionAspect.inspectResponse(badHoyoResponse);
+            hoyoResponseInspector.inspectResponse(badHoyoResponse);
         });
 
         Mockito.reset(badHoyoResponse);
@@ -64,7 +64,7 @@ class HoyoResponseInspectionAspectTest {
         when(badHoyoResponse.getData()).thenReturn(null);
 
         assertThrows(NullPointerException.class, ()-> {
-           hoyoResponseInspectionAspect.inspectResponse(badHoyoResponse);
+           hoyoResponseInspector.inspectResponse(badHoyoResponse);
         });
     }
 }

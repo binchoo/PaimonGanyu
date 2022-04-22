@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
+import org.binchoo.paimonganyu.hoyoapi.testconfig.TestAccountConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

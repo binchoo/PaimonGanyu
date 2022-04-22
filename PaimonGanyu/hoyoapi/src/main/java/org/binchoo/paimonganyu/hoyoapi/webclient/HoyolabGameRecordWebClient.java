@@ -47,7 +47,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
      * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
      */
     @Override
-    public HoyoResponse<GenshinAvatars> getAllAvartar(LtuidLtoken ltuidLtoken, String uid, String server) {
+    public HoyoResponse<GenshinAvatars> getAllAvartars(LtuidLtoken ltuidLtoken, String uid, String server) {
         ResponseEntity<HoyoResponse<GenshinAvatars>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(GAME_RECORD_CHARACTER)
