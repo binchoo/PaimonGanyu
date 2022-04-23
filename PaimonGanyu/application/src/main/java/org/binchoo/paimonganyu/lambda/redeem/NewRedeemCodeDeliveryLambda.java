@@ -11,7 +11,8 @@ import org.binchoo.paimonganyu.lambda.NewRedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
-import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
+import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
+import org.binchoo.paimonganyu.redeem.options.RedeemAllUsersOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -48,16 +49,14 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     public void handler(S3Event s3Event) {
-        List<RedeemCode> newRedeemCodes = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
-        newRedeemCodes.forEach(code-> log.debug("New RedeemCode: {}", code));
-        sendTasks(generateRedeemTasks(newRedeemCodes));
+        var redeemCodeList = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
+        RedeemTaskEstimationOption estimationOption = new RedeemAllUsersOption(userHoyopassCrudPort, ()-> redeemCodeList);
+        sendToQueue(redeemTaskEstimationService.generateTasks(estimationOption));
     }
 
-    private List<RedeemTask> generateRedeemTasks(List<RedeemCode> codes) {
-        return redeemTaskEstimationService.generateTasks(new RedeemAllUsersOption(userHoyopassCrudPort, codes));
-    }
-
-    private void sendTasks(List<RedeemTask> tasks) {
-        tasks.forEach(task-> sqsClient.sendMessage(CODEREDEEM_QUEUE_NAME, task.getJson(objectMapper)));
+    private void sendToQueue(List<RedeemTask> redeemTasks) {
+        for (RedeemTask task : redeemTasks) {
+            sqsClient.sendMessage(CODEREDEEM_QUEUE_NAME, task.getJson(objectMapper));
+        }
     }
 }
