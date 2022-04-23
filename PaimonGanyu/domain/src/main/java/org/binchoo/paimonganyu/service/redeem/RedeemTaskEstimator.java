@@ -12,8 +12,8 @@ import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
 import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author : jbinchoo
@@ -28,39 +28,17 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationService {
 
     @Override
     public List<RedeemTask> generateTasks(RedeemTaskEstimationOption estimationOption) {
-        List<UserHoyopass> users = estimationOption.getUsers();
-        List<RedeemCode> codes = estimationOption.getCodes();
-        List<RedeemTask> tasks = multiply(users, codes);
-        log.debug("Generated tasks: {}", tasks);
-        return tasks;
+        List<RedeemTask> estimatedTasks = estimationOption.estimateTask();
+        List<RedeemTask> filteredTasks = estimatedTasks.stream()
+                .filter(this::hasNotRedeemed)
+                .collect(Collectors.toList());
+        log.debug("Generated tasks: {}", estimatedTasks);
+        log.debug("Filtered tasks: {}", filteredTasks);
+        return filteredTasks;
     }
 
-    private List<RedeemTask> multiply(List<UserHoyopass> users, List<RedeemCode> codes) {
-        List<RedeemTask> tasks = new ArrayList<>();
-        for (UserHoyopass user : users) {
-            String userId = user.getBotUserId();
-            for (Hoyopass hoyopass : user.getHoyopasses()) {
-                String ltuid = hoyopass.getLtuid();
-                String cookieToken = hoyopass.getCookieToken();
-                for (Uid uid : hoyopass.getUids()) {
-                    for (RedeemCode code : codes)
-                        if (hasNotRedeemed(userId, ltuid, code)) {
-                            tasks.add(RedeemTask.builder()
-                                    .botUserId(userId)
-                                    .accountId(ltuid)
-                                    .cookieToken(cookieToken)
-                                    .region(uid.getRegion().lowercase())
-                                    .uid(uid.getUidString())
-                                    .redeemCode(code)
-                                    .build());
-                        }
-                }
-            }
-        }
-        return tasks;
-    }
-
-    private boolean hasNotRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        return redeemHistoryService.hasNotRedeemed(botUserId, ltuid, redeemCode);
+    private boolean hasNotRedeemed(RedeemTask redeemTask) {
+        return redeemHistoryService.hasNotRedeemed(redeemTask.getBotUserId(),
+                redeemTask.getCredentials().getLtuid(), redeemTask.getRedeemCode());
     }
 }

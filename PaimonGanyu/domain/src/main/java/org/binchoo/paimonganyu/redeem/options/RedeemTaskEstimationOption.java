@@ -1,8 +1,13 @@
 package org.binchoo.paimonganyu.redeem.options;
 
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
+import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
+import org.binchoo.paimonganyu.redeem.RedeemTask;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +32,7 @@ public class RedeemTaskEstimationOption {
     }
 
     /**
-     * @return 코드 리딤 대상 코드들
+     * @return {@link} CodeProvider가 나이브하게 제공한 리딤 코드들
      * @throws NullPointerException codeProvider가 null일 때
      */
     public List<RedeemCode> getCodes() {
@@ -43,6 +48,46 @@ public class RedeemTaskEstimationOption {
     public RedeemTaskEstimationOption withUserProvider(UserProvider userProvider) {
         this.userProvider = userProvider;
         return this;
+    }
+
+    public List<RedeemTask> estimateTask() {
+        return this.multiply(this.getUsers(), this.getCodes());
+    }
+
+    private List<RedeemTask> multiply(List<UserHoyopass> users, List<RedeemCode> redeemCodes) {
+        List<RedeemTask> taskContainer = new ArrayList<>(users.size() * 2);
+        for (UserHoyopass user : users) {
+            for (RedeemCode code : redeemCodes) {
+                fillTaskContainer(taskContainer, user, code);
+            }
+        }
+        return taskContainer;
+    }
+
+    private void fillTaskContainer(List<RedeemTask> taskContainer, UserHoyopass user, RedeemCode redeemCode) {
+        String botUserId = user.getBotUserId();
+        for (Hoyopass hoyopass : user.getHoyopasses()) {
+            fillTaskContainer(taskContainer, botUserId, hoyopass, redeemCode);
+        }
+    }
+
+    private void fillTaskContainer(List<RedeemTask> taskContainer,
+                                   String botUserId, Hoyopass hoyopass, RedeemCode redeemCode) {
+        HoyopassCredentials credentials = hoyopass.getCredentials();
+        for (Uid uid : hoyopass.getUids()) {
+            taskContainer.add(
+                    createRedeemTask(botUserId, credentials, uid, redeemCode));
+        }
+    }
+
+    private RedeemTask createRedeemTask(String botUserId,
+                                        HoyopassCredentials credentials, Uid uid, RedeemCode redeemCode) {
+        return RedeemTask.builder()
+                .botUserId(botUserId)
+                .credentials(credentials)
+                .uid(uid)
+                .redeemCode(redeemCode)
+                .build();
     }
 
     @FunctionalInterface

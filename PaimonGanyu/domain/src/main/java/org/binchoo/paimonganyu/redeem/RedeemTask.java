@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
+import org.binchoo.paimonganyu.hoyopass.Uid;
 
 /**
  * 코드 리딤 태스크를 표상합니다. 작업 큐로 발송되어 작업자에 의해 소비됩니다.
@@ -13,18 +15,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EqualsAndHashCode
 @ToString
-@Builder
 @Setter
 @Getter
+@Builder
 @AllArgsConstructor
 public class RedeemTask {
 
     private String botUserId;
-    private String accountId;
-    private String cookieToken;
-    private String uid;
-    private String region;
+    private HoyopassCredentials credentials;
+    private Uid uid;
     private RedeemCode redeemCode;
+
+    public RedeemTask() {}
 
     public String getJson(ObjectMapper objectMapper) {
         try {
