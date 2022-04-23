@@ -3,8 +3,10 @@ package org.binchoo.paimonganyu.infra.hoyopass.web;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.testconfig.TestLtuidLtokenConfig;
@@ -47,11 +49,7 @@ class HoyopassSearchClientAdapterIntegTest {
 
     @Test
     void givenValidHoyopass_findUids_returnsMatchingUids() {
-        Hoyopass validHoyopass = Hoyopass.builder()
-                .ltuid(valid0.getLtuid())
-                .ltoken(valid0.getLtoken())
-                .build();
-
+        Hoyopass validHoyopass = givenHoyopassOf(valid0);
         List<UserGameRole> realUserGameRoles = accountApi.getUserGameRoles(valid0)
                 .getData().getList();
 
@@ -74,12 +72,18 @@ class HoyopassSearchClientAdapterIntegTest {
 
     @Test
     void givenInvalidHoyopass_findUids_throwsError() {
-        Hoyopass validHoyopass = Hoyopass.builder()
-                .ltuid(invalid0.getLtuid())
-                .ltoken(invalid0.getLtoken())
-                .build();
+        Hoyopass invalidHoyopass = givenHoyopassOf(invalid0);
 
         assertThrows(IllegalArgumentException.class, ()->
-                hoyopassSearchClientAdapter.findUids(validHoyopass));
+                hoyopassSearchClientAdapter.findUids(invalidHoyopass));
+    }
+
+    private Hoyopass givenHoyopassOf(LtuidLtoken ltuidLtoken) {
+        return Hoyopass.builder()
+                .credentials(HoyopassCredentials.builder()
+                        .ltuid(ltuidLtoken.getLtuid())
+                        .ltoken(ltuidLtoken.getLtoken())
+                        .build())
+                .build();
     }
 }

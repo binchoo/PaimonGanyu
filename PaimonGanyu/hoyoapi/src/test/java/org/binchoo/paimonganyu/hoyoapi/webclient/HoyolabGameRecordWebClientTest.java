@@ -4,6 +4,8 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
+import org.binchoo.paimonganyu.hoyoapi.testconfig.TestAccountConfig;
+import org.binchoo.paimonganyu.hoyoapi.testconfig.TestAccountDetails;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ class HoyolabGameRecordWebClientTest {
 
     @Test
     void givenAetherAccount_getAllAvartar_successful() {
-        HoyoResponse<GenshinAvatars> response = gameRecordApi.getAllAvartar(aetherAccountDetails.getLtuidLtoken(),
+        HoyoResponse<GenshinAvatars> response = gameRecordApi.getAllAvartars(aetherAccountDetails.getLtuidLtoken(),
                 aetherAccountDetails.getUid(), aetherAccountDetails.getRegion());
 
         assertThat(response.getData()).isNotNull();
@@ -38,7 +40,7 @@ class HoyolabGameRecordWebClientTest {
 
     @Test
     void givenLumineAccount_getAllAvartar_successful() {
-        HoyoResponse<GenshinAvatars> response = gameRecordApi.getAllAvartar(lumineAccountDetails.getLtuidLtoken(),
+        HoyoResponse<GenshinAvatars> response = gameRecordApi.getAllAvartars(lumineAccountDetails.getLtuidLtoken(),
                 lumineAccountDetails.getUid(), lumineAccountDetails.getRegion());
 
         assertThat(response.getData()).isNotNull();

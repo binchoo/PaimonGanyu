@@ -13,14 +13,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EqualsAndHashCode
 @ToString
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
 public class RedeemTask {
 
     private String botUserId;
-    private String ltuid;
-    private String ltoken;
+    private String accountId;
+    private String cookieToken;
+    private String uid;
+    private String region;
     private RedeemCode redeemCode;
 
     public String getJson(ObjectMapper objectMapper) {

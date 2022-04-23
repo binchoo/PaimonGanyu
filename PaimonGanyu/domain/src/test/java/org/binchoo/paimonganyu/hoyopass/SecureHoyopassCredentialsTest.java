@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 //TODO: implement this test.
-class SecureHoyopassTest {
+class SecureHoyopassCredentialsTest {
 
     @Test
     void decrypt() {

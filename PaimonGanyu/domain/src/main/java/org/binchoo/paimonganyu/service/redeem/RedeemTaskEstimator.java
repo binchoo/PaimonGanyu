@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.service.redeem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
@@ -40,10 +41,20 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationService {
             String userId = user.getBotUserId();
             for (Hoyopass hoyopass : user.getHoyopasses()) {
                 String ltuid = hoyopass.getLtuid();
-                String ltoken = hoyopass.getLtoken();
-                for (RedeemCode code : codes)
-                    if (hasNotRedeemed(userId, ltuid, code))
-                        tasks.add(new RedeemTask(userId, ltuid, ltoken, code));
+                String cookieToken = hoyopass.getCookieToken();
+                for (Uid uid : hoyopass.getUids()) {
+                    for (RedeemCode code : codes)
+                        if (hasNotRedeemed(userId, ltuid, code)) {
+                            tasks.add(RedeemTask.builder()
+                                    .botUserId(userId)
+                                    .accountId(ltuid)
+                                    .cookieToken(cookieToken)
+                                    .region(uid.getRegion().lowercase())
+                                    .uid(uid.getUidString())
+                                    .redeemCode(code)
+                                    .build());
+                        }
+                }
             }
         }
         return tasks;

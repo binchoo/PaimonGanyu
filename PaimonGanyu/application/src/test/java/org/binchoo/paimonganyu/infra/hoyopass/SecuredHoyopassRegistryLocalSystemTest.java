@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import org.binchoo.paimonganyu.chatbot.PaimonGanyuChatbotMain;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
@@ -217,10 +218,12 @@ class SecuredHoyopassRegistryLocalSystemTest {
     }
 
     private UserHoyopass registerHoyopass(String botUserId, LtuidLtoken ltuidLtoken) {
-        UserHoyopass userHoyopass = securedHoyopassRegistry.registerHoyopass(
-                botUserId, ltuidLtoken.getLtuid(), ltuidLtoken.getLtoken());
-        assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
-        return userHoyopass;
+        return securedHoyopassRegistry.registerHoyopass(botUserId,
+                HoyopassCredentials.builder()
+                        .ltuid(ltuidLtoken.getLtuid())
+                        .ltoken(ltuidLtoken.getLtoken())
+                        .cookieToken(null) // it's ok
+                        .build());
     }
 
     private static final class UserHoyopassTableBuilder {

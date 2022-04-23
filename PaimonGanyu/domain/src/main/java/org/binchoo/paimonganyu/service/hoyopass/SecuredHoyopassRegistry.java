@@ -2,10 +2,7 @@ package org.binchoo.paimonganyu.service.hoyopass;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.SecureHoyopass;
-import org.binchoo.paimonganyu.hoyopass.Uid;
-import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.*;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
@@ -27,10 +24,10 @@ public class SecuredHoyopassRegistry implements SecuredHoyopassRegistryPort {
      * @throws IllegalArgumentException 입력한 값이 실제 미호요와 상호작용 할 수 있는 통행증이 아닐 경우
      */
     @Override
-    public UserHoyopass registerHoyopass(String botUserId, String secureHoyopassString) {
-        SecureHoyopass secureHoyopass = new SecureHoyopass(secureHoyopassString);
-        secureHoyopass.decrypt(signingKeys.getPrivateKey());
-        return delegate.registerHoyopass(botUserId, secureHoyopass.getLtuid(), secureHoyopass.getLtoken());
+    public UserHoyopass registerHoyopass(String botUserId, String secureCredentialsString) {
+        SecureHoyopassCredentials secureHoyopassCredentials = new SecureHoyopassCredentials(secureCredentialsString);
+        secureHoyopassCredentials.decrypt(signingKeys.getPrivateKey());
+        return delegate.registerHoyopass(botUserId, secureHoyopassCredentials.getCredentials());
     }
 
     /**
@@ -39,8 +36,8 @@ public class SecuredHoyopassRegistry implements SecuredHoyopassRegistryPort {
      * @throws IllegalArgumentException 입력한 값이 실제 미호요와 상호작용 할 수 있는 통행증이 아닐 경우
      */
     @Override
-    public UserHoyopass registerHoyopass(String botUserId, String ltuid, String ltoken) {
-        return delegate.registerHoyopass(botUserId, ltuid, ltoken);
+    public UserHoyopass registerHoyopass(String botUserId, HoyopassCredentials credentials) {
+        return delegate.registerHoyopass(botUserId, credentials);
     }
 
     @Override

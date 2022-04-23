@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
@@ -10,9 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode
 @ToString
-@Builder
 @Getter
+@Builder
 public class UserHoyopass {
 
     private static final int MAX_HOYOPASS_COUNT = 2;
@@ -77,12 +79,11 @@ public class UserHoyopass {
      * @throws IllegalStateException 최대 소지 개수 이상의 통행증을 이 유저에게 등록하려 할 경우,
      * 유저에게 중복된 통행증을 등록하려 할 경우
      * @throws IllegalArgumentException 입력한 값이 실제 미호요와 상호작용 할 수 있는 통행증이 아닐 경우
-     * @param ltuid 통행증 ID
-     * @param ltoken 통행증 크레덴셜 토큰
+     * @param credentials 통행증 크레덴셜
      * @param hoyopassSearchClientPort 미호요 통행증 실제 조회를 위한 검색 서비스 객체
      */
-    public void addUnverifiedHoyopass(String ltuid, String ltoken, HoyopassSearchClientPort hoyopassSearchClientPort) {
-        Hoyopass newHoyopass = Hoyopass.builder().ltuid(ltuid).ltoken(ltoken).build();
+    public void addUnverifiedHoyopass(HoyopassCredentials credentials, HoyopassSearchClientPort hoyopassSearchClientPort) {
+        Hoyopass newHoyopass = Hoyopass.builder().credentials(credentials).build();
         this.addVerifiedHoyopass(newHoyopass);
         newHoyopass.fillUids(hoyopassSearchClientPort);
     }
@@ -114,14 +115,5 @@ public class UserHoyopass {
 
     public int getCount() {
         return hoyopasses.size();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof UserHoyopass) {
-            UserHoyopass other = (UserHoyopass) obj;
-            return botUserId.equals(other.botUserId) && hoyopasses.equals(other.hoyopasses);
-        }
-        return false;
     }
 }

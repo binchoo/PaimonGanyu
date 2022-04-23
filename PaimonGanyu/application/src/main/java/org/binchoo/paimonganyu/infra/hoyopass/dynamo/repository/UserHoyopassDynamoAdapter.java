@@ -29,8 +29,8 @@ public class UserHoyopassDynamoAdapter implements UserHoyopassCrudPort {
     }
 
     @Override
-    public UserHoyopass save(UserHoyopass entity) {
-        return repository.save(UserHoyopassItem.fromDomain(entity)).toDomain();
+    public UserHoyopass save(UserHoyopass userHoyopass) {
+        return repository.save(UserHoyopassItem.fromDomain(userHoyopass)).toDomain();
     }
 
     @Override

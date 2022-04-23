@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class HoyoResponseInspectionAspect {
+public class HoyoResponseInspector {
 
     /**
      * <p> 미호요 API는 대부분의 오류 응답 상황에서도 200 상태코드를 줍니다.

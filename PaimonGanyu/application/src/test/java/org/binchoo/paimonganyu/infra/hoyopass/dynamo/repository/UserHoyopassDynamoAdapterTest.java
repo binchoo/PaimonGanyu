@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.*;
@@ -37,23 +38,22 @@ class UserHoyopassDynamoAdapterTest {
     void withNoEntry_findAll_returnsEmptyList() {
         when(repository.findAll()).thenReturn(Collections.emptyList());
 
-        var result = userHoyopassDynamoAdapter.findAll();
+        List<UserHoyopass> result = userHoyopassDynamoAdapter.findAll();
         assertThat(result).hasSize(0);
     }
 
     @Test
     void withSomeEntries_findAll_returnsEveryEntry() {
-        List<UserHoyopass> mockUserHoyopassList = new ArrayList<>();
-
         int entryCount = 20;
-        for (int i = 0; i < entryCount; i++)
-            mockUserHoyopassList.add(getMockUserHoyopass());
+        var mockUserHoyopassList = IntStream.range(0, entryCount)
+                .mapToObj(i-> getMockUserHoyopass())
+                .collect(Collectors.toList());
 
         when(repository.findAll()).thenReturn(mockUserHoyopassList.stream()
                 .map(UserHoyopassItem::fromDomain)
                 .collect(Collectors.toList()));
 
-        var result = userHoyopassDynamoAdapter.findAll();
+        List<UserHoyopass> result = userHoyopassDynamoAdapter.findAll();
         assertThat(result).hasSize(entryCount);
         mockUserHoyopassList.forEach(it-> assertThat(it).isIn(result));
     }
@@ -68,31 +68,31 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void withMatchingEntry_findByBotUserId_returnsPresentOptional() {
-        UserHoyopass mockUserHoyopass = getMockUserHoyopass();
-        UserHoyopassItem mockUserHoyopassItem = UserHoyopassItem.fromDomain(mockUserHoyopass);
+        var mockUserHoyopass = getMockUserHoyopass();
+        var mockUserHoyopassItem = UserHoyopassItem.fromDomain(mockUserHoyopass);
 
         when(repository.findByBotUserId(mockUserHoyopassItem.getBotUserId()))
                 .thenReturn(Optional.of(mockUserHoyopassItem));
 
-        var result = userHoyopassDynamoAdapter.findByBotUserId(mockUserHoyopass.getBotUserId());
+        Optional<UserHoyopass> result = userHoyopassDynamoAdapter.findByBotUserId(mockUserHoyopass.getBotUserId());
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get()).isEqualTo(mockUserHoyopass);
     }
 
     @Test
     void save() {
-        UserHoyopass userHoyopass = getMockUserHoyopass();
-        UserHoyopassItem userHoyopassItem = UserHoyopassItem.fromDomain(userHoyopass);
+        var userHoyopass = getMockUserHoyopass();
+        var userHoyopassItem = UserHoyopassItem.fromDomain(userHoyopass);
 
         when(repository.save(any())).thenReturn(userHoyopassItem);
 
-        var result = userHoyopassDynamoAdapter.save(userHoyopass);
+        UserHoyopass result = userHoyopassDynamoAdapter.save(userHoyopass);
         assertThat(result).isEqualTo(userHoyopass);
     }
 
     @Test
     void withoutMatchingEntry_existsByBotUserId_returnsFalse() {
-        UserHoyopass userHoyopass = getMockUserHoyopass();
+        var userHoyopass = getMockUserHoyopass();
 
         when(repository.existsByBotUserId(userHoyopass.getBotUserId()))
                 .thenReturn(false);
@@ -103,7 +103,7 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void withMatchingEntry_existsByBotUserId_returnsFalse() {
-        UserHoyopass userHoyopass = getMockUserHoyopass();
+        var userHoyopass = getMockUserHoyopass();
 
         when(repository.existsByBotUserId(userHoyopass.getBotUserId()))
                 .thenReturn(true);

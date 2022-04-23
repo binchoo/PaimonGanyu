@@ -1,9 +1,6 @@
 package org.binchoo.paimonganyu.testfixture.hoyopass;
 
-import org.binchoo.paimonganyu.hoyopass.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.Region;
-import org.binchoo.paimonganyu.hoyopass.Uid;
-import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.*;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -29,9 +26,13 @@ public class HoyopassMockUtils {
     public static Hoyopass getMockHoyopass() {
         String ltoken = generateRandom();
         String ltuid = generateRandom();
+        String cookieToken = generateRandom();
         return Hoyopass.builder()
-                .ltoken(ltoken)
-                .ltuid(ltuid)
+                .credentials(HoyopassCredentials.builder()
+                        .ltuid(ltuid)
+                        .ltoken(ltoken)
+                        .cookieToken(cookieToken)
+                        .build())
                 .uids(Arrays.asList(getMockUid(), getMockUid()))
                 .build();
     }

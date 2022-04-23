@@ -9,6 +9,7 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckMonthlyReport;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
+import org.binchoo.paimonganyu.hoyoapi.testconfig.TestAccountConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

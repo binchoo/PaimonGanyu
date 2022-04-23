@@ -3,10 +3,7 @@ package org.binchoo.paimonganyu.infra.hoyopass.dynamo.item;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Setter
 @Getter
+@Builder
 @AllArgsConstructor
 @DynamoDBTable(tableName = UserHoyopassItem.TABLE_NAME)
 public class UserHoyopassItem {
@@ -38,14 +36,17 @@ public class UserHoyopassItem {
 
     public UserHoyopass toDomain() {
         return UserHoyopass.builder()
-                .botUserId(this.botUserId)
+                .botUserId(botUserId)
                 .hoyopasses(hoyopasses.stream()
                         .map(HoyopassDocument::toDomain).collect(Collectors.toList()))
                 .build();
     }
 
     public static UserHoyopassItem fromDomain(UserHoyopass userHoyopass) {
-        return new UserHoyopassItem(userHoyopass.getBotUserId(),
-                userHoyopass.getHoyopasses().stream().map(HoyopassDocument::fromDomain).collect(Collectors.toList()));
+        return UserHoyopassItem.builder()
+                .botUserId(userHoyopass.getBotUserId())
+                .hoyopasses(userHoyopass.getHoyopasses().stream()
+                    .map(HoyopassDocument::fromDomain).collect(Collectors.toList()))
+                .build();
     }
 }

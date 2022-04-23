@@ -75,7 +75,7 @@ public class HoyopassSearchClientAdapter implements HoyopassSearchClientPort {
         try {
             String uid = userGameRole.getGameUid();
             String region = userGameRole.getRegion();
-            HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllAvartar(ltuidLtoken, uid, region);
+            HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllAvartars(ltuidLtoken, uid, region);
             return apiResponse.getData().containsLumine();
         } catch (NotLoggedInError e) {
             log.warn("주어진 통행증은 HoYoLab API를 이용할 수 없었습니다. 이 통행증에 대해 HoYoLab 닉네임 설정 여부 확인이 필요합니다.", e);

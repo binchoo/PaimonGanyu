@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass.driving;
 
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
@@ -11,11 +12,10 @@ public interface HoyopassRegistryPort {
     /**
      * 지정된 유저가 갖는 통행증을 새로 등록한다.
      * @param botUserId 카카오 챗봇이 유저를 식별하는 아이디
-     * @param ltuid 통행증 ltuid
-     * @param ltoken 통행증 ltoken
+     * @param credentials 통행증 크레덴셜
      * @return 저장 완료된 UserHoyopass 엔터티
      */
-    UserHoyopass registerHoyopass(String botUserId, String ltuid, String ltoken);
+    UserHoyopass registerHoyopass(String botUserId, HoyopassCredentials credentials);
 
 
     /**
