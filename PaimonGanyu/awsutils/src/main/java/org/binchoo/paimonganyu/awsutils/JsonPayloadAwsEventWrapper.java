@@ -14,22 +14,20 @@ import java.util.stream.Stream;
  * @param <E> One of AWS lambda's event types
  */
 @Slf4j
-public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper {
+public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper<E> {
 
-    private final E event;
     private final ObjectMapper objectMapper;
 
-    protected JsonPayloadAwsEventWrapper(E event) {
-       this(event, new ObjectMapper());
+    protected JsonPayloadAwsEventWrapper() {
+        this(new ObjectMapper());
     }
 
-    protected JsonPayloadAwsEventWrapper(E event, ObjectMapper objectMapper) {
-        this.event = event;
+    protected JsonPayloadAwsEventWrapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public <T> List<T> extractPojos(Class<T> clazz) {
+    public <T> List<T> extractPojos(E event, Class<T> clazz) {
         return Collections.unmodifiableList(
                 this.getJsonStream(event)
                         .map(json -> this.deserialize(json, clazz))

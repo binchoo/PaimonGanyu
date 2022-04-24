@@ -3,7 +3,9 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 import org.binchoo.paimonganyu.lambda.DailyCheckHitoriRequesterMain;
@@ -33,7 +35,8 @@ public class DailyCheckHitoriRequesterLambda {
     }
 
     public void handler(SNSEvent snsEvent) {
-        new SNSEventWrapper(snsEvent).extractPojos(UserHoyopassMessage.class).stream()
+        var eventWrapper = AwsEventWrapperFactory.getWrapper(snsEvent);
+        eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class).stream()
                 .map(DailyCheckTaskSpec::getList).flatMap(List::stream)
                 .filter(task-> !dailyCheckService.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
                 .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.getJson(objectMapper)));

@@ -22,13 +22,12 @@ public class S3EventObjectReader extends JsonPayloadAwsEventWrapper<S3Event> {
 
     private final AmazonS3 s3Client;
 
-    public S3EventObjectReader(S3Event event, AmazonS3 s3Client) {
-        super(event);
-        this.s3Client = s3Client;
+    public S3EventObjectReader(AmazonS3 s3Client) {
+        this(s3Client, new ObjectMapper());
     }
 
-    public S3EventObjectReader(S3Event event, AmazonS3 s3Client, ObjectMapper objectMapper) {
-        super(event, objectMapper);
+    public S3EventObjectReader(AmazonS3 s3Client, ObjectMapper objectMapper) {
+        super(objectMapper);
         this.s3Client = s3Client;
     }
 

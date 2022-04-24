@@ -7,7 +7,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
@@ -24,9 +24,9 @@ public class UserHoyopassFanoutLambda {
     private final AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
 
     public void handler(DynamodbEvent dynamodbEvent) {
-        new DynamodbEventWrapper(dynamodbEvent, dynamodbMapper)
-                .extractPojos(UserHoyopassItem.class)
-                .stream().map(UserHoyopassItem::toDomain)
+        var eventWrapper = AwsEventWrapperFactory.getWrapper(dynamodbEvent, dynamodbMapper);
+        eventWrapper.extractPojos(dynamodbEvent, UserHoyopassItem.class).stream()
+                .map(UserHoyopassItem::toDomain)
                 .map(this::createMessage)
                 .forEach(this::publish);
     }

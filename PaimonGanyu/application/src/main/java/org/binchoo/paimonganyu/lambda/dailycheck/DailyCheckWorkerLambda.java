@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.binchoo.paimonganyu.lambda.DailyCheckWorkerMain;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -23,7 +24,8 @@ public class DailyCheckWorkerLambda {
     }
 
     public void handler(SQSEvent event) {
-        new SQSEventWrapper(event).extractPojos(DailyCheckTaskSpec.class)
+        var eventWrapper = AwsEventWrapperFactory.getWrapper(event);
+        eventWrapper.extractPojos(event, DailyCheckTaskSpec.class)
                 .forEach(taskSpec -> dailyCheckService
                         .claimDailyCheckIn(taskSpec.getBotUserId(), taskSpec.getLtuid(), taskSpec.getLtoken()));
     }

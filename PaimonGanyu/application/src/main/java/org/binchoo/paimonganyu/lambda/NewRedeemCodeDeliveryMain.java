@@ -1,6 +1,10 @@
 package org.binchoo.paimonganyu.lambda;
 
+import com.amazonaws.services.lambda.runtime.events.S3Event;
+import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoAdapter;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoRepository;
@@ -28,6 +32,11 @@ public class NewRedeemCodeDeliveryMain {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
+    }
+
+    @Bean
+    public AwsEventWrapper<S3Event> s3EventWrapper(AmazonS3 s3Client) {
+        return new S3EventObjectReader(s3Client, objectMapper());
     }
 
     /**

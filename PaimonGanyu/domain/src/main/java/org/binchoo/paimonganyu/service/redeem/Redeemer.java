@@ -25,9 +25,9 @@ public class Redeemer implements RedeemerService {
 
     @Override
     public RedeemResult redeem(RedeemTask redeemTask) {
-        List<RedeemResult> results = this.redeem(Arrays.asList(redeemTask));
-        assert results.size() == 1;
-        return results.get(0);
+        List<RedeemResult> result = this.redeem(Arrays.asList(redeemTask));
+        assert result.size() == 1;
+        return result.get(0);
     }
 
     @Override

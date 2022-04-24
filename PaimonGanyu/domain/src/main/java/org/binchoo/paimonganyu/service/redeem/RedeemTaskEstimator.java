@@ -2,10 +2,6 @@ package org.binchoo.paimonganyu.service.redeem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyopass.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.Uid;
-import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryService;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;

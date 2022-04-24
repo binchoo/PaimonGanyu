@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 코드 리딤 태스크를 생성하는 전략입니다.
- * 코드 리딤 대상인 유저와 리딤 코드를 반환해야 합니다.
+ * 주어진 유저와 리딤 코드로 코드 리딤 태스크 명세를 생성합니다.
  * @author : jbinchoo
  * @since : 2022/04/17
  */
@@ -50,6 +49,12 @@ public class RedeemTaskEstimationOption {
         return this;
     }
 
+    /**
+     * <p> 제공 받은 유저와 코드를 곱연산하여 리딤 태스크 명세를 작성합니다.
+     * <p> {@code O(|uids|*|codes|)} = {@code O(|users|*2*4*|codes|)}
+     * @return 리딤 태스크 명세 리스트
+     * @throws NullPointerException userProvider 또는 codeProvider가 null일 때
+     */
     public List<RedeemTask> estimateTask() {
         return this.multiply(this.getUsers(), this.getCodes());
     }

@@ -8,12 +8,12 @@ import java.util.stream.Stream;
 
 public class SNSEventWrapper extends JsonPayloadAwsEventWrapper<SNSEvent> {
 
-    public SNSEventWrapper(SNSEvent event) {
-        this(event, new ObjectMapper());
+    public SNSEventWrapper() {
+        super();
     }
 
-    public SNSEventWrapper(SNSEvent event, ObjectMapper objectMapper) {
-        super(event, objectMapper);
+    public SNSEventWrapper(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
     @Override

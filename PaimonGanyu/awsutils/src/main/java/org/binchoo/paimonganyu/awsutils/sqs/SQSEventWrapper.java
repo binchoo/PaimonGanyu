@@ -8,12 +8,12 @@ import java.util.stream.Stream;
 
 public class SQSEventWrapper extends JsonPayloadAwsEventWrapper<SQSEvent> {
 
-    public SQSEventWrapper(SQSEvent event) {
-        this(event, new ObjectMapper());
+    public SQSEventWrapper() {
+        super();
     }
 
-    public SQSEventWrapper(SQSEvent event, ObjectMapper objectMapper) {
-        super(event, objectMapper);
+    public SQSEventWrapper(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
     @Override

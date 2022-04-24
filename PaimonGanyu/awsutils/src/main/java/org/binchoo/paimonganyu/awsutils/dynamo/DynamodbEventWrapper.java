@@ -13,24 +13,22 @@ import java.util.stream.Collectors;
 /**
  * This utility class can convert the NewImage JSONs of DynamodbEvent to a list of java POJO.
  */
-public class DynamodbEventWrapper implements AwsEventWrapper {
+public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
 
     private static final DynamodbEventName[] defaultAllowedEventNames
             = {DynamodbEventName.MODIFY, DynamodbEventName.INSERT};
 
-    private final DynamodbEvent event;
     private final DynamoDBMapper dynamoDBMapper;
     private final DynamodbEventName[] allowedEventNames;
 
     /**
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
      */
-    public DynamodbEventWrapper(DynamodbEvent event, DynamoDBMapper dynamoDBMapper) {
-        this(event, dynamoDBMapper, defaultAllowedEventNames);
+    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper) {
+        this(dynamoDBMapper, defaultAllowedEventNames);
     }
 
-    public DynamodbEventWrapper(DynamodbEvent event, DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
-        this.event = event;
+    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
         this.dynamoDBMapper = dynamoDBMapper;
         this.allowedEventNames = allowedEventNames;
     }
@@ -40,7 +38,7 @@ public class DynamodbEventWrapper implements AwsEventWrapper {
      * @return unmodifiable list of POJO that hydrate DynamoDBEvent::Records::NewImage
      */
     @Override
-    public <T> List<T> extractPojos(Class<T> clazz) {
+    public <T> List<T> extractPojos(DynamodbEvent event, Class<T> clazz) {
         return Collections.unmodifiableList(this.doMapping(event, clazz));
     }
 

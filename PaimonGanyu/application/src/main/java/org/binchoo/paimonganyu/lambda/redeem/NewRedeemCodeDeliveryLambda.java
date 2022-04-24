@@ -16,6 +16,7 @@ import org.binchoo.paimonganyu.redeem.options.RedeemAllUsersOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,8 +29,8 @@ public class NewRedeemCodeDeliveryLambda {
 
     private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 
-    private AmazonSQS sqsClient;
     private AmazonS3 s3Client;
+    private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
     private RedeemTaskEstimationService redeemTaskEstimationService;
     private UserHoyopassCrudPort userHoyopassCrudPort;
@@ -39,8 +40,8 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
-        this.sqsClient = context.getBean(AmazonSQS.class);
         this.s3Client = context.getBean(AmazonS3.class);
+        this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.redeemTaskEstimationService = context.getBean(RedeemTaskEstimationService.class);
         this.userHoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
@@ -49,8 +50,10 @@ public class NewRedeemCodeDeliveryLambda {
     }
 
     public void handler(S3Event s3Event) {
-        var redeemCodeList = new S3EventObjectReader(s3Event, s3Client).extractPojos(RedeemCode.class);
-        RedeemTaskEstimationOption estimationOption = new RedeemAllUsersOption(userHoyopassCrudPort, ()-> redeemCodeList);
+        var eventWrapper = new S3EventObjectReader(s3Client);
+        var redeemCodeList = eventWrapper.extractPojos(s3Event, RedeemCode.class);
+        RedeemTaskEstimationOption estimationOption = new RedeemAllUsersOption(userHoyopassCrudPort,
+                ()-> Collections.unmodifiableList(redeemCodeList));
         sendToQueue(redeemTaskEstimationService.generateTasks(estimationOption));
     }
 
