@@ -2,7 +2,6 @@ package org.binchoo.paimonganyu.lambda.redeem;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
 import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.redeem.RedeemResult;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
