@@ -1,14 +1,21 @@
 package org.binchoo.paimonganyu.awsutils.support;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
+import com.amazonaws.services.lambda.runtime.events.S3Event;
+import com.amazonaws.services.lambda.runtime.events.SNSEvent;
+import com.amazonaws.services.lambda.runtime.events.SQSEvent;
+import com.amazonaws.services.s3.AmazonS3;
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
+import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
+import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
+import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * <p> {@link AwsEventWrapper} 구현체에 대한 팩토리 클래스입니다. 팩토리가 이벤트 래퍼를 생성하기 위해서
@@ -119,113 +126,34 @@ public class AwsEventWrapperFactory {
         return null;
     }
 
-    public static final class AwsEventWrappingManual {
+    @FunctionalInterface
+    public interface AwsEventWrapperMappingConfigurer {
 
-        private final Map<Class<?>, EventEntry> eventEntryMap = new HashMap<>();
-
-        public EventEntry whenEvent(Class<?> eventClass) {
-            EventEntry eventEntry = new EventEntry(this, eventClass);
-            this.eventEntryMap.put(eventClass, eventEntry);
-            return eventEntry;
-        }
-
-        public AwsEventWrappingManual and() {
-            return this;
-        }
-
-        protected boolean contains(Class<?> eventClass) {
-            return this.eventEntryMap.containsKey(eventClass);
-        }
-
-        protected EventWrapperSpec getEventWrapperSpec(Class<?> eventClass) {
-            if (this.contains(eventClass)) {
-                EventEntry eventEntry = this.eventEntryMap.get(eventClass);
-                return eventEntry.getDefaultEventWrapperSpec();
-            } else {
-                throw new IllegalArgumentException(String.format(
-                        "Could not find a event wrapper specification for event type %s", eventClass));
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "AwsEventWrapperManual{" +
-                    "eventEntryMap=" + eventEntryMap +
-                    '}';
-        }
-    }
-
-    public static final class EventEntry {
-
-        private final AwsEventWrappingManual parent;
-        private final LinkedList<EventWrapperSpec> wrappersForEvent;
-
-        public EventEntry(AwsEventWrappingManual awsEventWrappingManual, Class<?> eventClass) {
-            this.parent = awsEventWrappingManual;
-            this.wrappersForEvent = new LinkedList<>();
-        }
-
-        public EventWrapperSpec wrappedBy(Class<? extends AwsEventWrapper<?>> eventWrapperClass) {
-            EventWrapperSpec eventWrapperSpec = new EventWrapperSpec(this, eventWrapperClass);
-            this.wrappersForEvent.addFirst(eventWrapperSpec);
-            return eventWrapperSpec;
-        }
-
-        protected EventWrapperSpec getDefaultEventWrapperSpec() {
-            return this.wrappersForEvent.getFirst();
-        }
-
-        @Override
-        public String toString() {
-            return "EventEntry{" +
-                    "wrappersForEvent=" + wrappersForEvent +
-                    '}';
-        }
-    }
-
-    public static final class EventWrapperSpec {
-
-        private final EventEntry parent;
-        private final Class<? extends AwsEventWrapper<?>> eventWrapperClass;
-
-        private Class<?> clientClass = null;
-        private boolean useAwsClient = false;
-
-        public EventWrapperSpec(EventEntry eventEntry, Class<? extends AwsEventWrapper<?>> eventWrapperClass) {
-            this.parent = eventEntry;
-            this.eventWrapperClass = eventWrapperClass;
-        }
-
-
-        public EventWrapperSpec useAwsClient(Class<?> clientClass) {
-            this.clientClass = clientClass;
-            this.useAwsClient = true;
-            return this;
-        }
-
-        public AwsEventWrappingManual and() {
-            return this.parent.parent;
-        }
-
-        protected Class<? extends AwsEventWrapper<?>> getEventWrapperClass() {
-            return this.eventWrapperClass;
-        }
-
-        protected boolean getUseAwsClient() {
-            return this.useAwsClient;
-        }
-
-        protected Class<?> getClientClass() {
-            return this.clientClass;
-        }
-
-        @Override
-        public String toString() {
-            return "EventWrapperSpec{" +
-                    "eventWrapperClass=" + eventWrapperClass +
-                    ", useAwsClient=" + useAwsClient +
-                    '}';
-        }
+        void configure(AwsEventWrappingManual mappingManual);
     }
 }
 
+/**
+ * document-private class
+ * The default configurer that configures {@AwsEventWrapperFacory}'s mapping behaviors.
+ */
+class DefaultMappingConfigurer implements AwsEventWrapperFactory.AwsEventWrapperMappingConfigurer {
+
+    @Override
+    public void configure(AwsEventWrappingManual wrappingManual) {
+        wrappingManual
+                .whenEvent(SQSEvent.class)
+                    .wrapBy(SQSEventWrapper.class)
+                .and()
+                .whenEvent(SNSEvent.class)
+                    .wrapBy(SNSEventWrapper.class)
+                .and()
+                .whenEvent(S3Event.class)
+                    .wrapBy(S3EventObjectReader.class)
+                        .useAwsClient(AmazonS3.class)
+                .and()
+                .whenEvent(DynamodbEvent.class)
+                    .wrapBy(DynamodbEventWrapper.class)
+                        .useAwsClient(DynamoDBMapper.class);
+    }
+}
