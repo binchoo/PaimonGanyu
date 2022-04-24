@@ -2,10 +2,7 @@ package org.binchoo.paimonganyu.awsutils.support;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
-import com.amazonaws.services.lambda.runtime.events.S3Event;
-import com.amazonaws.services.lambda.runtime.events.SNSEvent;
-import com.amazonaws.services.lambda.runtime.events.SQSEvent;
+import com.amazonaws.services.lambda.runtime.events.*;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
@@ -95,7 +92,7 @@ class AwsEventWrapperFactoryTest {
 
     @DisplayName("생성자 인자 없이는 S3Event에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
     @Test
-    void givenS3EventAndInvalidConstructorArgs_returnsSpecifiedEventWrapper() {
+    void givenS3EventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new S3Event();
 
         assertThrows(NullPointerException.class, ()-> {
@@ -107,9 +104,9 @@ class AwsEventWrapperFactoryTest {
         });
     }
 
-    @DisplayName("생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
     @Test
-    void givenDynamodbEventAndInvalidConstructorArgs_returnsSpecifiedEventWrapper() {
+    void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new DynamodbEvent();
 
         assertThrows(NullPointerException.class, ()-> {
@@ -126,5 +123,14 @@ class AwsEventWrapperFactoryTest {
         public <T> List<T> extractPojos(SQSEvent event, Class<T> clazz) {
             return null;
         }
+    }
+
+    @DisplayName("매핑 메뉴얼에 없는 람다 이벤트로는 이벤트 래퍼를 얻을 수 없다.")
+    @Test
+    void givenUnregisterdLambdaEvent_cannotCreateAEventWrapper() {
+        var event = new ScheduledEvent();
+        assertThrows(UnknownError.class, ()-> {
+            AwsEventWrapperFactory.getWrapper(event);
+        });
     }
 }

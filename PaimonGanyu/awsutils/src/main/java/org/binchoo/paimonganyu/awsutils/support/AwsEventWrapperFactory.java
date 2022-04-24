@@ -69,6 +69,9 @@ public class AwsEventWrapperFactory {
      * @param constructorArgs The constructor args for the event wrapper class.
      * @param <E> The class of {@code event}.
      * @return A event wrapper.
+     * @throws UnknownError When {@code event} is unknown event to {@link AwsEventWrappingManual}
+     * @throws NullPointerException When given {@code constructorArgs} is null although client object is needed.
+     * @throws ArrayIndexOutOfBoundsException When {@code constructorArgs} is empty although client object is needed.
      */
     public static <E> AwsEventWrapper<E> getWrapper(E event, Object...constructorArgs) {
         return defaultInstance.getCustomWrapper(event, constructorArgs);
@@ -81,6 +84,9 @@ public class AwsEventWrapperFactory {
      * @param constructorArgs The constructor args for the event wrapper class.
      * @param <E> The class of {@code event}.
      * @return A event wrapper.
+     * @throws UnknownError When given {@code event} is unknown to {@link AwsEventWrappingManual}
+     * @throws NullPointerException When {@code constructorArgs} is null although client object is needed.
+     * @throws ArrayIndexOutOfBoundsException When {@code constructorArgs} is empty although client object is needed.
      */
     public <E> AwsEventWrapper<E> getCustomWrapper(E event, Object...constructorArgs) {
         validateHandleable(event);
