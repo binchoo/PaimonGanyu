@@ -69,6 +69,9 @@ public class AwsEventWrapperFactory {
      * @param constructorArgs The constructor args for the event wrapper class.
      * @param <E> The class of {@code event}.
      * @return A event wrapper.
+     * @throws UnknownError When {@code event} is unknown event to {@link AwsEventWrappingManual}
+     * @throws IllegalArgumentException When {@code constructorArgs} is invalid or empty
+     * if the wrapper's constructor needs it.
      */
     public static <E> AwsEventWrapper<E> getWrapper(E event, Object...constructorArgs) {
         return defaultInstance.getCustomWrapper(event, constructorArgs);
@@ -81,6 +84,9 @@ public class AwsEventWrapperFactory {
      * @param constructorArgs The constructor args for the event wrapper class.
      * @param <E> The class of {@code event}.
      * @return A event wrapper.
+     * @throws UnknownError When {@code event} is unknown event to {@link AwsEventWrappingManual}
+     * @throws IllegalArgumentException When {@code constructorArgs} is invalid or empty
+     * if the wrapper's constructor needs it.
      */
     public <E> AwsEventWrapper<E> getCustomWrapper(E event, Object...constructorArgs) {
         validateHandleable(event);
@@ -111,11 +117,10 @@ public class AwsEventWrapperFactory {
 
     private AwsEventWrapper<?> createInstance(Class<? extends AwsEventWrapper<?>> eventWrapperClass,
                                               Object[] args, EventWrapperSpec spec) {
-        boolean useClient = spec.getUseAwsClient();
         try {
-            Constructor<? extends AwsEventWrapper<?>> constructor = eventWrapperClass.getDeclaredConstructor(
-                    useClient? new Class[]{spec.getClientClass()} : null);
-            return useClient? constructor.newInstance(args[0]): constructor.newInstance();
+            Constructor<? extends AwsEventWrapper<?>> constructor =
+                    eventWrapperClass.getDeclaredConstructor(spec.getConstructorArgs());
+            return constructor.newInstance(args);
         } catch (InstantiationException | InvocationTargetException e) {
             logger.error("Error instantiating a event wrapper: {}", eventWrapperClass);
         } catch (IllegalAccessException e) {
@@ -150,10 +155,10 @@ class DefaultMappingConfigurer implements AwsEventWrapperFactory.AwsEventWrapper
                 .and()
                 .whenEvent(S3Event.class)
                     .wrapBy(S3EventObjectReader.class)
-                        .useAwsClient(AmazonS3.class)
+                        .argTypes(AmazonS3.class)
                 .and()
                 .whenEvent(DynamodbEvent.class)
                     .wrapBy(DynamodbEventWrapper.class)
-                        .useAwsClient(DynamoDBMapper.class);
+                        .argTypes(DynamoDBMapper.class);
     }
 }

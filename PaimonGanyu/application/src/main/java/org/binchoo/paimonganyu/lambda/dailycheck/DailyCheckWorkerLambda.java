@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
-import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
 import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
 import org.binchoo.paimonganyu.lambda.DailyCheckWorkerMain;
