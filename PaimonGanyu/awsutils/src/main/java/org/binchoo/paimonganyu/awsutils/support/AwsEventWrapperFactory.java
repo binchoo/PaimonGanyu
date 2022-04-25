@@ -1,10 +1,7 @@
 package org.binchoo.paimonganyu.awsutils.support;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
-import com.amazonaws.services.lambda.runtime.events.S3Event;
-import com.amazonaws.services.lambda.runtime.events.SNSEvent;
-import com.amazonaws.services.lambda.runtime.events.SQSEvent;
+import com.amazonaws.services.lambda.runtime.events.*;
 import com.amazonaws.services.s3.AmazonS3;
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
@@ -68,7 +65,7 @@ public class AwsEventWrapperFactory {
      * @param constructorArgs The constructor args for the event wrapper class.
      * @param <E> The class of {@code event}.
      * @return A event wrapper.
-     * @throws UnknownError When {@code event} is unknown event to {@link AwsEventWrappingManual}
+     * @throws UnknownError When {@code event} is unknown event to {@link AwsEventWrappingManual}.
      * @throws IllegalArgumentException When {@code constructorArgs} is invalid or empty
      * if the wrapper's constructor needs it.
      */
@@ -103,21 +100,22 @@ public class AwsEventWrapperFactory {
 
 
     private <E> AwsEventWrapper<E> createWrapperOf(E event, Object[] constructorArgs) {
-        var specification = getEventWrapperSpec(event);
-        var eventWrapperClass = specification.getEventWrapperClass();
-        return createInstance(eventWrapperClass, constructorArgs, specification);
+        var mappingEntry = getMappingEntry(event);
+        var eventWrapperClass = mappingEntry.getWrapperClass();
+        var constructorArgTypes = mappingEntry.getConstructorArgTypes();
+        return createInstance(eventWrapperClass, constructorArgTypes, constructorArgs);
     }
 
-    private <E> EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getEventWrapperSpec(E event) {
-        var wrapperSpec = eventWrappingManual.getEventWrapperSpec((Class<E>) event.getClass());
+    private <E> MappingEntry<E> getMappingEntry(E event) {
+        var wrapperSpec = eventWrappingManual.getMappingEntry(event.getClass());
         assert wrapperSpec != null;
-        return wrapperSpec;
+        return (MappingEntry<E>) wrapperSpec;
     }
 
     private <E> AwsEventWrapper<E> createInstance(Class<? extends AwsEventWrapper<E>> eventWrapperClass,
-                                              Object[] args, EventWrapperSpec<E, ?> spec) {
+                                              Class<?>[] constructorArgTypes, Object[] args) {
         try {
-            var constructor = eventWrapperClass.getDeclaredConstructor(spec.getConstructorArgs());
+            var constructor = eventWrapperClass.getDeclaredConstructor(constructorArgTypes);
             return constructor.newInstance(args);
         } catch (InstantiationException | InvocationTargetException e) {
             logger.error("Error instantiating a event wrapper: {}", eventWrapperClass);
@@ -132,7 +130,7 @@ public class AwsEventWrapperFactory {
     /**
      * The default configurer that configures {@link AwsEventWrapperFactory}'s mapping behaviors.
      */
-    private static final  class DefaultMappingConfigurer implements AwsEventWrapperMappingConfigurer {
+    private static final class DefaultMappingConfigurer implements AwsEventWrapperMappingConfigurer {
 
         @Override
         public void configure(AwsEventWrappingManual wrappingManual) {

@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.awsutils.support;
 
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +21,9 @@ public final class AwsEventWrappingManual {
         return this.eventEntryMap.containsKey(eventClass);
     }
 
-    protected <E> EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getEventWrapperSpec(Class<E> eventClass) {
+    protected MappingEntry<?> getMappingEntry(Class<?> eventClass) {
         if (this.contains(eventClass)) {
-            MappingEntry<E> mappingEntry = (MappingEntry<E>) this.eventEntryMap.get(eventClass);
-            return mappingEntry.getDefaultEventWrapperSpec();
+            return this.eventEntryMap.get(eventClass);
         } else {
             throw new IllegalArgumentException(String.format(
                     "Could not find a event wrapper specification for event type %s", eventClass));
