@@ -7,17 +7,20 @@ public final class EventWrapperSpec {
     private final MappingEntry parent;
     private final Class<? extends AwsEventWrapper<?>> eventWrapperClass;
 
-    private Class<?> clientClass = null;
-    private boolean useAwsClient = false;
+    private Class<?>[] constructorArgs = null;
+    private boolean requireArgs = false;
 
     public EventWrapperSpec(MappingEntry mappingEntry, Class<? extends AwsEventWrapper<?>> eventWrapperClass) {
         this.parent = mappingEntry;
         this.eventWrapperClass = eventWrapperClass;
     }
 
-    public EventWrapperSpec useAwsClient(Class<?> clientClass) {
-        this.clientClass = clientClass;
-        this.useAwsClient = true;
+    /**
+     * Argument types of a constructor method that will instantiate the preceded event wrapper.
+     */
+    public EventWrapperSpec argTypes(Class<?>... constructorArgs) {
+        this.constructorArgs = constructorArgs;
+        this.requireArgs = true;
         return this;
     }
 
@@ -29,19 +32,19 @@ public final class EventWrapperSpec {
         return this.eventWrapperClass;
     }
 
-    protected boolean getUseAwsClient() {
-        return this.useAwsClient;
+    protected boolean getRequireArgs() {
+        return this.requireArgs;
     }
 
-    protected Class<?> getClientClass() {
-        return this.clientClass;
+    protected Class<?>[] getConstructorArgs() {
+        return this.constructorArgs;
     }
 
     @Override
     public String toString() {
         return "EventWrapperSpec{" +
                 "eventWrapperClass=" + eventWrapperClass +
-                ", useAwsClient=" + useAwsClient +
+                ", useAwsClient=" + requireArgs +
                 '}';
     }
 }

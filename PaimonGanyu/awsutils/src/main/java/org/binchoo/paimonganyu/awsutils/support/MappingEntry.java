@@ -14,6 +14,9 @@ public final class MappingEntry {
         this.wrappersForEvent = new LinkedList<>();
     }
 
+    /**
+     * A event wrapper class that will wrap the preceded event class.
+     */
     public EventWrapperSpec wrapBy(Class<? extends AwsEventWrapper<?>> eventWrapperClass) {
         EventWrapperSpec eventWrapperSpec = new EventWrapperSpec(this, eventWrapperClass);
         this.wrappersForEvent.addFirst(eventWrapperSpec);

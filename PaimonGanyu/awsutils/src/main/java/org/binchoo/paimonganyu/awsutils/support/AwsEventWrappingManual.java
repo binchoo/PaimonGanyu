@@ -7,6 +7,9 @@ public final class AwsEventWrappingManual {
 
     private final Map<Class<?>, MappingEntry> eventEntryMap = new HashMap<>();
 
+    /**
+     * Start to configure the event wrapper mapping for this event class.
+     */
     public MappingEntry whenEvent(Class<?> eventClass) {
         MappingEntry mappingEntry = new MappingEntry(this, eventClass);
         this.eventEntryMap.put(eventClass, mappingEntry);

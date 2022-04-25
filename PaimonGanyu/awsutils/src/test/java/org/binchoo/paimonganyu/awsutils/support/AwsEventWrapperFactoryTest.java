@@ -90,30 +90,35 @@ class AwsEventWrapperFactoryTest {
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("생성자 인자 없이는 S3Event에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
+    @DisplayName("적절한 생성자 인자 없이는 S3Event에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
     @Test
     void givenS3EventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new S3Event();
 
-        assertThrows(NullPointerException.class, ()-> {
+        assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event, null);
         });
-
-        assertThrows(ArrayIndexOutOfBoundsException.class, ()-> {
+        assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event);
+        });
+        assertThrows(IllegalArgumentException.class, ()-> {
+            AwsEventWrapperFactory.getWrapper(event, AmazonDynamoDBClientBuilder.defaultClient());
         });
     }
 
-    @DisplayName("생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
+    @DisplayName("적절한 생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
     @Test
     void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new DynamodbEvent();
 
-        assertThrows(NullPointerException.class, ()-> {
+        assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event, null);
         });
-        assertThrows(ArrayIndexOutOfBoundsException.class, ()-> {
+        assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event);
+        });
+        assertThrows(IllegalArgumentException.class, ()-> {
+            AwsEventWrapperFactory.getWrapper(event, AmazonS3ClientBuilder.defaultClient());
         });
     }
 
