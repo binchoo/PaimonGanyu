@@ -4,12 +4,15 @@ import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 
 import java.util.LinkedList;
 
-public final class MappingEntry {
+/**
+ * @param <E> The type of lambda event.
+ */
+public final class MappingEntry<E> {
 
     private final AwsEventWrappingManual parent;
-    private final LinkedList<EventWrapperSpec> wrappersForEvent;
+    private final LinkedList<EventWrapperSpec<E, ? extends AwsEventWrapper<E>>> wrappersForEvent;
 
-    public MappingEntry(AwsEventWrappingManual awsEventWrappingManual, Class<?> eventClass) {
+    public MappingEntry(AwsEventWrappingManual awsEventWrappingManual, Class<E> eventClass) {
         this.parent = awsEventWrappingManual;
         this.wrappersForEvent = new LinkedList<>();
     }
@@ -17,13 +20,13 @@ public final class MappingEntry {
     /**
      * A event wrapper class that will wrap the preceded event class.
      */
-    public EventWrapperSpec wrapBy(Class<? extends AwsEventWrapper<?>> eventWrapperClass) {
-        EventWrapperSpec eventWrapperSpec = new EventWrapperSpec(this, eventWrapperClass);
+    public <W extends AwsEventWrapper<E>> EventWrapperSpec<E, W> wrapBy(Class<W> eventWrapperClass) {
+        EventWrapperSpec<E, W> eventWrapperSpec = new EventWrapperSpec<>(this, eventWrapperClass);
         this.wrappersForEvent.addFirst(eventWrapperSpec);
         return eventWrapperSpec;
     }
 
-    protected EventWrapperSpec getDefaultEventWrapperSpec() {
+    protected EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getDefaultEventWrapperSpec() {
         return this.wrappersForEvent.getFirst();
     }
 

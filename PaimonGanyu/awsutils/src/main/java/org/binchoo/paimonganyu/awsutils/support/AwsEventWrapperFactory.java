@@ -14,7 +14,6 @@ import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -93,7 +92,7 @@ public class AwsEventWrapperFactory {
         return createWrapperOf(event, constructorArgs);
     }
 
-    private void validateHandleable(Object event) {
+    private <E> void validateHandleable(E event) {
         Class<?> eventClass = event.getClass();
         String packageName = eventClass.getPackageName();
         boolean withAwsLambdaEventPackage = AWS_LAMBDA_EVENTS_PACKAGE.equals(packageName);
@@ -104,22 +103,21 @@ public class AwsEventWrapperFactory {
 
 
     private <E> AwsEventWrapper<E> createWrapperOf(E event, Object[] constructorArgs) {
-        EventWrapperSpec specification = getEventWrapperSpec(event);
-        Class<? extends AwsEventWrapper<?>> eventWrapperClass = specification.getEventWrapperClass();
-        return (AwsEventWrapper<E>) createInstance(eventWrapperClass, constructorArgs, specification);
+        var specification = getEventWrapperSpec(event);
+        var eventWrapperClass = specification.getEventWrapperClass();
+        return createInstance(eventWrapperClass, constructorArgs, specification);
     }
 
-    private <E> EventWrapperSpec getEventWrapperSpec(E event) {
-        EventWrapperSpec wrapperSpec = eventWrappingManual.getEventWrapperSpec(event.getClass());
+    private <E> EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getEventWrapperSpec(E event) {
+        var wrapperSpec = eventWrappingManual.getEventWrapperSpec((Class<E>) event.getClass());
         assert wrapperSpec != null;
         return wrapperSpec;
     }
 
-    private AwsEventWrapper<?> createInstance(Class<? extends AwsEventWrapper<?>> eventWrapperClass,
-                                              Object[] args, EventWrapperSpec spec) {
+    private <E> AwsEventWrapper<E> createInstance(Class<? extends AwsEventWrapper<E>> eventWrapperClass,
+                                              Object[] args, EventWrapperSpec<E, ?> spec) {
         try {
-            Constructor<? extends AwsEventWrapper<?>> constructor =
-                    eventWrapperClass.getDeclaredConstructor(spec.getConstructorArgs());
+            var constructor = eventWrapperClass.getDeclaredConstructor(spec.getConstructorArgs());
             return constructor.newInstance(args);
         } catch (InstantiationException | InvocationTargetException e) {
             logger.error("Error instantiating a event wrapper: {}", eventWrapperClass);
@@ -131,34 +129,27 @@ public class AwsEventWrapperFactory {
         return null;
     }
 
-    @FunctionalInterface
-    public interface AwsEventWrapperMappingConfigurer {
+    /**
+     * The default configurer that configures {@link AwsEventWrapperFactory}'s mapping behaviors.
+     */
+    private static final  class DefaultMappingConfigurer implements AwsEventWrapperMappingConfigurer {
 
-        void configure(AwsEventWrappingManual mappingManual);
-    }
-}
-
-/**
- * document-private class
- * The default configurer that configures {@AwsEventWrapperFacory}'s mapping behaviors.
- */
-class DefaultMappingConfigurer implements AwsEventWrapperFactory.AwsEventWrapperMappingConfigurer {
-
-    @Override
-    public void configure(AwsEventWrappingManual wrappingManual) {
-        wrappingManual
-                .whenEvent(SQSEvent.class)
-                    .wrapBy(SQSEventWrapper.class)
-                .and()
-                .whenEvent(SNSEvent.class)
-                    .wrapBy(SNSEventWrapper.class)
-                .and()
-                .whenEvent(S3Event.class)
-                    .wrapBy(S3EventObjectReader.class)
-                        .argTypes(AmazonS3.class)
-                .and()
-                .whenEvent(DynamodbEvent.class)
-                    .wrapBy(DynamodbEventWrapper.class)
-                        .argTypes(DynamoDBMapper.class);
+        @Override
+        public void configure(AwsEventWrappingManual wrappingManual) {
+            wrappingManual
+                    .whenEvent(SQSEvent.class)
+                        .wrapBy(SQSEventWrapper.class)
+                    .and()
+                    .whenEvent(SNSEvent.class)
+                        .wrapBy(SNSEventWrapper.class)
+                    .and()
+                    .whenEvent(S3Event.class)
+                        .wrapBy(S3EventObjectReader.class)
+                            .argTypes(AmazonS3.class)
+                    .and()
+                    .whenEvent(DynamodbEvent.class)
+                        .wrapBy(DynamodbEventWrapper.class)
+                            .argTypes(DynamoDBMapper.class);
+        }
     }
 }

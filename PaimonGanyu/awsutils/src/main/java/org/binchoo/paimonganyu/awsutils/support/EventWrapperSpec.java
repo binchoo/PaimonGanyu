@@ -2,15 +2,18 @@ package org.binchoo.paimonganyu.awsutils.support;
 
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 
-public final class EventWrapperSpec {
+/**
+ * @param <W> The type of event wrapper.
+ */
+public final class EventWrapperSpec<E, W extends AwsEventWrapper<E>> {
 
-    private final MappingEntry parent;
-    private final Class<? extends AwsEventWrapper<?>> eventWrapperClass;
+    private final MappingEntry<E> parent;
+    private final Class<W> eventWrapperClass;
 
     private Class<?>[] constructorArgs = null;
     private boolean requireArgs = false;
 
-    public EventWrapperSpec(MappingEntry mappingEntry, Class<? extends AwsEventWrapper<?>> eventWrapperClass) {
+    public EventWrapperSpec(MappingEntry<E> mappingEntry, Class<W> eventWrapperClass) {
         this.parent = mappingEntry;
         this.eventWrapperClass = eventWrapperClass;
     }
@@ -18,7 +21,7 @@ public final class EventWrapperSpec {
     /**
      * Argument types of a constructor method that will instantiate the preceded event wrapper.
      */
-    public EventWrapperSpec argTypes(Class<?>... constructorArgs) {
+    public EventWrapperSpec<E, W> argTypes(Class<?>... constructorArgs) {
         this.constructorArgs = constructorArgs;
         this.requireArgs = true;
         return this;
@@ -28,7 +31,7 @@ public final class EventWrapperSpec {
         return this.parent.getParent();
     }
 
-    protected Class<? extends AwsEventWrapper<?>> getEventWrapperClass() {
+    protected Class<W> getEventWrapperClass() {
         return this.eventWrapperClass;
     }
 
