@@ -2,8 +2,6 @@ package org.binchoo.paimonganyu.awsutils.support;
 
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 
-import java.util.Arrays;
-
 /**
  * @param <E> The type of lambda event.
  */
@@ -31,12 +29,8 @@ public final class MappingEntry<E> {
         return this.parent;
     }
 
-    protected Class<? extends AwsEventWrapper<E>> getWrapperClass() {
-        return this.eventWrapperSpec.getEventWrapperClass();
-    }
-
-    protected Class<?>[] getConstructorArgTypes() {
-        return this.eventWrapperSpec.getConstructorArgs();
+    protected EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getEventWrapperSpec() {
+        return this.eventWrapperSpec;
     }
 
     protected AwsEventWrappingManual getParent() {

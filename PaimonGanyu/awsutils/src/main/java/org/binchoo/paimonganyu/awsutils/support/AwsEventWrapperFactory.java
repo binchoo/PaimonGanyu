@@ -1,17 +1,16 @@
 package org.binchoo.paimonganyu.awsutils.support;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.lambda.runtime.events.*;
+import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
+import com.amazonaws.services.lambda.runtime.events.S3Event;
+import com.amazonaws.services.lambda.runtime.events.SNSEvent;
+import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import com.amazonaws.services.s3.AmazonS3;
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
 import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * <p> {@link AwsEventWrapper} 구현체에 대한 팩토리 클래스입니다. 팩토리가 이벤트 래퍼를 생성하기 위해서
@@ -26,7 +25,6 @@ import java.lang.reflect.InvocationTargetException;
 public class AwsEventWrapperFactory {
 
     private static final String AWS_LAMBDA_EVENTS_PACKAGE = "com.amazonaws.services.lambda.runtime.events";
-    private static final Logger logger = LoggerFactory.getLogger(AwsEventWrapperFactory.class);
     private static final AwsEventWrapperFactory defaultInstance;
 
     private final AwsEventWrappingManual eventWrappingManual = new AwsEventWrappingManual();
@@ -100,31 +98,14 @@ public class AwsEventWrapperFactory {
 
 
     private <E> AwsEventWrapper<E> createWrapperOf(E event, Object[] constructorArgs) {
-        var mappingEntry = getMappingEntry(event);
-        var eventWrapperClass = mappingEntry.getWrapperClass();
-        var constructorArgTypes = mappingEntry.getConstructorArgTypes();
-        return createInstance(eventWrapperClass, constructorArgTypes, constructorArgs);
+        var eventWrapperSpec = getEventWrapperSpec(event);
+        return eventWrapperSpec.createInstance(constructorArgs);
     }
 
-    private <E> MappingEntry<E> getMappingEntry(E event) {
-        var wrapperSpec = eventWrappingManual.getMappingEntry(event.getClass());
-        assert wrapperSpec != null;
-        return (MappingEntry<E>) wrapperSpec;
-    }
-
-    private <E> AwsEventWrapper<E> createInstance(Class<? extends AwsEventWrapper<E>> eventWrapperClass,
-                                              Class<?>[] constructorArgTypes, Object[] args) {
-        try {
-            var constructor = eventWrapperClass.getDeclaredConstructor(constructorArgTypes);
-            return constructor.newInstance(args);
-        } catch (InstantiationException | InvocationTargetException e) {
-            logger.error("Error instantiating a event wrapper: {}", eventWrapperClass);
-        } catch (IllegalAccessException e) {
-            logger.error("Could not reach the event wrapper type: {}", eventWrapperClass);
-        } catch (NoSuchMethodException e) {
-            logger.error("Could not find a matching constructor for: {}", eventWrapperClass);
-        }
-        return null;
+    private <E> EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getEventWrapperSpec(E event) {
+        var mappingEntry = (MappingEntry<E>) eventWrappingManual.getMappingEntry(event.getClass());
+        assert mappingEntry != null;
+        return mappingEntry.getEventWrapperSpec();
     }
 
     /**
