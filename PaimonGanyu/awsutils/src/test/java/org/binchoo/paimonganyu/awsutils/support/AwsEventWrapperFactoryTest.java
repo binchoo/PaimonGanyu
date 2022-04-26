@@ -34,12 +34,12 @@ class AwsEventWrapperFactoryTest {
     void configure() {
         var factory = AwsEventWrapperFactory.create(mappingManual -> {
             mappingManual.whenEvent(SQSEvent.class)
-                    .wrapBy(CustomSQSEventWrapper.class);
+                    .wrapIn(CustomSQSEventWrapper.class);
         });
         var event = new SQSEvent();
         var expectedWrapper = new CustomSQSEventWrapper();
 
-        var eventWrapper = factory.getCustomWrapper(event);
+        var eventWrapper = factory._getWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }

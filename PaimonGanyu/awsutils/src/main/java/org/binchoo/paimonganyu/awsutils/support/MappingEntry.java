@@ -7,41 +7,49 @@ import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
  */
 public final class MappingEntry<E> {
 
-    private final AwsEventWrappingManual parent;
-    private final Class<E> eventClass;
-    private EventWrapperSpec<E, ? extends AwsEventWrapper<E>> eventWrapperSpec;
+    private final WrappingManual parent;
+    private final Class<E> event;
+    private WrapperSpec<E, ? extends AwsEventWrapper<E>> wrapperSpec;
 
-    public MappingEntry(AwsEventWrappingManual awsEventWrappingManual, Class<E> eventClass) {
-        this.parent = awsEventWrappingManual;
-        this.eventClass = eventClass;
-        this.eventWrapperSpec = null;
+    protected MappingEntry(WrappingManual wrappingManual, Class<E> event) {
+        this.parent = wrappingManual;
+        this.event = event;
+        this.wrapperSpec = null;
     }
 
     /**
      * A event wrapper class that will wrap the preceded event class.
      */
-    public <W extends AwsEventWrapper<E>> EventWrapperSpec<E, W> wrapBy(Class<W> wrapperClass) {
-        this.eventWrapperSpec = new EventWrapperSpec<>(this, wrapperClass);
-        return (EventWrapperSpec<E, W>) this.eventWrapperSpec;
+    public <W extends AwsEventWrapper<E>> WrapperSpec<E, W> wrapIn(Class<W> wrapperClass) {
+        this.wrapperSpec = new WrapperSpec<>(this, wrapperClass);
+        return (WrapperSpec<E, W>) this.wrapperSpec;
     }
 
-    public AwsEventWrappingManual and() {
+    public WrappingManual and() {
         return this.parent;
     }
 
-    protected EventWrapperSpec<E, ? extends AwsEventWrapper<E>> getEventWrapperSpec() {
-        return this.eventWrapperSpec;
+    protected AwsEventWrapper<E> createWrapper(Object[] constructorArgs) {
+        return this.wrapperSpec.createInstance(constructorArgs);
     }
 
-    protected AwsEventWrappingManual getParent() {
+    protected WrapperSpec<E, ? extends AwsEventWrapper<E>> getWrapperSpec() {
+        return this.wrapperSpec;
+    }
+
+    protected WrappingManual getParent() {
         return this.parent;
+    }
+
+    protected Class<?> getEvent() {
+        return this.event;
     }
 
     @Override
     public String toString() {
         return "MappingEntry{" +
-                "eventClass=" + eventClass +
-                ", eventWrapperSpec=" + eventWrapperSpec +
+                ", event=" + event +
+                ", wrapperSpec=" + wrapperSpec +
                 '}';
     }
 }
