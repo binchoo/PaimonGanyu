@@ -22,38 +22,43 @@ import java.util.function.Function;
 @Component
 public class HoyoResponseMonoInspector {
 
-    private HoyoResponseInspector inspectionDelegate = new HoyoResponseInspector();
-    private Set<Retriable> retriableTargets = new HashSet<>();
-    private Function<HoyoResponse<?>, Mono<?>> errorMapper = hoyoResponse-> {
-        try {
-            inspectionDelegate.inspectRetcode(hoyoResponse);
-        } catch (Throwable t) {
-            return Mono.error(t);
-        }
-        return Mono.just(hoyoResponse);
-    };
+    private final HoyoResponseInspector inspectionDelegate;
+    private final Set<Retriable> retriableTargets;
+    private final Function<HoyoResponse<?>, Mono<?>> errorMapper;
+
+    public HoyoResponseMonoInspector() {
+        this.inspectionDelegate = new HoyoResponseInspector();
+        this.retriableTargets = new HashSet<>();
+        this.errorMapper = (hoyoResponse)-> {
+            try {
+                inspectionDelegate.inspectRetcode(hoyoResponse);
+            } catch (Throwable t) {
+                return Mono.error(t);
+            }
+            return Mono.just(hoyoResponse);
+        };
+    }
 
     @Around("execution(* org.binchoo.paimonganyu.hoyoapi.webclient.async.*.*(..))")
     public Object inspectAndAppendRetry(ProceedingJoinPoint joinPoint) throws Throwable {
-        this.registerTarget(joinPoint);
+        registerTarget(joinPoint);
         Mono<HoyoResponse<?>> responseMono = (Mono<HoyoResponse<?>>) joinPoint.proceed(joinPoint.getArgs());
-        return this.addSubcribers(responseMono, errorMapper, getRetriable(joinPoint.getTarget()));
-    }
-
-    private Object addSubcribers(Mono<HoyoResponse<?>> responseMono,
-                                 Function<HoyoResponse<?>, Mono<?>> retcodeInspector, Retriable retriable) {
-        var withException = responseMono.flatMap(retcodeInspector);
-        if (retriable != null) {
-            return withException.retryWhen(retriable.getRetryObject());
-        }
-        return withException;
+        return addSubscribers(responseMono, errorMapper, getRetriable(joinPoint.getTarget()));
     }
 
     private void registerTarget(ProceedingJoinPoint joinPoint) {
-        Object target = joinPoint.getTarget();
+        var target = joinPoint.getTarget();
         if (!retriableTargets.contains(target) && target instanceof Retriable) {
             retriableTargets.add((Retriable) target);
         }
+    }
+
+    private Object addSubscribers(Mono<HoyoResponse<?>> responseMono,
+                                  Function<HoyoResponse<?>, Mono<?>> retcodeInspector, Retriable retriable) {
+        var withInspection = responseMono.flatMap(retcodeInspector);
+        if (retriable == null)
+            return withInspection;
+        return withInspection.retryWhen(retriable.getRetryObject());
     }
 
     private Retriable getRetriable(Object target) {

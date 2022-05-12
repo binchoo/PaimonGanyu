@@ -37,4 +37,24 @@ public class RedeemTask {
             throw new IllegalStateException(e);
         }
     }
+
+    public String getLtuid() {
+        return this.credentials.getLtuid();
+    }
+
+    public String getCookieToken() {
+        return this.credentials.getCookieToken();
+    }
+
+    public String getUidString() {
+        return this.uid.getUidString();
+    }
+
+    public String getRegionString() {
+        return this.uid.getRegion().lowercase();
+    }
+
+    public String getCodeString() {
+        return this.redeemCode.getCode();
+    }
 }

@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.redeem.driven;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,4 +46,10 @@ public interface UserRedeemCrudPort {
      * @param userRedeem 코드 리딤 이력 객체
      */
     UserRedeem save(UserRedeem userRedeem);
+
+    /**
+     * 코드 리딤 이력을 저장합니다.
+     * @param userRedeems 코드 리딤 이력 집단
+     */
+    List<UserRedeem> saveAll(Collection<UserRedeem> userRedeems);
 }

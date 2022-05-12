@@ -9,7 +9,7 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
-import org.binchoo.paimonganyu.testconfig.TestLtuidLtokenConfig;
+import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig(classes = {HoyoApiWebClientConfigurer.class, TestLtuidLtokenConfig.class})
+@SpringJUnitConfig(classes = {HoyoApiWebClientConfigurer.class, TestHoyopassCredentialsConfig.class})
 class HoyopassSearchClientAdapterIntegTest {
 
     @Autowired
@@ -33,10 +33,10 @@ class HoyopassSearchClientAdapterIntegTest {
 
     @Autowired
     @Qualifier("valid0")
-    TestLtuidLtokenConfig.ValidLtuidLtoken valid0;
+    TestHoyopassCredentialsConfig.TestCredentials valid0;
 
     @Autowired
-    TestLtuidLtokenConfig.InvalidLtuidLtoken invalid0;
+    TestHoyopassCredentialsConfig.InvalidTestCredentials invalid0;
 
     HoyopassSearchClientAdapter hoyopassSearchClientAdapter;
 

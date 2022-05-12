@@ -15,7 +15,7 @@ import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.binchoo.paimonganyu.service.hoyopass.SecuredHoyopassRegistry;
 import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
-import org.binchoo.paimonganyu.testconfig.TestLtuidLtokenConfig;
+import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig({
         TestAmazonClientsConfig.class,
-        TestLtuidLtokenConfig.class,
+        TestHoyopassCredentialsConfig.class,
         PaimonGanyuChatbotMain.class
 })
 class SecuredHoyopassRegistryLocalSystemTest {
@@ -59,14 +59,14 @@ class SecuredHoyopassRegistryLocalSystemTest {
 
     @Autowired
     @Qualifier("valid0")
-    TestLtuidLtokenConfig.ValidLtuidLtoken valid0;
+    TestHoyopassCredentialsConfig.TestCredentials valid0;
 
     @Autowired
     @Qualifier("valid1")
-    TestLtuidLtokenConfig.ValidLtuidLtoken valid1;
+    TestHoyopassCredentialsConfig.TestCredentials valid1;
 
     @Autowired
-    TestLtuidLtokenConfig.InvalidLtuidLtoken invalid0;
+    TestHoyopassCredentialsConfig.InvalidTestCredentials invalid0;
 
     @BeforeEach
     void cleanEntries() {

@@ -8,6 +8,7 @@ import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,5 +58,12 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
     public UserRedeem save(UserRedeem userRedeem) {
         return UserRedeemItem.toDomain(
                 repository.save(UserRedeemItem.fromDomain(userRedeem)));
+    }
+
+    @Override
+    public List<UserRedeem> saveAll(Collection<UserRedeem> userRedeems) {
+        return repository.saveAll(userRedeems.stream()
+                        .map(UserRedeemItem::fromDomain).collect(Collectors.toList())).stream()
+                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 }
