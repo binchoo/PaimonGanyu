@@ -40,10 +40,10 @@ class HoyoResponseInspectorTest {
     }
 
     @Test
-    void inspectRetcode() throws ClassNotFoundException {
+    void inspectRetcode() {
         RetcodeExceptionMappings mappings = RetcodeExceptionMappings.getInstance();
         for (Map.Entry<Integer, Class<RetcodeException>> entry : mappings.entrySet()) {
-            testRetcodeHandling(entry.getKey(),entry.getValue());
+            testRetcodeHandling(entry.getKey(), entry.getValue());
         }
     }
 
@@ -55,11 +55,11 @@ class HoyoResponseInspectorTest {
         });
 
         Mockito.reset(badHoyoResponse);
-        log.info(String.format("retcode %d is handled to throw %s", retcode, expectedExceptionClass));
+        log.debug(String.format("retcode %d is handled to throw %s", retcode, expectedExceptionClass));
     }
 
     @Test
-    void inspectData() throws ClassNotFoundException {
+    void inspectData() {
         when(badHoyoResponse.getRetcode()).thenReturn(0);
         when(badHoyoResponse.getData()).thenReturn(null);
 

@@ -47,7 +47,7 @@ public class HoyoResponseMonoInspector {
     }
 
     private void registerTarget(ProceedingJoinPoint joinPoint) {
-        var target = joinPoint.getTarget();
+        Object target = joinPoint.getTarget();
         if (!retriableTargets.contains(target) && target instanceof Retriable) {
             retriableTargets.add((Retriable) target);
         }
