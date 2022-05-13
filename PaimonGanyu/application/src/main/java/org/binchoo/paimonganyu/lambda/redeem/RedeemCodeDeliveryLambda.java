@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.lambda.NewRedeemCodeDeliveryMain;
+import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * @since : 2022/04/17
  */
 @Slf4j
-public class NewRedeemCodeDeliveryLambda {
+public class RedeemCodeDeliveryLambda {
 
     private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 
@@ -35,8 +35,8 @@ public class NewRedeemCodeDeliveryLambda {
     private RedeemTaskEstimationService redeemTaskEstimationService;
     private UserHoyopassCrudPort userHoyopassCrudPort;
 
-    public NewRedeemCodeDeliveryLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(NewRedeemCodeDeliveryMain.class));
+    public RedeemCodeDeliveryLambda() {
+        this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemCodeDeliveryMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {

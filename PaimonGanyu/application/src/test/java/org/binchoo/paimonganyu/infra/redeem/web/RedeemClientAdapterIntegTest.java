@@ -5,7 +5,6 @@ import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
-import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,11 +26,11 @@ class RedeemClientAdapterIntegTest {
     @Autowired
     private HoyoCodeRedemptionApi redemptionApi;
 
-    private RedeemClientAdapter redeemClientAdapter;
+    private RedemptionClientAdapter redeemClientAdapter;
 
     @BeforeEach
     void init() {
-        redeemClientAdapter = new RedeemClientAdapter(redemptionApi);
+        redeemClientAdapter = new RedemptionClientAdapter(redemptionApi);
     }
 
     @DisplayName("다수의 리뎀션 요청을 일으킨 후 그 결과를 조인할 수 있다.")

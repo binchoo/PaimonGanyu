@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author : jbinchoo
@@ -62,8 +63,9 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
 
     @Override
     public List<UserRedeem> saveAll(Collection<UserRedeem> userRedeems) {
-        return repository.saveAll(userRedeems.stream()
-                        .map(UserRedeemItem::fromDomain).collect(Collectors.toList())).stream()
+        Iterable<UserRedeemItem> entities = repository.saveAll(userRedeems.stream()
+                .map(UserRedeemItem::fromDomain).collect(Collectors.toList()));
+        return StreamSupport.stream(entities.spliterator(), false)
                 .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 }

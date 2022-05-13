@@ -27,16 +27,11 @@ import org.springframework.context.annotation.Import;
         DynamoDBClientConfig.class, UserRedeemTableConfig.class, UserHoyopassTableConfig.class
 })
 @Configuration
-public class NewRedeemCodeDeliveryMain {
+public class RedeemCodeDeliveryMain {
 
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
-    }
-
-    @Bean
-    public AwsEventWrapper<S3Event> s3EventWrapper(AmazonS3 s3Client) {
-        return new S3EventObjectReader(s3Client, objectMapper());
     }
 
     /**

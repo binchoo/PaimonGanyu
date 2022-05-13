@@ -78,7 +78,8 @@ class UserHoyopassTest {
 
         UserHoyopass userHoyopass = new UserHoyopass();
         assertThrows(IllegalArgumentException.class, ()->
-                userHoyopass.addUnverifiedHoyopass("foo", "bar", mockSearchPort));
+                userHoyopass.addUnverifiedHoyopass(
+                        new HoyopassCredentials("foo", "bar", "foobar"), mockSearchPort));
     }
 
     @Test
@@ -89,7 +90,8 @@ class UserHoyopassTest {
         when(mockSearchPort.findUids(any())).thenReturn(mockUidList);
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        userHoyopass.addUnverifiedHoyopass("foo", "bar", mockSearchPort);
+        userHoyopass.addUnverifiedHoyopass(
+                new HoyopassCredentials("foo", "bar", "foobar"), mockSearchPort);
 
         assertThat(userHoyopass.getCount()).isEqualTo(1);
         assertThat(userHoyopass.listUids()).isEqualTo(mockUidList);

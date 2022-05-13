@@ -7,13 +7,13 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
 import org.binchoo.paimonganyu.redeem.RedeemResultCallback;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.driven.RedeemClientPort;
-import org.springframework.lang.Nullable;
+import org.binchoo.paimonganyu.redeem.driven.RedemptionClientPort;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,15 +23,18 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class RedeemClientAdapter implements RedeemClientPort {
+public class RedemptionClientAdapter implements RedemptionClientPort {
 
     private final HoyoCodeRedemptionApi redemptionApi;
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks, RedeemResultCallback resultCallback) {
-        List<UserRedeem> userRedeems = sendRequest(redeemTasks, resultCallback);
-        log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
-        return userRedeems;
+        if (redeemTasks != null && redeemTasks.size() > 0) {
+            List<UserRedeem> userRedeems = sendRequest(redeemTasks, resultCallback);
+            log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
+            return userRedeems;
+        }
+        return Collections.emptyList();
     }
 
     /**

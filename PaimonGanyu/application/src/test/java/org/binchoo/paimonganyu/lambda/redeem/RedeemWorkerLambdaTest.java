@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author : jbinchoo
- * @since : 2022-04-19
+ * @since : 2022-05-13
  */
-class NewRedeemCodeDeliveryLambdaTest {
+class RedeemWorkerLambdaTest {
 
     @Test
     void bootstrap() {
-        new NewRedeemCodeDeliveryLambda();
+        new RedeemWorkerLambda();
     }
 }

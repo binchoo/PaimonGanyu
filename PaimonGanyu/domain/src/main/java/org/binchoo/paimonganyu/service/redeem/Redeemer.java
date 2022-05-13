@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.driven.RedeemClientPort;
+import org.binchoo.paimonganyu.redeem.driven.RedemptionClientPort;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
-import org.binchoo.paimonganyu.redeem.driving.RedeemerService;
+import org.binchoo.paimonganyu.redeem.driving.RedemptionService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,10 +18,10 @@ import java.util.*;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class Redeemer implements RedeemerService {
+public class Redeemer implements RedemptionService {
 
     private final UserRedeemCrudPort userRedeemCrudPort;
-    private final RedeemClientPort redeemApiPort;
+    private final RedemptionClientPort redeemApiPort;
 
     @Override
     public UserRedeem redeem(RedeemTask redeemTask) {

@@ -25,6 +25,4 @@ public interface UserRedeemDynamoRepository extends CrudRepository<UserRedeemIte
     List<UserRedeemItem> findAll();
 
     UserRedeemItem save(UserRedeemItem userRedeemItem);
-
-    List<UserRedeemItem> saveAll(Collection<UserRedeemItem> userRedeemItems);
 }
