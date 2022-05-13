@@ -117,24 +117,21 @@ Resources:
       Environment:
         Variables:
           CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
-#
-#  CodeRedeemWorker:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        NewUserHoyopassEvent:
-#          Type: SNS
-#          Properties:
-#            Topic: !Ref UserHoyopassTopic
-#        CodeRedeemRequestQueueEvent:
-#          Type: SQS
-#          Properties:
-#            Queue: !Ref CodeRedeemRequestQueue
-#      Policies:
-#        - DynamoDBCrudPolicy:
-#            TableName: !Ref UserRedeemTable
-#
+
+  CodeRedeemWorker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemWorkerLambda::handler
+      Events:
+        CodeRedeemRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CodeRedeemRequestQueue.Arn
+            BatchSize: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserRedeemTable
+
   # Daily Check
   UserDailyCheckTable:
     Type: AWS::DynamoDB::Table
