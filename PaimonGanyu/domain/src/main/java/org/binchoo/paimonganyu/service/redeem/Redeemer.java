@@ -25,15 +25,14 @@ public class Redeemer implements RedeemerService {
 
     @Override
     public UserRedeem redeem(RedeemTask redeemTask) {
-        List<UserRedeem> userRedeems = this.redeem(Collections.singletonList(redeemTask));
-        assert userRedeems.size() == 1;
-        return userRedeems.get(0);
+        List<UserRedeem> result = this.redeem(Collections.singletonList(redeemTask));
+        assert result.size() == 1;
+        return result.get(0);
     }
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks) {
-        List<UserRedeem> resultContainer = new ArrayList<>();
-        redeemApiPort.redeem(redeemTasks, resultContainer::add);
-        return userRedeemCrudPort.saveAll(resultContainer);
+        List<UserRedeem> result = redeemApiPort.redeem(redeemTasks, null);
+        return userRedeemCrudPort.saveAll(result);
     }
 }

@@ -39,12 +39,11 @@ class RedeemClientAdapterIntegTest {
     @Test
     void redeem() {
         var tasks = List.of(getMockTask("aaa"), getMockTask("bbb"), getMockTask("ccc"));
-        var container = new ArrayList<UserRedeem>();
-        redeemClientAdapter.redeem(tasks, container::add);
+        var result = redeemClientAdapter.redeem(tasks, System.out::println);
 
-        assertThat(container)
-                .as("Added three tasks.").hasSize(3);
-        assertThat(container).as("Added invalid mock tasks.")
+        assertThat(result).as("Added three tasks.")
+                .hasSize(3);
+        assertThat(result).as("Added invalid mock tasks.")
                 .allMatch((it)-> !it.isDone());
     }
 
@@ -53,9 +52,7 @@ class RedeemClientAdapterIntegTest {
         return RedeemTask.builder()
                 .botUserId(id)
                 .credentials(HoyopassCredentials.builder()
-                    .ltuid(id)
-                    .ltoken(id)
-                    .cookieToken(id)
+                    .ltuid(id).ltoken(id).cookieToken(id)
                     .build())
                 .uid(uid)
                 .redeemCode(new RedeemCode("genshingift"))
