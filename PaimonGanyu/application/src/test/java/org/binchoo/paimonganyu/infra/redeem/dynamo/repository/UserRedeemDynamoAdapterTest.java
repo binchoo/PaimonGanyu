@@ -43,7 +43,7 @@ class UserRedeemDynamoAdapterTest {
                 userRedeem.getRedeemCode().getCode(), true);
     }
 
-    @DisplayName("완수가 아닌 리딤 이력을 색인할 경우,done=false 상태 대입하여 색인한다")
+    @DisplayName("완수가 아닌 리딤 이력을 색인할 경우, done=false 상태 대입하여 색인한다")
     @Test
     void givenNotDoneUserRedeem_findMatches_searchesWithNotDoneGroupStatuses() {
         var userRedeem = givenNotDoneUserRedeem();
@@ -106,13 +106,28 @@ class UserRedeemDynamoAdapterTest {
 
     @DisplayName("이력을 저장할 경우, 반환되는 이력은 입력과 동등하다")
     @Test
-    void save() {
+    void testSave() {
         var userRedeem = randomUserRedeem();
         when(repository.save(any())).thenReturn(UserRedeemItem.fromDomain(userRedeem));
 
         var saved = userRedeemDynamoAdapter.save(userRedeem);
 
         assertThat(saved).isEqualTo(userRedeem);
+    }
+
+    @DisplayName("이력을 배치 저장할 경우, 반환되는 이력은 입력과 동등하다")
+    @Test
+    void testSaveAll() {
+        var mockSaveAllResult = new ArrayList<UserRedeem>();
+        for(int i = 0; i < 100; i++) mockSaveAllResult.add(randomUserRedeem());
+
+        when(repository.saveAll(any())).thenReturn(mockSaveAllResult.stream()
+                .map(UserRedeemItem::fromDomain).collect(Collectors.toList()));
+
+        var saveAllResult = userRedeemDynamoAdapter.saveAll(mockSaveAllResult);
+
+        assertThat(saveAllResult).hasSameSizeAs(mockSaveAllResult);
+        assertThat(saveAllResult).containsAll(mockSaveAllResult);
     }
 
     private UserRedeem givenDoneUserRedeem() {

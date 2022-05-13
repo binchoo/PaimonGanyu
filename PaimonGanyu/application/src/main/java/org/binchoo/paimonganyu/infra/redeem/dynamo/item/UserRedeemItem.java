@@ -33,9 +33,6 @@ public class UserRedeemItem {
     @DynamoDBAttribute
     private String code;
 
-    @DynamoDBTypeConvertedEnum
-    private UserRedeemStatus status;
-
     @DynamoDBConvertedBool(DynamoDBConvertedBool.Format.true_false)
     private boolean done;
 
@@ -54,7 +51,6 @@ public class UserRedeemItem {
                 .botUserId(userRedeem.getBotUserId())
                 .ltuid(userRedeem.getLtuid())
                 .code(userRedeem.getRedeemCode().getCode())
-                .status(null)
                 .done(userRedeem.isDone())
                 .build();
     }
