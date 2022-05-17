@@ -2,9 +2,14 @@ package org.binchoo.paimonganyu.lambda.dailycheck.dto;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 /**
  * Simplified version of {@UserHoyopass}
@@ -12,21 +17,13 @@ import java.util.Arrays;
 public class UserHoyopassMessage {
 
     private String botUserId;
-    private LtuidLtoken[] ltuidLtokens;
+    private List<Hoyopass> hoyopasses;
 
     public UserHoyopassMessage() { }
 
     public UserHoyopassMessage(UserHoyopass userHoyopass) {
-        this(userHoyopass.getBotUserId(), new LtuidLtoken[userHoyopass.getCount()]);
-        for (int i = 0; i < ltuidLtokens.length; i++) {
-            Hoyopass hoyopass = userHoyopass.getHoyopasses().get(i);
-            this.ltuidLtokens[i] = new LtuidLtoken(hoyopass.getLtuid(), hoyopass.getLtoken());
-        }
-    }
-
-    public UserHoyopassMessage(String botUserId, LtuidLtoken[] ltuidLtokens) {
-        this.botUserId = botUserId;
-        this.ltuidLtokens = ltuidLtokens;
+        this.botUserId = userHoyopass.getBotUserId();
+        this.hoyopasses = Collections.unmodifiableList(userHoyopass.getHoyopasses());
     }
 
     public String getBotUserId() {
@@ -37,19 +34,23 @@ public class UserHoyopassMessage {
         this.botUserId = botUserId;
     }
 
-    public LtuidLtoken[] getLtuidLtokens() {
-        return ltuidLtokens;
+    public List<Hoyopass> getHoyopasses() {
+        return hoyopasses;
     }
 
-    public void setLtuidLtokens(LtuidLtoken[] ltuidLtokens) {
-        this.ltuidLtokens = ltuidLtokens;
+    public void setHoyopasses(List<Hoyopass> hoyopasses) {
+        this.hoyopasses = hoyopasses;
     }
 
     @Override
     public String toString() {
-        return "UserHoyopassMessage{" +
-                "botUserId='" + botUserId + '\'' +
-                ", ltuidLtokens=" + Arrays.toString(ltuidLtokens) +
-                '}';
+        return super.toString();
+    }
+
+    public UserHoyopass toDomain() {
+        return UserHoyopass.builder()
+                .botUserId(botUserId)
+                .hoyopasses(hoyopasses)
+                .build();
     }
 }

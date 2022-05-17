@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +73,7 @@ public class DailyCheckTaskSpec {
 
     public static List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {
         String botUserId = userHoyopassMessage.getBotUserId();
-        return Arrays.stream(userHoyopassMessage.getLtuidLtokens())
+        return userHoyopassMessage.getHoyopasses().stream()
                 .map(it-> new DailyCheckTaskSpec(botUserId, it.getLtuid(), it.getLtoken()))
                 .collect(Collectors.toList());
     }
