@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

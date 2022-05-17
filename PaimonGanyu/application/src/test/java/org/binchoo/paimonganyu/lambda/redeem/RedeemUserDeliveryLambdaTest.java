@@ -2,14 +2,16 @@ package org.binchoo.paimonganyu.lambda.redeem;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author : jbinchoo
- * @since : 2022-04-19
+ * @since : 2022-05-17
  */
-class RedeemCodeDeliveryLambdaTest {
+class RedeemUserDeliveryLambdaTest {
 
     @Test
     void bootstrap() {
-        new RedeemCodeDeliveryLambda();
+        new RedeemUserDeliveryLambda();
     }
 }
