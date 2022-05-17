@@ -1,22 +1,24 @@
 package org.binchoo.paimonganyu.lambda;
 
-import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoAdapter;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoRepository;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoAdapter;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoRepository;
+import org.binchoo.paimonganyu.infra.redeem.s3.repository.RedeemCodeS3Adapter;
 import org.binchoo.paimonganyu.lambda.config.*;
+import org.binchoo.paimonganyu.redeem.RedeemCode;
+import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
 import org.binchoo.paimonganyu.service.redeem.RedeemBloomFilter;
 import org.binchoo.paimonganyu.service.redeem.RedeemTaskEstimator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.util.List;
 
 /**
  * @author : jbinchoo
@@ -27,7 +29,7 @@ import org.springframework.context.annotation.Import;
         DynamoDBClientConfig.class, UserRedeemTableConfig.class, UserHoyopassTableConfig.class
 })
 @Configuration
-public class RedeemCodeDeliveryMain {
+public class RedeemUserDeliveryMain {
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -44,10 +46,10 @@ public class RedeemCodeDeliveryMain {
     }
 
     /**
-     * @param hoyopassRepository from {@link UserHoyopassTableConfig}
+     * @param amazonS3 from {@link S3ClientConfig}
      */
     @Bean
-    public UserHoyopassCrudPort userHoyopassCrudPort(UserHoyopassDynamoRepository hoyopassRepository) {
-        return new UserHoyopassDynamoAdapter(hoyopassRepository);
+    public RedeemCodeCrudPort redeemCodeCrudPort(AmazonS3 amazonS3) {
+        return new RedeemCodeS3Adapter(amazonS3);
     }
 }

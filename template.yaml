@@ -90,10 +90,10 @@ Resources:
   CodeRedeemRequestQueue:
     Type: AWS::SQS::Queue
 
-  NewRedeemCodeDeliveryFunction:
+  RedeemCodeDeliveryFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.lambda.redeem.NewRedeemCodeDeliveryLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemCodeDeliveryLambda::handler
       Events:
         NewRedeemCodeEvent:
           Type: S3
@@ -112,6 +112,24 @@ Resources:
             TableName: !Ref UserHoyopassTable
         - DynamoDBReadPolicy:
             TableName: !Ref UserRedeemTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+      Environment:
+        Variables:
+          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+
+  RedeemUserDeliveryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemUserDeliveryLambda::handler
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
         - SQSSendMessagePolicy:
             QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
       Environment:

@@ -10,6 +10,7 @@ import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
+import org.binchoo.paimonganyu.lambda.RedeemUserDeliveryMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
@@ -41,7 +42,7 @@ public class RedeemUserDeliveryLambda {
     private RedeemCodeCrudPort redeemCodeCrudPort;
 
     public RedeemUserDeliveryLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemCodeDeliveryMain.class));
+        this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemUserDeliveryMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
