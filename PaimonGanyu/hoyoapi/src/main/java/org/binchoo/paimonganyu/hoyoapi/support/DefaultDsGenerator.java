@@ -28,7 +28,7 @@ public class DefaultDsGenerator implements DsGenerator {
         try {
             messageDigest = MessageDigest.getInstance(MessageDigestAlgorithms.MD5);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("Could not found MD5 MessageDigestAlgorithm class.");
+            throw new IllegalStateException("Could not find MD5 MessageDigestAlgorithm class.");
         }
         this.random = new Random();
     }
