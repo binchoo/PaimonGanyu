@@ -2,28 +2,69 @@
 
 ## All workflows
 
-### Hoyopass
-Every user must securely register his or her Hoyolab credentials(ltuid and ltoken) when first using our system.
-![Hoyopass Crud Workflow](https://user-images.githubusercontent.com/15683098/161238482-da48ed4a-dbc8-4312-a017-587979fa547d.png)
+[Currently defined workflows in 2022-04-04](https://github.com/binchoo/paimonganyu/issues/1#issuecomment-1087132930)
 
-### Code redeem
-If a user is newly added, the system will try to redeem all known codes for him or her.
-![Code Redeem New User Event Workflow](https://user-images.githubusercontent.com/15683098/161238418-30f88f55-cb9f-46f5-a7b5-e7dc97cc02a5.png)
+## Deployment steps
+1. Develop and test domain/infra/application modules.
+2. Determine the version of the artifacts. Assign that value to `project.version` variable in `build.gradle`.
+3. Change the `CodeUri` property of lambda resources defined in the `template.yaml`. This value should be pointing to `.aws-sam/build/application-${version}.zip` in relative manner.
+4. Run command `make` at `paimonganyu` directory, where the `template.yaml` file can be seen.  
+   1. Tasks in Makefile begin:
+      1. `sam build` analyzes and refactors the `template.yaml`.
+      2. In turn, `buildZip` task is triggered, which is defined in`build.gradle` in the root project.
+      3. In turn, `copyBuiltZip` task migrates the zip file created by `buildZip` task, into `.aws-sam/build/` directory.
+      4. In turn, `sam deploy --guided` occurs to deploy all resources within the owners aws account.
+      5. Finally a local test-run begins.
 
-If a new redeem code is registered to the code bucket, this code will soon be redeemed for all users.
-![Code Redeem New Redeem Code Workflow](https://user-images.githubusercontent.com/15683098/161238433-a1e7aedb-8696-4b2c-b028-389a2f7bc151.png)
+### buildZip and copyBuiltZip tasks
+`paimonganyu/PaimonGanyu/build.gradle`
+```groovy
+task buildZip(type: Zip) {
+   from compileJava
+   from processResources
+   into('lib') {
+      from configurations.runtimeClasspath
+   }
+}
 
-### Daily check-in
+task copyBuiltZip(type: Copy) {
+   def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
+   from buildZip
+   into(dest)
+   doLast {
+      println "$project.name:$name has moved artifacts into $dest"
+   }
+}
+```
 
-If a user is newly added, he or she will soon be checked in to Hoyolab's daily check.
-![Daily Check New User Event Workflow](https://user-images.githubusercontent.com/15683098/161238458-4ec1eb9f-50f1-4fdd-afa9-84055ee1aaf4.png)
+#### buildZip
 
-The system will try to check in all system users three times a day.
-![Daily Check Batch Workflow](https://user-images.githubusercontent.com/15683098/161238467-08100825-c5e8-4500-b668-cf7e6fde7228.png)
+In order to deploy a compiled java lambda handler onto AWS lambda service, class itself and all other dependent runtime classpaths should be in one .jar or .zip file.
+The `CodeUri` property of lambda resources should point to that file. Using maven with the shade plugin, we may just point to the root project folder, then SAM will transparently find the very right artifact to deploy.
+See also, [Deploy Java Lambda functions with .zip or JAR file archives (AWS Docs)](https://docs.aws.amazon.com/lambda/latest/dg/java-package.html#java-package-libraries). 
 
-### Knowing responsibilities among components
+#### copyBuiltZip
 
-To implement and deploy services on the AWS components, relationships among those components must be identified and be configured with the SAM's `template.yaml` file.
+`CodeUri` property of lambdas in `template.yaml` means the place where the relating fat-zip or fat-jar is located. That path is relative to `.aws-sam/build` when not pointing to the root project folder.
+Task `copyBuiltZip` moves the artifact which `buildZip` generated into the `.aws-sam/build/` directory. This is to shorten the path string for the `CodeUri`.
 
-![image](https://user-images.githubusercontent.com/15683098/161376846-4eccaccb-e9d3-4ac0-8c0b-28aad5e6c1f1.png)
+### Running a local system test
+Some functionalities need to be verified with real-running infrastructures. eg. a service layer depending on a DynamoDB table.
 
+A docker container can be created from `amazon/dynamodb-local` image, 
+and system test classes can use its endpoint url (`http://localhost:3306`) to interact with dynamodb tables.
+
+Running the container and including/excluding test classes for system test runs
+are managed by the build script of `:application`.
+
+To start a local system test, provide an argument named `-PlocalTest` and set this to be true.
+This will run a dynamodb container before the test runs.
+```bash
+./gradlew -PlocalTest=true :application:test
+---
+> Task :application:stopRunningDynamoDBContainer
+Container stopped: c02efd80497c
+
+> Task :application:startDynamoDBContainer
+Container started: fdd3f9b691ef9f026935ef2429d7d067c037b80fe4559225f58fbe12ae6b0394
+```

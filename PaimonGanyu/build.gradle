@@ -1,71 +1,72 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '2.4.2'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.sonarqube' version '3.3'
-    id 'jacoco'
+    id "jacoco"
+    id "org.sonarqube" version "3.3"
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    apply plugin: "java"
+    apply plugin: "jacoco"
+    apply plugin: "org.sonarqube"
+
+    version = "0.5"
+
+    ext {
+        bootVersion = '2.4.2'
+        awsSdkVersion = '1.11.914'
+        jacksonVersion = '2.11.4'
+        lombokVersion = '1.18.22'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
+        testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
+        testImplementation 'org.assertj:assertj-core:3.18.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    }
+
+    task buildZip(type: Zip) {
+        from compileJava
+        from processResources
+        into('lib') {
+            from configurations.runtimeClasspath
+        }
+    }
+
+    task copyBuiltZip(type: Copy) {
+        def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
+        from buildZip
+        into(dest)
+        doLast {
+            println "$project.name:$name has moved artifacts into $dest"
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    jacocoTestReport.dependsOn test
+    test.finalizedBy jacocoTestReport
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
-dependencies {
-    /* Spring Framework*/
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-
-    // Amazon DynamoDB
-    implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.914') {
-        because 'All workflows use the Amazon DynamoDB as their persistence system.'
+project(':application').dependencies {
+    implementation project(':hoyoapi')
+    implementation project(':awsutils')
+    implementation (project(':ikakao')) {
+        because 'to render KAKAO chatbot views'
     }
-    implementation ('com.github.derjust:spring-data-dynamodb:5.1.0') {
-        because 'To automatically create some DynamoDB repositories.'
-    }
-
-    // Amazon SNS
-    implementation ('com.amazonaws:aws-java-sdk-sns:1.11.914') {
-        because 'Hoyopass fanout leverages an SNS topic.'
-    }
-
-    // AWS Systems Manager
-    implementation ('com.amazonaws:aws-java-sdk-ssm:1.11.914') {
-        because 'Hoyopass could digest secured (RSA-signed) hoyopass strings.'
-    }
-
-    // AWS Lambda
-    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
-    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
-
-    runtimeOnly 'com.h2database:h2'
-
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testCompileOnly 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testCompileOnly 'org.assertj:assertj-core:3.18.1'
+    implementation project(':domain')
+    testImplementation(testFixtures(project(':domain')))
 }
-
-task buildZip(type: Zip) {
-    from compileJava
-    from processResources
-    into('lib') {
-        from configurations.runtimeClasspath
-    }
-}
-
-test {
-    useJUnitPlatform()
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-jacocoTestReport.dependsOn test
-test.finalizedBy jacocoTestReport
-

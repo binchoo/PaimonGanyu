@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer
