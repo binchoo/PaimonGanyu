@@ -39,6 +39,9 @@ public class TestHoyopassCredentialsConfig {
             super(ltuid, ltoken);
             this.cookieToken = cookieToken;
         }
+        public String getCookieToken() {
+            return cookieToken;
+        }
     }
 
     public static class InvalidTestCredentials extends TestCredentials {

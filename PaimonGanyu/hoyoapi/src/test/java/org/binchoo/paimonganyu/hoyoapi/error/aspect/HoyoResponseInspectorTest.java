@@ -23,7 +23,7 @@ class HoyoResponseInspectorTest {
     HoyoResponseInspector hoyoResponseInspector = new HoyoResponseInspector();
 
     @Mock
-    HoyoResponse<Object> badHoyoResponse;
+    HoyoResponse badHoyoResponse;
 
     /**
      * <p> RetocdeException's static behavior initializes RetcodeExceptionMappings
@@ -31,7 +31,7 @@ class HoyoResponseInspectorTest {
      */
     @BeforeAll
     public static void bootstrapRetcodeMappings() {
-        RetcodeException foobar = new RetcodeException();
+        var foo = RetcodeException.class;
     }
 
     @BeforeEach

@@ -192,12 +192,13 @@ class SecuredHoyopassRegistryLocalSystemTest {
         assertThat(hoyopasses.size()).isEqualTo(1);
     }
 
-    private String getSecuredHoyopassString(LtuidLtoken ltuidLtoken) {
+    private String getSecuredHoyopassString(TestHoyopassCredentialsConfig.TestCredentials cred) {
         PublicKey publicKey = signingKeyManager.getPublicKey();
         try {
             Cipher cipher = Cipher.getInstance(publicKey.getAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            String clientLtuidLtoken = String.format("%s:%s", ltuidLtoken.getLtuid(), ltuidLtoken.getLtoken());
+            String clientLtuidLtoken = String.format("%s:%s:%s", cred.getLtuid(),
+                    cred.getLtoken(), cred.getCookieToken());
             byte[] encryptedLtuidLtoken = cipher.doFinal(clientLtuidLtoken.getBytes(StandardCharsets.UTF_8));
             byte[] encodedSecureHoyopass = Base64.getEncoder().encode(encryptedLtuidLtoken);
             return new String(encodedSecureHoyopass); // secureHoyopass

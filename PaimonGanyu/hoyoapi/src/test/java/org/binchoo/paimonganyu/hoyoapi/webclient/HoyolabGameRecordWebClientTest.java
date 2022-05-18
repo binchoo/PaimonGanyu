@@ -47,6 +47,7 @@ class HoyolabGameRecordWebClientTest {
         assertThat(response.getData().containsLumine()).isEqualTo(true);
     }
 
+    @SuppressWarnings("Deprecated API")
     @Disabled("Including chararcterIds in the request doesn't change its response.")
     @Test
     void whenAetherDesignated_fetchAvartars_retunsOnlyAether() {
