@@ -1,7 +1,7 @@
 main: deploy
-	cd PaimonGanyu; ./gradlew test
+	cd PaimonGanyu; ./gradlew -PlocalTest=true :application:test
 deploy: build
 	sam deploy --profile serverless
 build:
-	cd PaimonGanyu; ./gradlew -x test clean build; ./gradlew buildZip
 	sam build --profile serverless
+	cd PaimonGanyu; ./gradlew -x test clean :application:copyBuiltZip

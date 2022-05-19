@@ -7,9 +7,9 @@ Description: >
 
 Globals:
   Function:
-    CodeUri: ../../PaimonGanyu/build/distributions/PaimonGanyu.zip
+    CodeUri: application-0.5.zip # .aws-sam/build/application-${version}.zip
     Timeout: 60
-    Runtime: java8
+    Runtime: java11
     MemorySize: 512
     Architectures:
       - x86_64
@@ -54,7 +54,7 @@ Resources:
   UserHoyopassFanoutFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.hoyopass.infra.fanout.UserHoyopassFanoutLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.fanout.UserHoyopassFanoutLambda::handler
       Events:
         NewUserHoyopassEvent:
           Type: DynamoDB
@@ -69,62 +69,87 @@ Resources:
         Variables:
           USERHOYOPASS_TOPIC: !Ref UserHoyopassTopic
 
-#  # Code Redeem
-#  UserRedeemTable:
-#    Type: AWS::Serverless::SimpleTable
-#    Properties:
-#      PrimaryKey:
-#        Name: botUserId
-#        Type: String
-#
-#  CodeBucket:
-#    Type: AWS::S3::Bucket
-#    Properties:
-#      BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
-#
-#  CodeRedeemRequestQueue:
-#    Type: AWS::SQS::Queue
-#
-#  CodeRedeemRequester:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        NewRedeemCodeEvent:
-#          Type: S3
-#          Properties:
-#            Bucket: !Ref CodeBucket
-#            Events: s3:ObjectCreated:*.json
-#      Policies:
-#        - S3ReadPolicy:
-#            BucketName: !Sub CodeBucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserHoyopassTable
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserRedeemTable
-#        - SQSSendMessagePolicy:
-#            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
-#      Environment:
-#        Variables:
-#          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
-#
-#  CodeRedeemWorker:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        NewUserHoyopassEvent:
-#          Type: SNS
-#          Properties:
-#            Topic: !Ref UserHoyopassTopic
-#        CodeRedeemRequestQueueEvent:
-#          Type: SQS
-#          Properties:
-#            Queue: !Ref CodeRedeemRequestQueue
-#      Policies:
-#        - DynamoDBCrudPolicy:
-#            TableName: !Ref UserRedeemTable
-#
+  # Code Redeem
+  UserRedeemTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserRedeem
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: botUserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: botUserId
+          KeyType: HASH
+
+  CodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+
+  CodeRedeemRequestQueue:
+    Type: AWS::SQS::Queue
+
+  RedeemCodeDeliveryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemCodeDeliveryLambda::handler
+      Events:
+        NewRedeemCodeEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref CodeBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: json
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserHoyopassTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserRedeemTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+      Environment:
+        Variables:
+          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+
+  RedeemUserDeliveryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemUserDeliveryLambda::handler
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+      Environment:
+        Variables:
+          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+
+  CodeRedeemWorker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemWorkerLambda::handler
+      Events:
+        CodeRedeemRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CodeRedeemRequestQueue.Arn
+            BatchSize: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserRedeemTable
+
   # Daily Check
   UserDailyCheckTable:
     Type: AWS::DynamoDB::Table
@@ -155,7 +180,7 @@ Resources:
   DailyCheckHitoriRequesterFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckHitoriRequesterLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckHitoriRequesterLambda::handler
       Events:
         NewUserHoyopassEvent:
           Type: SNS
@@ -173,7 +198,7 @@ Resources:
   DailyCheckBatchRequesterFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckBatchRequesterLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckBatchRequesterLambda::handler
       Events:
         BatchDailyCheckEvent:
           Type: Schedule
@@ -197,7 +222,7 @@ Resources:
   DailyCheckWorkerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: org.binchoo.paimonganyu.dailycheck.DailyCheckWorkerLambda::handler
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckWorkerLambda::handler
       Events:
         DailyCheckRequestQueueEvent:
           Type: SQS

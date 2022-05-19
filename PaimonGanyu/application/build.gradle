@@ -1,0 +1,68 @@
+plugins {
+    id "org.springframework.boot" version "${bootVersion}"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Amazon DynamoDB
+    implementation ("com.amazonaws:aws-java-sdk-dynamodb:${awsSdkVersion}") {
+        because 'All workflows use the Amazon DynamoDB as their persistence system.'
+    }
+    implementation ('com.github.derjust:spring-data-dynamodb:5.1.0') {
+        because 'To automatically create some DynamoDB repositories.'
+    }
+
+    // Amazon SNS
+    implementation ("com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}") {
+        because 'Hoyopass fanout leverages an SNS topic.'
+    }
+
+    // AWS Systems Manager
+    implementation ("com.amazonaws:aws-java-sdk-ssm:${awsSdkVersion}") {
+        because 'Hoyopass could digest secured (RSA-signed) hoyopass strings.'
+    }
+
+    // AWS lambda
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+
+    runtimeOnly 'com.h2database:h2'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+task stopRunningDynamoDBContainer(type: Exec) {
+    standardOutput = new ByteArrayOutputStream()
+    commandLine = ['bash', '-c',
+                   'docker ps -q | while read line; do if [[ $(docker port $line) == *"3306"* ]]; then docker stop $line; fi; done;']
+    doLast {
+        println "Container stopped: ${standardOutput.toString()}"
+    }
+}
+
+task startDynamoDBContainer(type: Exec) {
+    dependsOn stopRunningDynamoDBContainer
+    standardOutput = new ByteArrayOutputStream()
+    commandLine = ['docker', 'run', '-p', '3306:8000', '-d', 'amazon/dynamodb-local']
+    doLast {
+        println "Container started: ${standardOutput.toString()}"
+    }
+}
+
+/**
+ * @param -PlocalTest=true|false
+ */
+test {
+    def isLocalTest = Boolean.parseBoolean(project.findProperty("localTest"))
+    if (isLocalTest)
+        dependsOn startDynamoDBContainer
+    else {
+        filter {
+            excludeTestsMatching("org.binchoo.paimonganyu.infra.hoyopass.SecuredHoyopassRegistryLocalSystemTest")
+        }
+    }
+}
