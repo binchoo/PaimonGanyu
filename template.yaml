@@ -76,10 +76,10 @@ Resources:
       TableName: UserRedeem
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: botUserId
+        - AttributeName: id
           AttributeType: S
       KeySchema:
-        - AttributeName: botUserId
+        - AttributeName: id
           KeyType: HASH
 
   CodeBucket:
