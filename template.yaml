@@ -89,6 +89,8 @@ Resources:
 
   CodeRedeemRequestQueue:
     Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
 
   RedeemCodeDeliveryFunction:
     Type: AWS::Serverless::Function
@@ -139,6 +141,7 @@ Resources:
   CodeRedeemWorker:
     Type: AWS::Serverless::Function
     Properties:
+      Timeout: 300
       Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemWorkerLambda::handler
       Events:
         CodeRedeemRequestQueueEvent:
