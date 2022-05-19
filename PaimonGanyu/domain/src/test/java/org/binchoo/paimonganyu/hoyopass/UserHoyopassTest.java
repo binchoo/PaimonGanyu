@@ -170,10 +170,10 @@ class UserHoyopassTest {
         UserHoyopass userHoyopass = new UserHoyopass("foobar", hoyopassList);
 
         List<Uid> userUids = userHoyopass.listUids(-100);
-        assertThat(userUids).hasSize(0);
+        assertThat(userUids).isEmpty();
 
         userUids = userHoyopass.listUids(100);
-        assertThat(userUids).hasSize(0);
+        assertThat(userUids).isEmpty();
     }
 
     @Test
@@ -260,9 +260,11 @@ class UserHoyopassTest {
 
         String toStringResult = userHoyopass.toString();
 
-        assertThat(toStringResult).contains(botUserId);
-        assertThat(toStringResult).contains(userHoyopass.getHoyopasses().get(0).toString());
-        assertThat(toStringResult).contains(userHoyopass.getHoyopasses().get(1).toString());
+        assertThat(toStringResult)
+                .contains(botUserId)
+                .contains(userHoyopass.getHoyopasses().get(0).toString())
+                .contains(userHoyopass.getHoyopasses().get(1).toString());
+
         System.out.println(toStringResult);
     }
 }

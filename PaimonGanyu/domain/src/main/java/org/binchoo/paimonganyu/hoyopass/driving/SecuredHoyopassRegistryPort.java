@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.hoyopass.driving;
 
-import org.binchoo.paimonganyu.hoyopass.SecureHoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 /**

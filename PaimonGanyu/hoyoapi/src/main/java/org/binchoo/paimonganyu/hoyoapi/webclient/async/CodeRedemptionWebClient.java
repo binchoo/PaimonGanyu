@@ -21,15 +21,15 @@ import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 @Component
 public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable {
 
-    public static final int defaultRetryAttempts = 3;
-    public static final int defaultRetryDelayMillis = 5001;
+    public static final int DEFAULT_RETRY_ATTEMPTS = 3;
+    public static final int DEFAULT_RETRY_DELAY_MILLIS = 5001;
 
     private final WebClient webClient;
 
     private Retry retryObject;
 
     public CodeRedemptionWebClient() {
-        this(defaultRetryAttempts, defaultRetryDelayMillis);
+        this(DEFAULT_RETRY_ATTEMPTS, DEFAULT_RETRY_DELAY_MILLIS);
     }
 
     public CodeRedemptionWebClient(int retryAttempts, int retryDelaysMillis) {
