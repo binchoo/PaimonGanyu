@@ -5,7 +5,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import org.binchoo.paimonganyu.chatbot.PaimonGanyuChatbotMain;
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
@@ -211,21 +210,23 @@ class SecuredHoyopassRegistryLocalSystemTest {
         throw new RuntimeException();
     }
 
-    private UserHoyopass registerHoyopasses(String botUserId, LtuidLtoken... ltuidLtokens) {
+    private UserHoyopass registerHoyopasses(String botUserId,
+                                            TestHoyopassCredentialsConfig.TestCredentials... creds) {
+
         UserHoyopass userHoyopass = null;
-        for (LtuidLtoken ltuidLtoken : ltuidLtokens)
-            userHoyopass = this.registerHoyopass(botUserId, ltuidLtoken);
+        for (var cred : creds)
+            userHoyopass = this.registerHoyopass(botUserId, cred);
         if (userHoyopass != null)
-            assertThat(userHoyopass.getCount()).isEqualTo(ltuidLtokens.length);
+            assertThat(userHoyopass.getCount()).isEqualTo(creds.length);
         return userHoyopass;
     }
 
-    private UserHoyopass registerHoyopass(String botUserId, LtuidLtoken ltuidLtoken) {
+    private UserHoyopass registerHoyopass(String botUserId, TestHoyopassCredentialsConfig.TestCredentials cred) {
         return securedHoyopassRegistry.registerHoyopass(botUserId,
                 HoyopassCredentials.builder()
-                        .ltuid(ltuidLtoken.getLtuid())
-                        .ltoken(ltuidLtoken.getLtoken())
-                        .cookieToken(null) // it's ok
+                        .ltuid(cred.getLtuid())
+                        .ltoken(cred.getLtoken())
+                        .cookieToken(cred.getCookieToken())
                         .build());
     }
 

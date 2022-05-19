@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.redeem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
@@ -37,22 +38,27 @@ public class RedeemTask {
         }
     }
 
+    @JsonIgnore
     public String getLtuid() {
         return this.credentials.getLtuid();
     }
 
+    @JsonIgnore
     public String getCookieToken() {
         return this.credentials.getCookieToken();
     }
 
+    @JsonIgnore
     public String getUidString() {
         return this.uid.getUidString();
     }
 
+    @JsonIgnore
     public String getRegionString() {
         return this.uid.getRegion().lowercase();
     }
 
+    @JsonIgnore
     public String getCodeString() {
         return this.redeemCode.getCode();
     }

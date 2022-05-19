@@ -17,7 +17,6 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022-04-21
  */
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class Redeemer implements RedemptionService {

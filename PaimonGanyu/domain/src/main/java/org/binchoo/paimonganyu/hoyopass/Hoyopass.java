@@ -1,8 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 
 import java.time.LocalDateTime;
@@ -11,6 +9,8 @@ import java.util.List;
 @ToString
 @Getter
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Hoyopass {
 
     private HoyopassCredentials credentials;
