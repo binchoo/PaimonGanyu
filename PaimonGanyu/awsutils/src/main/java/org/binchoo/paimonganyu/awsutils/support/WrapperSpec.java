@@ -19,7 +19,7 @@ public final class WrapperSpec<E, W extends AwsEventWrapper<E>> {
 
     private Class<?>[] constructorArgTypes;
 
-    protected WrapperSpec(MappingEntry<E> mappingEntry, Class<W> wrapper) {
+    WrapperSpec(MappingEntry<E> mappingEntry, Class<W> wrapper) {
         this.parent = mappingEntry;
         this.wrapper = wrapper;
         this.constructorArgTypes = null;
@@ -37,7 +37,7 @@ public final class WrapperSpec<E, W extends AwsEventWrapper<E>> {
         return this.parent.getParent();
     }
 
-    protected W createInstance(Object[] constructorArgs) {
+    W createInstance(Object[] constructorArgs) {
         try {
             var constructor = wrapper.getDeclaredConstructor(this.constructorArgTypes);
             return constructor.newInstance(constructorArgs);

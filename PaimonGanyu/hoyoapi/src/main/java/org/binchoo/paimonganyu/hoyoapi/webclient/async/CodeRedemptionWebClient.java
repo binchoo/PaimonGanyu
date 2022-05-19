@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
-import reactor.util.retry.RetrySpec;
 
 import java.time.Duration;
 
@@ -22,10 +21,20 @@ import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 @Component
 public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable {
 
+    public static final int defaultRetryAttempts = 3;
+    public static final int defaultRetryDelayMillis = 5001;
+
     private final WebClient webClient;
 
+    private Retry retryObject;
+
     public CodeRedemptionWebClient() {
+        this(defaultRetryAttempts, defaultRetryDelayMillis);
+    }
+
+    public CodeRedemptionWebClient(int retryAttempts, int retryDelaysMillis) {
         this.webClient = WebClient.create(getBaseUrl());
+        this.retryObject = Retry.fixedDelay(retryAttempts, Duration.ofMillis(retryDelaysMillis));
     }
 
     @Override
@@ -45,7 +54,12 @@ public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable
     }
 
     @Override
+    public void setRetry(Retry retry) {
+        this.retryObject = retry;
+    }
+
+    @Override
     public Retry getRetryObject() {
-        return RetrySpec.fixedDelay(3, Duration.ofMillis(5001));
+        return retryObject;
     }
 }

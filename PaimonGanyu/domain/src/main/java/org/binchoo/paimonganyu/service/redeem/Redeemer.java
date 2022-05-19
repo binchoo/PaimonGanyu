@@ -9,7 +9,9 @@ import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.binchoo.paimonganyu.redeem.driving.RedemptionService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author : jbinchoo

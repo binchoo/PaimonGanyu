@@ -1,15 +1,10 @@
 package org.binchoo.paimonganyu.lambda.dailycheck.dto;
 
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntFunction;
-import java.util.stream.Collectors;
 
 /**
  * Simplified version of {@UserHoyopass}

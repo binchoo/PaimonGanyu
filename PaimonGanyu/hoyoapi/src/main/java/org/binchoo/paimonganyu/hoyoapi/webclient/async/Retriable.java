@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient.async;
 
 import reactor.util.retry.Retry;
-import reactor.util.retry.RetrySpec;
 
 /**
  * @author : jbinchoo
@@ -9,5 +8,6 @@ import reactor.util.retry.RetrySpec;
  */
 public interface Retriable {
 
+    void setRetry(Retry retry);
     Retry getRetryObject();
 }

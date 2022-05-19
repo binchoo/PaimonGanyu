@@ -1,28 +1,20 @@
 package org.binchoo.paimonganyu.lambda.redeem;
 
-import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
-import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.lambda.RedeemUserDeliveryMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
-import org.binchoo.paimonganyu.redeem.options.RedeemAllCodesOption;
-import org.binchoo.paimonganyu.redeem.options.RedeemAllUsersOption;
+import org.binchoo.paimonganyu.service.redeem.RedeemAllCodesOption;
 import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

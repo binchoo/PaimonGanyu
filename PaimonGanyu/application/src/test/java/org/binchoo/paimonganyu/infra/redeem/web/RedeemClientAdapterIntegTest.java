@@ -15,7 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 /**
  * @author : jbinchoo
@@ -40,10 +39,9 @@ class RedeemClientAdapterIntegTest {
         var tasks = List.of(getMockTask("aaa"), getMockTask("bbb"), getMockTask("ccc"));
         var result = redeemClientAdapter.redeem(tasks, System.out::println);
 
-        assertThat(result).as("Added three tasks.")
-                .hasSize(3);
-        assertThat(result).as("Added invalid mock tasks.")
-                .allMatch((it)-> !it.isDone());
+        assertThat(result)
+                .as("Added three tasks.").hasSize(3)
+                .as("Added invalid mock tasks.").allMatch((it)-> !it.isDone());
     }
 
     private RedeemTask getMockTask(String id) {

@@ -29,7 +29,7 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks, RedeemResultCallback resultCallback) {
-        if (redeemTasks != null && redeemTasks.size() > 0) {
+        if (redeemTasks != null && !redeemTasks.isEmpty()) {
             List<UserRedeem> userRedeems = sendRequest(redeemTasks, resultCallback);
             log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
             return userRedeems;
@@ -75,7 +75,7 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     }
 
     private Mono<UserRedeem> wrap(Mono<?> response, UserRedeem userRedeem) {
-        return response.map((res)-> userRedeem.markDone())
+        return response.map(res-> userRedeem.markDone())
                 .onErrorReturn(userRedeem);
     }
 

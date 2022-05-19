@@ -19,6 +19,7 @@ import static org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem.TA
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @DynamoDBTable(tableName = TABLE_NAME)
 public class UserRedeemItem {
 
@@ -38,8 +39,6 @@ public class UserRedeemItem {
 
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
     private LocalDateTime createAt;
-
-    public UserRedeemItem() { }
 
     public static UserRedeem toDomain(UserRedeemItem userRedeemItem) {
         return new UserRedeem(userRedeemItem.botUserId,

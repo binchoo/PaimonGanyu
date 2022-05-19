@@ -19,7 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(classes = {HoyoApiWebClientConfigurer.class, TestHoyopassCredentialsConfig.class})
@@ -55,7 +55,7 @@ class HoyopassSearchClientAdapterIntegTest {
 
         var uids = hoyopassSearchClientAdapter.findUids(validHoyopass);
 
-        assertThat(uids.size()).isEqualTo(realUserGameRoles.size());
+        assertThat(uids).hasSameSizeAs(realUserGameRoles);
         IntStream.range(0, uids.size()).forEach (i-> {
             var uid = uids.get(i);
             var ugr = realUserGameRoles.get(i);

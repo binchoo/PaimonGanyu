@@ -68,7 +68,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
     /**
      * @deprecated 지정한 characterId 뿐만 아닌 모든 캐릭터 정보를 불러오는 이슈 있음
      */
-    @Deprecated
+    @Deprecated(forRemoval = false)
     @Override
     public HoyoResponse<GenshinAvatars> fetchAvartars(LtuidLtoken ltuidLtoken, String uid, String server, long... characterId) {
         ResponseEntity<HoyoResponse<GenshinAvatars>> response = webClient.post()
@@ -95,7 +95,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
     /**
      * @deprecated fetchAvartars(LtuidLtoken, String, String, long...)가 제외되었음.
      */
-    @Deprecated
+    @Deprecated(forRemoval = false)
     @Builder
     private static final class CharacterPayload {
 

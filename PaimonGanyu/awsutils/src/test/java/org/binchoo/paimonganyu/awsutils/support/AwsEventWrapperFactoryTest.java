@@ -39,7 +39,7 @@ class AwsEventWrapperFactoryTest {
         var event = new SQSEvent();
         var expectedWrapper = new CustomSQSEventWrapper();
 
-        var eventWrapper = factory._getWrapper(event);
+        var eventWrapper = factory.getWrapper0(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }
@@ -94,6 +94,7 @@ class AwsEventWrapperFactoryTest {
     @Test
     void givenS3EventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new S3Event();
+        var badClient = AmazonDynamoDBClientBuilder.defaultClient();
 
         assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event, null);
@@ -102,7 +103,7 @@ class AwsEventWrapperFactoryTest {
             AwsEventWrapperFactory.getWrapper(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, AmazonDynamoDBClientBuilder.defaultClient());
+            AwsEventWrapperFactory.getWrapper(event, badClient);
         });
     }
 
@@ -111,7 +112,7 @@ class AwsEventWrapperFactoryTest {
     @Test
     void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new DynamodbEvent();
-
+        var badClient = AmazonS3ClientBuilder.defaultClient();
         assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event, null);
         });
@@ -119,7 +120,7 @@ class AwsEventWrapperFactoryTest {
             AwsEventWrapperFactory.getWrapper(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, AmazonS3ClientBuilder.defaultClient());
+            AwsEventWrapperFactory.getWrapper(event, badClient);
         });
     }
 

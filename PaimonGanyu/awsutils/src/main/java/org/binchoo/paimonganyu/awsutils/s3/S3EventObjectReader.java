@@ -34,9 +34,9 @@ public class S3EventObjectReader extends JsonPayloadAwsEventWrapper<S3Event> {
     @Override
     protected Stream<String> getJsonStream(S3Event event) {
         return event.getRecords().stream()
-                .map(record-> {
-                    String bucketName = record.getS3().getBucket().getName();
-                    String objectKey = record.getS3().getObject().getKey();
+                .map(s3Record-> {
+                    String bucketName = s3Record.getS3().getBucket().getName();
+                    String objectKey = s3Record.getS3().getObject().getKey();
                     String json = readS3Object(bucketName, objectKey);
                     log.debug("S3ObjectJson: {}", json);
                     return json;

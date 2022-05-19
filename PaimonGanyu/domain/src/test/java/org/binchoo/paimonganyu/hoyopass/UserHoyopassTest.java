@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -64,22 +64,24 @@ class UserHoyopassTest {
     @Test
     void whenTwoHoyopassesAlreadyRegistered_registerHoyopass_fails() {
         List<Hoyopass> hoyopassList = givenNHoyopasses(2);
+        Hoyopass additionalHoyopass = getMockHoyopass();
 
         UserHoyopass userHoyopass = new UserHoyopass();
         hoyopassList.forEach(userHoyopass::addVerifiedHoyopass);
 
         assertThrows(IllegalStateException.class, ()->
-                userHoyopass.addVerifiedHoyopass(getMockHoyopass()));
+                userHoyopass.addVerifiedHoyopass(additionalHoyopass));
     }
 
     @Test
     void givenInvalidHoyopass_registerHoyopass_fails() {
+        HoyopassCredentials invalidCred = new HoyopassCredentials("foo", "bar", "foobar");
+
         doThrow(IllegalArgumentException.class).when(mockSearchPort).findUids(any());
 
         UserHoyopass userHoyopass = new UserHoyopass();
         assertThrows(IllegalArgumentException.class, ()->
-                userHoyopass.addUnverifiedHoyopass(
-                        new HoyopassCredentials("foo", "bar", "foobar"), mockSearchPort));
+                userHoyopass.addUnverifiedHoyopass(invalidCred, mockSearchPort));
     }
 
     @Test
@@ -168,10 +170,10 @@ class UserHoyopassTest {
         UserHoyopass userHoyopass = new UserHoyopass("foobar", hoyopassList);
 
         List<Uid> userUids = userHoyopass.listUids(-100);
-        assertThat(userUids.size()).isEqualTo(0);
+        assertThat(userUids).hasSize(0);
 
         userUids = userHoyopass.listUids(100);
-        assertThat(userUids.size()).isEqualTo(0);
+        assertThat(userUids).hasSize(0);
     }
 
     @Test
@@ -187,7 +189,7 @@ class UserHoyopassTest {
         hoyopass = userHoyopass.deleteAt(0);
 
         assertThat(hoyopass).isEqualTo(hoyopassList.get(1));
-        assertThat(userHoyopass.getCount()).isEqualTo(0);
+        assertThat(userHoyopass.getCount()).isZero();
     }
 
 

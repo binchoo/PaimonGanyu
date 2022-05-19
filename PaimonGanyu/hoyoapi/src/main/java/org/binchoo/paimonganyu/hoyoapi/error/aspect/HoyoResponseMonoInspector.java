@@ -29,11 +29,11 @@ public class HoyoResponseMonoInspector {
     public HoyoResponseMonoInspector() {
         this.inspectionDelegate = new HoyoResponseInspector();
         this.retriableTargets = new HashSet<>();
-        this.errorMapper = (hoyoResponse)-> {
+        this.errorMapper = hoyoResponse-> {
             try {
                 inspectionDelegate.inspectRetcode(hoyoResponse);
-            } catch (Throwable t) {
-                return Mono.error(t);
+            } catch (Exception exception) {
+                return Mono.error(exception);
             }
             return Mono.just(hoyoResponse);
         };

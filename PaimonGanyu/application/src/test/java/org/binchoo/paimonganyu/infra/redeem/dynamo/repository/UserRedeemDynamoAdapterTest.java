@@ -97,9 +97,9 @@ class UserRedeemDynamoAdapterTest {
         var findAllResult = userRedeemDynamoAdapter.findAll();
 
         verify(repository).findAll();
-        assertThat(findAllResult).hasSameSizeAs(mockFindAllResult);
-        assertThat(findAllResult).containsAll(
-                mockFindAllResult.stream()
+        assertThat(findAllResult)
+                .hasSameSizeAs(mockFindAllResult)
+                .containsAll(mockFindAllResult.stream()
                         .map(UserRedeemItem::toDomain)
                         .collect(Collectors.toList()));
     }
@@ -126,8 +126,9 @@ class UserRedeemDynamoAdapterTest {
 
         var saveAllResult = userRedeemDynamoAdapter.saveAll(mockSaveAllResult);
 
-        assertThat(saveAllResult).hasSameSizeAs(mockSaveAllResult);
-        assertThat(saveAllResult).containsAll(mockSaveAllResult);
+        assertThat(saveAllResult)
+                .hasSameSizeAs(mockSaveAllResult)
+                .containsAll(mockSaveAllResult);
     }
 
     private UserRedeem givenDoneUserRedeem() {

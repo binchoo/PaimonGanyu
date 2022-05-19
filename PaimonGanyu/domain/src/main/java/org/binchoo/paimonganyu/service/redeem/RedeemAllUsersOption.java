@@ -1,12 +1,7 @@
-package org.binchoo.paimonganyu.redeem.options;
+package org.binchoo.paimonganyu.service.redeem;
 
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 코드리딤 태스크를 생성하는 옵션입니다.

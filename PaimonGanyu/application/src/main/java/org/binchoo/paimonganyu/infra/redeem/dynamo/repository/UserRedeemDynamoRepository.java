@@ -4,7 +4,6 @@ import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
