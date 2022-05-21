@@ -13,11 +13,11 @@ import java.util.List;
 @EnableScan
 public interface UserRedeemDynamoRepository extends CrudRepository<UserRedeemItem, String> {
 
-    boolean existsByBotUserIdAndLtuidAndCodeAndDone(
-            String botUserId, String ltuid, String code, boolean done);
+    boolean existsByBotUserIdAndUidAndCodeAndDone(
+            String botUserId, String uid, String code, boolean done);
 
-    List<UserRedeemItem> findByBotUserIdAndLtuidAndCodeAndDone(
-            String botUserId, String ltuid, String code, boolean done);
+    List<UserRedeemItem> findByBotUserIdAndUidAndCodeAndDone(
+            String botUserId, String uid, String code, boolean done);
 
     List<UserRedeemItem> findByCode(String code);
 
