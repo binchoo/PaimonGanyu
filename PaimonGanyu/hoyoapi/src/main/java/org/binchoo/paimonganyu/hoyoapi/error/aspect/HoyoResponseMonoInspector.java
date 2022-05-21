@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,23 +16,22 @@ import java.util.function.Function;
  * @author : jbinchoo
  * @since : 2022-04-23
  */
-@Slf4j
 @Aspect
 @Component
 public class HoyoResponseMonoInspector {
 
     private final HoyoResponseInspector inspectionDelegate;
     private final Set<Retriable> retriableTargets;
-    private final Function<HoyoResponse<?>, Mono<?>> errorMapper;
+    private final Function<HoyoResponse<?>, Mono<?>> errorDetector;
 
     public HoyoResponseMonoInspector() {
         this.inspectionDelegate = new HoyoResponseInspector();
         this.retriableTargets = new HashSet<>();
-        this.errorMapper = hoyoResponse-> {
+        this.errorDetector = hoyoResponse-> {
             try {
                 inspectionDelegate.inspectRetcode(hoyoResponse);
-            } catch (Exception exception) {
-                return Mono.error(exception);
+            } catch (Exception e) {
+                return Mono.error(e);
             }
             return Mono.just(hoyoResponse);
         };
@@ -43,7 +41,7 @@ public class HoyoResponseMonoInspector {
     public Object inspectAndAppendRetry(ProceedingJoinPoint joinPoint) throws Throwable {
         registerTarget(joinPoint);
         Mono<HoyoResponse<?>> responseMono = (Mono<HoyoResponse<?>>) joinPoint.proceed(joinPoint.getArgs());
-        return addSubscribers(responseMono, errorMapper, getRetriable(joinPoint.getTarget()));
+        return addSubscribers(responseMono, errorDetector, getRetriable(joinPoint.getTarget()));
     }
 
     private void registerTarget(ProceedingJoinPoint joinPoint) {
@@ -55,7 +53,7 @@ public class HoyoResponseMonoInspector {
 
     private Object addSubscribers(Mono<HoyoResponse<?>> responseMono,
                                   Function<HoyoResponse<?>, Mono<?>> retcodeInspector, Retriable retriable) {
-        var withInspection = responseMono.flatMap(retcodeInspector);
+        Mono<Object> withInspection = responseMono.flatMap(retcodeInspector);
         if (retriable == null)
             return withInspection;
         return withInspection.retryWhen(retriable.getRetryObject());

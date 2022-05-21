@@ -33,7 +33,7 @@ public class UserRedeemItem {
     private String botUserId;
 
     @DynamoDBAttribute
-    private String ltuid;
+    private String uid;
 
     @DynamoDBAttribute
     private String code;
@@ -46,13 +46,13 @@ public class UserRedeemItem {
 
     public static UserRedeem toDomain(UserRedeemItem userRedeemItem) {
         return new UserRedeem(userRedeemItem.botUserId,
-                userRedeemItem.ltuid, new RedeemCode(userRedeemItem.code), userRedeemItem.isDone());
+                userRedeemItem.uid, new RedeemCode(userRedeemItem.code), userRedeemItem.isDone());
     }
 
     public static UserRedeemItem fromDomain(UserRedeem userRedeem) {
         return UserRedeemItem.builder()
                 .botUserId(userRedeem.getBotUserId())
-                .ltuid(userRedeem.getLtuid())
+                .uid(userRedeem.getUid())
                 .code(userRedeem.getRedeemCode().getCode())
                 .done(userRedeem.isDone())
                 .build();

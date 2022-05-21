@@ -75,7 +75,7 @@ class RedeemBloomFilterTest {
                 .thenReturn(false);
 
         boolean hasRedeemed = redeemBloomFilter
-                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
+                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getUid(), userRedeemDone.getRedeemCode());
 
         assertThat(hasRedeemed).isFalse();
     }
@@ -97,7 +97,7 @@ class RedeemBloomFilterTest {
                 .willReturn(inclusiveSet(100000));
 
         redeemBloomFilter
-                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
+                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getUid(), userRedeemDone.getRedeemCode());
 
         verify(userRedeemCrudPort).existMatches(userRedeemDone);
     }

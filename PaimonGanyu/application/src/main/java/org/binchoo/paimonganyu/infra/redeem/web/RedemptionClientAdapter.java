@@ -29,11 +29,8 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks, RedeemResultCallback resultCallback) {
-        if (redeemTasks != null && !redeemTasks.isEmpty()) {
-            List<UserRedeem> userRedeems = sendRequest(redeemTasks, resultCallback);
-            log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
-            return userRedeems;
-        }
+        if (redeemTasks != null && !redeemTasks.isEmpty())
+            return sendRequest(redeemTasks, resultCallback);
         return Collections.emptyList();
     }
 
@@ -79,17 +76,18 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
                 .onErrorReturn(userRedeem);
     }
 
-    private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemList) {
-        List<UserRedeem> userRedeemContainer = new ArrayList<>();
-        wait(userRedeemList, userRedeemContainer);
-        return userRedeemContainer;
+    private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
+        List<UserRedeem> userRedeems = new ArrayList<>();
+        wait(userRedeemMonos, userRedeems);
+        log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
+        return userRedeems;
     }
 
-    private void wait(List<Mono<UserRedeem>> userRedeemList, List<UserRedeem> container) {
-        for (Mono<UserRedeem> userRedeem : userRedeemList) {
+    private void wait(List<Mono<UserRedeem>> userRedeemMonos, List<UserRedeem> resultContainer) {
+        for (Mono<UserRedeem> userRedeem : userRedeemMonos) {
             UserRedeem userRedeemObj = userRedeem.block();
-            if (container != null)
-                container.add(userRedeemObj);
+            if (resultContainer != null)
+                resultContainer.add(userRedeemObj);
         }
     }
 }

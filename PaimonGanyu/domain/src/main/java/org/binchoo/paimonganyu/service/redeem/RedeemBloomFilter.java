@@ -82,7 +82,7 @@ public class RedeemBloomFilter implements RedeemHistoryService {
 
         public UserRedeemSearchWord(UserRedeem userRedeem) {
             this.botUserId = userRedeem.getBotUserId();
-            this.ltuid = userRedeem.getLtuid();
+            this.ltuid = userRedeem.getUid();
             this.code = userRedeem.getRedeemCode().getCode();
             this.isDone = userRedeem.isDone();
         }

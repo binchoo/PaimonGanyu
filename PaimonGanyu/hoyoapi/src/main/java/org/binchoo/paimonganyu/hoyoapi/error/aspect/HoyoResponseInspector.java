@@ -1,11 +1,13 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Aspect
 @Component
 public class HoyoResponseInspector {
@@ -25,7 +27,12 @@ public class HoyoResponseInspector {
     }
 
     protected void inspectRetcode(HoyoResponse<?> response) {
-        RetcodeException.findMapping(response).ifPresent(ex-> { throw ex; });
+        RetcodeException.findMapping(response)
+                .ifPresent(exception-> {
+                    log.error("HoyoResponse contains error.", exception);
+                    log.debug("HoyoResponse with error: {}", response);
+                    throw exception;
+                });
     }
 
     protected void inspectResponseData(HoyoResponse<?> response) {

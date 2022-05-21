@@ -27,7 +27,7 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
     @Override
     public List<UserRedeem> findMatches(UserRedeem userRedeem) {
         var botUserId= userRedeem.getBotUserId();
-        var ltuid = userRedeem.getLtuid();
+        var ltuid = userRedeem.getUid();
         var code = userRedeem.getRedeemCode().getCode();
         var done = userRedeem.isDone();
         return repository.findByBotUserIdAndLtuidAndCodeAndDone(botUserId, ltuid, code, done).stream()
@@ -37,7 +37,7 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
     @Override
     public boolean existMatches(UserRedeem userRedeem) {
         var botUserId= userRedeem.getBotUserId();
-        var ltuid = userRedeem.getLtuid();
+        var ltuid = userRedeem.getUid();
         var code = userRedeem.getRedeemCode().getCode();
         var done = userRedeem.isDone();
         return repository.existsByBotUserIdAndLtuidAndCodeAndDone(botUserId, ltuid, code, done);
