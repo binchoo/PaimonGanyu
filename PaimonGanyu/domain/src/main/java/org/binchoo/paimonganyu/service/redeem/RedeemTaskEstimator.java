@@ -35,6 +35,6 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationService {
 
     private boolean hasNotRedeemed(RedeemTask redeemTask) {
         return redeemHistoryService.hasNotRedeemed(redeemTask.getBotUserId(),
-                redeemTask.getCredentials().getLtuid(), redeemTask.getRedeemCode());
+                redeemTask.getUidString(), redeemTask.getRedeemCode());
     }
 }

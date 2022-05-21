@@ -29,7 +29,7 @@ public class RedeemBloomFilter implements RedeemHistoryService {
 
     private final int bloomFilterSize;
     private final UserRedeemCrudPort userRedeemCrudPort;
-    private final Map<RedeemCode, BloomFilter<UserRedeemSearchWord>> bloomFilters;
+    private final Map<RedeemCode, BloomFilter<SearchWord>> bloomFilters;
 
     public RedeemBloomFilter(UserRedeemCrudPort userRedeemCrudPort) {
         this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrudPort);
@@ -42,12 +42,12 @@ public class RedeemBloomFilter implements RedeemHistoryService {
     }
 
     @Override
-    public boolean hasRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        var historyToSearch = new UserRedeem(botUserId, ltuid, redeemCode, true);
-        var searchWord = new UserRedeemSearchWord(historyToSearch);
+    public boolean hasRedeemed(String botUserId, String uid, RedeemCode redeemCode) {
+        var itemToSearch = new UserRedeem(botUserId, uid, redeemCode, true);
+        var searchWord = new SearchWord(itemToSearch);
         var bloomFilter = getOrCreateBloomFilter(redeemCode);
         if (bloomFilter.containsProbably(searchWord)) {
-            return userRedeemCrudPort.existMatches(historyToSearch);
+            return userRedeemCrudPort.existMatches(itemToSearch);
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
             return false;
@@ -55,14 +55,14 @@ public class RedeemBloomFilter implements RedeemHistoryService {
         }
     }
 
-    private BloomFilter<UserRedeemSearchWord> getOrCreateBloomFilter(RedeemCode key) {
+    private BloomFilter<SearchWord> getOrCreateBloomFilter(RedeemCode key) {
         return bloomFilters.computeIfAbsent(key, this::createBloomFilterOf);
     }
 
-    private BloomFilter<UserRedeemSearchWord> createBloomFilterOf(RedeemCode redeemCode) {
-        var bloomFilter = new BloomFilter<UserRedeemSearchWord>(bloomFilterSize);
+    private BloomFilter<SearchWord> createBloomFilterOf(RedeemCode redeemCode) {
+        var bloomFilter = new BloomFilter<SearchWord>(bloomFilterSize);
         userRedeemCrudPort.findByRedeemCode(redeemCode).stream()
-                .map(UserRedeemSearchWord::new)
+                .map(SearchWord::new)
                 .forEach(bloomFilter::insert);
         return bloomFilter;
     }
@@ -71,36 +71,36 @@ public class RedeemBloomFilter implements RedeemHistoryService {
      * {@link UserRedeem}을 멀티 해싱하기 위한 클래스.
      * {@link StringBuilder}를 공유하므로 스레드 세이프하지 않음.
      */
-    private static final class UserRedeemSearchWord implements MultiHashable {
+    private static final class SearchWord implements MultiHashable {
 
         private static final StringBuilder stringBuilder = new StringBuilder();
 
         private final String botUserId;
-        private final String ltuid;
+        private final String uid;
         private final String code;
         private final boolean isDone;
 
-        public UserRedeemSearchWord(UserRedeem userRedeem) {
+        public SearchWord(UserRedeem userRedeem) {
             this.botUserId = userRedeem.getBotUserId();
-            this.ltuid = userRedeem.getUid();
+            this.uid = userRedeem.getUid();
             this.code = userRedeem.getRedeemCode().getCode();
             this.isDone = userRedeem.isDone();
         }
 
         @Override
         public int[] getHashes() {
-            var s0 = stringBuilder.append(botUserId).append(ltuid).append(code).toString();
-            var s1 = stringBuilder.append(isDone).toString();
+            var s0 = stringBuilder.append(botUserId).append(uid).toString();
+            var s1 = stringBuilder.append(code).append(isDone).toString();
             stringBuilder.setLength(0);
             return new int[] {
-                    s0.hashCode(), s0.hashCode() * s1.hashCode(),
+                    s0.hashCode(), s0.hashCode() + s1.hashCode(),
             };
         }
     }
 
     @Override
-    public boolean hasNotRedeemed(String botUserId, String ltuid, RedeemCode redeemCode) {
-        return !this.hasRedeemed(botUserId, ltuid, redeemCode);
+    public boolean hasNotRedeemed(String botUserId, String uid, RedeemCode redeemCode) {
+        return !hasRedeemed(botUserId, uid, redeemCode);
     }
 
     public int getBloomFilterSize() {
