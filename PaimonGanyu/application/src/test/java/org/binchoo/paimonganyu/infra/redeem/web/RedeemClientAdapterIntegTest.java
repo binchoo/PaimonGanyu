@@ -29,7 +29,7 @@ class RedeemClientAdapterIntegTest {
     private RedemptionClientAdapter redeemClientAdapter;
 
     @BeforeEach
-    void init() {
+    void initAdapter() {
         redeemClientAdapter = new RedemptionClientAdapter(redemptionApi);
     }
 
@@ -41,15 +41,15 @@ class RedeemClientAdapterIntegTest {
 
         assertThat(result)
                 .as("Added three tasks.").hasSize(3)
-                .as("Added invalid mock tasks.").allMatch((it)-> !it.isDone());
+                .as("Added invalid mock tasks.").allMatch(it-> !it.isDone());
     }
 
-    private RedeemTask getMockTask(String id) {
+    private RedeemTask getMockTask(String placeholder) {
         var uid = HoyopassMockUtils.getMockUid();
         return RedeemTask.builder()
-                .botUserId(id)
+                .botUserId(placeholder)
                 .credentials(HoyopassCredentials.builder()
-                    .ltuid(id).ltoken(id).cookieToken(id)
+                    .ltuid(placeholder).ltoken(placeholder).cookieToken(placeholder)
                     .build())
                 .uid(uid)
                 .redeemCode(new RedeemCode("genshingift"))

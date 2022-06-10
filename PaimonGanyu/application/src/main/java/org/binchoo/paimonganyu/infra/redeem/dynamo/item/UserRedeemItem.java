@@ -46,7 +46,7 @@ public class UserRedeemItem {
 
     public static UserRedeem toDomain(UserRedeemItem userRedeemItem) {
         return new UserRedeem(userRedeemItem.botUserId,
-                userRedeemItem.uid, new RedeemCode(userRedeemItem.code), userRedeemItem.isDone());
+                userRedeemItem.uid, new RedeemCode(userRedeemItem.code), userRedeemItem.done);
     }
 
     public static UserRedeemItem fromDomain(UserRedeem userRedeem) {

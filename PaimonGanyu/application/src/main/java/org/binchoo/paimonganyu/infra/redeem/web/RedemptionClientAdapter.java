@@ -84,8 +84,8 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     }
 
     private void wait(List<Mono<UserRedeem>> userRedeemMonos, List<UserRedeem> resultContainer) {
-        for (Mono<UserRedeem> userRedeem : userRedeemMonos) {
-            UserRedeem userRedeemObj = userRedeem.block();
+        for (Mono<UserRedeem> userRedeemMono : userRedeemMonos) {
+            UserRedeem userRedeemObj = userRedeemMono.block();
             if (resultContainer != null)
                 resultContainer.add(userRedeemObj);
         }
