@@ -2,6 +2,8 @@ package org.binchoo.paimonganyu.chatbot.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.chatbot.skilldatabind.annotations.ActionParam;
+import org.binchoo.paimonganyu.chatbot.skilldatabind.annotations.UserId;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
@@ -21,13 +23,17 @@ public class HoyopassController {
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
 
     @PostMapping("/ikakao/hoyopass/post")
-    public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
-        String botUserId = skillPayload.userRequest.user.getId();
-        String securedHoyopass = skillPayload.action.getDetailParams().get("secure_hoyopass").value;
-        UserHoyopass registeredHoyopass = hoyopassRegistry.registerHoyopass(botUserId, securedHoyopass);
+    public ResponseEntity<SkillResponse> addHoyopass(@UserId String botUserId,
+                                                     @ActionParam("secure_hoyopass") String secureHoyopass) {
+        UserHoyopass registeredHoyopass = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
         log.debug("Registered UserHoyopass: {}", registeredHoyopass);
         return null;
     }
+
+//    @PostMapping("/ikakao/hoyopass/post")
+//    public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
+//        return null;
+//    }
 
     @PostMapping("/ikakao/hoyopass/get")
     public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload) {
