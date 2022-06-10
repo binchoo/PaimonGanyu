@@ -15,25 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
-@RestController("/ikakao/hoyopass")
+@RestController
 public class HoyopassController {
 
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
 
-    @PostMapping("/post")
+    @PostMapping("/ikakao/hoyopass/post")
     public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
         String botUserId = skillPayload.userRequest.user.getId();
-        String securedHoyopass = skillPayload.userRequest.params.get("secured_hoyopass");
+        String securedHoyopass = skillPayload.action.getDetailParams().get("secure_hoyopass").value;
         UserHoyopass registeredHoyopass = hoyopassRegistry.registerHoyopass(botUserId, securedHoyopass);
+        log.debug("Registered UserHoyopass: {}", registeredHoyopass);
         return null;
     }
 
-    @PostMapping("/get")
+    @PostMapping("/ikakao/hoyopass/get")
     public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload) {
         return null;
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/ikakao/hoyopass/delete")
     public SkillResponse deleteHoyopass(@RequestBody SkillPayload skillPayload) {
         return null;
     }
