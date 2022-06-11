@@ -15,7 +15,7 @@ import java.util.Map;
  * @since 2022/06/11
  */
 @Slf4j
-public abstract class ErrorContextBinders {
+public class ErrorContextBinders {
 
     private static final LinkedList<ErrorContextBinder<?>> binders = new LinkedList<>();
     private static final Map<Class<? extends ThrowerAware<?>>, ErrorContextBinder<?>> evaluated = new HashMap<>();
@@ -51,9 +51,10 @@ public abstract class ErrorContextBinders {
     /**
      * 나중에 입력된 {@link ErrorContextBinder}가 더 높은 우선순위를 갖습니다.
      * @param contextBinder 추가할 바인더
-     * @param <T>
      */
     public static void addBinder(ErrorContextBinder<?> contextBinder) {
+        if (contextBinder == null)
+            throw new NullPointerException();
         binders.addFirst(contextBinder);
     }
 }

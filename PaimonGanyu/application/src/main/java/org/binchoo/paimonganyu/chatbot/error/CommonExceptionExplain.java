@@ -10,6 +10,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityException;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,7 +42,8 @@ public abstract class CommonExceptionExplain implements ErrorContextBinder<UserH
             }
             @Override
             public Collection<FallbackId> getFallbacks() {
-                return returnFallbacks(exception);
+                List<FallbackId> fallbacks = returnFallbacks(exception);
+                return (fallbacks != null)? fallbacks : Collections.emptyList();
             }
         };
     }
