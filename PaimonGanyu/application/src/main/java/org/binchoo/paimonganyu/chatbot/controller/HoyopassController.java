@@ -2,8 +2,8 @@ package org.binchoo.paimonganyu.chatbot.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.skilldatabind.annotations.ActionParam;
-import org.binchoo.paimonganyu.chatbot.skilldatabind.annotations.UserId;
+import org.binchoo.paimonganyu.chatbot.resolver.param.ActionParam;
+import org.binchoo.paimonganyu.chatbot.resolver.id.UserId;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@ControllerAdvice
 @RequiredArgsConstructor
 @RestController
 public class HoyopassController {
@@ -29,11 +28,6 @@ public class HoyopassController {
         log.debug("Registered UserHoyopass: {}", registeredHoyopass);
         return null;
     }
-
-//    @PostMapping("/ikakao/hoyopass/post")
-//    public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
-//        return null;
-//    }
 
     @PostMapping("/ikakao/hoyopass/get")
     public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload) {
