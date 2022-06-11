@@ -87,7 +87,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
                 .orElseThrow(RuntimeException::new);
 
         assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
-        assertThat(userHoyopass.getCount()).isEqualTo(1);
+        assertThat(userHoyopass.getSize()).isEqualTo(1);
         assertThat(userHoyopass.getHoyopasses()).map(Hoyopass::getLtuid)
                 .anyMatch(ltuid-> ltuid.equals(valid0.getLtuid()));
         assertThat(userHoyopass.getHoyopasses()).map(Hoyopass::getLtoken)
@@ -119,7 +119,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
 
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, valid0, valid1);
 
-        assertThat(userHoyopass.getCount()).isEqualTo(2);
+        assertThat(userHoyopass.getSize()).isEqualTo(2);
     }
 
     @Test
@@ -217,7 +217,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
         for (var cred : creds)
             userHoyopass = this.registerHoyopass(botUserId, cred);
         if (userHoyopass != null)
-            assertThat(userHoyopass.getCount()).isEqualTo(creds.length);
+            assertThat(userHoyopass.getSize()).isEqualTo(creds.length);
         return userHoyopass;
     }
 
