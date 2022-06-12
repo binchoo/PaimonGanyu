@@ -223,8 +223,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
-      MemorySize: 768
-      Timeout: 300
+      MemorySize: 1536
+      Timeout: 600
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserHoyopassTable
@@ -240,4 +240,4 @@ Resources:
             Method: any
       Environment:
         Variables:
-          PROFILE: beta
+          PROFILE: stage

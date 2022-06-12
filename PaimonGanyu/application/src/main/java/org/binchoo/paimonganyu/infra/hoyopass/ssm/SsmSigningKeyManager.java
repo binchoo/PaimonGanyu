@@ -6,7 +6,6 @@ import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyFactory;
@@ -21,7 +20,6 @@ import java.util.Base64;
 import java.util.List;
 
 @Slf4j
-@Lazy
 @Component
 public class SsmSigningKeyManager implements SigningKeyManagerPort {
 

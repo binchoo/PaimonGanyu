@@ -3,8 +3,8 @@ package org.binchoo.paimonganyu.chatbot;
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
-import com.amazonaws.serverless.proxy.spring.SpringLambdaContainerHandler;
-import com.amazonaws.serverless.proxy.spring.SpringProxyHandlerBuilder;
+import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
+import com.amazonaws.serverless.proxy.spring.SpringBootProxyHandlerBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +22,14 @@ public class PaimonGanyuLambda implements RequestStreamHandler {
 
     private static final String PROFILE = System.getenv("PROFILE");
 
-    private final SpringLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
+    private final SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     public PaimonGanyuLambda() throws ContainerInitializationException {
-        handler = new SpringProxyHandlerBuilder<AwsProxyRequest>()
+        handler = new SpringBootProxyHandlerBuilder<AwsProxyRequest>()
                 .defaultProxy()
                 .asyncInit()
                 .profiles(PROFILE)
-                .configurationClasses(PaimonGanyu.class)
+                .springBootApplication(PaimonGanyu.class)
                 .buildAndInitialize();
     }
 
