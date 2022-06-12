@@ -3,6 +3,8 @@ package org.binchoo.paimonganyu.chatbot.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.chatbot.view.uid.UidModelMap;
+import org.binchoo.paimonganyu.chatbot.view.uid.UidResponseTemplate;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
@@ -19,18 +21,26 @@ import java.util.Map;
 @RestController
 public class HoyopassController {
 
-    private final SecuredHoyopassRegistryPort hoyopassRegistry;
     private final ObjectMapper objectMapper;
+    private final UidResponseTemplate resTemplate;
+    private final SecuredHoyopassRegistryPort hoyopassRegistry;
 
     // Argument Resolver가 aws-serverless-java-container에서 동작하지 않고 있으므로
     // SkillPayload 내부의 정보는 직접 추출하도록 합시다.
     @PostMapping("/ikakao/hoyopass/post")
     public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
-        String botUserId = getBotUserId(skillPayload);
-        String secureHoyopass = getBarcode(skillPayload, "secure_hoyopass");
+        String botUserId = parseId(skillPayload);
+        String secureHoyopass = parseBarcode(skillPayload, "secure_hoyopass");
+
         UserHoyopass user = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
-        log.debug("Registered UserHoyopass: {}", user);
-        return null;
+        if (user != null) {
+            UidModelMap m = new UidModelMap(user);
+            SkillResponse res = resTemplate.render(m);
+            if (res != null) {
+                return ResponseEntity.ok(res);
+            }
+        }
+        throw new NullPointerException("UserHoyopass is null");
     }
 
     @PostMapping("/ikakao/hoyopass/get")
@@ -43,11 +53,11 @@ public class HoyopassController {
         return null;
     }
 
-    private String getBotUserId(SkillPayload skillPayload) {
+    private String parseId(SkillPayload skillPayload) {
         return skillPayload.getUserRequest().getUser().getId();
     }
 
-    private String getBarcode(SkillPayload skillPayload, String key) {
+    private String parseBarcode(SkillPayload skillPayload, String key) {
         String param = getParameter(skillPayload, key);
         try {
             Map<String, String> barcodeData = objectMapper.readValue(param, Map.class);

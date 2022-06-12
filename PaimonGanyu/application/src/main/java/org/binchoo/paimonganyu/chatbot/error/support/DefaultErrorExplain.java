@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.chatbot.error.support;
 
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
 import org.binchoo.paimonganyu.error.ErrorExplain;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.springframework.context.annotation.Lazy;

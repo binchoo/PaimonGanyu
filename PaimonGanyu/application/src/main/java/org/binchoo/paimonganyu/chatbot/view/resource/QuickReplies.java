@@ -1,8 +1,7 @@
-package org.binchoo.paimonganyu.chatbot.view;
+package org.binchoo.paimonganyu.chatbot.view.resource;
 
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;

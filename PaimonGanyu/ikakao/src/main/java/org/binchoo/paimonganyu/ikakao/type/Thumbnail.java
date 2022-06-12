@@ -11,7 +11,7 @@ import lombok.*;
 public class Thumbnail {
     private String imageUrl;
     private Link link;
-    private Boolean fixedRaio;
+    private Boolean fixedRatio;
     private Integer width;
     private Integer height;
 

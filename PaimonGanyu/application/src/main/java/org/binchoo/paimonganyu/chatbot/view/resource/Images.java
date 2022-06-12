@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.view;
+package org.binchoo.paimonganyu.chatbot.view.resource;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,7 +2,6 @@ package org.binchoo.paimonganyu.chatbot.error.support;
 
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
