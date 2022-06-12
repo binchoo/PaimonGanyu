@@ -8,7 +8,9 @@ import org.binchoo.paimonganyu.chatbot.view.resource.QuickReplies;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.BasicCardView;
+import org.binchoo.paimonganyu.ikakao.component.CarouselView;
 import org.binchoo.paimonganyu.ikakao.component.componentType.BasicCard;
+import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
 import org.springframework.stereotype.Component;
@@ -44,16 +46,21 @@ public class UidResponseTemplate implements ResponseTemplate {
     }
 
     private SkillTemplate render(List<UidModelMap.Item> items) {
+        var carouselBuilder = Carousel.builder()
+                .type("basicCard");
+
+        for (UidModelMap.Item item : items)
+            carouselBuilder.addItem(createCard(item));
+
         var quickReplies = Arrays.stream(getFallbacks()).map(this.quickReplies::findById)
                 .collect(Collectors.toList());
 
-        var builder = SkillTemplate.builder()
-                .quickReplies(quickReplies);
-
-        for (UidModelMap.Item item : items)
-            builder.addOutput(createCard(item));
-
-        return builder.build();
+        return SkillTemplate.builder()
+                .addOutput(CarouselView.builder()
+                        .carousel(carouselBuilder.build())
+                        .build())
+                .quickReplies(quickReplies)
+                .build();
     }
 
     private BasicCardView createCard(UidModelMap.Item item) {
