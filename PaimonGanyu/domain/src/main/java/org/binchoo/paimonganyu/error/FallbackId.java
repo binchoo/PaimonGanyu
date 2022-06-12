@@ -12,6 +12,10 @@ public class FallbackId {
         this.id = id;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         return id.equals(o);

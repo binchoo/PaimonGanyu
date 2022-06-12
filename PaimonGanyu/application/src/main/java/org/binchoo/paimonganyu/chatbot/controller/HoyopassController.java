@@ -6,7 +6,6 @@ import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.resolver.id.UserId;
 import org.binchoo.paimonganyu.chatbot.resolver.param.ActionParam;
 import org.binchoo.paimonganyu.chatbot.view.ErrorResponseTemplate;
-import org.binchoo.paimonganyu.error.ErrorContext;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
@@ -14,10 +13,6 @@ import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 import org.binchoo.paimonganyu.hoyopass.exception.UserHoyopassException;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
-import org.binchoo.paimonganyu.ikakao.component.SimpleTextView;
-import org.binchoo.paimonganyu.ikakao.component.componentType.SimpleText;
-import org.binchoo.paimonganyu.ikakao.type.QuickReply;
-import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +23,7 @@ public class HoyopassController {
 
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
     private final ErrorContextBinders binders;
+    private final ErrorResponseTemplate errorResponseTemplate;
 
     @PostMapping("/ikakao/hoyopass/post")
     public ResponseEntity<SkillResponse> addHoyopass(@UserId String botUserId,
@@ -52,17 +48,6 @@ public class HoyopassController {
     public SkillResponse handle(ThrowerAware<?> e) {
         var errorContextBinder = binders.findByType(e.getClass());
         var errorContext = errorContextBinder.explain(e);
-        return new ErrorResponseTemplate() {
-            @Override
-            public SkillResponse build(ErrorContext errorContext) {
-                String title = errorContext.getExplanation();
-                return SkillResponse.builder()
-                        .template(SkillTemplate.builder()
-                                .addOutput(new SimpleTextView(new SimpleText(title)))
-                                .addQuickReply(new QuickReply("a", "b", "c", "d", null))
-                                .build())
-                        .build();
-            }
-        }.build(errorContext);
+        return errorResponseTemplate.build(errorContext);
     }
 }
