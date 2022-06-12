@@ -15,7 +15,6 @@ import java.util.Map;
  * @since 2022/06/11
  */
 @Slf4j
-@Component
 public final class ErrorContextBinders {
 
     private final LinkedList<ErrorContextBinder> binders = new LinkedList<>();

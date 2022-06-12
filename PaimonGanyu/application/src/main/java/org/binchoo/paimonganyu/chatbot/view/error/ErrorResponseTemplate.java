@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 @Component
-public class ErrorResponseTemplate implements ResponseTemplate {
+public class ErrorResponseTemplate {
 
     private final QuickReplies quickReplies;
 

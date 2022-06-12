@@ -11,7 +11,6 @@ import java.util.Map;
  * @author jbinchoo
  * @since 2022/06/12
  */
-@Component
 public final class QuickReplies {
 
     private final Map<String, QuickReply> registry = new HashMap<>();
