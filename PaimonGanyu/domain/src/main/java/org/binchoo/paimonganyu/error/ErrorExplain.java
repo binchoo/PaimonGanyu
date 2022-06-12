@@ -6,7 +6,7 @@ import java.util.Collection;
  * @author jbinchoo
  * @since 2022/06/11
  */
-public interface ErrorContext {
+public interface ErrorExplain {
 
     /**
      * 오류 현상에 대한 설명

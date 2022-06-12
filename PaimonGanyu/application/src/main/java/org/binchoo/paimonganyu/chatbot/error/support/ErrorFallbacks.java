@@ -6,7 +6,7 @@ import org.binchoo.paimonganyu.error.FallbackId;
  * @author : jbinchoo
  * @since : 2022-06-12
  */
-public class Fallbacks {
+public final class ErrorFallbacks {
 
     public static FallbackId Home           = new FallbackId("Home");
     public static FallbackId DeleteHoyopass = new FallbackId("DeleteHoyopass");
@@ -14,5 +14,5 @@ public class Fallbacks {
     public static FallbackId ValidationCs   = new FallbackId("ValidationCs");
     public static FallbackId CommonCs       = new FallbackId("CommonCs");
 
-    private Fallbacks() { }
+    private ErrorFallbacks() { }
 }

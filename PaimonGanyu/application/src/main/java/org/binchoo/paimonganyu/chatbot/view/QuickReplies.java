@@ -12,7 +12,7 @@ import java.util.Map;
  * @since 2022/06/12
  */
 @Component
-public class QuickReplies {
+public final class QuickReplies {
 
     private final Map<String, QuickReply> registry = new HashMap<>();
 

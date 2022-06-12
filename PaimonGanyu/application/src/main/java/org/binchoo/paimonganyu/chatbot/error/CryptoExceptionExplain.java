@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.chatbot.error;
 
 import lombok.Builder;
-import org.binchoo.paimonganyu.error.ErrorContext;
-import org.binchoo.paimonganyu.error.ErrorContextBinder;
+import org.binchoo.paimonganyu.error.ErrorExplain;
+import org.binchoo.paimonganyu.error.ErrorContextExplain;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
@@ -16,7 +16,7 @@ import java.util.List;
  * @since 2022/06/12
  */
 @Builder
-public class CryptoExceptionExplain implements ErrorContextBinder {
+public final class CryptoExceptionExplain implements ErrorContextExplain {
 
     private final String text;
     private final FallbackId[] fallbacks;
@@ -35,8 +35,8 @@ public class CryptoExceptionExplain implements ErrorContextBinder {
     }
 
     @Override
-    public ErrorContext explain(ThrowerAware<?> exception) {
-        return new ErrorContext() {
+    public ErrorExplain explain(ThrowerAware<?> exception) {
+        return new ErrorExplain() {
             @Override
             public String getExplanation() {
                 return text;

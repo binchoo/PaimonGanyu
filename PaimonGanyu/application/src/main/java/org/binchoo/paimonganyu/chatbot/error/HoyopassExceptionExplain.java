@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.chatbot.error;
 
 import lombok.Builder;
-import org.binchoo.paimonganyu.error.ErrorContext;
-import org.binchoo.paimonganyu.error.ErrorContextBinder;
+import org.binchoo.paimonganyu.error.ErrorExplain;
+import org.binchoo.paimonganyu.error.ErrorContextExplain;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @since 2022/06/12
  */
 @Builder
-public class HoyopassExceptionExplain implements ErrorContextBinder {
+public class HoyopassExceptionExplain implements ErrorContextExplain {
 
     private final Class<?> error;
     private final String title;
@@ -35,10 +35,10 @@ public class HoyopassExceptionExplain implements ErrorContextBinder {
     }
 
     @Override
-    public ErrorContext explain(ThrowerAware<?> exception) {
+    public ErrorExplain explain(ThrowerAware<?> exception) {
         ThrowerAware<UserHoyopass> hoyopassException = (ThrowerAware<UserHoyopass>) exception;
         UserHoyopass userHoyopass = hoyopassException.getThrower();
-        return new ErrorContext() {
+        return new ErrorExplain() {
 
             @Override
             public String getExplanation() {

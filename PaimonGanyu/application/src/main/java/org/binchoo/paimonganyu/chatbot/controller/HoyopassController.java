@@ -2,12 +2,12 @@ package org.binchoo.paimonganyu.chatbot.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
-import org.binchoo.paimonganyu.chatbot.error.support.Fallbacks;
+import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextExplains;
+import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
 import org.binchoo.paimonganyu.chatbot.resolver.id.UserId;
 import org.binchoo.paimonganyu.chatbot.resolver.param.ActionParam;
 import org.binchoo.paimonganyu.chatbot.view.ErrorResponseTemplate;
-import org.binchoo.paimonganyu.error.ErrorContext;
+import org.binchoo.paimonganyu.error.ErrorExplain;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -28,7 +28,7 @@ import java.util.List;
 public class HoyopassController {
 
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
-    private final ErrorContextBinders binders;
+    private final ErrorContextExplains binders;
     private final ErrorResponseTemplate errorResponseTemplate;
 
     @PostMapping("/ikakao/hoyopass/post")
@@ -60,7 +60,7 @@ public class HoyopassController {
     @ResponseBody
     @ExceptionHandler
     public SkillResponse handle(Exception e) {
-        return errorResponseTemplate.build(new ErrorContext() {
+        return errorResponseTemplate.build(new ErrorExplain() {
             @Override
             public String getExplanation() {
                 return "알 수 없는 오류가 발생했습니다.";
@@ -68,7 +68,7 @@ public class HoyopassController {
 
             @Override
             public Collection<FallbackId> getFallbacks() {
-                return List.of(Fallbacks.Home);
+                return List.of(ErrorFallbacks.Home);
             }
         });
     }
