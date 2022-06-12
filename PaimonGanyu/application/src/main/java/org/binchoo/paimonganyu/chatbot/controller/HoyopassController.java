@@ -18,12 +18,14 @@ public class HoyopassController {
 
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
 
+    // Argument Resolver가 aws-serverless-java-container에서 동작하지 않고 있으므로
+    // SkillPayload 내부의 정보는 직접 추출하도록 합시다.
     @PostMapping("/ikakao/hoyopass/post")
     public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
-        String botUserId = skillPayload.getUserRequest().getUser().getId();
-        String secureHoyopass = skillPayload.getAction().getParams().get("secure_hoyopass");
-        UserHoyopass registeredHoyopass = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
-        log.debug("Registered UserHoyopass: {}", registeredHoyopass);
+        String botUserId = getBotUserId(skillPayload);
+        String secureHoyopass = getParameter(skillPayload, "secure_hoyopass");
+        UserHoyopass user = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
+        log.debug("Registered UserHoyopass: {}", user);
         return null;
     }
 
@@ -35,5 +37,13 @@ public class HoyopassController {
     @PostMapping("/ikakao/hoyopass/delete")
     public SkillResponse deleteHoyopass(@RequestBody SkillPayload skillPayload) {
         return null;
+    }
+
+    private String getBotUserId(SkillPayload skillPayload) {
+        return skillPayload.getUserRequest().getUser().getId();
+    }
+
+    private String getParameter(SkillPayload skillPayload, String key) {
+        return skillPayload.getAction().getParams().get(key);
     }
 }
