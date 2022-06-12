@@ -26,7 +26,7 @@ public class ResponseConfig {
     private QuickReplies quickReplyRegistry;
 
     @Autowired
-    private ErrorContextBinders binderRegistry;
+    private ErrorContextBinderks binderRegistry;
 
     @PostConstruct
     public void configure() {
@@ -39,7 +39,7 @@ public class ResponseConfig {
                 new QuickReply("처음으로", "block", null, "62a33634d3ab72600628e825", null));
 
         quickReplies.add(ErrorFallbacks.ScanHoyopass,
-                new QuickReply("재촬영", "block", null, "62a343d6fa834474ed73fdcb", null));
+                new QuickReply("재촬영", "block", null, "62a3411cef4e2505c632204e", null));
 
         quickReplies.add(ErrorFallbacks.DeleteHoyopass,
                 new QuickReply("통행증 삭제", "block", null, "62a59a68678c9b1480a53389", null));

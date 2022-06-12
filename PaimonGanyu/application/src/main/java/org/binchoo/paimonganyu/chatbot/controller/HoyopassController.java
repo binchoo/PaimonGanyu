@@ -44,6 +44,8 @@ public class HoyopassController {
     }
 
     private String getParameter(SkillPayload skillPayload, String key) {
+        String param = skillPayload.getAction().getParams().get(key);
+        log.debug("Parameter found: {}", param);
         return skillPayload.getAction().getParams().get(key);
     }
 }
