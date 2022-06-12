@@ -9,7 +9,6 @@ import org.springframework.util.StreamUtils;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -23,10 +22,8 @@ import java.nio.charset.Charset;
 @Component
 class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
 
-    private static final String SKILL_PAYLOAD_SESSION_KEY = "skillPayload";
-
-    private final HttpSession session;
     private final ObjectMapper mapper;
+    private final ThreadLocal<SkillPayload> payloadCache = new ThreadLocal<>();
 
     @Override
     public SkillPayload resolve(HttpServletRequest request) {
@@ -46,12 +43,12 @@ class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
     }
 
     private SkillPayload getCachedPayload() {
-        return (SkillPayload) session.getAttribute(SKILL_PAYLOAD_SESSION_KEY);
+        return payloadCache.get();
     }
 
     private SkillPayload cachePayload(SkillPayload skillPayload) {
         if (skillPayload != null)
-            session.setAttribute(SKILL_PAYLOAD_SESSION_KEY, skillPayload);
+            payloadCache.set(skillPayload);
         return skillPayload;
     }
 

@@ -223,7 +223,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
-      MemorySize: 1536
+      MemorySize: 768
       Timeout: 600
       Policies:
         - DynamoDBCrudPolicy:
@@ -232,6 +232,10 @@ Resources:
             TableName: !Ref UserRedeemTable
         - DynamoDBReadPolicy:
             TableName: !Ref UserDailyCheckTable
+        - SSMParameterReadPolicy:
+            ParameterName: HoyopassPrivateKey
+        - SSMParameterReadPolicy:
+            ParameterName: HoyopagissPublicKey
       Events:
         RestApi:
           Type: Api
