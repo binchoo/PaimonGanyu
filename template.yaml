@@ -248,3 +248,5 @@ Resources:
       AutoPublishAlias: PaimonGanyuChatbot
       ProvisionedConcurrencyConfig:
         ProvisionedConcurrentExecutions: 1
+      DeploymentPreference:
+        Type: AllAtOnce
