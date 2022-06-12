@@ -26,7 +26,7 @@ public class ResponseConfig {
     private QuickReplies quickReplyRegistry;
 
     @Autowired
-    private ErrorContextBinderks binderRegistry;
+    private ErrorContextBinders binderRegistry;
 
     @PostConstruct
     public void configure() {
