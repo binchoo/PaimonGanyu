@@ -7,21 +7,19 @@ import org.binchoo.paimonganyu.chatbot.resolver.id.UserId;
 import org.binchoo.paimonganyu.chatbot.resolver.param.ActionParam;
 import org.binchoo.paimonganyu.chatbot.view.ErrorResponseTemplate;
 import org.binchoo.paimonganyu.error.ErrorContext;
+import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 import org.binchoo.paimonganyu.hoyopass.exception.UserHoyopassException;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
-import org.binchoo.paimonganyu.ikakao.component.Component;
 import org.binchoo.paimonganyu.ikakao.component.SimpleTextView;
 import org.binchoo.paimonganyu.ikakao.component.componentType.SimpleText;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HoyopassController {
 
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
+    private final ErrorContextBinders binders;
 
     @PostMapping("/ikakao/hoyopass/post")
     public ResponseEntity<SkillResponse> addHoyopass(@UserId String botUserId,
@@ -48,11 +47,11 @@ public class HoyopassController {
         return null;
     }
 
-
-    @ExceptionHandler(UserHoyopassException.class)
-    public SkillResponse handle(ErrorContextBinders binders, UserHoyopassException e) {
-        var binder = binders.findBinderFor(e.getClass());
-        var errorContext = binder.explain(e);
+    @ResponseBody
+    @ExceptionHandler({CryptoException.class, UserHoyopassException.class})
+    public SkillResponse handle(ThrowerAware<?> e) {
+        var errorContextBinder = binders.findByType(e.getClass());
+        var errorContext = errorContextBinder.explain(e);
         return new ErrorResponseTemplate() {
             @Override
             public SkillResponse build(ErrorContext errorContext) {

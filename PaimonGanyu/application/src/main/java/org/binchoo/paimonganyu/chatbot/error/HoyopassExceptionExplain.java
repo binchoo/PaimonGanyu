@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @since 2022/06/12
  */
 @Builder
-public class HoyopassExceptionExplain implements ErrorContextBinder<UserHoyopass> {
+public class HoyopassExceptionExplain implements ErrorContextBinder {
 
     private final Class<?> error;
     private final String title;
@@ -35,18 +35,19 @@ public class HoyopassExceptionExplain implements ErrorContextBinder<UserHoyopass
     }
 
     @Override
-    public ErrorContext explain(ThrowerAware<UserHoyopass> exception) {
-        UserHoyopass userHoyopass = exception.getThrower();
+    public ErrorContext explain(ThrowerAware<?> exception) {
+        ThrowerAware<UserHoyopass> hoyopassException = (ThrowerAware<UserHoyopass>) exception;
+        UserHoyopass userHoyopass = hoyopassException.getThrower();
         return new ErrorContext() {
 
             @Override
             public String getExplanation() {
-                return join(returnTitle(exception), userHoyopass.listLtuids());
+                return join(returnTitle(hoyopassException), userHoyopass.listLtuids());
             }
 
             @Override
             public Collection<FallbackId> getFallbacks() {
-                FallbackId[] fallbacks = returnFallbacks(exception);
+                FallbackId[] fallbacks = returnFallbacks(hoyopassException);
                 return (fallbacks != null)? List.of(fallbacks) : Collections.emptyList();
             }
         };

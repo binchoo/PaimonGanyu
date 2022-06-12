@@ -7,7 +7,7 @@ package org.binchoo.paimonganyu.error;
  * @author jbinchoo
  * @since 2022/06/11
  */
-public interface ErrorContextBinder<T> {
+public interface ErrorContextBinder {
 
     /**
      * 이 {@link ErrorContextBinder}가 인자로 주어진 오류 타입의
@@ -23,5 +23,5 @@ public interface ErrorContextBinder<T> {
      * @param exception 오류 객체
      * @return {@link ErrorContext}
      */
-    ErrorContext explain(ThrowerAware<T> exception);
+    ErrorContext explain(ThrowerAware<?> exception);
 }

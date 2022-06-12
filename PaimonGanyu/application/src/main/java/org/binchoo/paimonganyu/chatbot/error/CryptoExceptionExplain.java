@@ -5,7 +5,6 @@ import org.binchoo.paimonganyu.error.ErrorContext;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.error.ThrowerAware;
-import org.binchoo.paimonganyu.hoyopass.SecureHoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 
 import java.util.Collection;
@@ -17,7 +16,7 @@ import java.util.List;
  * @since 2022/06/12
  */
 @Builder
-public class CryptoExceptionExplain implements ErrorContextBinder<SecureHoyopassCredentials> {
+public class CryptoExceptionExplain implements ErrorContextBinder {
 
     private final String text;
     private final FallbackId[] fallbacks;
@@ -36,7 +35,7 @@ public class CryptoExceptionExplain implements ErrorContextBinder<SecureHoyopass
     }
 
     @Override
-    public ErrorContext explain(ThrowerAware<SecureHoyopassCredentials> exception) {
+    public ErrorContext explain(ThrowerAware<?> exception) {
         return new ErrorContext() {
             @Override
             public String getExplanation() {
