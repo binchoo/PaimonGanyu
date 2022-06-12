@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.config;
 
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
+import org.binchoo.paimonganyu.chatbot.error.support.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.view.resource.Images;
 import org.binchoo.paimonganyu.chatbot.view.resource.QuickReplies;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
@@ -27,19 +27,19 @@ public class ResourceConfig {
     public QuickReplies setupQuickReplies() {
         QuickReplies quickReplies = new QuickReplies();
 
-        quickReplies.add(ErrorFallbacks.Home,
+        quickReplies.add(FallbackMethods.Home,
                 new QuickReply("처음으로", "block", null, "62a33634d3ab72600628e825", null));
 
-        quickReplies.add(ErrorFallbacks.ScanHoyopass,
+        quickReplies.add(FallbackMethods.ScanHoyopass,
                 new QuickReply("재촬영", "block", null, "62a3411cef4e2505c632204e", null));
 
-        quickReplies.add(ErrorFallbacks.DeleteHoyopass,
+        quickReplies.add(FallbackMethods.DeleteHoyopass,
                 new QuickReply("통행증 삭제", "block", null, "62a59a68678c9b1480a53389", null));
 
-        quickReplies.add(ErrorFallbacks.ValidationCs,
+        quickReplies.add(FallbackMethods.ValidationCs,
                 new QuickReply("계정 유효성 안내", "block", null, "62a59aeb678c9b1480a53392", null));
 
-        quickReplies.add(ErrorFallbacks.CommonCs,
+        quickReplies.add(FallbackMethods.CommonCs,
                 new QuickReply("메일 문의", "block", null, "62a59b0efa834474ed740da6", null));
 
         return quickReplies;

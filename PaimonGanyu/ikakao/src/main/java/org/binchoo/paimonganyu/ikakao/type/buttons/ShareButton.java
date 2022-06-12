@@ -8,11 +8,9 @@ import org.binchoo.paimonganyu.ikakao.type.Button;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class blockButton implements Button {
+public class ShareButton implements Button {
 
     private String label;
     @Builder.Default
-    private String action = "block";
-    private String messageText;
-    private String blockId;
+    private String action = "share";
 }

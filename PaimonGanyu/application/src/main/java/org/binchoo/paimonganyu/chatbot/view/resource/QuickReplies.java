@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.view.resource;
 
-import org.binchoo.paimonganyu.error.FallbackId;
+import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
 
 import java.util.HashMap;
@@ -14,8 +14,8 @@ public final class QuickReplies {
 
     private final Map<String, QuickReply> registry = new HashMap<>();
 
-    public void add(FallbackId fallbackId, QuickReply quickReply) {
-        this.add(fallbackId.getId(), quickReply);
+    public void add(FallbackMethod fallbackMethod, QuickReply quickReply) {
+        this.add(fallbackMethod.getId(), quickReply);
     }
 
     private void add(String id, QuickReply quickReply) {
@@ -23,8 +23,8 @@ public final class QuickReplies {
             registry.put(id, quickReply);
     }
 
-    public QuickReply findById(FallbackId fallbackId) {
-        return findById(fallbackId.getId());
+    public QuickReply findById(FallbackMethod fallbackMethod) {
+        return findById(fallbackMethod.getId());
     }
 
     public QuickReply findById(String id) {

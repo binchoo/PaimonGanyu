@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.error.binder;
 import lombok.Builder;
 import org.binchoo.paimonganyu.error.ErrorExplain;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;
-import org.binchoo.paimonganyu.error.FallbackId;
+import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 
@@ -19,11 +19,11 @@ import java.util.List;
 public final class CryptoExceptionBinder implements ErrorContextBinder {
 
     private final String text;
-    private final FallbackId[] fallbacks;
+    private final FallbackMethod[] fallbacks;
 
     public static class CryptoExceptionBinderBuilder {
 
-        public CryptoExceptionBinderBuilder fallbacks(FallbackId... fallbacks) {
+        public CryptoExceptionBinderBuilder fallbacks(FallbackMethod... fallbacks) {
             this.fallbacks = fallbacks;
             return this;
         }
@@ -43,7 +43,7 @@ public final class CryptoExceptionBinder implements ErrorContextBinder {
             }
 
             @Override
-            public Collection<FallbackId> getFallbacks() {
+            public Collection<FallbackMethod> getFallbacks() {
                 return (fallbacks != null)? List.of(fallbacks) : Collections.emptyList();
             }
         };

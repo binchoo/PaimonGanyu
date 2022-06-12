@@ -18,5 +18,5 @@ public interface ErrorExplain {
      * 오류 현상에 대처하는 수단들의 아이디 목록
      * @return {@code Collection&lt;FallbackId&gt;}
      */
-    Collection<FallbackId> getFallbacks();
+    Collection<FallbackMethod> getFallbacks();
 }

@@ -1,11 +1,11 @@
 package org.binchoo.paimonganyu.chatbot.view.uid;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
+import org.binchoo.paimonganyu.chatbot.error.support.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.view.ResponseTemplate;
 import org.binchoo.paimonganyu.chatbot.view.resource.Images;
 import org.binchoo.paimonganyu.chatbot.view.resource.QuickReplies;
-import org.binchoo.paimonganyu.error.FallbackId;
+import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.BasicCardView;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -13,6 +13,7 @@ import org.binchoo.paimonganyu.ikakao.component.componentType.BasicCard;
 import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
+import org.binchoo.paimonganyu.ikakao.type.buttons.BlockButton;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
@@ -77,8 +78,8 @@ public class UidResponseTemplate implements ResponseTemplate {
                 .build();
     }
 
-    private FallbackId[] getFallbacks() {
-        return new FallbackId[] {ErrorFallbacks.Home};
+    private FallbackMethod[] getFallbacks() {
+        return new FallbackMethod[] {FallbackMethods.Home};
     }
 
     private String getDescription(UidModelMap.Item item) {

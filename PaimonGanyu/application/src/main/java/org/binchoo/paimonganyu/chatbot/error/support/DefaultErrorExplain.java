@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.error.support;
 
 import org.binchoo.paimonganyu.error.ErrorExplain;
-import org.binchoo.paimonganyu.error.FallbackId;
+import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class DefaultErrorExplain implements ErrorExplain {
         return "알 수 없는 오류가 발생했습니다.";
     }
     @Override
-    public Collection<FallbackId> getFallbacks() {
-        return List.of(ErrorFallbacks.Home);
+    public Collection<FallbackMethod> getFallbacks() {
+        return List.of(FallbackMethods.Home);
     }
 }

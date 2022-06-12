@@ -4,11 +4,11 @@ package org.binchoo.paimonganyu.error;
  * @author jbinchoo
  * @since 2022/06/12
  */
-public class FallbackId {
+public class FallbackMethod {
 
     private final String id;
 
-    public FallbackId(String id) {
+    public FallbackMethod(String id) {
         this.id = id;
     }
 

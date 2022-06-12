@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.error.binder;
 import lombok.Builder;
 import org.binchoo.paimonganyu.error.ErrorExplain;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;
-import org.binchoo.paimonganyu.error.FallbackId;
+import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
@@ -19,11 +19,11 @@ public class HoyopassExceptionBinder implements ErrorContextBinder {
 
     private final Class<?> error;
     private final String title;
-    private final FallbackId[] fallbacks;
+    private final FallbackMethod[] fallbacks;
 
     public static class HoyopassExceptionBinderBuilder {
 
-        public HoyopassExceptionBinderBuilder fallbacks(FallbackId... fallbacks) {
+        public HoyopassExceptionBinderBuilder fallbacks(FallbackMethod... fallbacks) {
             this.fallbacks = fallbacks;
             return this;
         }
@@ -46,8 +46,8 @@ public class HoyopassExceptionBinder implements ErrorContextBinder {
             }
 
             @Override
-            public Collection<FallbackId> getFallbacks() {
-                FallbackId[] fallbacks = returnFallbacks(hoyopassException);
+            public Collection<FallbackMethod> getFallbacks() {
+                FallbackMethod[] fallbacks = returnFallbacks(hoyopassException);
                 return (fallbacks != null)? List.of(fallbacks) : Collections.emptyList();
             }
         };
@@ -63,9 +63,9 @@ public class HoyopassExceptionBinder implements ErrorContextBinder {
 
     /**
      * @param exception 오류
-     * @return 오류 대처 수단들의 ID({@link FallbackId})를 반환합니다.
+     * @return 오류 대처 수단들의 ID({@link FallbackMethod})를 반환합니다.
      */
-    protected FallbackId[] returnFallbacks(ThrowerAware<UserHoyopass> exception) {
+    protected FallbackMethod[] returnFallbacks(ThrowerAware<UserHoyopass> exception) {
         return this.fallbacks;
     }
 

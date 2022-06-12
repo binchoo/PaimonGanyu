@@ -8,9 +8,9 @@ import org.binchoo.paimonganyu.ikakao.type.Button;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class messageButton implements Button {
+public class WebLinkButton implements Button {
 
     @Builder.Default
-    private String action = "message";
-    private String messageText;
+    private String action = "webLink";
+    private String webLinkUrl;
 }
