@@ -30,23 +30,6 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_IMAGE
 
-#  PaimonGanyuSpringBootApp:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        RestApi:
-#          Type: Api
-#          Properties:
-#            #TODO
-#      Policies:
-#        - DynamoDBCrudPolicy:
-#            TableName: !Ref UserHoyopassTable
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserRedeemTable
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserDailyCheckTable
-
   # Hoyopass Fanout
   UserHoyopassTopic:
     Type: AWS::SNS::Topic
@@ -221,7 +204,6 @@ Resources:
         Variables:
           DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
 
-
   DailyCheckWorkerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -235,3 +217,27 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserDailyCheckTable
+
+  # PaimonGanyu Chatbot
+  PaimonGanyuSpringBootApp:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
+      MemorySize: 768
+      Timeout: 300
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserHoyopassTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserRedeemTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserDailyCheckTable
+      Events:
+        RestApi:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+      Environment:
+        Variables:
+          PROFILE: beta

@@ -11,6 +11,9 @@ import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
+import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
+import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
+import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.binchoo.paimonganyu.service.hoyopass.SecuredHoyopassRegistry;
 import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
@@ -20,7 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -37,11 +40,9 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig({
-        TestAmazonClientsConfig.class,
-        TestHoyopassCredentialsConfig.class,
-        PaimonGanyu.class
-})
+@SpringBootTest(classes = {
+        TestAmazonClientsConfig.class, TestHoyopassCredentialsConfig.class,
+        PaimonGanyu.class})
 class SecuredHoyopassRegistryLocalSystemTest {
 
     @Autowired
@@ -96,7 +97,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
 
     @Test
     void givenInvalidSecureHoyopass_registerSecureHoyopass_successes() {
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(CryptoException.class, () ->
                 securedHoyopassRegistry.registerHoyopass(
                         "foobar", "fakeSecureHoyopassString"));
     }
@@ -109,7 +110,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
 
     @Test
     void givenFakeHoyopass_registerHoyopass_fails() {
-        assertThrows(IllegalArgumentException.class, ()->
+        assertThrows(InactiveStateException.class, ()->
                 registerHoyopass("b", invalid0));
     }
 
@@ -125,7 +126,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
     @Test
     void givenDuplicateHoyopasses_registeHoyopass_fails() {
         registerHoyopass("d", valid0);
-        assertThrows(IllegalStateException.class, ()-> {
+        assertThrows(DuplicationException.class, ()-> {
             registerHoyopass("d", valid0);
         });
     }

@@ -20,7 +20,7 @@ import java.io.OutputStream;
 @Slf4j
 public class PaimonGanyuLambda implements RequestStreamHandler {
 
-    private static final String PROFILE = System.getenv("profile");
+    private static final String PROFILE = System.getenv("PROFILE");
 
     private final SpringLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
