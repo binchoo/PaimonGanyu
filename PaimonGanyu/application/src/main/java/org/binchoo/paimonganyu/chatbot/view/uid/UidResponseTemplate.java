@@ -45,21 +45,25 @@ public class UidResponseTemplate implements ResponseTemplate {
     }
 
     private SkillTemplate render(List<UidModelMap.Item> items) {
+        var fallbacks = getFallbacks();
+        var quickReplies = Arrays.stream(fallbacks).map(this.quickReplies::findById)
+                .collect(Collectors.toList());
+
+        return SkillTemplate.builder()
+                .addOutput(CarouselView.builder()
+                        .carousel(createCarousel(items))
+                        .build())
+                .quickReplies(quickReplies)
+                .build();
+    }
+
+    private Carousel createCarousel(List<UidModelMap.Item> items) {
         var carouselBuilder = Carousel.builder()
                 .type("basicCard");
 
         for (UidModelMap.Item item : items)
             carouselBuilder.addItem(createCard(item));
-
-        var quickReplies = Arrays.stream(getFallbacks()).map(this.quickReplies::findById)
-                .collect(Collectors.toList());
-
-        return SkillTemplate.builder()
-                .addOutput(CarouselView.builder()
-                        .carousel(carouselBuilder.build())
-                        .build())
-                .quickReplies(quickReplies)
-                .build();
+        return carouselBuilder.build();
     }
 
     private BasicCard createCard(UidModelMap.Item item) {
