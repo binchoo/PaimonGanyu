@@ -20,12 +20,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "org.binchoo.paimonganyu.infra.hoyopass",
         "org.binchoo.paimonganyu.service.hoyopass",
 })
-public class PaimonGanyuChatbotMain {
+public class PaimonGanyu {
 
     public static void main(String[] args) {
-        SpringApplication paimonGanyu = new SpringApplication(PaimonGanyuChatbotMain.class);
-        paimonGanyu.setAdditionalProfiles("test");
-        paimonGanyu.run();
+        SpringApplication.run(PaimonGanyu.class);
     }
 
     @Profile("test")

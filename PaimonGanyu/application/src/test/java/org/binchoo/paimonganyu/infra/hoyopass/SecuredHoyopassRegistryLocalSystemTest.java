@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import org.binchoo.paimonganyu.chatbot.PaimonGanyuChatbotMain;
+import org.binchoo.paimonganyu.chatbot.PaimonGanyu;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringJUnitConfig({
         TestAmazonClientsConfig.class,
         TestHoyopassCredentialsConfig.class,
-        PaimonGanyuChatbotMain.class
+        PaimonGanyu.class
 })
 class SecuredHoyopassRegistryLocalSystemTest {
 

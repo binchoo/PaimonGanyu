@@ -27,6 +27,7 @@ dependencies {
     // AWS lambda
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-spring:1.8.1'
 
     runtimeOnly 'com.h2database:h2'
 

@@ -13,8 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 // because, 'socialsignin' library depends on amazonDynamoDB bean 'by name' :-(
 // That's why we register @Primary testAmazonDynamoDB having alias, before main amazonDynamoDB bean is registered.
 // See also, {@link TestAmazonClientsConfig.class}
-@SpringBootTest(classes = {TestAmazonClientsConfig.class, PaimonGanyuChatbotMain.class})
-class PaimonGanyuChatbotMainTest {
+@SpringBootTest(classes = {TestAmazonClientsConfig.class, PaimonGanyu.class})
+class PaimonGanyuTest {
 
     @Test
     void bootstrap() { }
