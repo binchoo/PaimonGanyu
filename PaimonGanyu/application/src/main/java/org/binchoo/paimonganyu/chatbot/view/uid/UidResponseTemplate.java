@@ -59,7 +59,7 @@ public class UidResponseTemplate implements ResponseTemplate {
     private BasicCardView createCard(UidModelMap.Item item) {
         return BasicCardView.builder()
                 .basicCard(BasicCard.builder()
-                        .thumbnaill(Thumbnail.builder()
+                        .thumbnail(Thumbnail.builder()
                                 .imageUrl(getImageUrl(item))
                                 .fixedRatio(true)
                                 .width(192).height(192)

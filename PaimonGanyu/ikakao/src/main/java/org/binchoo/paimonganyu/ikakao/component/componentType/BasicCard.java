@@ -19,7 +19,7 @@ public class BasicCard implements Component, CanCarousel {
 
     private String title;
     private String description;
-    private Thumbnail thumbnaill;
+    private Thumbnail thumbnail;
     private Profile profile;
     private Social social;
 
