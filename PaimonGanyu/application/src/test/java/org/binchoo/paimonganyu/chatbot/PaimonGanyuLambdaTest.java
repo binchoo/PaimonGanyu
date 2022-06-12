@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.chatbot;
 
+import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.spring.SpringBootProxyHandlerBuilder;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,8 @@ import org.junit.jupiter.api.Test;
 class PaimonGanyuLambdaTest {
 
     @Test
-    void bootstreap() throws Exception {
-        new SpringBootProxyHandlerBuilder<AwsProxyRequest>()
+    void bootstreap() throws ContainerInitializationException {
+        var handler = new SpringBootProxyHandlerBuilder<AwsProxyRequest>()
                 .defaultProxy()
                 .asyncInit()
                 .profiles("test")

@@ -22,8 +22,9 @@ import java.nio.charset.Charset;
 @Component
 class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
 
+    private static final String SKILL_PAYLOAD = "SKILL_PAYLOAD";
+
     private final ObjectMapper mapper;
-    private final ThreadLocal<SkillPayload> payloadCache = new ThreadLocal<>();
 
     @Override
     public SkillPayload resolve(HttpServletRequest request) {
@@ -33,8 +34,8 @@ class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
     private SkillPayload resolvePayload(HttpServletRequest request) {
         try {
             ServletInputStream inputStream = request.getInputStream();
-            return inputStream.isFinished()? getCachedPayload()
-                    : cachePayload(deserialize(read(inputStream)));
+            return inputStream.isFinished()? getCachedPayload(request)
+                    : cachePayload(request, deserialize(read(inputStream)));
         } catch (IOException e) {
             log.debug("Failed to read request body.", e);
             log.debug("HttpServletRequest: {}", request);
@@ -42,13 +43,13 @@ class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
         return null;
     }
 
-    private SkillPayload getCachedPayload() {
-        return payloadCache.get();
+    private SkillPayload getCachedPayload(HttpServletRequest request) {
+        return (SkillPayload) request.getSession().getAttribute(SKILL_PAYLOAD);
     }
 
-    private SkillPayload cachePayload(SkillPayload skillPayload) {
+    private SkillPayload cachePayload(HttpServletRequest request, SkillPayload skillPayload) {
         if (skillPayload != null)
-            payloadCache.set(skillPayload);
+            request.getSession().setAttribute(SKILL_PAYLOAD, skillPayload);
         return skillPayload;
     }
 
@@ -63,6 +64,8 @@ class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
     }
 
     private String read(InputStream inputStream) throws IOException {
-        return StreamUtils.copyToString(inputStream, Charset.defaultCharset());
+        String requestBody = StreamUtils.copyToString(inputStream, Charset.defaultCharset());
+        log.debug("RequestBody: {}", requestBody);
+        return requestBody;
     }
 }

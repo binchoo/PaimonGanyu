@@ -36,6 +36,25 @@ dependencies {
     }
 }
 
+task buildZipNoTomcat(type: Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from (configurations.runtimeClasspath) {
+            exclude 'tomcat-embed-*'
+        }
+    }
+}
+
+task copyBuiltZipNoTomcat(type: Copy) {
+    def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
+    from buildZipNoTomcat
+    into(dest)
+    doLast {
+        println "$project.name:$name has moved artifacts into $dest"
+    }
+}
+
 task stopRunningDynamoDBContainer(type: Exec) {
     standardOutput = new ByteArrayOutputStream()
     commandLine = ['bash', '-c',

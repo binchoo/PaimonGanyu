@@ -4,4 +4,4 @@ deploy: build
 	sam deploy --profile serverless
 build:
 	sam build --profile serverless
-	cd PaimonGanyu; ./gradlew -x test clean :application:copyBuiltZip
+	cd PaimonGanyu; ./gradlew -x test clean :application:copyBuiltZipNoTomcat

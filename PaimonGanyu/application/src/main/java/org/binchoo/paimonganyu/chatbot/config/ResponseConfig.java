@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.chatbot.config;
 
-import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.chatbot.error.binder.CryptoExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.error.binder.HoyopassExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextExplains;
@@ -11,6 +10,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityException;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -19,12 +19,14 @@ import javax.annotation.PostConstruct;
  * @author : jbinchoo
  * @since : 2022-06-12
  */
-@RequiredArgsConstructor
 @Configuration
 public class ResponseConfig {
 
-    private final QuickReplies quickReplyRegistry;
-    private final ErrorContextExplains binderRegistry;
+    @Autowired
+    private QuickReplies quickReplyRegistry;
+
+    @Autowired
+    private ErrorContextExplains binderRegistry;
 
     @PostConstruct
     public void configure() {

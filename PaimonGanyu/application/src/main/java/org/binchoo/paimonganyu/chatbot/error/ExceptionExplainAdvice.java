@@ -27,6 +27,7 @@ public class ExceptionExplainAdvice {
 
     @ExceptionHandler({CryptoException.class, UserHoyopassException.class})
     public ResponseEntity<SkillResponse> handleThrowerAware(ThrowerAware<?> e) {
+        log.debug("An error handled by default method: ", e.getCause());
         var errorContext = binders.findByType(e.getClass());
         var errorExplain = errorContext.explain(e);
         return ResponseEntity.ok(errorResponseTemplate.build(errorExplain));
@@ -34,7 +35,7 @@ public class ExceptionExplainAdvice {
 
     @ExceptionHandler
     public ResponseEntity<SkillResponse> handleElse(Exception e) {
-        log.error("Handling an error.", e);
+        log.debug("An error handled by default method", e);
         return ResponseEntity.ok(errorResponseTemplate.build(new DefaultErrorExplain()));
     }
 }
