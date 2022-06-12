@@ -11,7 +11,6 @@ import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author : jbinchoo
@@ -32,7 +31,7 @@ public class ExceptionExplainAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<SkillResponse> handleElse(Exception e, DefaultErrorExplain defaultExplain) {
-        return ResponseEntity.ok(errorResponseTemplate.build(defaultExplain));
+    public ResponseEntity<SkillResponse> handleElse(Exception e) {
+        return ResponseEntity.ok(errorResponseTemplate.build(new DefaultErrorExplain()));
     }
 }
