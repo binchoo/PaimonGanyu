@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.error;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.error.support.DefaultErrorExplain;
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextExplains;
+import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.view.error.ErrorResponseTemplate;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @RequiredArgsConstructor
 public class ExceptionExplainAdvice {
 
-    private final ErrorContextExplains binders;
+    private final ErrorContextBinders binders;
     private final ErrorResponseTemplate errorResponseTemplate;
 
     @ExceptionHandler({CryptoException.class, UserHoyopassException.class})

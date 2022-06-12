@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.chatbot.config;
 
 import org.binchoo.paimonganyu.chatbot.error.binder.CryptoExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.error.binder.HoyopassExceptionBinder;
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextExplains;
+import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
 import org.binchoo.paimonganyu.chatbot.view.QuickReplies;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -26,7 +26,7 @@ public class ResponseConfig {
     private QuickReplies quickReplyRegistry;
 
     @Autowired
-    private ErrorContextExplains binderRegistry;
+    private ErrorContextBinders binderRegistry;
 
     @PostConstruct
     public void configure() {
@@ -51,7 +51,7 @@ public class ResponseConfig {
                 new QuickReply("메일 문의", "block", null, "62a59b0efa834474ed740da6", null));
     }
 
-    private void addErrorContextBinders(ErrorContextExplains binders) {
+    private void addErrorContextBinders(ErrorContextBinders binders) {
         binders.add(HoyopassExceptionBinder.builder()
                 .error(DuplicationException.class)
                 .title("이미 등록된 통행증 정보입니다.")

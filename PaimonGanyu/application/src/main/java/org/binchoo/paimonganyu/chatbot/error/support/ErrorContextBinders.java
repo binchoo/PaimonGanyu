@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public final class ErrorContextExplains {
+public final class ErrorContextBinders {
 
     private final LinkedList<ErrorContextBinder> binders = new LinkedList<>();
     private final Map<Class<?>, ErrorContextBinder> evalCache = new HashMap<>();
