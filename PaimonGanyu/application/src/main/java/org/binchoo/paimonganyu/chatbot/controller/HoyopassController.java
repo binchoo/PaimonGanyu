@@ -20,8 +20,6 @@ public class HoyopassController {
 
     @PostMapping("/ikakao/hoyopass/post")
     public ResponseEntity<SkillResponse> addHoyopass(@RequestBody SkillPayload skillPayload) {
-//    public ResponseEntity<SkillResponse> addHoyopass(@UserId String botUserId,
-//                                                     @ActionParam("secure_hoyopass") String secureHoyopass) {
         String botUserId = skillPayload.getUserRequest().getUser().getId();
         String secureHoyopass = skillPayload.getAction().getParams().get("secure_hoyopass");
         UserHoyopass registeredHoyopass = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
