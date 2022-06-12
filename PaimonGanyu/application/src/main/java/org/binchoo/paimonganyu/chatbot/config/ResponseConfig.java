@@ -27,7 +27,7 @@ public class ResponseConfig {
     private final ErrorContextBinders binderRegistry;
 
     @PostConstruct
-    public void addBinders() {
+    public void configure() {
         addQuickReplies(quickReplyRegistry);
         addErrorContextBinders(binderRegistry);
     }

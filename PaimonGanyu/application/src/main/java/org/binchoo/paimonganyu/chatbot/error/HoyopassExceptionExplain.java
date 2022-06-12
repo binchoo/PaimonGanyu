@@ -69,7 +69,7 @@ public class HoyopassExceptionExplain implements ErrorContextBinder {
         return this.fallbacks;
     }
 
-    private String join(String titleText, List<String> ltuids) {
+    private static String join(String titleText, List<String> ltuids) {
         return titleText + '\n' + ltuidJoin(ltuids);
     }
 
