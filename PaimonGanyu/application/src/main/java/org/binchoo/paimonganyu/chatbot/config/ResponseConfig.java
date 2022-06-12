@@ -1,38 +1,24 @@
 package org.binchoo.paimonganyu.chatbot.config;
 
-import com.sun.xml.bind.v2.model.annotation.Quick;
 import org.binchoo.paimonganyu.chatbot.error.binder.CryptoExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.error.binder.HoyopassExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
-import org.binchoo.paimonganyu.chatbot.view.Images;
 import org.binchoo.paimonganyu.chatbot.view.QuickReplies;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityException;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-
-import javax.annotation.PostConstruct;
-import java.util.Map;
 
 /**
  * @author : jbinchoo
  * @since : 2022-06-12
  */
-@PropertySource("classpath:images.properties")
 @Configuration
 public class ResponseConfig {
-
-    @Bean
-    public Images setupImages(@Value("#{${images}}") Map<String, String> images) {
-        return new Images(images);
-    }
 
     @Bean
     public QuickReplies setupQuickReplies() {

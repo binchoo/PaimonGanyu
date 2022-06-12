@@ -1,0 +1,4 @@
+s3:
+  images:
+    traveler-aether: https://jbinchoobucket.s3.ap-northeast-1.amazonaws.com/paimonganyu/traveler_aether.png
+    traveler-lumine: https://jbinchoobucket.s3.ap-northeast-1.amazonaws.com/paimonganyu/traveler_lumine.png
