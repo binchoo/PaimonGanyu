@@ -7,13 +7,11 @@ import org.binchoo.paimonganyu.chatbot.view.resource.Images;
 import org.binchoo.paimonganyu.chatbot.view.resource.QuickReplies;
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
-import org.binchoo.paimonganyu.ikakao.component.BasicCardView;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
 import org.binchoo.paimonganyu.ikakao.component.componentType.BasicCard;
 import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
-import org.binchoo.paimonganyu.ikakao.type.buttons.BlockButton;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
@@ -64,9 +62,8 @@ public class UidResponseTemplate implements ResponseTemplate {
                 .build();
     }
 
-    private BasicCardView createCard(UidModelMap.Item item) {
-        return BasicCardView.builder()
-                .basicCard(BasicCard.builder()
+    private BasicCard createCard(UidModelMap.Item item) {
+        return BasicCard.builder()
                         .thumbnail(Thumbnail.builder()
                                 .imageUrl(getImageUrl(item))
                                 .fixedRatio(true)
@@ -74,8 +71,7 @@ public class UidResponseTemplate implements ResponseTemplate {
                                 .build())
                         .title(getTitle(item))
                         .description(getDescription(item))
-                        .build())
-                .build();
+                    .build();
     }
 
     private FallbackMethod[] getFallbacks() {
