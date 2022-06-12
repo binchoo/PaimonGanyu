@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.error;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.error.support.DefaultErrorExplain;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextExplains;
 import org.binchoo.paimonganyu.chatbot.view.error.ErrorResponseTemplate;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @author : jbinchoo
  * @since : 2022-06-12
  */
+@Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionExplainAdvice {
@@ -32,6 +34,7 @@ public class ExceptionExplainAdvice {
 
     @ExceptionHandler
     public ResponseEntity<SkillResponse> handleElse(Exception e) {
+        log.error("Handling an error.", e);
         return ResponseEntity.ok(errorResponseTemplate.build(new DefaultErrorExplain()));
     }
 }

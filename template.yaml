@@ -235,7 +235,7 @@ Resources:
         - SSMParameterReadPolicy:
             ParameterName: HoyopassPrivateKey
         - SSMParameterReadPolicy:
-            ParameterName: HoyopagissPublicKey
+            ParameterName: HoyopassPublicKey
       Events:
         RestApi:
           Type: Api
