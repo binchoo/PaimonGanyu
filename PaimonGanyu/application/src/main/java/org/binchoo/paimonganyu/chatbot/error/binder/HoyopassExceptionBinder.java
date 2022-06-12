@@ -1,8 +1,8 @@
-package org.binchoo.paimonganyu.chatbot.error;
+package org.binchoo.paimonganyu.chatbot.error.binder;
 
 import lombok.Builder;
 import org.binchoo.paimonganyu.error.ErrorExplain;
-import org.binchoo.paimonganyu.error.ErrorContextExplain;
+import org.binchoo.paimonganyu.error.ErrorContextBinder;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
  * @since 2022/06/12
  */
 @Builder
-public class HoyopassExceptionExplain implements ErrorContextExplain {
+public class HoyopassExceptionBinder implements ErrorContextBinder {
 
     private final Class<?> error;
     private final String title;
     private final FallbackId[] fallbacks;
 
-    public static class HoyopassExceptionExplainBuilder {
+    public static class HoyopassExceptionBinderBuilder {
 
-        public HoyopassExceptionExplainBuilder fallbacks(FallbackId... fallbacks) {
+        public HoyopassExceptionBinderBuilder fallbacks(FallbackId... fallbacks) {
             this.fallbacks = fallbacks;
             return this;
         }

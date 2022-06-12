@@ -6,10 +6,10 @@ package org.binchoo.paimonganyu.error;
  * @author jbinchoo
  * @since 2022/06/11
  */
-public interface ErrorContextExplain {
+public interface ErrorContextBinder {
 
     /**
-     * 이 {@link ErrorContextExplain}가 인자로 주어진 오류 타입의
+     * 이 {@link ErrorContextBinder}가 인자로 주어진 오류 타입의
      * 발생 맥락을 파악할 수 있는지 여부
      * @param exceptionType 오류 타입
      * @return 주어진 오류 타입의 맥락을 파악하여 {@link ErrorExplain}로

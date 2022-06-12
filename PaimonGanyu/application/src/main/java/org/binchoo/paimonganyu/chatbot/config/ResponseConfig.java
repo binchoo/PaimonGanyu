@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.chatbot.config;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.chatbot.error.CryptoExceptionExplain;
-import org.binchoo.paimonganyu.chatbot.error.HoyopassExceptionExplain;
+import org.binchoo.paimonganyu.chatbot.error.binder.CryptoExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.error.binder.HoyopassExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextExplains;
 import org.binchoo.paimonganyu.chatbot.error.support.ErrorFallbacks;
 import org.binchoo.paimonganyu.chatbot.view.QuickReplies;
@@ -50,25 +50,25 @@ public class ResponseConfig {
     }
 
     private void addErrorContextBinders(ErrorContextExplains binders) {
-        binders.add(HoyopassExceptionExplain.builder()
+        binders.add(HoyopassExceptionBinder.builder()
                 .error(DuplicationException.class)
                 .title("이미 등록된 통행증 정보입니다.")
                 .fallbacks(ErrorFallbacks.Home, ErrorFallbacks.ScanHoyopass)
                 .build());
 
-        binders.add(HoyopassExceptionExplain.builder()
+        binders.add(HoyopassExceptionBinder.builder()
                 .error(QuantityException.class)
                 .title(String.format("통행증은 %d개까지 보유 가능합니다.", UserHoyopass.MAX_HOYOPASS_COUNT))
                 .fallbacks(ErrorFallbacks.Home, ErrorFallbacks.DeleteHoyopass)
                 .build());
 
-        binders.add(HoyopassExceptionExplain.builder()
+        binders.add(HoyopassExceptionBinder.builder()
                 .error(InactiveStateException.class)
                 .title("알 수 없는 통행증 정보입니다.")
                 .fallbacks(ErrorFallbacks.Home, ErrorFallbacks.ScanHoyopass, ErrorFallbacks.ValidationCs)
                 .build());
 
-        binders.add(CryptoExceptionExplain.builder()
+        binders.add(CryptoExceptionBinder.builder()
                 .text("옳지 않은 방법으로 만들어진 QR 코드인 것 같습니다.")
                 .fallbacks(ErrorFallbacks.Home, ErrorFallbacks.ScanHoyopass, ErrorFallbacks.CommonCs)
                 .build());

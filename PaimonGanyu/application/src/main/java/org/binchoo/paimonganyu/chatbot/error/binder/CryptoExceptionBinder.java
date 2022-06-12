@@ -1,8 +1,8 @@
-package org.binchoo.paimonganyu.chatbot.error;
+package org.binchoo.paimonganyu.chatbot.error.binder;
 
 import lombok.Builder;
 import org.binchoo.paimonganyu.error.ErrorExplain;
-import org.binchoo.paimonganyu.error.ErrorContextExplain;
+import org.binchoo.paimonganyu.error.ErrorContextBinder;
 import org.binchoo.paimonganyu.error.FallbackId;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
@@ -16,14 +16,14 @@ import java.util.List;
  * @since 2022/06/12
  */
 @Builder
-public final class CryptoExceptionExplain implements ErrorContextExplain {
+public final class CryptoExceptionBinder implements ErrorContextBinder {
 
     private final String text;
     private final FallbackId[] fallbacks;
 
-    public static class CryptoExceptionExplainBuilder {
+    public static class CryptoExceptionBinderBuilder {
 
-        public CryptoExceptionExplainBuilder fallbacks(FallbackId... fallbacks) {
+        public CryptoExceptionBinderBuilder fallbacks(FallbackId... fallbacks) {
             this.fallbacks = fallbacks;
             return this;
         }
