@@ -12,6 +12,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode
@@ -23,10 +24,10 @@ public class UserHoyopass {
     public static final int MAX_HOYOPASS_COUNT = 2;
 
     private String botUserId;
-    private List<Hoyopass> hoyopasses;
+    private PriorityQueue<Hoyopass> hoyopasses;
 
     public UserHoyopass() {
-        hoyopasses = new ArrayList<>();
+        hoyopasses = new PriorityQueue<>();
     }
 
     /**
@@ -53,7 +54,7 @@ public class UserHoyopass {
      */
     public void addComplete(Hoyopass hoyopass) {
         assertAppendable(hoyopass);
-        hoyopasses.add(hoyopass);
+        hoyopasses.offer(hoyopass);
     }
 
     /**
@@ -119,14 +120,13 @@ public class UserHoyopass {
     }
 
     public List<Uid> listUids() {
-        return this.hoyopasses.stream()
-                .map(Hoyopass::getUids)
-                .flatMap(List::stream)
+        return this.hoyopasses.stream().sorted()
+                .map(Hoyopass::getUids).flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     public List<String> listLtuids() {
-        return this.hoyopasses.stream()
+        return this.hoyopasses.stream().sorted()
                 .map(Hoyopass::getLtuid)
                 .collect(Collectors.toList());
     }
@@ -137,8 +137,15 @@ public class UserHoyopass {
      * @return {@link Uid} 리스트, 잘못된 i 지정일 시 길이 0인 리스트
      */
     public List<Uid> listUids(int i) {
-        if (0 <= i && i < this.hoyopasses.size())
-            return this.hoyopasses.get(i).getUids();
+        if (0 <= i && i < this.hoyopasses.size()) {
+            Hoyopass target = this.hoyopasses.peek();
+            if (i == 1) {
+                Hoyopass first = this.hoyopasses.poll();
+                target = this.hoyopasses.peek();
+                this.hoyopasses.offer(first);
+            }
+            return target.getUids();
+        }
         return Collections.emptyList();
     }
 
@@ -146,7 +153,21 @@ public class UserHoyopass {
      * @throws IndexOutOfBoundsException – i < 0 || i >= getCount() 일 때
      */
     public Hoyopass deleteAt(int i) {
-        return hoyopasses.remove(i);
+        if (0 <= i && i < this.hoyopasses.size()) {
+            Hoyopass first = this.hoyopasses.poll();
+            if (i == 0)
+                return first;
+            else {
+                Hoyopass second = this.hoyopasses.poll();
+                this.hoyopasses.add(first);
+                return second;
+            }
+        }
+        throw new IndexOutOfBoundsException();
+    }
+
+    public List<Hoyopass> getHoyopasses() {
+        return new ArrayList<>(this.hoyopasses);
     }
 
     public int getSize() {

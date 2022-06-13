@@ -11,7 +11,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Hoyopass {
+public class Hoyopass implements Comparable<Hoyopass> {
 
     private HoyopassCredentials credentials;
 
@@ -59,5 +59,10 @@ public class Hoyopass {
     @Override
     public int hashCode() {
         return credentials.hashCode();
+    }
+
+    @Override
+    public int compareTo(Hoyopass o) {
+        return this.createAt.compareTo(o.createAt);
     }
 }
