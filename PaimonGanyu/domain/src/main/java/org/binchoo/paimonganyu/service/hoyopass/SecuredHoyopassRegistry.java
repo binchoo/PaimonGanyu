@@ -18,6 +18,11 @@ public class SecuredHoyopassRegistry implements SecuredHoyopassRegistryPort {
     private final HoyopassRegistryPort delegate;
     private final SigningKeyManagerPort signingKeys;
 
+    @Override
+    public UserHoyopass findUserHoyopass(String botUserId) {
+        return delegate.findUserHoyopass(botUserId);
+    }
+
     /**
      * @throws IllegalStateException 최대 소지 개수 이상의 통행증을 이 유저에게 등록하려 할 경우,
      * 유저에게 중복된 통행증을 등록하려 할 경우, 복호화 할 수 없는 형식의 보안 통행증일 경우.

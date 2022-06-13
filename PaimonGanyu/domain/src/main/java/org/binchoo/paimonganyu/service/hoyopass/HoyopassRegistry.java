@@ -23,6 +23,12 @@ public class HoyopassRegistry implements HoyopassRegistryPort {
     private final HoyopassSearchClientPort hoyopassSearchClientPort;
     private final UserHoyopassCrudPort userHoyopassCrudPort;
 
+    @Override
+    public UserHoyopass findUserHoyopass(String botUserId) {
+        return userHoyopassCrudPort.findByBotUserId(botUserId)
+                .orElseThrow(()-> new QuantityZeroException(null));
+    }
+
     /**
      * @throws IllegalStateException 최대 소지 개수 이상의 통행증을 이 유저에게 등록하려 할 경우,
      * 유저에게 중복된 통행증을 등록하려 할 경우

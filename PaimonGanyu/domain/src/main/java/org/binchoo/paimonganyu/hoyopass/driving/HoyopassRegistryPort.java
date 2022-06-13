@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface HoyopassRegistryPort {
 
+    UserHoyopass findUserHoyopass(String botUserId);
+
     /**
      * 지정된 유저가 갖는 통행증을 새로 등록한다.
      * @param botUserId 카카오 챗봇이 유저를 식별하는 아이디
