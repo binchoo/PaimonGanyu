@@ -51,7 +51,6 @@ public class HoyopassController {
     @PostMapping("/list")
     public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload,
                                         Model model) {
-
         String botUserId = parseId(skillPayload);
         List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
         return listHoyopassesView.renderSkillResponse(hoyopasses);
@@ -59,7 +58,10 @@ public class HoyopassController {
 
     @PostMapping("/delete")
     public SkillResponse deleteHoyopass(@RequestBody SkillPayload skillPayload, Model model) {
-        return null;
+        String botUserId = parseId(skillPayload);
+        int index = parseIndex(skillPayload);
+        hoyopassRegistry.deleteHoyopass(botUserId, index);
+        return listHoyopasses(skillPayload, null);
     }
 
     @PostMapping("/uids/get")
@@ -86,5 +88,9 @@ public class HoyopassController {
         String param = skillPayload.getAction().getParams().get(key);
         log.debug("Parameter found: {}", param);
         return skillPayload.getAction().getParams().get(key);
+    }
+
+    private int parseIndex(SkillPayload skillPayload) {
+        return Integer.parseInt((String) skillPayload.getAction().getClientExtra().get("index"));
     }
 }

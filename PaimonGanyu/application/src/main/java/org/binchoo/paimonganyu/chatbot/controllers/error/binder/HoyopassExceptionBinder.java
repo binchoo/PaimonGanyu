@@ -44,9 +44,10 @@ public class HoyopassExceptionBinder implements ErrorContextBinder {
 
             @Override
             public String getExplanation() {
+                String title = returnTitle(hoyopassException);
                 if (userHoyopass != null)
-                    return join(returnTitle(hoyopassException), userHoyopass.listLtuids());
-                return null;
+                    return join(title, userHoyopass.listLtuids());
+                return title;
             }
 
             @Override
