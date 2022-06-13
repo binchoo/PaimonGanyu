@@ -34,11 +34,11 @@ public class BloomFilter<T extends MultiHashable> {
         for (int h : item.getHashes()) {
             int i = Math.abs(h % filterSize);
             if (!flags[i]) {
-                log.debug("Item {} does not exist", item);
+                log.debug("Item {} does not exist.", item);
                 return false;
             }
         }
-        log.debug("Item {} seems to exists", item);
+        log.debug("Item {} seems to exist.", item);
         return true;
     }
 
