@@ -14,6 +14,7 @@ import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.binchoo.paimonganyu.service.hoyopass.SecuredHoyopassRegistry;
 import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
@@ -153,10 +154,8 @@ class SecuredHoyopassRegistryLocalSystemTest {
     @Test
     void givenUnknownBotUserId_listHoyopasses_fails() {
         String botUserId = "botuserid uninserted";
-
-        List<Hoyopass> hoyopasses = securedHoyopassRegistry.listHoyopasses(botUserId);
-
-        assertThat(hoyopasses).isEmpty();
+        assertThrows(QuantityZeroException.class, ()->
+                securedHoyopassRegistry.listHoyopasses(botUserId));
     }
 
     @Test

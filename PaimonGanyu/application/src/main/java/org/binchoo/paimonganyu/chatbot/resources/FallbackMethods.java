@@ -18,7 +18,8 @@ public final class FallbackMethods {
     public static FallbackMethod CommonCs       = new FallbackMethod("CommonCs");
     public static FallbackMethod ListHoyopass   = new FallbackMethod("ListHoyopass");
     public static FallbackMethod DoDailyCheck   = new FallbackMethod("DoDailyCheck");
-    public static FallbackMethod ListUserDailyCheck= new FallbackMethod("ListUserDailyCheck");
+    public static FallbackMethod ListUserDailyCheck = new FallbackMethod("ListUserDailyCheck");
+    public static FallbackMethod DeleteHoyopassGuide= new FallbackMethod("DeleteHoyopassGuide");
 
     public static Map<String, FallbackMethod> searchMap = new HashMap<>();
 
@@ -31,6 +32,7 @@ public final class FallbackMethods {
         searchMap.put(FallbackMethods.ListHoyopass.getId(), FallbackMethods.ListHoyopass);
         searchMap.put(FallbackMethods.DoDailyCheck.getId(), FallbackMethods.DoDailyCheck);
         searchMap.put(FallbackMethods.ListUserDailyCheck.getId(), FallbackMethods.ListUserDailyCheck);
+        searchMap.put(FallbackMethods.DeleteHoyopassGuide.getId(), FallbackMethods.DeleteHoyopassGuide);
     }
 
     private FallbackMethods() { }

@@ -103,7 +103,7 @@ public class ListUidsView extends AbstractSkillResopnseView {
     }
 
     private FallbackMethod[] getFallbacks() {
-        return new FallbackMethod[] {FallbackMethods.Home};
+        return new FallbackMethod[] {FallbackMethods.Home, FallbackMethods.ListHoyopass};
     }
 
     private Carousel carouselOf(List<UidValue> modelValues) {
