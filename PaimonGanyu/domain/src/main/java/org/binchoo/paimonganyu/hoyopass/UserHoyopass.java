@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,7 +8,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -18,31 +17,47 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @ToString
 @Getter
-@Builder
 public class UserHoyopass {
 
     public static final int MAX_HOYOPASS_COUNT = 2;
 
     private String botUserId;
-    private PriorityQueue<Hoyopass> hoyopasses;
+    private final PriorityQueue<Hoyopass> hoyopasses;
 
-    public UserHoyopass() {
-        hoyopasses = new PriorityQueue<>();
+    public static class UserHoyopassBuilder {
+
+        private String botUserId;
+        private PriorityQueue<Hoyopass> hoyopasses;
+
+        public UserHoyopassBuilder hoyopasses(Collection<Hoyopass> hoyopasses) {
+            this.hoyopasses = new PriorityQueue<>(hoyopasses);
+            return this;
+        }
+
+        public UserHoyopassBuilder botUserId(String botUserId) {
+            this.botUserId = botUserId;
+            return this;
+        }
+
+        public UserHoyopass build() {
+            return new UserHoyopass(botUserId, hoyopasses);
+        }
     }
 
-    /**
-     * @param botUserId 유저의 카카오 챗봇 식별자
-     */
+    public static UserHoyopassBuilder builder() {
+        return new UserHoyopassBuilder();
+    }
+
+    public UserHoyopass() {
+        this.hoyopasses = new PriorityQueue<>();
+    }
+
     public UserHoyopass(String botUserId) {
         this();
         this.botUserId = botUserId;
     }
 
-    /**
-     * @param botUserId 유저의 카카오 챗봇 식별자
-     * @param hoyopasses 유저의 호요버스 통행증
-     */
-    public UserHoyopass(String botUserId, List<Hoyopass> hoyopasses) {
+    public UserHoyopass(String botUserId, Collection<Hoyopass> hoyopasses) {
         this(botUserId);
         this.hoyopasses.addAll(hoyopasses);
     }
@@ -54,7 +69,7 @@ public class UserHoyopass {
      */
     public void addComplete(Hoyopass hoyopass) {
         assertAppendable(hoyopass);
-        hoyopasses.offer(hoyopass);
+        this.hoyopasses.add(hoyopass);
     }
 
     /**
@@ -119,12 +134,22 @@ public class UserHoyopass {
         }
     }
 
+    /**
+     * 모든 통행증의 {@link Uid} 리스트를 합쳐서 반환합니다.
+     * 각 통행증은 생성 시점의 오른차순으로 정렬됩니다.
+     * @return {@link Uid} 리스트
+     */
     public List<Uid> listUids() {
         return this.hoyopasses.stream().sorted()
                 .map(Hoyopass::getUids).flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 모든 통행증의 {@code ltuid}를 합쳐서 반환합니다.
+     * 각 통행증은 생성 시점의 오른차순으로 정렬됩니다.
+     * @return {@link Uid} 리스트
+     */
     public List<String> listLtuids() {
         return this.hoyopasses.stream().sorted()
                 .map(Hoyopass::getLtuid)
@@ -133,18 +158,20 @@ public class UserHoyopass {
 
     /**
      * 지정한 통행증과 연결된 모든 {@link Uid} 리스트를 얻습니다.
+     * 이들은 통행증 생성시점의 오른차순 정렬을 따릅니다.
      * @param i 번째 통행증을 지정
      * @return {@link Uid} 리스트, 잘못된 i 지정일 시 길이 0인 리스트
      */
     public List<Uid> listUids(int i) {
-        if (0 <= i && i < this.hoyopasses.size()) {
-            Hoyopass target = this.hoyopasses.peek();
+        if (0 <= i && i < hoyopasses.size()) {
+            Hoyopass target = hoyopasses.peek();
             if (i == 1) {
-                Hoyopass first = this.hoyopasses.poll();
-                target = this.hoyopasses.peek();
-                this.hoyopasses.offer(first);
+                Hoyopass first = hoyopasses.poll();
+                target = hoyopasses.peek();
+                hoyopasses.offer(first);
             }
-            return target.getUids();
+            if (target != null)
+                return target.getUids();
         }
         return Collections.emptyList();
     }
@@ -153,21 +180,25 @@ public class UserHoyopass {
      * @throws IndexOutOfBoundsException – i < 0 || i >= getCount() 일 때
      */
     public Hoyopass deleteAt(int i) {
-        if (0 <= i && i < this.hoyopasses.size()) {
-            Hoyopass first = this.hoyopasses.poll();
+        if (0 <= i && i < hoyopasses.size()) {
+            Hoyopass first = hoyopasses.poll();
             if (i == 0)
                 return first;
             else {
-                Hoyopass second = this.hoyopasses.poll();
-                this.hoyopasses.add(first);
+                Hoyopass second = hoyopasses.poll();
+                hoyopasses.offer(first);
                 return second;
             }
         }
         throw new IndexOutOfBoundsException();
     }
 
+    /**
+     * @return 정렬된 통행증 리스트 (복제본)
+     */
     public List<Hoyopass> getHoyopasses() {
-        return new ArrayList<>(this.hoyopasses);
+        return hoyopasses.stream().sorted()
+                .collect(Collectors.toList());
     }
 
     public int getSize() {
