@@ -92,7 +92,7 @@ public class ListUidsView extends MappingJackson2JsonView {
             throw new NullPointerException("Model is null.");
 
         if (!model.containsKey(UIDS))
-            throw new IllegalArgumentException("Model [" + model + "] does not containers List<Uid>");
+            throw new IllegalArgumentException("Model [" + model + "] does not contains List<Uid>");
 
         Object uids = model.get(UIDS);
         Map<String, SkillResponse> newModel = new HashMap<>();
