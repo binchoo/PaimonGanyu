@@ -26,7 +26,7 @@ public class ErrorExplainConfig {
         binders.add(HoyopassExceptionBinder.builder()
                 .error(DuplicationException.class)
                 .title("이미 등록된 통행증 정보입니다.")
-                .fallbacks(FallbackMethods.Home, FallbackMethods.ScanHoyopass)
+                .fallbacks(FallbackMethods.Home, FallbackMethods.ListHoyopass, FallbackMethods.ScanHoyopass)
                 .build());
 
         binders.add(HoyopassExceptionBinder.builder()

@@ -10,8 +10,10 @@ import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
+import org.binchoo.paimonganyu.ikakao.component.SimpleTextView;
 import org.binchoo.paimonganyu.ikakao.component.componentType.BasicCard;
 import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
+import org.binchoo.paimonganyu.ikakao.component.componentType.SimpleText;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
 
@@ -95,6 +97,9 @@ public class ListUidsView extends AbstractSkillResopnseView {
     private SkillTemplate templateOf(List<UidValue> modelValues) {
         var fallbacks = getFallbacks();
         return SkillTemplate.builder()
+                .addOutput(SimpleTextView.builder()
+                        .simpleText(new SimpleText(modelValues.size() + "명의 여행자들을 확인했어!"))
+                        .build())
                 .addOutput(CarouselView.builder()
                         .carousel(carouselOf(modelValues))
                         .build())

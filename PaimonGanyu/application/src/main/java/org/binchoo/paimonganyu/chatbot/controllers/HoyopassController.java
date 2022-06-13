@@ -66,12 +66,6 @@ public class HoyopassController {
         return listHoyopasses(skillPayload, null);
     }
 
-    @PostMapping("/uids/get")
-    public String listUids(@RequestBody SkillPayload skillPayload, Model model) {
-        model.addAttribute(ListUidsView.UIDS, null);
-        return null;
-    }
-
     private String parseId(SkillPayload skillPayload) {
         return skillPayload.getUserRequest().getUser().getId();
     }
