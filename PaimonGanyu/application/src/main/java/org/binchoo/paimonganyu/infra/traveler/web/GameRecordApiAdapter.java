@@ -92,7 +92,6 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
         this.comparator = comparator;
     }
 
-
     private Comparator<TravelerStatus> defaultComparator() {
         return Comparator.comparing(TravelerStatus::getLevel).reversed()
                 .thenComparing(TravelerStatus::getCurrentResin).reversed()
