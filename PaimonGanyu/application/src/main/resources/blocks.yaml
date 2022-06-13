@@ -26,7 +26,11 @@ blocks:
     id: 62a59a68678c9b1480a53389
     label: '통행증 조회'
 
-  DoDailyCheck:
+  ListTravelerStatus:
+    id: 62a7477438e0d06d4c8ab424
+    label: '실시간 행자 조회'
+
+  DailyCheckIn:
     id: 62a6f1a9c9058012cdfadb82
     label: '일일 출석'
   ListUserDailyCheck:

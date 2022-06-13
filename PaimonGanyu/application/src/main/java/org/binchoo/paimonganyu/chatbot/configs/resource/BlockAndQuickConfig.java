@@ -32,12 +32,11 @@ public class BlockAndQuickConfig {
 
     @PostConstruct
     public void initRepos() {
-        System.out.println(blocks);
         this.blockNameAndId = new HashMap<>();
         this.quickReplies = new QuickReplies();
         blocks.forEach((name, block)-> {
             blockNameAndId.put(name, block.getId());
-            quickReplies.add(FallbackMethods.get(name),
+            quickReplies.add(FallbackMethods.findByBlockName(name),
                     new QuickReply(block.getLabel(), "block", null, block.getId(), null));
         });
     }

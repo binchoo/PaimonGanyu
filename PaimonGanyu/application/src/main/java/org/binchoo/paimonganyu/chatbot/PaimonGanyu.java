@@ -62,7 +62,6 @@ public class PaimonGanyu {
                     = AmazonDynamoDBClientBuilder.standard();
             dynamoDBClientBuilder.setEndpointConfiguration(dynamoEndpointConfig());
             dynamoDBClientBuilder.setCredentials(credentialsProvider);
-            System.out.println("Using test AmazonDynamoDB");
             return dynamoDBClientBuilder.build();
         }
 
@@ -76,7 +75,6 @@ public class PaimonGanyu {
             AWSSimpleSystemsManagementClientBuilder ssmBuilder = AWSSimpleSystemsManagementClientBuilder.standard();
             ssmBuilder.setRegion(region);
             ssmBuilder.setCredentials(credentialsProvider);
-            System.out.println("Using test ssmClient");
             return ssmBuilder.build();
         }
     }

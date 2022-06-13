@@ -2,6 +2,8 @@ package org.binchoo.paimonganyu.chatbot.resources;
 
 import org.binchoo.paimonganyu.error.FallbackMethod;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,32 +14,40 @@ import java.util.Map;
 public final class FallbackMethods {
 
     public static FallbackMethod Home           = new FallbackMethod("Home");
-    public static FallbackMethod DeleteHoyopass = new FallbackMethod("DeleteHoyopass");
-    public static FallbackMethod ScanHoyopass   = new FallbackMethod("ScanHoyopass");
     public static FallbackMethod ValidationCs   = new FallbackMethod("ValidationCs");
     public static FallbackMethod CommonCs       = new FallbackMethod("CommonCs");
-    public static FallbackMethod ListHoyopass   = new FallbackMethod("ListHoyopass");
-    public static FallbackMethod DoDailyCheck   = new FallbackMethod("DoDailyCheck");
-    public static FallbackMethod ListUserDailyCheck = new FallbackMethod("ListUserDailyCheck");
-    public static FallbackMethod DeleteHoyopassGuide= new FallbackMethod("DeleteHoyopassGuide");
 
-    public static Map<String, FallbackMethod> searchMap = new HashMap<>();
+    public static FallbackMethod ScanHoyopass   = new FallbackMethod("ScanHoyopass");
+    public static FallbackMethod DeleteHoyopass = new FallbackMethod("DeleteHoyopass");
+    public static FallbackMethod DeleteHoyopassGuide = new FallbackMethod("DeleteHoyopassGuide");
+    public static FallbackMethod ListHoyopass   = new FallbackMethod("ListHoyopass");
+
+    public static FallbackMethod ListTravelerStatus   = new FallbackMethod("ListTravelerStatus");
+
+    public static FallbackMethod DailyCheckIn = new FallbackMethod("DailyCheckIn");
+    public static FallbackMethod ListUserDailyCheck = new FallbackMethod("ListUserDailyCheck");
+
+    private static Map<String, FallbackMethod> searchMap = new HashMap<>();
 
     static {
-        searchMap.put(FallbackMethods.Home.getId(), FallbackMethods.Home);
-        searchMap.put(FallbackMethods.DeleteHoyopass.getId(), FallbackMethods.DeleteHoyopass);
-        searchMap.put(FallbackMethods.ScanHoyopass.getId(), FallbackMethods.ScanHoyopass);
-        searchMap.put(FallbackMethods.ValidationCs.getId(), FallbackMethods.ValidationCs);
-        searchMap.put(FallbackMethods.CommonCs.getId(), FallbackMethods.CommonCs);
-        searchMap.put(FallbackMethods.ListHoyopass.getId(), FallbackMethods.ListHoyopass);
-        searchMap.put(FallbackMethods.DoDailyCheck.getId(), FallbackMethods.DoDailyCheck);
-        searchMap.put(FallbackMethods.ListUserDailyCheck.getId(), FallbackMethods.ListUserDailyCheck);
-        searchMap.put(FallbackMethods.DeleteHoyopassGuide.getId(), FallbackMethods.DeleteHoyopassGuide);
+        for (Field field : FallbackMethods.class.getDeclaredFields()) {
+            Class<?> cls = field.getType();
+            boolean isFallbackMethod = cls.isAssignableFrom(FallbackMethod.class);
+            if (isFallbackMethod && Modifier.isStatic(field.getModifiers())) {
+                try {
+                    FallbackMethod fm = (FallbackMethod) field.get(null);
+                    FallbackMethods.searchMap.put(fm.getId(), fm);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Failed to init FallbackMethods");
+                }
+            }
+        }
+        System.out.println(searchMap);
     }
 
     private FallbackMethods() { }
 
-    public static FallbackMethod get(String blockName) {
+    public static FallbackMethod findByBlockName(String blockName) {
         return searchMap.get(blockName);
     }
 }
