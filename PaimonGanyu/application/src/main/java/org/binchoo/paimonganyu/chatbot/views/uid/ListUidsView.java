@@ -80,9 +80,9 @@ public class ListUidsView extends MappingJackson2JsonView {
 
         private String getImageUrl() {
             if (this.isLumine)
-                return imageRegistry.findById(IMAGEKEY_AETHER);
-            else
                 return imageRegistry.findById(IMAGEKEY_LUMINE);
+            else
+                return imageRegistry.findById(IMAGEKEY_AETHER);
         }
     }
 
