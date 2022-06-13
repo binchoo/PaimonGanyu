@@ -43,7 +43,7 @@ public class ErrorExplainConfig {
 
         binders.add(HoyopassExceptionBinder.builder()
                 .error(QuantityZeroException.class)
-                .title("통행증을 갖고 있지 않습니다.")
+                .title("현재 통행증을 갖고 있지 않습니다.")
                 .fallbacks(FallbackMethods.Home)
                 .build());
 

@@ -34,7 +34,6 @@ public class HoyopassRegistry implements HoyopassRegistryPort {
                 .orElse(new UserHoyopass(botUserId));
 
         userHoyopass.addIncomplete(credentials, hoyopassSearchClientPort);
-
         return userHoyopassCrudPort.save(userHoyopass);
     }
 
@@ -42,6 +41,7 @@ public class HoyopassRegistry implements HoyopassRegistryPort {
     public List<Hoyopass> listHoyopasses(String botUserId) {
         return userHoyopassCrudPort.findByBotUserId(botUserId)
                 .map(UserHoyopass::getHoyopasses)
+                .filter(it-> !it.isEmpty())
                 .orElseThrow(()-> new QuantityZeroException(null));
     }
 

@@ -52,6 +52,7 @@ public class HoyopassController {
     public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload,
                                         Model model) {
         String botUserId = parseId(skillPayload);
+
         List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
         return listHoyopassesView.renderSkillResponse(hoyopasses);
     }
@@ -60,6 +61,7 @@ public class HoyopassController {
     public SkillResponse deleteHoyopass(@RequestBody SkillPayload skillPayload, Model model) {
         String botUserId = parseId(skillPayload);
         int index = parseIndex(skillPayload);
+
         hoyopassRegistry.deleteHoyopass(botUserId, index);
         return listHoyopasses(skillPayload, null);
     }
