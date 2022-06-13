@@ -28,11 +28,6 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
         this.comparator = defaultComparator();
     }
 
-    public GameRecordApiAdapter(HoyolabGameRecordApi gameRecordApi, Comparator<TravelerStatus> comparator) {
-        this.gameRecordApi = gameRecordApi;
-        this.comparator = comparator;
-    }
-
     @Override
     public Collection<TravelerStatus> getStatusOf(UserHoyopass user, Comparator<TravelerStatus> comparator) {
         PriorityQueue<TravelerStatus> pq = newHeapUsing(comparator);
@@ -84,6 +79,8 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
                 .maxResin(dailyNote.getMaxResin())
                 .level(uid.getCharacterLevel())
                 .name(uid.getCharacterName())
+                .lumine(uid.getIsLumine())
+                .uid(uid.getUidString())
                 .build();
     }
 

@@ -4,6 +4,7 @@ import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
+import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
 import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.Lazy;
  */
 @Configuration
 public class ViewConfig {
-
 
 //    /**
 //     * @deprecated aws-serverless-java-container에서 이용할 수 없다.
@@ -39,5 +39,12 @@ public class ViewConfig {
                                                  @Autowired QuickReplies quickReplies,
                                                  @Autowired BlockIds blockIds) {
         return new ListHoyopassesView(images, quickReplies, blockIds);
+    }
+
+    @Lazy
+    @Bean
+    public TravelerStatusView travelerStatusView(@Autowired Images images,
+                                                 @Autowired QuickReplies quickReplies) {
+        return new TravelerStatusView(images, quickReplies);
     }
 }
