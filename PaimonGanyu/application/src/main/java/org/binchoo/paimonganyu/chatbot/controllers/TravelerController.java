@@ -36,6 +36,7 @@ public class TravelerController {
 
         UserHoyopass user = hoyopassRegistry.findUserHoyopass(botUserId);
         Collection<TravelerStatus> status = travelerStatus.getCurrentStatus(user);
+        assert !status.isEmpty();
         return view.renderSkillResponse(status);
     }
 }

@@ -27,4 +27,16 @@ public class ItemCard implements Component, CanCarousel {
     @Singular("addButton")
     private List<Button> buttons;
     private String buttonLayout;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    public static class Thumbnail {
+
+        private String imageUrl;
+        private int width;
+        private int height;
+    }
 }

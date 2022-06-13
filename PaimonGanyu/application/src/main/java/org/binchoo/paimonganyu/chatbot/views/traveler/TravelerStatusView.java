@@ -28,10 +28,10 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     private static int thumbRobin = 5;
     private static String THUMB_PREFIX = "generic_thumb_";
     private static int THUMB_FIXED_WIDTH = 800;
-    private static int THUMB_FIXED_HEIGHT = 400;
+    private static int THUMB_FIXED_HEIGHT = 800;
 
     private static String THUMB_RESIN = "resin_ic";
-    private static String THUMB_SEREN = "serenitea_ic";
+    private static String THUMB_SEREN = "serentea_ic";
     private static String THUMB_LUMINE = "lumine_ic_front";
     private static String THUMB_AETHER = "aether_ic_front";
 
@@ -76,7 +76,7 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     }
 
     private ItemCard renderItemCard(TravelerStatus status) {
-        Thumbnail thumb = selectRandom(imageRepo());
+        ItemCard.Thumbnail thumb = selectRandom(imageRepo());
         Profile profile = renderProfile(status);
         ImageTitle imageTitle = renderImageTitle(status);
         List<ItemList> itemLists = renderItemLists(status);
@@ -86,15 +86,14 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
                 .imageTitle(imageTitle)
                 .itemList(itemLists)
                 .itemListAlignment(ITEMS_ALIGN)
-                .itemListSummary(new ItemListSummary("", "호요랩 참고 자료입니다."))
+                .itemListSummary(new ItemListSummary("호요랩참고", ""))
                 .build();
     }
 
-    private Thumbnail selectRandom(Images imageRepo) {
+    private ItemCard.Thumbnail selectRandom(Images imageRepo) {
         String robin = getNextThumbnail();
         String imageUrl = imageRepo.findById(robin);
-        return new Thumbnail(imageUrl, null, null,
-                THUMB_FIXED_WIDTH, THUMB_FIXED_HEIGHT);
+        return new ItemCard.Thumbnail(imageUrl, THUMB_FIXED_WIDTH, THUMB_FIXED_HEIGHT);
     }
 
     private Profile renderProfile(TravelerStatus status) {
@@ -136,7 +135,7 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     private String profileTitleStrat(TravelerStatus status) {
         double resinRatio = status.ratioOfResin();
         if (resinRatio >= 95){
-            return "얼른 들어가 봐야 돼!(✪Ω✪)ノ";
+            return "들어가야 돼!(✪Ω✪)ノ";
         }
         else if (resinRatio < 33) {
             return "오늘 여행은 괜찮았어?";
