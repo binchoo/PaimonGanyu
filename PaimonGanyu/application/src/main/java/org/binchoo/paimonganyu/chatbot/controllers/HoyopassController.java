@@ -93,6 +93,9 @@ public class HoyopassController {
     }
 
     private int parseIndex(SkillPayload skillPayload) {
-        return Integer.parseInt((String) skillPayload.getAction().getClientExtra().get("index"));
+        Object index = skillPayload.getAction().getClientExtra().get("index");
+        if (!(index instanceof Integer))
+            throw new RuntimeException();
+        return (Integer) index;
     }
 }
