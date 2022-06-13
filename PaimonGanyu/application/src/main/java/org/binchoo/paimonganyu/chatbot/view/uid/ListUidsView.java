@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.view.uid;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.chatbot.resource.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resource.Images;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-@RequiredArgsConstructor
 public class ListUidsView extends MappingJackson2JsonView {
 
     public static final String UIDS = "uids";
@@ -39,6 +39,18 @@ public class ListUidsView extends MappingJackson2JsonView {
 
     private final Images imageRegistry;
     private final QuickReplies quickReplies;
+
+    public ListUidsView(Images imageRegistry, QuickReplies quickReplies) {
+        this.imageRegistry = imageRegistry;
+        this.quickReplies = quickReplies;
+        this.setExtractValueFromSingleKeyModel(true);
+    }
+
+    public ListUidsView(ObjectMapper objectMapper, Images imageRegistry, QuickReplies quickReplies) {
+        super(objectMapper);
+        this.imageRegistry = imageRegistry;
+        this.quickReplies = quickReplies;
+    }
 
     private final class UidValue {
 
@@ -85,7 +97,7 @@ public class ListUidsView extends MappingJackson2JsonView {
 
         Object uids = model.get(UIDS);
         Map<String, SkillResponse> newModel = new HashMap<>();
-        newModel.put("ListUidsView", createResponse((List<Uid>) uids));
+        newModel.put("View", createResponse((List<Uid>) uids));
 
         super.render(newModel, request, response);
     }
