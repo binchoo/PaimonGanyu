@@ -6,9 +6,7 @@ import org.binchoo.paimonganyu.chatbot.view.uid.ListUidsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.BeanNameViewResolver;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * @author : jbinchoo
@@ -17,13 +15,18 @@ import org.springframework.web.servlet.view.BeanNameViewResolver;
 @Configuration
 public class ViewConfig {
 
-    @Bean
-    public ViewResolver viewResolver() {
-        return new BeanNameViewResolver();
-    }
 
+//    /**
+//     * @Deprecated aws-serverless-java-container에서 이용할 수 없다.
+//     */
+//    @Bean
+//    public ViewResolver viewResolver() {
+//        return new BeanNameViewResolver();
+//    }
+
+    @Lazy
     @Bean
-    public View ListUidsView(@Autowired Images images, @Autowired QuickReplies quickReplies) {
+    public ListUidsView listUidsView(@Autowired Images images, @Autowired QuickReplies quickReplies) {
         return new ListUidsView(images, quickReplies);
     }
 }

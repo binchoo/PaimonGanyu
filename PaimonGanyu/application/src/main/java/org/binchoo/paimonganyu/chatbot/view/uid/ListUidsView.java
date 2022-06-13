@@ -1,7 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.view.uid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.chatbot.resource.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resource.Images;
 import org.binchoo.paimonganyu.chatbot.resource.QuickReplies;
@@ -102,7 +101,7 @@ public class ListUidsView extends MappingJackson2JsonView {
         super.render(newModel, request, response);
     }
 
-    private SkillResponse createResponse(List<Uid> uids) {
+    public SkillResponse createResponse(List<Uid> uids) {
         List<UidValue> modelValues = uids.stream().map(UidValue::new)
                 .collect(Collectors.toList());
 
