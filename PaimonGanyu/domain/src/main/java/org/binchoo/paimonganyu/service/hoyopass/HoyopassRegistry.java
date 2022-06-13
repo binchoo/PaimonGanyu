@@ -9,6 +9,7 @@ import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class HoyopassRegistry implements HoyopassRegistryPort {
     public List<Hoyopass> listHoyopasses(String botUserId) {
         return userHoyopassCrudPort.findByBotUserId(botUserId)
                 .map(UserHoyopass::getHoyopasses)
-                .orElse(new ArrayList<>());
+                .orElseThrow(()-> new QuantityZeroException(null));
     }
 
     @Override

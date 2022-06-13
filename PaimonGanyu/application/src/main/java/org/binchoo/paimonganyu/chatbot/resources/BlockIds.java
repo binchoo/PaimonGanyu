@@ -1,5 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.resources;
 
+import org.binchoo.paimonganyu.error.FallbackMethod;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,11 @@ public final class BlockIds {
      * @return 블록 아이디
      */
     public String findByName(String blockName) {
+        return this.blockNameAndId.get(blockName);
+    }
+
+    public String findByName(FallbackMethod fallbackMethod) {
+        String blockName = fallbackMethod.getId();
         return this.blockNameAndId.get(blockName);
     }
 }

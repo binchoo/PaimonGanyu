@@ -1,7 +1,9 @@
 package org.binchoo.paimonganyu.chatbot.configs.view;
 
+import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
+import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
 import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +28,16 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public ListUidsView listUidsView(@Autowired Images images, @Autowired QuickReplies quickReplies) {
+    public ListUidsView listUidsView(@Autowired Images images,
+                                     @Autowired QuickReplies quickReplies) {
         return new ListUidsView(images, quickReplies);
+    }
+
+    @Lazy
+    @Bean
+    public ListHoyopassesView listHoyopassView(@Autowired Images images,
+                                               @Autowired QuickReplies quickReplies,
+                                               @Autowired BlockIds blockIds) {
+        return new ListHoyopassesView(images, quickReplies, blockIds);
     }
 }

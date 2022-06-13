@@ -1,6 +1,11 @@
 blockNameAndId:
   Home: 62a33634d3ab72600628e825
-  ScanHoyopass: 62a3411cef4e2505c632204e
-  DeleteHoyopass: 62a59a68678c9b1480a53389
   ValidationCs: 62a59aeb678c9b1480a53392
   CommonCs: 62a59b0efa834474ed740da6
+
+  ScanHoyopass: 62a3411cef4e2505c632204e
+  DeleteHoyopass: 62a59a68678c9b1480a53389
+  ListHoyopass: 62a59a68678c9b1480a53389
+
+  DoDailyCheck: 62a6f1a9c9058012cdfadb82
+  ListUserDailyCheck: 62a6f2d5e56eb3754ccc0ef0

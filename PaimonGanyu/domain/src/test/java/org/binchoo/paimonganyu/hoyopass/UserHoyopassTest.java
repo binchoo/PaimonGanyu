@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityException;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -72,7 +72,7 @@ class UserHoyopassTest {
         UserHoyopass userHoyopass = new UserHoyopass();
         hoyopassList.forEach(userHoyopass::addComplete);
 
-        assertThrows(QuantityException.class, ()->
+        assertThrows(QuantityExceedException.class, ()->
                 userHoyopass.addComplete(additionalHoyopass));
     }
 

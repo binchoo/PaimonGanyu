@@ -7,7 +7,8 @@ import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityException;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +30,7 @@ public class ErrorExplainConfig {
                 .build());
 
         binders.add(HoyopassExceptionBinder.builder()
-                .error(QuantityException.class)
+                .error(QuantityExceedException.class)
                 .title(String.format("통행증은 %d개까지 보유 가능합니다.", UserHoyopass.MAX_HOYOPASS_COUNT))
                 .fallbacks(FallbackMethods.Home, FallbackMethods.DeleteHoyopass)
                 .build());
@@ -38,6 +39,12 @@ public class ErrorExplainConfig {
                 .error(InactiveStateException.class)
                 .title("알 수 없는 통행증 정보입니다.")
                 .fallbacks(FallbackMethods.Home, FallbackMethods.ScanHoyopass, FallbackMethods.ValidationCs)
+                .build());
+
+        binders.add(HoyopassExceptionBinder.builder()
+                .error(QuantityZeroException.class)
+                .title("통행증을 갖고 있지 않습니다.")
+                .fallbacks(FallbackMethods.Home)
                 .build());
 
         binders.add(CryptoExceptionBinder.builder()

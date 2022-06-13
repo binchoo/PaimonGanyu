@@ -16,13 +16,21 @@ public final class FallbackMethods {
     public static FallbackMethod ScanHoyopass   = new FallbackMethod("ScanHoyopass");
     public static FallbackMethod ValidationCs   = new FallbackMethod("ValidationCs");
     public static FallbackMethod CommonCs       = new FallbackMethod("CommonCs");
+    public static FallbackMethod ListHoyopass   = new FallbackMethod("ListHoyopass");
+    public static FallbackMethod DoDailyCheck   = new FallbackMethod("DoDailyCheck");
+    public static FallbackMethod ListUserDailyCheck= new FallbackMethod("ListUserDailyCheck");
+
     public static Map<String, FallbackMethod> searchMap = new HashMap<>();
+
     static {
         searchMap.put(FallbackMethods.Home.getId(), FallbackMethods.Home);
         searchMap.put(FallbackMethods.DeleteHoyopass.getId(), FallbackMethods.DeleteHoyopass);
         searchMap.put(FallbackMethods.ScanHoyopass.getId(), FallbackMethods.ScanHoyopass);
         searchMap.put(FallbackMethods.ValidationCs.getId(), FallbackMethods.ValidationCs);
         searchMap.put(FallbackMethods.CommonCs.getId(), FallbackMethods.CommonCs);
+        searchMap.put(FallbackMethods.ListHoyopass.getId(), FallbackMethods.ListHoyopass);
+        searchMap.put(FallbackMethods.DoDailyCheck.getId(), FallbackMethods.DoDailyCheck);
+        searchMap.put(FallbackMethods.ListUserDailyCheck.getId(), FallbackMethods.ListUserDailyCheck);
     }
 
     private FallbackMethods() { }

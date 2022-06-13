@@ -3,7 +3,9 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
 import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
@@ -11,6 +13,7 @@ import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,6 +33,7 @@ public class HoyopassController {
     private final ObjectMapper objectMapper;
     private final SecuredHoyopassRegistryPort hoyopassRegistry;
     private final ListUidsView listUidsView;
+    private final ListHoyopassesView listHoyopassesView;
 
     @PostMapping("/post")
     public SkillResponse addHoyopass(@RequestBody SkillPayload skillPayload,
@@ -39,15 +43,18 @@ public class HoyopassController {
 
         UserHoyopass user = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
         if (user != null) {
-            return listUidsView.createResponse(user.listUids());
+            return listUidsView.renderSkillResponse(user.listUids());
         }
         return null;
     }
 
-    @PostMapping("/get")
-    public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload, Model model) {
+    @PostMapping("/list")
+    public SkillResponse listHoyopasses(@RequestBody SkillPayload skillPayload,
+                                        Model model) {
+
         String botUserId = parseId(skillPayload);
-        return null;
+        List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
+        return listHoyopassesView.renderSkillResponse(hoyopasses);
     }
 
     @PostMapping("/delete")

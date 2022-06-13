@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
+import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
@@ -11,15 +12,9 @@ import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
 import org.binchoo.paimonganyu.ikakao.component.componentType.BasicCard;
 import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
-import org.binchoo.paimonganyu.ikakao.type.QuickReply;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +23,7 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-public class ListUidsView extends MappingJackson2JsonView {
+public class ListUidsView extends AbstractSkillResopnseView {
 
     public static final String UIDS = "uids";
 
@@ -36,19 +31,12 @@ public class ListUidsView extends MappingJackson2JsonView {
     private static final String IMAGEKEY_LUMINE = "lumine";
     private static final String PREFIX_LEVEL = "Lv.";
 
-    private final Images imageRegistry;
-    private final QuickReplies quickReplies;
-
-    public ListUidsView(Images imageRegistry, QuickReplies quickReplies) {
-        this.imageRegistry = imageRegistry;
-        this.quickReplies = quickReplies;
-        this.setExtractValueFromSingleKeyModel(true);
+    public ListUidsView(Images images, QuickReplies quickReplies) {
+        super(images, quickReplies, null);
     }
 
-    public ListUidsView(ObjectMapper objectMapper, Images imageRegistry, QuickReplies quickReplies) {
-        super(objectMapper);
-        this.imageRegistry = imageRegistry;
-        this.quickReplies = quickReplies;
+    public ListUidsView(ObjectMapper objectMapper, Images images, QuickReplies quickReplies) {
+        super(objectMapper, images, quickReplies, null);
     }
 
     private final class UidValue {
@@ -80,28 +68,22 @@ public class ListUidsView extends MappingJackson2JsonView {
 
         private String getImageUrl() {
             if (this.isLumine)
-                return imageRegistry.findById(IMAGEKEY_LUMINE);
+                return imageRepo().findById(IMAGEKEY_LUMINE);
             else
-                return imageRegistry.findById(IMAGEKEY_AETHER);
+                return imageRepo().findById(IMAGEKEY_AETHER);
         }
     }
 
     @Override
-    public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (model == null)
-            throw new NullPointerException("Model is null.");
-
+    protected SkillResponse renderResponse(Map<String, ?> model) {
         if (!model.containsKey(UIDS))
             throw new IllegalArgumentException("Model [" + model + "] does not contains List<Uid>");
 
         Object uids = model.get(UIDS);
-        Map<String, SkillResponse> newModel = new HashMap<>();
-        newModel.put("View", createResponse((List<Uid>) uids));
-
-        super.render(newModel, request, response);
+        return renderSkillResponse((List<Uid>) uids);
     }
 
-    public SkillResponse createResponse(List<Uid> uids) {
+    public SkillResponse renderSkillResponse(List<Uid> uids) {
         List<UidValue> modelValues = uids.stream().map(UidValue::new)
                 .collect(Collectors.toList());
 
@@ -132,11 +114,6 @@ public class ListUidsView extends MappingJackson2JsonView {
             carouselBuilder.addItem(basicCardOf(item));
 
         return carouselBuilder.build();
-    }
-
-    private List<QuickReply> quickRepliesOf(FallbackMethod[] fallbacks) {
-        return Arrays.stream(fallbacks).map(this.quickReplies::findById)
-                .collect(Collectors.toList());
     }
 
     private BasicCard basicCardOf(UidValue value) {
