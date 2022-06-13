@@ -35,9 +35,9 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public ListHoyopassesView listHoyopassView(@Autowired Images images,
-                                               @Autowired QuickReplies quickReplies,
-                                               @Autowired BlockIds blockIds) {
+    public ListHoyopassesView listHoyopassesView(@Autowired Images images,
+                                                 @Autowired QuickReplies quickReplies,
+                                                 @Autowired BlockIds blockIds) {
         return new ListHoyopassesView(images, quickReplies, blockIds);
     }
 }

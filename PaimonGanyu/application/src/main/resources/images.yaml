@@ -3,3 +3,5 @@ s3:
   images:
     aether: traveler_aether.png
     lumine: traveler_lumine.png
+    aether_ic_front: traveler_aether_ic_front.png
+    lumine_ic_front: traveler_lumine_ic_front.png

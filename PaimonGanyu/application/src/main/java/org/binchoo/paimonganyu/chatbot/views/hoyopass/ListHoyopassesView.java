@@ -80,7 +80,7 @@ public class ListHoyopassesView extends AbstractSkillResopnseView {
     }
 
     private String getItemTitle(Uid uid) {
-        return String.format("$s Lv.%d %s",
+        return String.format("%s Lv.%d %s",
                 uid.getRegion().lowercase(), uid.getCharacterLevel(), uid.getCharacterName());
     }
 
@@ -91,7 +91,6 @@ public class ListHoyopassesView extends AbstractSkillResopnseView {
     private String getItemImage(Uid uid) {
         return imageRepo().findById((uid.getIsLumine())? "lumine_ic_front":"aether_ic_front");
     }
-
 
     private FallbackMethod[] getFallbacks() {
         return new FallbackMethod[] {FallbackMethods.Home};
