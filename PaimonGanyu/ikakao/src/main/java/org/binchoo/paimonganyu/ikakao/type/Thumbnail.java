@@ -9,10 +9,10 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class Thumbnail {
+
     private String imageUrl;
     private Link link;
     private Boolean fixedRatio;
     private Integer width;
     private Integer height;
-
 }

@@ -12,9 +12,9 @@ import java.util.Map;
 @ToString
 public class Action{
 
-    public String id;
-    public String name;
-    public Map<String, String> params;
-    public Map<String, DetailParam> detailParams;
-    public Map<String, Object> clientExtra;
+    private String id;
+    private String name;
+    private Map<String, String> params;
+    private Map<String, DetailParam> detailParams;
+    private Map<String, Object> clientExtra;
 }

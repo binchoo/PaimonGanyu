@@ -9,5 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class SimpleText implements Component {
+
     private String text;
 }

@@ -7,9 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DetailParam {
+public class Head {
 
-    private String origin;
-    private String value;
-    private String groupName;
+    private String title;
 }

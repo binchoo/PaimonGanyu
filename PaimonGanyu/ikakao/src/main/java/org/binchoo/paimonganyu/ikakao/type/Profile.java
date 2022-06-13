@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class Profile {
+
     private String nickname;
     private String imageUrl;
 }

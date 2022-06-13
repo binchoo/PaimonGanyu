@@ -12,9 +12,9 @@ import java.util.List;
 @Builder
 public class SkillTemplate {
 
-    final static private Character MAX_OUTPUTS_SIZE = 3;
-    final static private Character MIN_OUTPUTS_SIZE = 1;
-    final static private Character MAX_QUICKREPLY_SIZE = 10;
+    private final static Character MAX_OUTPUTS_SIZE = 3;
+    private final static Character MIN_OUTPUTS_SIZE = 1;
+    private final static Character MAX_QUICKREPLY_SIZE = 10;
 
     @Singular("addOutput")
     private List<Component> outputs;

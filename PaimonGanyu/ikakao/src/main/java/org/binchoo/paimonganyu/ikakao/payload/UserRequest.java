@@ -13,9 +13,9 @@ import java.util.Map;
 @ToString
 public class UserRequest{
 
-    public Block block;
-    public User user;
-    public Map<String, String> params;
+    private Block block;
+    private User user;
+    private Map<String, String> params;
 
     private String timezone;
     private String utterance;

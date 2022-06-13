@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class Bot{
-    String id;
-    String name;
+
+    private String id;
+    private String name;
 }
