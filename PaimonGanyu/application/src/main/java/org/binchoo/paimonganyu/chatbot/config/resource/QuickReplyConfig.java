@@ -13,23 +13,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Setter
 @Configuration
 @ConfigurationProperties
-@PropertySource(value = "classpath:images.yaml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:quicks.yaml", factory = YamlPropertySourceFactory.class)
 public class QuickReplyConfig {
 
-    private Map<String, String> blockNameAndQuickLabel;
+    private Map<String, String> blockNameAndLabel;
 
     @Autowired
     private BlockIds blockRegistry;
 
     @Bean
-    public QuickReplies setupQuickReplies() {
+    public QuickReplies quickReplies() {
         QuickReplies quickReplies = new QuickReplies();
-
-        for (Map.Entry<String, String> quick : blockNameAndQuickLabel.entrySet()) {
+        Objects.requireNonNull(blockNameAndLabel);
+        for (Map.Entry<String, String> quick : blockNameAndLabel.entrySet()) {
             String blockName = quick.getKey();
             String quickLabel = quick.getValue();
 

@@ -1,6 +1,6 @@
-quicks:
-  Home: '처음으로'
-  ScanHoyopass: '재촬영'
+blockNameAndLabel:
+  Home: 처음으로
+  ScanHoyopass: 재촬영
   DeleteHoyopass: '통행증 삭제'
   ValidationCs: '계정 유효성 안내'
   CommonCs: '메일 문의'

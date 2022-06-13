@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author : jbinchoo
@@ -21,10 +21,11 @@ import java.util.Map;
 @PropertySource(value = "classpath:blocks.yaml", factory = YamlPropertySourceFactory.class)
 public class BlockConfig {
 
-    private Map<String, String> blockNameAndId = new HashMap<>();
+    private Map<String, String> blockNameAndId;
 
     @Bean
-    public BlockIds loadBlocks() {
+    public BlockIds blockIds() {
+        Objects.requireNonNull(blockNameAndId);
         return new BlockIds(blockNameAndId);
     }
 }
