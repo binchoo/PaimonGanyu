@@ -1,9 +1,9 @@
-package org.binchoo.paimonganyu.chatbot.config;
+package org.binchoo.paimonganyu.chatbot.config.error;
 
-import org.binchoo.paimonganyu.chatbot.error.binder.CryptoExceptionBinder;
-import org.binchoo.paimonganyu.chatbot.error.binder.HoyopassExceptionBinder;
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
-import org.binchoo.paimonganyu.chatbot.error.support.FallbackMethods;
+import org.binchoo.paimonganyu.chatbot.controller.error.binder.CryptoExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.controller.error.binder.HoyopassExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.controller.error.binder.ErrorContextBinders;
+import org.binchoo.paimonganyu.chatbot.resource.FallbackMethods;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;

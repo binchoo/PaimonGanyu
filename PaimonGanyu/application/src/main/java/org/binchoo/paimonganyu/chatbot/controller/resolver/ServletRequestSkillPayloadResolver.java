@@ -1,8 +1,9 @@
-package org.binchoo.paimonganyu.chatbot.resolver.payload;
+package org.binchoo.paimonganyu.chatbot.controller.resolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.chatbot.controller.resolver.SkillPayloadResolver;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;

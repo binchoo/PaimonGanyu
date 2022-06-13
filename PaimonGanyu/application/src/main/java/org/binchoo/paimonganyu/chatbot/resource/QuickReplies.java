@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.view.resource;
+package org.binchoo.paimonganyu.chatbot.resource;
 
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;

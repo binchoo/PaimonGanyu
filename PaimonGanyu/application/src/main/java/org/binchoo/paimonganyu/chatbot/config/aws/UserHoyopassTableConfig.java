@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.config;
+package org.binchoo.paimonganyu.chatbot.config.aws;
 
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.context.annotation.Configuration;

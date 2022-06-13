@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.config;
+package org.binchoo.paimonganyu.chatbot.config.aws;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;

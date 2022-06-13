@@ -1,9 +1,8 @@
-package org.binchoo.paimonganyu.chatbot.error;
+package org.binchoo.paimonganyu.chatbot.controller.error;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.error.support.DefaultErrorExplain;
-import org.binchoo.paimonganyu.chatbot.error.support.ErrorContextBinders;
+import org.binchoo.paimonganyu.chatbot.controller.error.binder.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.view.error.ErrorResponseTemplate;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;

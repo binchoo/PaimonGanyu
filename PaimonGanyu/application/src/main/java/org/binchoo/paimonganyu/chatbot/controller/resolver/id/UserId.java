@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.resolver.id;
+package org.binchoo.paimonganyu.chatbot.controller.resolver.id;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

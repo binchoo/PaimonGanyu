@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.resolver.param;
+package org.binchoo.paimonganyu.chatbot.controller.resolver.param;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

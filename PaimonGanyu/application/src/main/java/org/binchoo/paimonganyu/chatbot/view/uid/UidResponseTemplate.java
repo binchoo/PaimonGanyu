@@ -1,10 +1,10 @@
 package org.binchoo.paimonganyu.chatbot.view.uid;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.chatbot.error.support.FallbackMethods;
+import org.binchoo.paimonganyu.chatbot.resource.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.view.ResponseTemplate;
-import org.binchoo.paimonganyu.chatbot.view.resource.Images;
-import org.binchoo.paimonganyu.chatbot.view.resource.QuickReplies;
+import org.binchoo.paimonganyu.chatbot.resource.Images;
+import org.binchoo.paimonganyu.chatbot.resource.QuickReplies;
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;

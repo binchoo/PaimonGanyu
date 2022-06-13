@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.view.resource;
+package org.binchoo.paimonganyu.chatbot.resource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import java.util.Map;
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-public class Images {
+public final class Images {
 
     private final Map<String, String> images;
 

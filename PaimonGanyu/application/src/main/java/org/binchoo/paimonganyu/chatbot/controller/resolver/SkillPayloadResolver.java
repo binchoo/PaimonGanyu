@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.resolver.payload;
+package org.binchoo.paimonganyu.chatbot.controller.resolver;
 
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 

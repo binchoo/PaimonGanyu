@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.config;
+package org.binchoo.paimonganyu.chatbot.config.aws;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
