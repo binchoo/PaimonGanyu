@@ -12,3 +12,8 @@ s3:
     generic_thumb_4: generic_thumb_4.png
     resin_ic: resin_ic.png
     serentea_ic: serentea_ic.png
+    dailycheck_fail: paimon_scared.png
+    dailycheck_duplicate: paimon_thinking.png
+    dailycheck_complete: paimon_smiling.png
+    paimon_crying: paimon_crying.png
+    paimon_cheers: paimon_cheers.png
