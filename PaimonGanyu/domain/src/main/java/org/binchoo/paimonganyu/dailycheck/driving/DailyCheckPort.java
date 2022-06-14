@@ -1,6 +1,12 @@
 package org.binchoo.paimonganyu.dailycheck.driving;
 
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author : jbinchoo
@@ -8,13 +14,17 @@ import java.time.LocalDate;
  */
 public interface DailyCheckPort {
 
+    Collection<UserDailyCheck> claimDailyCheckIn(UserHoyopass userHoyopass);
+
+    Optional<UserDailyCheck> claimDailyCheckIn(String botUserId, Hoyopass pass);
+
     /**
      * 해당 봇 유저의 명의로 주어진 통행증을 사용해 호요랩에 출석체크 합니다.
      * @param botUserId 봇 유저 아이디
      * @param ltuid 통행증 아이디
      * @param ltoken 통행증 크레덴셜 토큰
      */
-    void claimDailyCheckIn(String botUserId, String ltuid, String ltoken);
+    Optional<UserDailyCheck> claimDailyCheckIn(String botUserId, String ltuid, String ltoken);
 
     /**
      * 해당 봇 유저가 주어진 통행증을 사용해 이미 호요랩에 출석체크 했는지 판단합니다.

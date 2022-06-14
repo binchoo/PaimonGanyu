@@ -56,6 +56,7 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     }
 
     public SkillResponse renderSkillResponse(Collection<TravelerStatus> status) {
+        assert !status.isEmpty();
         return SkillResponse.builder()
                 .template(renderSkillTemplate(status))
                 .build();

@@ -14,7 +14,7 @@ import org.binchoo.paimonganyu.lambda.config.DynamoDBClientConfig;
 import org.binchoo.paimonganyu.lambda.config.SqsClientConfig;
 import org.binchoo.paimonganyu.lambda.config.UserDailyCheckTableConfig;
 import org.binchoo.paimonganyu.lambda.config.UserHoyopassTableConfig;
-import org.binchoo.paimonganyu.service.dailycheck.DailyCheckPortImpl;
+import org.binchoo.paimonganyu.service.dailycheck.DailyCheckService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -38,7 +38,7 @@ public class DailyCheckBatchRequesterMain {
     @Bean
     public DailyCheckPort dailyCheckService(HoyolabDailyCheckApi dailyCheckApi,
                                             UserDailyCheckDynamoRepository repository) {
-        return new DailyCheckPortImpl(
+        return new DailyCheckService(
                 new DailyCheckClientAdapter(dailyCheckApi),
                 new UserDailyCheckDynamoAdapter(repository));
     }
