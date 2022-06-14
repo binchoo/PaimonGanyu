@@ -139,7 +139,7 @@ public class DailyCheckListView extends AbstractSkillResopnseView implements Mes
     }
 
     private String printTime(LocalDateTime timestamp) {
-        return timestamp.format(DateTimeFormatter.ofPattern("M월 d일 H시m분"));
+        return timestamp.format(DateTimeFormatter.ofPattern("M월 d일 H시m분", Locale.KOREA));
     }
 
     private List<Button> renderButtons(List<UserDailyCheck> dailyChecks) {
