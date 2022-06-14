@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.traveler.TravelerStatus;
@@ -25,7 +25,7 @@ import java.util.Collection;
 @RestController
 public class TravelerController {
 
-    private final HoyopassRegistryPort hoyopassRegistry;
+    private final HoyopassRegisterPort hoyopassRegistry;
     private final TravelerStatusPort travelerStatus;
     private final TravelerStatusView view;
 

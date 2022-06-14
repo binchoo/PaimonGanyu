@@ -13,7 +13,7 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public interface RedeemTaskEstimationService {
+public interface RedeemTaskEstimationPort {
 
     /**
      * <p> 주어진 견적 옵션으로 코드 리딤 태스크 사양을 견적냅니다.

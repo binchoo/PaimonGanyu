@@ -3,9 +3,9 @@ package org.binchoo.paimonganyu.service.hoyopass;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.hoyopass.*;
-import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
-import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
-import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagePort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
+import org.binchoo.paimonganyu.hoyopass.driving.SecureHoyopassRegisterPort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class SecuredHoyopassRegistry implements SecuredHoyopassRegistryPort {
+public class SecureHoyopassRegister implements SecureHoyopassRegisterPort {
 
-    private final HoyopassRegistryPort delegate;
-    private final SigningKeyManagerPort signingKeys;
+    private final HoyopassRegisterPort delegate;
+    private final SigningKeyManagePort signingKeys;
 
     @Override
     public UserHoyopass findUserHoyopass(String botUserId) {

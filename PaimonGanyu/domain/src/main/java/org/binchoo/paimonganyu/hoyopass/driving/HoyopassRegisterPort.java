@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.List;
 
-public interface HoyopassRegistryPort {
+public interface HoyopassRegisterPort {
 
     UserHoyopass findUserHoyopass(String botUserId);
 

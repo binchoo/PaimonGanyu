@@ -8,7 +8,7 @@ import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class HoyopassRegistry implements HoyopassRegistryPort {
+public class HoyopassRegister implements HoyopassRegisterPort {
 
     private final HoyopassSearchClientPort hoyopassSearchClientPort;
     private final UserHoyopassCrudPort userHoyopassCrudPort;

@@ -2,23 +2,17 @@ package org.binchoo.paimonganyu.lambda;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoAdapter;
-import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoRepository;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoAdapter;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoRepository;
 import org.binchoo.paimonganyu.infra.redeem.s3.repository.RedeemCodeS3Adapter;
 import org.binchoo.paimonganyu.lambda.config.*;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
-import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
+import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationPort;
 import org.binchoo.paimonganyu.service.redeem.RedeemBloomFilter;
 import org.binchoo.paimonganyu.service.redeem.RedeemTaskEstimator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import java.util.List;
 
 /**
  * @author : jbinchoo
@@ -40,7 +34,7 @@ public class RedeemUserDeliveryMain {
      * @param redeemRepository from {@link UserRedeemTableConfig}
      */
     @Bean
-    public RedeemTaskEstimationService redeemTaskEstimationService(UserRedeemDynamoRepository redeemRepository) {
+    public RedeemTaskEstimationPort redeemTaskEstimationService(UserRedeemDynamoRepository redeemRepository) {
         return new RedeemTaskEstimator(
                 new RedeemBloomFilter(new UserRedeemDynamoAdapter(redeemRepository)));
     }

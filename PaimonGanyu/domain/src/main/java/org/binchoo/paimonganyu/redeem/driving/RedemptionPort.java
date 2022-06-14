@@ -11,7 +11,7 @@ import java.util.List;
  * @author : jbinchoo
  * @since : 2022-04-21
  */
-public interface RedemptionService {
+public interface RedemptionPort {
 
     /**
      * {@link RedeemTask}에 명세된 코드 리딤 작업을 수행합니다.

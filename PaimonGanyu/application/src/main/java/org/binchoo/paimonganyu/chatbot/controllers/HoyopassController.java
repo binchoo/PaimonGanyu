@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
 import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.driving.SecuredHoyopassRegistryPort;
+import org.binchoo.paimonganyu.hoyopass.driving.SecureHoyopassRegisterPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.ui.Model;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class HoyopassController {
 
     private final ObjectMapper objectMapper;
-    private final SecuredHoyopassRegistryPort hoyopassRegistry;
+    private final SecureHoyopassRegisterPort hoyopassRegistry;
     private final ListUidsView listUidsView;
     private final ListHoyopassesView listHoyopassesView;
 

@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.redeem.RedeemCode;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-public interface RedeemHistoryService {
+public interface RedeemHistoryPort {
 
     /**
      * 주어진 통행증 ID와  리딤 코드 조합으로

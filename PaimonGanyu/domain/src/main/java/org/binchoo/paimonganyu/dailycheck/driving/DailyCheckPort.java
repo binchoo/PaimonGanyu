@@ -6,7 +6,7 @@ import java.time.LocalDate;
  * @author : jbinchoo
  * @since : 2022-04-13
  */
-public interface DailyCheckService {
+public interface DailyCheckPort {
 
     /**
      * 해당 봇 유저의 명의로 주어진 통행증을 사용해 호요랩에 출석체크 합니다.

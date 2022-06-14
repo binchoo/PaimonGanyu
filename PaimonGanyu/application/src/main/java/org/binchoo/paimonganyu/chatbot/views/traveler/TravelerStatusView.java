@@ -4,6 +4,7 @@ import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CanCarousel;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
  * @since 2022/06/14
  */
 public class TravelerStatusView extends AbstractSkillResopnseView {
+
+    public static final String STATUSES = "statuses";
 
     private static int thumbIndex = 0;
     private static final int thumbRobin = 5;
@@ -49,7 +52,7 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
 
     @Override
     protected SkillResponse renderResponse(Map<String, ?> model) {
-        return null;
+        return renderSkillResponse((Collection<TravelerStatus>) model.get(STATUSES));
     }
 
     public SkillResponse renderSkillResponse(Collection<TravelerStatus> status) {

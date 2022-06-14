@@ -46,7 +46,7 @@ class SsmSigningKeyManagerTest {
     @Test
     void givenNonBase64ParameterValues_initialization_fails() {
         givenNonBase64ParameterValues();
-        assertThrows(IllegalStateException.class, ()-> new SsmSigningKeyManager(
+        assertThrows(IllegalStateException.class, ()-> new SsmSigningKeyManage(
                 "foo", "bar", ssmClient));
     }
 
@@ -58,7 +58,7 @@ class SsmSigningKeyManagerTest {
     @Test
     void givenNonCryptographicParameterValues_initialization_fails() {
         givenNonCryptographicParameterValues();
-        assertThrows(IllegalStateException.class, ()-> new SsmSigningKeyManager(
+        assertThrows(IllegalStateException.class, ()-> new SsmSigningKeyManage(
                 "foo", "bar", ssmClient));
     }
 
@@ -72,7 +72,7 @@ class SsmSigningKeyManagerTest {
     @Test
     void givenNonCryptographicParameterValueForPrivateKey_initialization_fails() {
         givenNonCryptographicParameterValueForPrivateKey();
-        assertThrows(IllegalStateException.class, ()-> new SsmSigningKeyManager(
+        assertThrows(IllegalStateException.class, ()-> new SsmSigningKeyManage(
                 "foo", "bar", ssmClient));
     }
 

@@ -6,7 +6,7 @@ import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
 import org.binchoo.paimonganyu.lambda.RedeemWorkerMain;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
-import org.binchoo.paimonganyu.redeem.driving.RedemptionService;
+import org.binchoo.paimonganyu.redeem.driving.RedemptionPort;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -19,14 +19,14 @@ import java.util.List;
 @Slf4j
 public class RedeemWorkerLambda {
 
-    private RedemptionService codeRedeemService = null;
+    private RedemptionPort codeRedeemService = null;
 
     public RedeemWorkerLambda() {
         this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemWorkerMain.class));
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
-        this.codeRedeemService = context.getBean(RedemptionService.class);
+        this.codeRedeemService = context.getBean(RedemptionPort.class);
     }
 
     public void handler(SQSEvent sqsEvent) {

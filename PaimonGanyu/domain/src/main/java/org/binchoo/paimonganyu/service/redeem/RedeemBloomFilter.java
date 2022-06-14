@@ -6,7 +6,7 @@ import org.binchoo.paimonganyu.algorithm.MultiHashable;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
-import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryService;
+import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class RedeemBloomFilter implements RedeemHistoryService {
+public class RedeemBloomFilter implements RedeemHistoryPort {
 
     public static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 

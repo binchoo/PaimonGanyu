@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass.driven;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-public interface SigningKeyManagerPort {
+public interface SigningKeyManagePort {
 
     /**
      * @return 통행증 암호화에 이용되는 공개키
@@ -16,7 +16,7 @@ public interface SigningKeyManagerPort {
     PrivateKey getPrivateKey();
 
     /**
-     * {@link SigningKeyManagerPort}가 암복호화에 이용하는 키 알고리즘을 반환합니다.
+     * {@link SigningKeyManagePort}가 암복호화에 이용하는 키 알고리즘을 반환합니다.
      * @return 키 알고리즘. 반환 종류는 {@link java.security.spec.KeySpec} 명세를 참조한다.
      */
     String getAlgorithm();

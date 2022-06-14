@@ -9,14 +9,14 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
+import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagePort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
-import org.binchoo.paimonganyu.service.hoyopass.SecuredHoyopassRegistry;
+import org.binchoo.paimonganyu.service.hoyopass.SecureHoyopassRegister;
 import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
 import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
 import org.junit.jupiter.api.AfterEach;
@@ -47,10 +47,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SecuredHoyopassRegistryLocalSystemTest {
 
     @Autowired
-    SecuredHoyopassRegistry securedHoyopassRegistry;
+    SecureHoyopassRegister securedHoyopassRegistry;
 
     @Autowired
-    SigningKeyManagerPort signingKeyManager;
+    SigningKeyManagePort signingKeyManager;
 
     @Autowired
     UserHoyopassCrudPort userHoyopassCrud;

@@ -4,7 +4,7 @@ import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest;
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagerPort;
+import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagePort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class SsmSigningKeyManager implements SigningKeyManagerPort {
+public class SsmSigningKeyManage implements SigningKeyManagePort {
 
     private static final String ALGORITHM = "RSA";
     private static final KeyFactory keyFactory;
@@ -45,7 +45,7 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
     }
 
     /**
-     * {@link SigningKeyManagerPort} 구현체를 생성합니다.
+     * {@link SigningKeyManagePort} 구현체를 생성합니다.
      * <p> 이 구현체는 AWS SSM 파라미터 저장소에 암호화용 공개키, 사설키를 가져오는 역할로 의도되었습니다.
      * <p> AWS SSM로의 접근 권한은 머신의 IAM Role 혹은 {@link com.amazonaws.auth.AWSCredentialsProvider}에 의해 보호되어야 합니다.
      * @param publicKeyName SSM 파라미터 저장소에 저장한 공개키의 이름
@@ -54,9 +54,9 @@ public class SsmSigningKeyManager implements SigningKeyManagerPort {
      * @throws IllegalStateException SSM 파라미터에 저장된 값이 Base64 인코딩 형식이 아닐 때,
      * SSM 파라미터 값 분석 결과 RSA 공개키/사설키 형식이 아닐 때, publickKey나 privateKey 필드 작성에 실패했을 때.
      */
-    public SsmSigningKeyManager(@Value("${amazon.ssm.hoyopass.publickeyname}") String publicKeyName,
-                                @Value("${amazon.ssm.hoyopass.privatekeyname}")String privateKeyName,
-                                AWSSimpleSystemsManagement ssmClient) {
+    public SsmSigningKeyManage(@Value("${amazon.ssm.hoyopass.publickeyname}") String publicKeyName,
+                               @Value("${amazon.ssm.hoyopass.privatekeyname}")String privateKeyName,
+                               AWSSimpleSystemsManagement ssmClient) {
         this.publicKeyName = publicKeyName;
         this.privateKeyName = privateKeyName;
         this.ssmClient = ssmClient;
