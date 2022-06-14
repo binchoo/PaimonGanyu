@@ -47,8 +47,9 @@ public class DailyCheckService implements DailyCheckPort {
         return save(finalState);
     }
 
+    // TODO: initialState를 DB에 선저장 할지 말지 결정하라.
     private UserDailyCheck initialize(String botUserId, String ltuid, String ltoken) {
-        return save(UserDailyCheck.of(botUserId, ltuid, ltoken));
+        return UserDailyCheck.of(botUserId, ltuid, ltoken);
     }
 
     private UserDailyCheck save(UserDailyCheck userDailyCheck) {
@@ -66,7 +67,10 @@ public class DailyCheckService implements DailyCheckPort {
     @Override
     public List<UserDailyCheck> historyOfUser(String botUserId, Hoyopass pass, int count) {
         String ltuid = pass.getLtuid();
-        return repository.findByBotUserIdLtuid(botUserId, ltuid, count);
+        return repository.findByBotUserIdLtuid(botUserId, ltuid).stream()
+                .filter(it-> !it.isInitialState())
+                .sorted().limit(count)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @Builder(toBuilder = true)
-public class UserDailyCheck {
+public class UserDailyCheck implements Comparable<UserDailyCheck> {
 
     private String botUserId;
 
@@ -72,6 +72,10 @@ public class UserDailyCheck {
         return userDailyCheck;
     }
 
+    public boolean hasStatus(UserDailyCheckStatus status) {
+        return status.equals(this.status);
+    }
+
     public static UserDailyCheck of(String botUserid, String ltuid, String ltoken) {
         return UserDailyCheck.builder()
                 .status(UserDailyCheckStatus.QUEUED)
@@ -79,5 +83,14 @@ public class UserDailyCheck {
                 .ltoken(ltoken)
                 .ltuid(ltuid)
                 .build();
+    }
+
+    public boolean isInitialState() {
+        return this.status.equals(UserDailyCheckStatus.QUEUED);
+    }
+
+    @Override
+    public int compareTo(UserDailyCheck o) {
+        return o.timestamp.compareTo(timestamp);
     }
 }

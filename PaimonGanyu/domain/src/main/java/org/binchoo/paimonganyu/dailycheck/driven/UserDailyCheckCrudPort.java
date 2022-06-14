@@ -8,5 +8,4 @@ public interface UserDailyCheckCrudPort {
 
     UserDailyCheck save(UserDailyCheck queued);
     List<UserDailyCheck> findByBotUserIdLtuid(String botUserId, String ltuid);
-    List<UserDailyCheck> findByBotUserIdLtuid(String botUserId, String ltuid, int count);
 }

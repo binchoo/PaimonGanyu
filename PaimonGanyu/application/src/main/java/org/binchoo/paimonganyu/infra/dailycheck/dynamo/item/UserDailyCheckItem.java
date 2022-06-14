@@ -10,10 +10,8 @@ import org.binchoo.paimonganyu.infra.utils.LocalDateTimeStringConverter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
 @Slf4j
-@ToString
-@Setter // required for conversion and unconversion, never remove this.
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamoDBTable(tableName="UserDailyCheck")

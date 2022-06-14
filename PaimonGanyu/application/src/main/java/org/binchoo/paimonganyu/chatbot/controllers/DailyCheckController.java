@@ -29,7 +29,7 @@ public class DailyCheckController {
     private final DailyCheckPort dailyCheck;
     private final DailyCheckTrialListView view;
 
-    @Value("${dailyCheck.maxCount}")
+    @Value("${listUserDailyCheck.maxCount}")
     private int maxCount;
 
     @PostMapping("/list")
