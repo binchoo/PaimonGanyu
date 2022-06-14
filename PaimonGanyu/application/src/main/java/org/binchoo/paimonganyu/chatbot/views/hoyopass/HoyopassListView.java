@@ -71,6 +71,7 @@ public class HoyopassListView extends AbstractSkillResopnseView {
                             .label("출석체크")
                             .messageText("이 통행증 계정으로 출석체크 대신해줘")
                             .blockId(blockIdRepo().findByName(FallbackMethods.DailyCheckIn))
+                            .extra(Map.of("index", i))
                             .build())
                     .addButton(BlockButton.builder()
                             .label("제거하기")
