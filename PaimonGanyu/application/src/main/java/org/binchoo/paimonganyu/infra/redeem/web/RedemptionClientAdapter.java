@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
+import org.binchoo.paimonganyu.hoyoapi.pojo.CodeRedemptionResult;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.redeem.RedeemResultCallback;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
@@ -71,9 +73,8 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
         return wrap(response, userRedeem);
     }
 
-    private Mono<UserRedeem> wrap(Mono<?> response, UserRedeem userRedeem) {
-        return response.map(res-> userRedeem.markDone())
-                .onErrorReturn(userRedeem);
+    private Mono<UserRedeem> wrap(Mono<HoyoResponse<CodeRedemptionResult>> response, UserRedeem userRedeem) {
+        return response.map(res-> (res.getRetcode() == 0)? userRedeem.markDone() : userRedeem);
     }
 
     private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
