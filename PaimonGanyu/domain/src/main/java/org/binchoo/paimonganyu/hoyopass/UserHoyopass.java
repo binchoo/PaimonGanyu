@@ -11,7 +11,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode
@@ -22,20 +22,20 @@ public class UserHoyopass {
     public static final int MAX_HOYOPASS_COUNT = 2;
 
     private String botUserId;
-    private final PriorityQueue<Hoyopass> hoyopasses;
+    private final TreeSet<Hoyopass> hoyopasses;
 
-    public static class UserHoyopassBuilder {
+    public static final class UserHoyopasBuilder {
 
         private String botUserId;
-        private PriorityQueue<Hoyopass> hoyopasses;
+        private TreeSet<Hoyopass> hoyopasses;
 
-        public UserHoyopassBuilder hoyopasses(Collection<Hoyopass> hoyopasses) {
-            this.hoyopasses = new PriorityQueue<>(hoyopasses);
+        public UserHoyopasBuilder botUserId(String botUserId) {
+            this.botUserId = botUserId;
             return this;
         }
 
-        public UserHoyopassBuilder botUserId(String botUserId) {
-            this.botUserId = botUserId;
+        public UserHoyopasBuilder hoyopasses(Collection<Hoyopass> hoyopasses) {
+            this.hoyopasses = new TreeSet<>(hoyopasses);
             return this;
         }
 
@@ -44,12 +44,12 @@ public class UserHoyopass {
         }
     }
 
-    public static UserHoyopassBuilder builder() {
-        return new UserHoyopassBuilder();
+    public static UserHoyopasBuilder builder() {
+        return new UserHoyopasBuilder();
     }
 
     public UserHoyopass() {
-        this.hoyopasses = new PriorityQueue<>();
+        this.hoyopasses = new TreeSet<>();
     }
 
     public UserHoyopass(String botUserId) {
@@ -163,32 +163,22 @@ public class UserHoyopass {
      * @return {@link Uid} 리스트, 잘못된 i 지정일 시 길이 0인 리스트
      */
     public List<Uid> listUids(int i) {
-        if (0 <= i && i < hoyopasses.size()) {
-            Hoyopass target = hoyopasses.peek();
-            if (i == 1) {
-                Hoyopass first = hoyopasses.poll();
-                target = hoyopasses.peek();
-                hoyopasses.offer(first);
-            }
-            if (target != null)
-                return target.getUids();
+        if (0 <= i && i < this.getSize()) {
+            Hoyopass hoyopass = (i == 0)? hoyopasses.first() : hoyopasses.last();
+            return hoyopass.getUids();
         }
         return Collections.emptyList();
     }
 
     /**
-     * @throws IndexOutOfBoundsException – i < 0 || i >= getCount() 일 때
+     * @throws IndexOutOfBoundsException 잘못된 인덱스 지정일 때
      */
     public Hoyopass deleteAt(int i) {
-        if (0 <= i && i < hoyopasses.size()) {
-            Hoyopass first = hoyopasses.poll();
+        if (0 <= i && i < this.getSize()) {
             if (i == 0)
-                return first;
-            else {
-                Hoyopass second = hoyopasses.poll();
-                hoyopasses.offer(first);
-                return second;
-            }
+                return hoyopasses.pollFirst();
+            else
+                return hoyopasses.pollLast();
         }
         throw new IndexOutOfBoundsException();
     }
@@ -203,5 +193,15 @@ public class UserHoyopass {
 
     public int getSize() {
         return hoyopasses.size();
+    }
+
+    public Hoyopass get(int i) {
+        if (0 <= i && i < this.getSize()) {
+            if (i == 0)
+                return hoyopasses.first();
+            else
+                return hoyopasses.last();
+        }
+        throw new IndexOutOfBoundsException();
     }
 }
