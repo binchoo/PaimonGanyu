@@ -13,6 +13,9 @@ Globals:
     MemorySize: 512
     Architectures:
       - x86_64
+    Environment:
+      Variables:
+        TZ: Asia/Seoul
 
 Resources:
   # Hoyopass
