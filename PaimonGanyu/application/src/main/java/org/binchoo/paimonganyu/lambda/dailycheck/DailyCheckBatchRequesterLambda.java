@@ -39,9 +39,9 @@ public class DailyCheckBatchRequesterLambda {
 
     public void handler(ScheduledEvent event) {
         logger.info("SchedueldEvent triggered at {}.", event.getTime());
-        hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::getList)
+        hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
                 .filter(task-> !dailyCheckPort.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
-                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.getJson(objectMapper)));
+                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.asJson(objectMapper)));
     }
 }

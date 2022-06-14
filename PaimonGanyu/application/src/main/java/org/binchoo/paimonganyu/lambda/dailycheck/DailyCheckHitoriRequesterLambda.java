@@ -34,9 +34,19 @@ public class DailyCheckHitoriRequesterLambda {
 
     public void handler(SNSEvent snsEvent) {
         var eventWrapper = AwsEventWrapperFactory.getWrapper(snsEvent);
-        eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class).stream()
-                .map(DailyCheckTaskSpec::getList).flatMap(List::stream)
-                .filter(task-> !dailyCheckPort.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
-                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.getJson(objectMapper)));
+        eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class)
+                .stream().map(DailyCheckTaskSpec::specify)
+                .flatMap(List::stream)
+                .filter(this::ifNotDoneToday)
+                .forEach(this::sendToQueue);
+    }
+
+    private boolean ifNotDoneToday(DailyCheckTaskSpec task) {
+        return !dailyCheckPort.hasCheckedInToday(task.getBotUserId(), task.getLtuid());
+    }
+
+    private void sendToQueue(DailyCheckTaskSpec task) {
+        String json = task.asJson(objectMapper);
+        sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, json);
     }
 }

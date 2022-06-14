@@ -63,7 +63,7 @@ public class DailyCheckTaskSpec {
         this.ltoken = ltoken;
     }
 
-    public String getJson(ObjectMapper objectMapper) {
+    public String asJson(ObjectMapper objectMapper) {
         try {
           return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
@@ -71,15 +71,15 @@ public class DailyCheckTaskSpec {
         }
     }
 
-    public static List<DailyCheckTaskSpec> getList(UserHoyopassMessage userHoyopassMessage) {
+    public static List<DailyCheckTaskSpec> specify(UserHoyopassMessage userHoyopassMessage) {
         UserHoyopass userHoyopass = userHoyopassMessage.toDomain();
         return userHoyopass.getHoyopasses().stream()
                 .map(it-> new DailyCheckTaskSpec(userHoyopass.getBotUserId(), it.getLtuid(), it.getLtoken()))
                 .collect(Collectors.toList());
     }
 
-    public static List<DailyCheckTaskSpec> getList(UserHoyopass userHoyopass) {
+    public static List<DailyCheckTaskSpec> specify(UserHoyopass userHoyopass) {
         UserHoyopassMessage userHoyopassMessage = new UserHoyopassMessage(userHoyopass);
-        return DailyCheckTaskSpec.getList(userHoyopassMessage);
+        return DailyCheckTaskSpec.specify(userHoyopassMessage);
     }
 }
