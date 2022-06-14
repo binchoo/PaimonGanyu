@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-14
  */
-public class DailyCheckTrialListView extends AbstractSkillResopnseView implements MessageSourceAware {
+public class DailyCheckListView extends AbstractSkillResopnseView implements MessageSourceAware {
 
     public static final String TRIALS = "trials";
     private static final String THUMB_FAIL = "dailycheck_fail";
@@ -39,7 +39,7 @@ public class DailyCheckTrialListView extends AbstractSkillResopnseView implement
     private static final String THUMB_COMPL = "dailycheck_complete";
     private static final String DAILY_CHECK_URL = "https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481&lang=ko-kr";
 
-    public DailyCheckTrialListView(Images images, QuickReplies quickReplies) {
+    public DailyCheckListView(Images images, QuickReplies quickReplies) {
         super(images, quickReplies, null);
     }
 
@@ -65,7 +65,7 @@ public class DailyCheckTrialListView extends AbstractSkillResopnseView implement
     }
 
     private FallbackMethod[] getFallbacks() {
-        return new FallbackMethod[] { FallbackMethods.Home };
+        return new FallbackMethod[] { FallbackMethods.Home, FallbackMethods.ListUserDailyCheck};
     }
 
     private Carousel renderCarousel(List<List<UserDailyCheck>> trials) {

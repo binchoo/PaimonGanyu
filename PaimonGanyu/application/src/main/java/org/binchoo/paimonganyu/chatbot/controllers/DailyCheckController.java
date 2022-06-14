@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckTrialListView;
+import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckListView;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -30,7 +30,7 @@ public class DailyCheckController {
 
     private final HoyopassRegisterPort hoyopassRegister;
     private final DailyCheckPort dailyCheck;
-    private final DailyCheckTrialListView view;
+    private final DailyCheckListView view;
 
     @Value("${listUserDailyCheck.maxCount}")
     private int maxCount;

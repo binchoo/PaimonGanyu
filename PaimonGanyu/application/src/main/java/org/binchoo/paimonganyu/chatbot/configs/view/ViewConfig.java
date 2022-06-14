@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.configs.view;
 import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
-import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckTrialListView;
+import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckListView;
 import org.binchoo.paimonganyu.chatbot.views.hoyopass.HoyopassListView;
 import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
 import org.binchoo.paimonganyu.chatbot.views.uid.UidListView;
@@ -51,8 +51,8 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public DailyCheckTrialListView dailyCheckTrialListView(@Autowired Images images,
-                                                           @Autowired QuickReplies quickReplies) {
-        return new DailyCheckTrialListView(images, quickReplies);
+    public DailyCheckListView dailyCheckTrialListView(@Autowired Images images,
+                                                      @Autowired QuickReplies quickReplies) {
+        return new DailyCheckListView(images, quickReplies);
     }
 }
