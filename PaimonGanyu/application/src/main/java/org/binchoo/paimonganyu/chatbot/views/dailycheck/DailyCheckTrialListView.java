@@ -6,6 +6,7 @@ import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheckStatus;
+import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CanCarousel;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -13,7 +14,6 @@ import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
 import org.binchoo.paimonganyu.ikakao.component.componentType.ListCard;
 import org.binchoo.paimonganyu.ikakao.type.Button;
 import org.binchoo.paimonganyu.ikakao.type.ListItem;
-import org.binchoo.paimonganyu.ikakao.type.QuickReply;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.buttons.BlockButton;
 import org.binchoo.paimonganyu.ikakao.type.subtype.Link;
@@ -59,19 +59,18 @@ public class DailyCheckTrialListView extends AbstractSkillResopnseView implement
                         .addOutput(CarouselView.builder()
                                 .carousel(renderCarousel(dailyCheckCollection))
                                 .build())
-                        .quickReplies(renderQuickReplies())
+                        .quickReplies(quickReplyRepo().findByFallbackMethod(getFallbacks()))
                         .build())
                 .build();
     }
 
-    private Collection<? extends QuickReply> renderQuickReplies() {
-        return List.of(
-                quickReplyRepo().findByFallbackMethod(FallbackMethods.Home)
-        );
+    private FallbackMethod[] getFallbacks() {
+        return new FallbackMethod[] { FallbackMethods.Home };
     }
 
     private Carousel renderCarousel(List<List<UserDailyCheck>> trials) {
         return Carousel.builder()
+                .type("listCard")
                 .items(renderListCards(trials))
                 .build();
     }
