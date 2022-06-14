@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class DailyCheckService implements DailyCheckPort {
 
-    private final DailyCheckClientPort dailyCheckClientPort;
+    private final DailyCheckClientPort dailyCheckClient;
     private final UserDailyCheckCrudPort repository;
 
     @Override
@@ -41,13 +41,13 @@ public class DailyCheckService implements DailyCheckPort {
 
     @Override
     public Optional<UserDailyCheck> claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
-        final UserDailyCheck userDailyCheck = initiateUserDailyCheck(botUserId, ltuid, ltoken);
-        final UserDailyCheck statusUpdated = userDailyCheck.doRequest(dailyCheckClientPort);
-        return saveFinal(statusUpdated);
+        final UserDailyCheck userDailyCheck = createInitialState(botUserId, ltuid, ltoken);
+        final UserDailyCheck finalState = userDailyCheck.doRequest(dailyCheckClient);
+        return saveFinal(finalState);
     }
 
-    private UserDailyCheck initiateUserDailyCheck(String botUserId, String ltuid, String ltoken) {
-        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(botUserId, ltuid, ltoken);
+    private UserDailyCheck createInitialState(String botUserId, String ltuid, String ltoken) {
+        UserDailyCheck userDailyCheck = UserDailyCheck.initialState(botUserId, ltuid, ltoken);
         repository.save(userDailyCheck);
         return userDailyCheck;
     }

@@ -38,13 +38,13 @@ public class UserDailyCheckItem {
     private UserDailyCheckStatus status;
 
     public static UserDailyCheckItem fromDomain(UserDailyCheck userDailyCheck) {
-        String botUserId = userDailyCheck.getBotUserId();
-        String ltuid = userDailyCheck.getLtuid();
-        String botUserIdLtuid = botUserId + "-" + ltuid;
-        LocalDateTime timestamp = userDailyCheck.getTimestamp();
-        UserDailyCheckStatus status = userDailyCheck.getStatus();
-        return new UserDailyCheckItem(UUID.randomUUID().toString(), botUserId,
-                botUserIdLtuid, ltuid, timestamp, status);
+        var botUserId = userDailyCheck.getBotUserId();
+        var ltuid = userDailyCheck.getLtuid();
+        var botUserIdLtuid = botUserId + "-" + ltuid;
+        var timestamp = userDailyCheck.getTimestamp();
+        var status = userDailyCheck.getStatus();
+        return new UserDailyCheckItem(UUID.randomUUID().toString(),
+                botUserId, botUserIdLtuid, ltuid, timestamp, status);
     }
 
     public static UserDailyCheck toDomain(UserDailyCheckItem item) {

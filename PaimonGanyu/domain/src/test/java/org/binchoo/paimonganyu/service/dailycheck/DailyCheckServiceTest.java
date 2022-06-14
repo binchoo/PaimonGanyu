@@ -94,7 +94,7 @@ class DailyCheckServiceTest {
 
     @Test
     void getDailyCheckClientPort() {
-        assertThat(dailyCheckServiceImpl.getDailyCheckClientPort()).isEqualTo(dailyCheckClientPort);
+        assertThat(dailyCheckServiceImpl.getDailyCheckClient()).isEqualTo(dailyCheckClientPort);
     }
 
     @Test

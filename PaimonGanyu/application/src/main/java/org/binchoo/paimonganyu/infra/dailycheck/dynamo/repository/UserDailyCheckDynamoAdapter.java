@@ -22,7 +22,7 @@ public class UserDailyCheckDynamoAdapter implements UserDailyCheckCrudPort {
 
     @Override
     public List<UserDailyCheck> findByBotUserIdLtuid(String botUserId, String ltuid) {
-        final String botUserIdLtuid = botUserId + "-" + ltuid;
+        String botUserIdLtuid = botUserId + "-" + ltuid;
         return repository.findByBotUserIdLtuid(botUserIdLtuid).stream()
                 .map(UserDailyCheckItem::toDomain)
                 .collect(Collectors.toList());

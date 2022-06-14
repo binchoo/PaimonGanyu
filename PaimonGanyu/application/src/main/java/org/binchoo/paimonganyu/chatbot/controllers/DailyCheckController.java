@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckHistoryView;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
@@ -17,6 +18,7 @@ import java.util.Collection;
  * @author : jbinchoo
  * @since : 2022-06-14
  */
+@Slf4j
 @RequestMapping("/ikakao/dailycheck")
 @RequiredArgsConstructor
 @RestController
@@ -33,6 +35,8 @@ public class DailyCheckController {
 
         UserHoyopass user = userRegistry.findUserHoyopass(botUserId);
         Collection<UserDailyCheck> dailyCheckHistory = dailyCheck.claimDailyCheckIn(user);
+
+        log.debug("UserDailyCheck: {}", dailyCheckHistory);
         return view.renderSkillResponse(dailyCheckHistory);
     }
 }

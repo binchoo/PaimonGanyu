@@ -42,10 +42,7 @@ public class HoyopassController {
         String secureHoyopass = parseBarcode(skillPayload, "secure_hoyopass");
 
         UserHoyopass user = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
-        if (user != null) {
-            return listUidsView.renderSkillResponse(user.listUids());
-        }
-        return null;
+        return (user != null)? listUidsView.renderSkillResponse(user.listUids()) : null;
     }
 
     @PostMapping("/list")

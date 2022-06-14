@@ -42,13 +42,13 @@ public class UserDailyCheck {
     }
 
     public UserDailyCheck doRequest(DailyCheckClientPort dailyCheckClientPort) {
-        DailyCheckRequestResult dailyCheckRequestResult = dailyCheckClientPort.sendRequest(ltuid, ltoken);
-        if (dailyCheckRequestResult.hasFailed()) {
-            return this.markFail(dailyCheckRequestResult.getError());
-        } else if (dailyCheckRequestResult.isDuplicated()) {
+        DailyCheckRequestResult requestResult = dailyCheckClientPort.sendRequest(ltuid, ltoken);
+        if (requestResult.hasFailed()) {
+            return this.markFail(requestResult.getError());
+        } else if (requestResult.isDuplicated()) {
             return this.markDuplicate();
         } else {
-            log.info("DailyCheckResult message: {}", dailyCheckRequestResult.getMessage());
+            log.info("DailyCheckResult message: {}", requestResult.getMessage());
             return this.markComplete();
         }
     }
@@ -72,8 +72,12 @@ public class UserDailyCheck {
         return userDailyCheck;
     }
 
-    public static UserDailyCheck getInitialized(String botUserid, String ltuid, String ltoken) {
-        return UserDailyCheck.builder().botUserId(botUserid)
-                .ltuid(ltuid).ltoken(ltoken).status(UserDailyCheckStatus.QUEUED).build();
+    public static UserDailyCheck initialState(String botUserid, String ltuid, String ltoken) {
+        return UserDailyCheck.builder()
+                .status(UserDailyCheckStatus.QUEUED)
+                .botUserId(botUserid)
+                .ltoken(ltoken)
+                .ltuid(ltuid)
+                .build();
     }
 }
