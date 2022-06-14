@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckHistoryView;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
@@ -34,9 +35,9 @@ public class DailyCheckController {
         String botUserId = skillPayload.getUserRequest().getUser().getId();
 
         UserHoyopass user = userRegistry.findUserHoyopass(botUserId);
-        Collection<UserDailyCheck> dailyCheckHistory = dailyCheck.claimDailyCheckIn(user);
+        Collection<UserDailyCheckTrial> trials = dailyCheck.claimDailyCheckIn(user);
 
-        log.debug("UserDailyCheck: {}", dailyCheckHistory);
-        return view.renderSkillResponse(dailyCheckHistory);
+        log.debug("UserDailyCheck: {}", trials);
+        return view.renderSkillResponse(trials);
     }
 }

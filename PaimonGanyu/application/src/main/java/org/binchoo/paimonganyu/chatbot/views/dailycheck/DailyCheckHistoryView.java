@@ -6,6 +6,7 @@ import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 
 import java.util.Collection;
@@ -26,7 +27,7 @@ public class DailyCheckHistoryView extends AbstractSkillResopnseView {
         return null;
     }
 
-    public SkillResponse renderSkillResponse(Collection<UserDailyCheck> histories) {
+    public SkillResponse renderSkillResponse(Collection<UserDailyCheckTrial> histories) {
         assert !histories.isEmpty();
         return null;
     }
