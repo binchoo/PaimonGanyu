@@ -50,7 +50,12 @@ public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable
                .cookie(COOKIE_ACCOUNT_ID, accountIdCookieToken.getAccountId())
                .cookie(COOKIE_COOKIE_TOKEN, accountIdCookieToken.getCookieToken())
                .retrieve()
-               .bodyToMono(new ParameterizedTypeReference<HoyoResponse<CodeRedemptionResult>>() {});
+               .bodyToMono(new ParameterizedTypeReference<>() {});
+    }
+
+    @Override
+    public String getBaseUrl() {
+        return "https://sg-hk4e-api.hoyoverse.com/common/apicdkey/api/webExchangeCdkey";
     }
 
     @Override

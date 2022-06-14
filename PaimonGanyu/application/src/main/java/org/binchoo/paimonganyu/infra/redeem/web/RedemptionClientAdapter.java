@@ -74,7 +74,9 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     }
 
     private Mono<UserRedeem> wrap(Mono<HoyoResponse<CodeRedemptionResult>> response, UserRedeem userRedeem) {
-        return response.map(res-> (res.getRetcode() == 0)? userRedeem.markDone() : userRedeem);
+        // must apply asychronous mapping: flatMap!
+        return response.flatMap(hoyoResponse-> Mono.just(userRedeem.markDone()))
+                .onErrorReturn(userRedeem);
     }
 
     private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {

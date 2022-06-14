@@ -25,7 +25,7 @@ import java.util.Collection;
 @RestController
 public class TravelerController {
 
-    private final HoyopassRegisterPort hoyopassRegistry;
+    private final HoyopassRegisterPort hoyopassRegister;
     private final TravelerStatusPort travelerStatus;
     private final TravelerStatusView view;
 
@@ -34,7 +34,7 @@ public class TravelerController {
                                             Model model) {
         String botUserId = skillPayload.getUserRequest().getUser().getId();
 
-        UserHoyopass user = hoyopassRegistry.findUserHoyopass(botUserId);
+        UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
         Collection<TravelerStatus> status = travelerStatus.getCurrentStatus(user);
 
         return view.renderSkillResponse(status);

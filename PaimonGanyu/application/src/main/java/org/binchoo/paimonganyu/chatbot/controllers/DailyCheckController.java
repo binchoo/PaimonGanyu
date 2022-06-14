@@ -3,7 +3,6 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckHistoryView;
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -25,7 +24,7 @@ import java.util.Collection;
 @RestController
 public class DailyCheckController {
 
-    private final HoyopassRegisterPort userRegistry;
+    private final HoyopassRegisterPort hoyopassRegister;
     private final DailyCheckPort dailyCheck;
     private final DailyCheckHistoryView view;
 
@@ -34,7 +33,7 @@ public class DailyCheckController {
                                       Model model) {
         String botUserId = skillPayload.getUserRequest().getUser().getId();
 
-        UserHoyopass user = userRegistry.findUserHoyopass(botUserId);
+        UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
         Collection<UserDailyCheckTrial> trials = dailyCheck.claimDailyCheckIn(user);
 
         log.debug("UserDailyCheck: {}", trials);

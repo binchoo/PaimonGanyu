@@ -26,8 +26,10 @@ import org.springframework.context.annotation.*;
         "org.binchoo.paimonganyu.chatbot",
         "org.binchoo.paimonganyu.infra.hoyopass",
         "org.binchoo.paimonganyu.infra.traveler",
+        "org.binchoo.paimonganyu.infra.dailycheck",
         "org.binchoo.paimonganyu.service.hoyopass",
-        "org.binchoo.paimonganyu.service.traveler"
+        "org.binchoo.paimonganyu.service.traveler",
+        "org.binchoo.paimonganyu.service.dailycheck",
 })
 public class PaimonGanyu {
 

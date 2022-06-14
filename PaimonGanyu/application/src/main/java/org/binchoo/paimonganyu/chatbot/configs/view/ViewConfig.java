@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.chatbot.configs.view;
 import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
+import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckHistoryView;
 import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
 import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
 import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
@@ -46,5 +47,11 @@ public class ViewConfig {
     public TravelerStatusView travelerStatusView(@Autowired Images images,
                                                  @Autowired QuickReplies quickReplies) {
         return new TravelerStatusView(images, quickReplies);
+    }
+
+    @Lazy
+    @Bean
+    public DailyCheckHistoryView dailyCheckHistoryView(@Autowired QuickReplies quickReplies) {
+        return new DailyCheckHistoryView(null, quickReplies);
     }
 }

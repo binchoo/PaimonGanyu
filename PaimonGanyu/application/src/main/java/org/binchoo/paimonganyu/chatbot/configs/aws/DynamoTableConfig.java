@@ -4,7 +4,10 @@ import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRep
 import org.springframework.context.annotation.Configuration;
 
 @EnableDynamoDBRepositories(
-        basePackages = "org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository")
+        basePackages = {
+                "org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository",
+                "org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository"
+        })
 @Configuration
-public class UserHoyopassTableConfig {
+public class DynamoTableConfig {
 }

@@ -1,8 +1,10 @@
 package org.binchoo.paimonganyu.hoyoapi.error.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.webclient.async.Retriable;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import java.util.function.Function;
  * @author : jbinchoo
  * @since : 2022-04-23
  */
+@Slf4j
 @Aspect
 @Component
 public class HoyoResponseMonoInspector {
@@ -31,6 +34,8 @@ public class HoyoResponseMonoInspector {
             try {
                 inspectionDelegate.inspectRetcode(hoyoResponse);
             } catch (Exception e) {
+                if (RetcodeException.class.isAssignableFrom(e.getClass()))
+                    log.debug("Retcode {} caused an exception: ", hoyoResponse.getRetcode(), e);
                 return Mono.error(e);
             }
             return Mono.just(hoyoResponse);

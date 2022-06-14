@@ -10,6 +10,7 @@ import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecureHoyopassRegisterPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
+import org.springframework.context.annotation.Import;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ import java.util.Map;
 public class HoyopassController {
 
     private final ObjectMapper objectMapper;
-    private final SecureHoyopassRegisterPort hoyopassRegistry;
+    private final SecureHoyopassRegisterPort secureHoyopassRegister;
     private final ListUidsView listUidsView;
     private final ListHoyopassesView listHoyopassesView;
 
@@ -41,7 +42,7 @@ public class HoyopassController {
         String botUserId = parseId(skillPayload);
         String secureHoyopass = parseBarcode(skillPayload, "secure_hoyopass");
 
-        UserHoyopass user = hoyopassRegistry.registerHoyopass(botUserId, secureHoyopass);
+        UserHoyopass user = secureHoyopassRegister.registerHoyopass(botUserId, secureHoyopass);
         return (user != null)? listUidsView.renderSkillResponse(user.listUids()) : null;
     }
 
@@ -50,7 +51,7 @@ public class HoyopassController {
                                         Model model) {
         String botUserId = parseId(skillPayload);
 
-        List<Hoyopass> hoyopasses = hoyopassRegistry.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = secureHoyopassRegister.listHoyopasses(botUserId);
         return listHoyopassesView.renderSkillResponse(hoyopasses);
     }
 
@@ -59,7 +60,7 @@ public class HoyopassController {
         String botUserId = parseId(skillPayload);
         int index = parseIndex(skillPayload);
 
-        hoyopassRegistry.deleteHoyopass(botUserId, index);
+        secureHoyopassRegister.deleteHoyopass(botUserId, index);
         return listHoyopasses(skillPayload, null);
     }
 
