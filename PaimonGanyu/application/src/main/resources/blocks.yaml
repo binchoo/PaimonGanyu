@@ -32,7 +32,7 @@ blocks:
 
   DailyCheckIn:
     id: 62a6f1a9c9058012cdfadb82
-    label: '일일 출석'
+    label: '출첵 로그'
   ListUserDailyCheck:
     id: 62a6f2d5e56eb3754ccc0ef0
-    label: '출첵 현황'
+    label: '일일 출석'

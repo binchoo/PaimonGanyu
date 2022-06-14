@@ -51,7 +51,8 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public DailyCheckTrialListView dailyCheckTrialListView(@Autowired QuickReplies quickReplies) {
-        return new DailyCheckTrialListView(null, quickReplies);
+    public DailyCheckTrialListView dailyCheckTrialListView(@Autowired Images images,
+                                                           @Autowired QuickReplies quickReplies) {
+        return new DailyCheckTrialListView(images, quickReplies);
     }
 }

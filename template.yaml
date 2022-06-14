@@ -228,10 +228,10 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserHoyopassTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserDailyCheckTable
         - DynamoDBReadPolicy:
             TableName: !Ref UserRedeemTable
-        - DynamoDBReadPolicy:
-            TableName: !Ref UserDailyCheckTable
         - SSMParameterReadPolicy:
             ParameterName: HoyopassPrivateKey
         - SSMParameterReadPolicy:

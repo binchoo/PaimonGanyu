@@ -32,7 +32,7 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
         return this.isDone() && this.dateEquals(date);
     }
 
-    private boolean isDone() {
+    public boolean isDone() {
         return UserDailyCheckStatus.COMPLETED.equals(this.status)
                 || UserDailyCheckStatus.DUPLICATE.equals(this.status);
     }
