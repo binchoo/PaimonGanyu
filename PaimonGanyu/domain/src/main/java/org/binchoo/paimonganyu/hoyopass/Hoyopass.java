@@ -18,6 +18,7 @@ public class Hoyopass implements Comparable<Hoyopass> {
     /**
      * 이 통행증에 연결된 UID들 리스트
      */
+    @Singular("addUid")
     private List<Uid> uids;
 
     /**

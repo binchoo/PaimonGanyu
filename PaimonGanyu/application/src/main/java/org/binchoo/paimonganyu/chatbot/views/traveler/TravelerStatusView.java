@@ -91,14 +91,14 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     }
 
     private ItemCard.Thumbnail selectRandom(Images imageRepo) {
-        String robin = getNextThumbnail();
+        String robin = nextThumbnail();
         String imageUrl = imageRepo.findById(robin);
         return new ItemCard.Thumbnail(imageUrl, THUMB_FIXED_WIDTH, THUMB_FIXED_HEIGHT);
     }
 
     private Profile renderProfile(TravelerStatus status) {
-        String imgUrl = profileImgStrat(status);
-        String title = profileTitleStrat(status);
+        String imgUrl = profileImageStrategy(status);
+        String title = profileTitleStrategy(status);
         return Profile.builder()
                 .title(title)
                 .imageUrl(imgUrl)
@@ -119,20 +119,20 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
         return ImageTitle.builder()
                 .title(status.nameFormat("%s Lv.%d %s"))
                 .description(status.uidFormat("UID: %s"))
-                .imageUrl(profileImgStrat(status.isLumine()))
+                .imageUrl(profileImageStrategy(status.isLumine()))
                 .build();
     }
 
-    private String profileImgStrat(TravelerStatus status) {
+    private String profileImageStrategy(TravelerStatus status) {
         return imageRepo().findById((status.ratioOfResin() > status.ratioOfHomeCoin())?
                 THUMB_RESIN : THUMB_SEREN);
     }
 
-    private String profileImgStrat(boolean isLumine) {
+    private String profileImageStrategy(boolean isLumine) {
         return imageRepo().findById(isLumine? THUMB_LUMINE : THUMB_AETHER);
     }
 
-    private String profileTitleStrat(TravelerStatus status) {
+    private String profileTitleStrategy(TravelerStatus status) {
         double resinRatio = status.ratioOfResin();
         if (resinRatio >= 95){
             return "들어가야 돼!(✪Ω✪)ノ";
@@ -150,7 +150,7 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
                 .findByFallbackMethod(FallbackMethods.Home));
     }
 
-    private static String getNextThumbnail() {
+    private static String nextThumbnail() {
         thumbIndex = ++thumbIndex % thumbRobin;
         return String.format("%s%d", THUMB_PREFIX, thumbIndex);
     }

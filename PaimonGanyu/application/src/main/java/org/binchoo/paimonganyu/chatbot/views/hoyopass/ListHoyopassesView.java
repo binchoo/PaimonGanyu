@@ -36,10 +36,6 @@ public class ListHoyopassesView extends AbstractSkillResopnseView {
         super(images, quickReplies, blockIds);
     }
 
-    public ListHoyopassesView(ObjectMapper objectMapper, Images images, QuickReplies quickReplies, BlockIds blockIds) {
-        super(objectMapper, images, quickReplies, blockIds);
-    }
-
     @Override
     protected SkillResponse renderResponse(Map<String, ?> model) {
         return renderSkillResponse((List<Hoyopass>) model.get(HOYOPASSES));

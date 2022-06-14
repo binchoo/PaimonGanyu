@@ -95,7 +95,6 @@ public class ListUidsView extends AbstractSkillResopnseView {
     }
 
     private SkillTemplate templateOf(List<UidValue> modelValues) {
-        var fallbacks = getFallbacks();
         return SkillTemplate.builder()
                 .addOutput(SimpleTextView.builder()
                         .simpleText(new SimpleText(modelValues.size() + "명의 여행자들을 확인했어!"))
@@ -103,7 +102,7 @@ public class ListUidsView extends AbstractSkillResopnseView {
                 .addOutput(CarouselView.builder()
                         .carousel(carouselOf(modelValues))
                         .build())
-                .quickReplies(quickRepliesOf(fallbacks))
+                .quickReplies(quickReplyRepo().findByFallbackMethod(getFallbacks()))
                 .build();
     }
 
