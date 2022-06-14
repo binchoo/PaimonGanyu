@@ -114,11 +114,11 @@ public class DailyCheckListView extends AbstractSkillResopnseView implements Mes
             description = "이미 출석 했었네...?";
             imageUrl = imageRepo().findById(THUMB_DUPL);
         } else if (status.isFailed()) {
-            title = "실패";
+            title = "실패..";
             description = "아잇.. 왜 오류가 난거야";
             imageUrl = imageRepo().findById(THUMB_FAIL);
         } else if (status.isCompleted()) {
-            title = "성공";
+            title = "성공!";
             description = "페이몬이 대신 출첵해줬어!";
             imageUrl = imageRepo().findById(THUMB_COMPL);
         } else {
@@ -139,7 +139,7 @@ public class DailyCheckListView extends AbstractSkillResopnseView implements Mes
     }
 
     private String printTime(LocalDateTime timestamp) {
-        return timestamp.format(DateTimeFormatter.ofPattern("yy-MM-d HH:mm"));
+        return timestamp.format(DateTimeFormatter.ofPattern("M월 d일 H시m분"));
     }
 
     private List<Button> renderButtons(List<UserDailyCheck> dailyChecks) {
