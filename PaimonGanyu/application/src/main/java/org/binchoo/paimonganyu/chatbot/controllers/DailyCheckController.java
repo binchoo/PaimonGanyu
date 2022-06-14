@@ -3,16 +3,17 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckTrialListView;
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author : jbinchoo
@@ -28,15 +29,36 @@ public class DailyCheckController {
     private final DailyCheckPort dailyCheck;
     private final DailyCheckTrialListView view;
 
+    @Value("${dailyCheck.maxCount}")
+    private int maxCount;
+
+    @PostMapping("/list")
+    public SkillResponse listUserDailyCheck(@RequestBody SkillPayload skillPayload,
+                                      Model model) {
+        String botUserId = parseId(skillPayload);
+        UserHoyopass user = findUser(botUserId);
+
+        List<List<UserDailyCheck>> userDailyChecks = dailyCheck.historyOfUser(user, maxCount);
+        log.debug("UserDailyCheck: {}", userDailyChecks);
+        return view.renderSkillResponse(userDailyChecks);
+    }
+
     @PostMapping
     public SkillResponse doDailyCheck(@RequestBody SkillPayload skillPayload,
                                       Model model) {
-        String botUserId = skillPayload.getUserRequest().getUser().getId();
+        String botUserId = parseId(skillPayload);
+        UserHoyopass user = findUser(botUserId);
 
-        UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
-        Collection<UserDailyCheckTrial> trials = dailyCheck.claimDailyCheckIn(user);
+        List<UserDailyCheck> userDailyChecks = dailyCheck.claimDailyCheckIn(user);
+        log.debug("UserDailyCheck: {}", userDailyChecks);
+        return view.renderSkillResponse(List.of(userDailyChecks));
+    }
 
-        log.debug("UserDailyCheck: {}", trials);
-        return view.renderSkillResponse(trials);
+    private String parseId(SkillPayload skillPayload) {
+        return skillPayload.getUserRequest().getUser().getId();
+    }
+
+    private UserHoyopass findUser(String botUserId) {
+        return hoyopassRegister.findUserHoyopass(botUserId);
     }
 }

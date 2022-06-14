@@ -24,24 +24,44 @@ class UserDailyCheckDynamoAdapterTest {
     UserDailyCheckDynamoRepository repository;
 
     @InjectMocks
-    UserDailyCheckDynamoAdapter userDailyCheckDynamoAdapter;
+    UserDailyCheckDynamoAdapter dynamoAdapter;
 
     @Test
     void save() {
-        UserDailyCheck originalEntity = getCompletedUserDailyCheck();
-        UserDailyCheckItem item = UserDailyCheckItem.fromDomain(originalEntity);
+        UserDailyCheck original = completedState();
+        UserDailyCheckItem item = convertToItem(original);
 
         when(repository.save(any())).thenReturn(item);
 
-        UserDailyCheck saved = userDailyCheckDynamoAdapter.save(originalEntity);
-        assertThat(saved.getBotUserId()).isEqualTo(originalEntity.getBotUserId());
-        assertThat(saved.getLtuid()).isEqualTo(originalEntity.getLtuid());
+        UserDailyCheck saved = dynamoAdapter.save(original);
+
         assertThat(saved.getLtoken()).isNull();
-        assertThat(saved.getStatus()).isEqualTo(originalEntity.getStatus());
-        assertThat(saved.getTimestamp()).isEqualTo(originalEntity.getTimestamp());
+        assertEquals(original, saved);
     }
 
-    private UserDailyCheck getCompletedUserDailyCheck() {
+    @Test
+    void findByBotUserIdLtuid() {
+        UserDailyCheck original = completedState();
+        String id = botUserIdLtuid(original);
+
+        // Assume that ltuid and botUserid are null, because dynamodb table will not persist those attributes
+        UserDailyCheckItem item = convertToItem(original);
+        item.setLtuid(null);
+        item.setBotUserId(null);
+
+        when(repository.findByBotUserIdLtuid(id)).thenReturn(
+                Collections.singletonList(item));
+
+        List<UserDailyCheck> found = dynamoAdapter
+                .findByBotUserIdLtuid(original.getBotUserId(), original.getLtuid());
+
+        found.stream().forEach(it-> {
+            assertThat(it.getLtoken()).isNull();
+            assertEquals(original, it);
+        });
+    }
+
+    private UserDailyCheck completedState() {
         String random = RandomString.make();
         return UserDailyCheck.builder()
                 .botUserId(random)
@@ -51,27 +71,19 @@ class UserDailyCheckDynamoAdapterTest {
                 .build();
     }
 
-    @Test
-    void findByBotUserIdLtuid() {
-        UserDailyCheck originalEntity = getCompletedUserDailyCheck();
-        UserDailyCheckItem sameItem = UserDailyCheckItem.fromDomain(originalEntity);
-        // assume that ltuid and botuserid are null, because dynamodb table will not persist those attributes
-        sameItem.setLtuid(null);
-        sameItem.setBotUserId(null);
-        String botUserIdLtuid = originalEntity.getBotUserId() + "-" + originalEntity.getLtuid();
+    private UserDailyCheckItem convertToItem(UserDailyCheck original) {
+        return UserDailyCheckItem.fromDomain(original);
+    }
 
-        when(repository.findByBotUserIdLtuid(botUserIdLtuid)).thenReturn(
-                Collections.singletonList(sameItem));
+    private String botUserIdLtuid(UserDailyCheck original) {
+        return original.getBotUserId() + "-" + original.getLtuid();
+    }
 
-        List<UserDailyCheck> found = userDailyCheckDynamoAdapter
-                .findByBotUserIdLtuid(originalEntity.getBotUserId(), originalEntity.getLtuid());
+    private void assertEquals(UserDailyCheck original, UserDailyCheck it) {
+        assertThat(it.getBotUserId()).isEqualTo(original.getBotUserId());
+        assertThat(it.getLtuid()).isEqualTo(original.getLtuid());
 
-        found.stream().forEach(it-> {
-            assertThat(it.getBotUserId()).isEqualTo(originalEntity.getBotUserId());
-            assertThat(it.getLtuid()).isEqualTo(originalEntity.getLtuid());
-            assertThat(it.getLtoken()).isNull();
-            assertThat(it.getStatus()).isEqualTo(originalEntity.getStatus());
-            assertThat(it.getTimestamp()).isEqualTo(originalEntity.getTimestamp());
-        });
+        assertThat(it.getStatus()).isEqualTo(original.getStatus());
+        assertThat(it.getTimestamp()).isEqualTo(original.getTimestamp());
     }
 }

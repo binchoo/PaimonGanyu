@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
@@ -13,7 +12,7 @@ import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,7 +25,7 @@ public class DailyCheckService implements DailyCheckPort {
     private final UserDailyCheckCrudPort repository;
 
     @Override
-    public Collection<UserDailyCheckTrial> claimDailyCheckIn(UserHoyopass userHoyopass) {
+    public List<UserDailyCheck> claimDailyCheckIn(UserHoyopass userHoyopass) {
         String botUserId = userHoyopass.getBotUserId();
         return userHoyopass.getHoyopasses().stream()
                 .map(pass-> claimDailyCheckIn(botUserId, pass))
@@ -34,37 +33,51 @@ public class DailyCheckService implements DailyCheckPort {
     }
 
     @Override
-    public UserDailyCheckTrial claimDailyCheckIn(String botUserId, Hoyopass pass) {
-        return this.claimDailyCheckIn(botUserId, pass.getLtuid(), pass.getLtoken());
+    public UserDailyCheck claimDailyCheckIn(String botUserId, Hoyopass pass) {
+        String ltuid = pass.getLtuid();
+        String ltoken = pass.getLtoken();
+        return claimDailyCheckIn(botUserId, ltuid, ltoken);
     }
 
     @Override
-    public UserDailyCheckTrial claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
-        UserDailyCheck startState = createInitialState(botUserId, ltuid, ltoken);
+    public UserDailyCheck claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
+        UserDailyCheck startState = initialize(botUserId, ltuid, ltoken);
         UserDailyCheck finalState = startState.doRequest(dailyCheckClient);
-        return saveFinal(startState, finalState);
+        log.debug("Saving a UserDailyCheck: {}", finalState);
+        return save(finalState);
     }
 
-    private UserDailyCheck createInitialState(String botUserId, String ltuid, String ltoken) {
-        UserDailyCheck userDailyCheck = UserDailyCheck.initialState(botUserId, ltuid, ltoken);
-        repository.save(userDailyCheck);
-        return userDailyCheck;
+    private UserDailyCheck initialize(String botUserId, String ltuid, String ltoken) {
+        return save(UserDailyCheck.of(botUserId, ltuid, ltoken));
+    }
+
+    private UserDailyCheck save(UserDailyCheck userDailyCheck) {
+        return repository.save(userDailyCheck);
     }
 
     @Override
-    public boolean hasCheckedInToday(String botUserId, String ltuid) {
-        LocalDate today = LocalDate.now();
-        return this.hasCheckedIn(botUserId, ltuid, today);
+    public List<List<UserDailyCheck>> historyOfUser(UserHoyopass user, int count) {
+        String botUserId = user.getBotUserId();
+        return user.getHoyopasses().stream()
+                .map(pass-> historyOfUser(botUserId, pass, count))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDailyCheck> historyOfUser(String botUserId, Hoyopass pass, int count) {
+        String ltuid = pass.getLtuid();
+        return repository.findByBotUserIdLtuid(botUserId, ltuid, count);
     }
 
     @Override
     public boolean hasCheckedIn(String botUserId, String ltuid, LocalDate date) {
-        return repository.findByBotUserIdLtuid(botUserId, ltuid)
-                .stream().anyMatch(userDailyCheck-> userDailyCheck.isDoneOn(date));
+        return repository
+                .findByBotUserIdLtuid(botUserId, ltuid).stream()
+                .anyMatch(userDailyCheck-> userDailyCheck.isDoneOn(date));
     }
 
-    private UserDailyCheckTrial saveFinal(UserDailyCheck startState, UserDailyCheck finalState) {
-        log.info("Saved: {}", repository.save(finalState));
-        return new UserDailyCheckTrial(startState, finalState);
+    @Override
+    public boolean hasCheckedInToday(String botUserId, String ltuid) {
+        return hasCheckedIn(botUserId, ltuid, LocalDate.now());
     }
 }

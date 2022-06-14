@@ -72,7 +72,7 @@ public class UserDailyCheck {
         return userDailyCheck;
     }
 
-    public static UserDailyCheck initialState(String botUserid, String ltuid, String ltoken) {
+    public static UserDailyCheck of(String botUserid, String ltuid, String ltoken) {
         return UserDailyCheck.builder()
                 .status(UserDailyCheckStatus.QUEUED)
                 .botUserId(botUserid)

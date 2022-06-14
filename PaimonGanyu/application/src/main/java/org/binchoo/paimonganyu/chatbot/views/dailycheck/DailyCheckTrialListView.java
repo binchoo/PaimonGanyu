@@ -3,8 +3,9 @@ package org.binchoo.paimonganyu.chatbot.views.dailycheck;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
-import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
+import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
+import org.binchoo.paimonganyu.ikakao.type.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,24 +28,15 @@ public class DailyCheckTrialListView extends AbstractSkillResopnseView {
 
     @Override
     protected SkillResponse renderResponse(Map<String, ?> model) {
-        // TODO : Generify the code and move it to the parent.
         Object value = model.get(TRIALS);
-        if (model.get(TRIALS) != null && Collection.class.isAssignableFrom(value.getClass())) {
-            Collection<?> values = (Collection<?>) value;
-            if (values.size() > 0) {
-                List<?> valueList = new ArrayList<>(values);
-                Object firstValue = valueList.get(0);
-                if (UserDailyCheckTrial.class.isAssignableFrom(firstValue.getClass())) {
-                    return renderSkillResponse((List<UserDailyCheckTrial>) valueList);
-                }
-            }
-        }
+        if (model.get(TRIALS) != null)
+            return renderSkillResponse((List<List<UserDailyCheck>>) value);
+
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                 String.format("Model[%s] cannot be rendered by %s bean.", model, this.getBeanName()));
     }
 
-    public SkillResponse renderSkillResponse(Collection<UserDailyCheckTrial> histories) {
-        assert !histories.isEmpty();
+    public SkillResponse renderSkillResponse(List<List<UserDailyCheck>> trials) {
         return null;
     }
 }
