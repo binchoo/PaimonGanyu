@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-public class ListUidsView extends AbstractSkillResopnseView {
+public class UidListView extends AbstractSkillResopnseView {
 
     public static final String UIDS = "uids";
 
@@ -33,11 +33,11 @@ public class ListUidsView extends AbstractSkillResopnseView {
     private static final String IMAGEKEY_LUMINE = "lumine";
     private static final String PREFIX_LEVEL = "Lv.";
 
-    public ListUidsView(Images images, QuickReplies quickReplies) {
+    public UidListView(Images images, QuickReplies quickReplies) {
         super(images, quickReplies, null);
     }
 
-    public ListUidsView(ObjectMapper objectMapper, Images images, QuickReplies quickReplies) {
+    public UidListView(ObjectMapper objectMapper, Images images, QuickReplies quickReplies) {
         super(objectMapper, images, quickReplies, null);
     }
 

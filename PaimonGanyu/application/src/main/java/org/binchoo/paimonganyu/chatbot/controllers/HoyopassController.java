@@ -3,14 +3,13 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
-import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
+import org.binchoo.paimonganyu.chatbot.views.hoyopass.HoyopassListView;
+import org.binchoo.paimonganyu.chatbot.views.uid.UidListView;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecureHoyopassRegisterPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
-import org.springframework.context.annotation.Import;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +32,8 @@ public class HoyopassController {
 
     private final ObjectMapper objectMapper;
     private final SecureHoyopassRegisterPort secureHoyopassRegister;
-    private final ListUidsView listUidsView;
-    private final ListHoyopassesView listHoyopassesView;
+    private final UidListView uidListView;
+    private final HoyopassListView hoyopassListView;
 
     @PostMapping("/post")
     public SkillResponse addHoyopass(@RequestBody SkillPayload skillPayload,
@@ -43,7 +42,7 @@ public class HoyopassController {
         String secureHoyopass = parseBarcode(skillPayload, "secure_hoyopass");
 
         UserHoyopass user = secureHoyopassRegister.registerHoyopass(botUserId, secureHoyopass);
-        return (user != null)? listUidsView.renderSkillResponse(user.listUids()) : null;
+        return (user != null)? uidListView.renderSkillResponse(user.listUids()) : null;
     }
 
     @PostMapping("/list")
@@ -52,7 +51,7 @@ public class HoyopassController {
         String botUserId = parseId(skillPayload);
 
         List<Hoyopass> hoyopasses = secureHoyopassRegister.listHoyopasses(botUserId);
-        return listHoyopassesView.renderSkillResponse(hoyopasses);
+        return hoyopassListView.renderSkillResponse(hoyopasses);
     }
 
     @PostMapping("/delete")

@@ -42,7 +42,6 @@ public final class FallbackMethods {
                 }
             }
         }
-        System.out.println(searchMap);
     }
 
     private FallbackMethods() { }

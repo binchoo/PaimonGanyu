@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckHistoryView;
+import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckTrialListView;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheckTrial;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
@@ -26,7 +26,7 @@ public class DailyCheckController {
 
     private final HoyopassRegisterPort hoyopassRegister;
     private final DailyCheckPort dailyCheck;
-    private final DailyCheckHistoryView view;
+    private final DailyCheckTrialListView view;
 
     @PostMapping
     public SkillResponse doDailyCheck(@RequestBody SkillPayload skillPayload,

@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class ErrorExplainConfig {
 
     @Bean
-    public ErrorContextBinders setupErrorContextBinders() {
+    public ErrorContextBinders errorContextBinders() {
         ErrorContextBinders binders = new ErrorContextBinders();
 
         binders.add(HoyopassExceptionBinder.builder()

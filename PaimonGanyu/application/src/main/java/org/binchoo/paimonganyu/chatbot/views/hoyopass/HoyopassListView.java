@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-public class ListHoyopassesView extends AbstractSkillResopnseView {
+public class HoyopassListView extends AbstractSkillResopnseView {
 
     public static final String HOYOPASSES = "hoyopasses";
 
-    public ListHoyopassesView(Images images, QuickReplies quickReplies, BlockIds blockIds) {
+    public HoyopassListView(Images images, QuickReplies quickReplies, BlockIds blockIds) {
         super(images, quickReplies, blockIds);
     }
 

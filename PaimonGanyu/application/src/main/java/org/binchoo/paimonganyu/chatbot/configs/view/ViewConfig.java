@@ -3,10 +3,10 @@ package org.binchoo.paimonganyu.chatbot.configs.view;
 import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
-import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckHistoryView;
-import org.binchoo.paimonganyu.chatbot.views.hoyopass.ListHoyopassesView;
+import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckTrialListView;
+import org.binchoo.paimonganyu.chatbot.views.hoyopass.HoyopassListView;
 import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
-import org.binchoo.paimonganyu.chatbot.views.uid.ListUidsView;
+import org.binchoo.paimonganyu.chatbot.views.uid.UidListView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,17 +29,17 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public ListUidsView listUidsView(@Autowired Images images,
-                                     @Autowired QuickReplies quickReplies) {
-        return new ListUidsView(images, quickReplies);
+    public UidListView listUidsView(@Autowired Images images,
+                                    @Autowired QuickReplies quickReplies) {
+        return new UidListView(images, quickReplies);
     }
 
     @Lazy
     @Bean
-    public ListHoyopassesView listHoyopassesView(@Autowired Images images,
-                                                 @Autowired QuickReplies quickReplies,
-                                                 @Autowired BlockIds blockIds) {
-        return new ListHoyopassesView(images, quickReplies, blockIds);
+    public HoyopassListView listHoyopassesView(@Autowired Images images,
+                                               @Autowired QuickReplies quickReplies,
+                                               @Autowired BlockIds blockIds) {
+        return new HoyopassListView(images, quickReplies, blockIds);
     }
 
     @Lazy
@@ -51,7 +51,7 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public DailyCheckHistoryView dailyCheckHistoryView(@Autowired QuickReplies quickReplies) {
-        return new DailyCheckHistoryView(null, quickReplies);
+    public DailyCheckTrialListView dailyCheckTrialListView(@Autowired QuickReplies quickReplies) {
+        return new DailyCheckTrialListView(null, quickReplies);
     }
 }
