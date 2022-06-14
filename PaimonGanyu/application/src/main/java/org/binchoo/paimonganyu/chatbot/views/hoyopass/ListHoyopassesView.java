@@ -54,7 +54,7 @@ public class ListHoyopassesView extends AbstractSkillResopnseView {
                                         .items(listCardsOf(hoyopasses))
                                         .build())
                                 .build()))
-                        .quickReplies(quickRepliesOf(getFallbacks()))
+                        .quickReplies(quickReplyRepo().findByFallbackMethod(getFallbacks()))
                         .build())
                 .build();
     }

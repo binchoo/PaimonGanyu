@@ -72,9 +72,4 @@ public abstract class AbstractSkillResopnseView extends MappingJackson2JsonView 
     public BlockIds blockIdRepo() {
         return blockIds;
     }
-
-    protected List<QuickReply> quickRepliesOf(FallbackMethod[] fallbacks) {
-        return Arrays.stream(fallbacks).map(this.quickReplies::findById)
-                .collect(Collectors.toList());
-    }
 }

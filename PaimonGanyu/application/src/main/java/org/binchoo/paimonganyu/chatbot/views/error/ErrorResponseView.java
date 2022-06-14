@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 @Component
-public class ErrorResponseTemplate {
+public class ErrorResponseView {
 
     private final QuickReplies quickReplies;
 
@@ -31,7 +31,7 @@ public class ErrorResponseTemplate {
         var text = new SimpleTextView(new SimpleText(errorExplain.getExplanation()));
 
         var quickReplies = errorExplain.getFallbacks()
-                .stream().map(this.quickReplies::findById)
+                .stream().map(this.quickReplies::findByFallbackMethod)
                 .collect(Collectors.toList());
 
         return SkillTemplate.builder()

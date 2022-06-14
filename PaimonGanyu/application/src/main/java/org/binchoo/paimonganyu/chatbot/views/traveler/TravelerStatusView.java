@@ -25,23 +25,23 @@ import java.util.stream.Collectors;
 public class TravelerStatusView extends AbstractSkillResopnseView {
 
     private static int thumbIndex = 0;
-    private static int thumbRobin = 5;
-    private static String THUMB_PREFIX = "generic_thumb_";
-    private static int THUMB_FIXED_WIDTH = 800;
-    private static int THUMB_FIXED_HEIGHT = 800;
+    private static final int thumbRobin = 5;
+    private static final String THUMB_PREFIX = "generic_thumb_";
+    private static final int THUMB_FIXED_WIDTH = 800;
+    private static final int THUMB_FIXED_HEIGHT = 800;
 
-    private static String THUMB_RESIN = "resin_ic";
-    private static String THUMB_SEREN = "serentea_ic";
-    private static String THUMB_LUMINE = "lumine_ic_front";
-    private static String THUMB_AETHER = "aether_ic_front";
+    private static final String THUMB_RESIN = "resin_ic";
+    private static final String THUMB_SEREN = "serentea_ic";
+    private static final String THUMB_LUMINE = "lumine_ic_front";
+    private static final String THUMB_AETHER = "aether_ic_front";
 
-    private static String TITLE_RESIN = "레진";
-    private static String TITLE_RESIN_RECOV = "레진회복";
-    private static String TITLE_SEREN = "선계보화";
-    private static String TITLE_EXPED = "탐사중";
+    private static final String TITLE_RESIN = "레진";
+    private static final String TITLE_RESIN_RECOV = "레진회복";
+    private static final String TITLE_SEREN = "선계보화";
+    private static final String TITLE_EXPED = "탐사중";
 
-    private static String ITEMS_ALIGN = "right";
-    private static String CAROUSEL_TYPE = "itemCard";
+    private static final String ITEMS_ALIGN = "right";
+    private static final String CAROUSEL_TYPE = "itemCard";
 
     public TravelerStatusView(Images images, QuickReplies quickReplies) {
         super(images, quickReplies, null);
@@ -147,7 +147,7 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
 
     private Collection<? extends QuickReply> getQuickReplies() {
         return List.of(quickReplyRepo()
-                .findById(FallbackMethods.Home));
+                .findByFallbackMethod(FallbackMethods.Home));
     }
 
     private static String getNextThumbnail() {
