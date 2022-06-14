@@ -25,7 +25,9 @@ import org.springframework.context.annotation.*;
 @SpringBootApplication(scanBasePackages = {
         "org.binchoo.paimonganyu.chatbot",
         "org.binchoo.paimonganyu.infra.hoyopass",
+        "org.binchoo.paimonganyu.infra.traveler",
         "org.binchoo.paimonganyu.service.hoyopass",
+        "org.binchoo.paimonganyu.service.traveler"
 })
 public class PaimonGanyu {
 

@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.ikakao.type;
 
-import org.binchoo.paimonganyu.ikakao.type.subtype.Link;
 import lombok.*;
 
 @Getter
@@ -8,10 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ListItem {
+public class ImageTitle {
 
     private String title;
     private String description;
     private String imageUrl;
-    private Link link;
 }

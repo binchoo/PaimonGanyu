@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegistryPort;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
@@ -27,14 +27,16 @@ public class TravelerController {
 
     private final HoyopassRegistryPort hoyopassRegistry;
     private final TravelerStatusPort travelerStatus;
-    //private final TravelerStatusView travelerStatusView;
+    private final TravelerStatusView view;
 
     @PostMapping("/status")
     public SkillResponse listTravelerStatus(@RequestBody SkillPayload skillPayload,
                                             Model model) {
         String botUserId = skillPayload.getUserRequest().getUser().getId();
+
         UserHoyopass user = hoyopassRegistry.findUserHoyopass(botUserId);
         Collection<TravelerStatus> status = travelerStatus.getCurrentStatus(user);
-        return null;
+        assert !status.isEmpty();
+        return view.renderSkillResponse(status);
     }
 }

@@ -22,7 +22,6 @@ public class BasicCard implements Component, CanCarousel {
     private Thumbnail thumbnail;
     private Profile profile;
     private Social social;
-
     @Singular("addButton")
     private List<Button> buttons;
 }

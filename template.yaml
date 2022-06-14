@@ -223,7 +223,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
-      MemorySize: 768
+      MemorySize: 1044
       Timeout: 600
       Policies:
         - DynamoDBCrudPolicy:

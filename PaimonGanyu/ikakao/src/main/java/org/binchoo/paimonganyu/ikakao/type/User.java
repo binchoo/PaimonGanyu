@@ -11,7 +11,6 @@ import org.binchoo.paimonganyu.ikakao.type.subtype.Properties;
 public class User {
 
     public Properties properties;
-
     private String id;
     private String type;
 }

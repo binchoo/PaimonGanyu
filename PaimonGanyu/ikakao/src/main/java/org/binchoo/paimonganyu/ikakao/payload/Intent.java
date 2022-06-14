@@ -6,6 +6,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Intent {
+
     private String id;
     private String name;
 }
