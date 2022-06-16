@@ -20,12 +20,12 @@ blocks:
   DeleteHoyopass:
     id: 62a6f3022a33fe5cbf0c95e8
     label: '통행증 삭제'
-  DeleteHoyopassGuide:
-    id: 62a59a68678c9b1480a53389
-    label: '통행증 삭제'
   ListHoyopass:
     id: 62a59a68678c9b1480a53389
     label: '통행증 조회'
+  ListHoyopassAliasDeleteHoyopass:
+    id: 62a59a68678c9b1480a53389
+    label: '통행증 삭제'
 
 
   ListTravelerStatus:

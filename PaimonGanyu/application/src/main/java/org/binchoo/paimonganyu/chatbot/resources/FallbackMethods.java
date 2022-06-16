@@ -19,8 +19,8 @@ public final class FallbackMethods {
 
     public static FallbackMethod ScanHoyopass   = new FallbackMethod("ScanHoyopass");
     public static FallbackMethod DeleteHoyopass = new FallbackMethod("DeleteHoyopass");
-    public static FallbackMethod DeleteHoyopassGuide = new FallbackMethod("DeleteHoyopassGuide");
     public static FallbackMethod ListHoyopass   = new FallbackMethod("ListHoyopass");
+    public static FallbackMethod ListHoyopassAliasDeleteHoyopass = new FallbackMethod("ListHoyopassAliasDeleteHoyopass");
 
     public static FallbackMethod ListTravelerStatus   = new FallbackMethod("ListTravelerStatus");
 

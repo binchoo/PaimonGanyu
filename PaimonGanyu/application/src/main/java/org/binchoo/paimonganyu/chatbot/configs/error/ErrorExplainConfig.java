@@ -32,7 +32,7 @@ public class ErrorExplainConfig {
         binders.add(HoyopassExceptionBinder.builder()
                 .error(QuantityExceedException.class)
                 .title(String.format("통행증은 %d개까지 보유 가능합니다.", UserHoyopass.MAX_HOYOPASS_COUNT))
-                .fallbacks(FallbackMethods.Home, FallbackMethods.DeleteHoyopass)
+                .fallbacks(FallbackMethods.Home, FallbackMethods.ListHoyopassAliasDeleteHoyopass)
                 .build());
 
         binders.add(HoyopassExceptionBinder.builder()
