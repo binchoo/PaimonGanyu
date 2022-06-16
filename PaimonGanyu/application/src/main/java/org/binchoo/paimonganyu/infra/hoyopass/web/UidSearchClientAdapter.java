@@ -76,7 +76,7 @@ public class UidSearchClientAdapter implements UidSearchClientPort {
      */
     private boolean requestContainsLumine(UserGameRole userGameRole, LtuidLtoken ltuidLtoken) {
         try {
-            boolean proceed = dataSwitchConfigurer.turnOnSwitches(ltuidLtoken);
+            boolean proceed = dataSwitchConfigurer.turnOn(ltuidLtoken);
             if (proceed) {
                 String uid = userGameRole.getGameUid();
                 String region = userGameRole.getRegion();

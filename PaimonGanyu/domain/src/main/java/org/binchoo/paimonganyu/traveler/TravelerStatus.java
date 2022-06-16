@@ -11,9 +11,12 @@ import lombok.Data;
 @Builder
 public class TravelerStatus {
 
-    private final String uid;
-    private final String name;
-    private final String server;
+    @Builder.Default
+    private final String uid = "";
+    @Builder.Default
+    private final String name = "";
+    @Builder.Default
+    private final String server = "";
     private final boolean lumine;
     private final int level;
     private final int currentResin;
@@ -22,6 +25,12 @@ public class TravelerStatus {
     private final int maxHomeCoin;
     private final int currentExpeditionNum;
     private final long resinRecoverySeconds;
+
+    public static TravelerStatus erroneous() {
+        return TravelerStatus.builder()
+                .name("Failed to fetch data.")
+                .build();
+    }
 
     public double ratioOfResin() {
         return 100. * currentResin / maxResin;

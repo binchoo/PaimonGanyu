@@ -20,12 +20,12 @@ public class DefaultDataSwitchConfigurer implements DataSwitchConfigurer {
     }
 
     @Override
-    public boolean turnOnSwitches(LtuidLtoken ltuidLtoken) {
+    public boolean turnOn(LtuidLtoken ltuidLtoken) {
         return changeSwitches(ltuidLtoken, true);
     }
 
     @Override
-    public boolean turnOffSwitches(LtuidLtoken ltuidLtoken) {
+    public boolean turnOff(LtuidLtoken ltuidLtoken) {
         return changeSwitches(ltuidLtoken, false);
     }
 
