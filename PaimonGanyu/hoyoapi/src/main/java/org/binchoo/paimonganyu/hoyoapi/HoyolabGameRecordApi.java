@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
+import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 
 public interface HoyolabGameRecordApi extends HoyolabApi {
 
@@ -9,7 +10,7 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
      */
     @Override
     default String getBaseUrl() {
-        return "https://bbs-api-os.hoyolab.com/game_record/genshin/api";
+        return "https://bbs-api-os.hoyolab.com/game_record";
     }
 
     /**
@@ -36,4 +37,12 @@ public interface HoyolabGameRecordApi extends HoyolabApi {
      * @return 해당 uid의 일일 노트. 레진, 파견의뢰, 선계보화 등 스테이터스 정보 포함.
      */
     HoyoResponse<DailyNote> getDailyNote(LtuidLtoken ltuidLtoken, String uid, String server);
+
+    /**
+     * @param ltuidLtoken 유저 통행증 쿠키
+     * @param dataSwitch 제어할 데이터 스위치
+     * @param on 데이터 스위치를 켜면 {@code true}, 끌 것이면 {@code false}
+     * @return 해당 통행증 계정의
+     */
+    HoyoResponse<ChangeDataSwitchResult> changeDataSwitch(LtuidLtoken ltuidLtoken, DataSwitch dataSwitch, boolean on);
 }
