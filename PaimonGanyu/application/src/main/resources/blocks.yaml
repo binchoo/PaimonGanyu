@@ -17,6 +17,9 @@ blocks:
   ScanHoyopass:
     id: 62a3411cef4e2505c632204e
     label: '재촬영'
+  ScanHoyopassGuide:
+    id: 62a33c3afa834474ed73fc0b
+    label: '통행증 등록 안내'
   DeleteHoyopass:
     id: 62a6f3022a33fe5cbf0c95e8
     label: '통행증 삭제'
