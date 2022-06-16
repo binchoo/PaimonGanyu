@@ -81,7 +81,9 @@ public class UserHoyopass {
      * @throws InactiveStateException 통행증 Uid 조회 API 클라이언트에서 오류가 발생했을 경우
      */
     public void addIncomplete(HoyopassCredentials credentials, UidSearchClientPort uidSearchClientPort) {
-        Hoyopass newHoyopass = Hoyopass.builder().credentials(credentials).build();
+        Hoyopass newHoyopass = Hoyopass.builder()
+                .credentials(credentials)
+                .build();
         fillUids(newHoyopass, uidSearchClientPort);
         addComplete(newHoyopass);
     }
@@ -127,6 +129,7 @@ public class UserHoyopass {
      * 호요버스 계정이 호요랩 비활성 상태 또는, 연결된 여행자가 없을 때
      */
     private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClientPort) {
+        assertAppendable(newHoyopass);
         try {
             newHoyopass.fillUids(uidSearchClientPort);
         } catch (Exception e) {
