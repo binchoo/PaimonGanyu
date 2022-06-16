@@ -28,7 +28,7 @@ public final class FallbackMethods {
     public static FallbackMethod DailyCheckIn;
     public static FallbackMethod ListUserDailyCheck;
 
-    private static Map<String, FallbackMethod> searchMap = new HashMap<>();
+    private static Map<String, FallbackMethod> nameCache = new HashMap<>();
 
     static {
         for (Field field : FallbackMethods.class.getDeclaredFields())
@@ -40,13 +40,19 @@ public final class FallbackMethods {
         boolean isFallbackMethod = cls.isAssignableFrom(FallbackMethod.class);
         boolean isStaticField = Modifier.isStatic(field.getModifiers());
         if (isFallbackMethod && isStaticField) {
-            String fallbackMethodName = field.getName();
-            FallbackMethods.searchMap.put(fallbackMethodName, new FallbackMethod(fallbackMethodName));
+            String fallbackName = field.getName();
+            FallbackMethod fallback = new FallbackMethod(fallbackName);
+            try {
+                field.set(null, fallback);
+                nameCache.put(fallbackName, fallback);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public static FallbackMethod findByBlockName(String blockName) {
-        return searchMap.get(blockName);
+    public static FallbackMethod findByName(String name) {
+        return nameCache.get(name);
     }
 
     private FallbackMethods() { }
