@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.controllers.error.binder;
+package org.binchoo.paimonganyu.chatbot.errorbinders;
 
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;

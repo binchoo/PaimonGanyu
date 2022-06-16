@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.controllers.error.binder;
+package org.binchoo.paimonganyu.chatbot.errorbinders;
 
 import lombok.Builder;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.controllers.error;
+package org.binchoo.paimonganyu.chatbot.views.error;
 
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.error.ErrorExplain;
