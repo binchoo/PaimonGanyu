@@ -58,7 +58,7 @@ public class UidListView extends AbstractSkillResopnseView {
         }
 
         private String getTitle() {
-            return String.format("%Lv.%d %s", this.level, this.name);
+            return String.format("Lv.%d %s", this.level, this.name);
         }
 
         private String getImageUrl() {
