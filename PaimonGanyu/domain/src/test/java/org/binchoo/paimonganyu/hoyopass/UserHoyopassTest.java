@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
@@ -30,7 +30,7 @@ import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.*;
 class UserHoyopassTest {
 
     @Mock
-    HoyopassSearchClientPort mockSearchPort;
+    UidSearchClientPort mockSearchPort;
 
     private List<Hoyopass> givenNHoyopasses(int n) {
         List<Hoyopass> mockHoyopasses = new ArrayList<>();

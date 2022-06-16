@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.infra.hoyopass.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
@@ -10,24 +11,26 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.*;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Too big.
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class HoyopassSearchClientAdapter implements HoyopassSearchClientPort {
+public class UidSearchClientAdapter implements UidSearchClientPort {
 
     private final HoyolabAccountApi accountApi;
     private final HoyolabGameRecordApi gameRecordApi;
+    private final DataSwitchConfigurer dataSwitchConfigurer;
 
     @Override
     public List<Uid> findUids(Hoyopass hoyopass) {
         LtuidLtoken ltuidLtoken = getLtuidLtoken(hoyopass);
-        List<UserGameRole> userGameRoles = requestUserGameRoles(hoyopass, ltuidLtoken).getData().getList();
+        List<UserGameRole> userGameRoles = requestUserGameRoles(hoyopass, ltuidLtoken).getList();
         return mapUserGameRoleToUid(userGameRoles, ltuidLtoken);
     }
 
@@ -37,9 +40,9 @@ public class HoyopassSearchClientAdapter implements HoyopassSearchClientPort {
      * @throws IllegalArgumentException 통행증이 유효하지 않아 UID를 조회할 수 없었을 경우,
      * <p> API 응답에서 null 데이터가 담겨 {@link NullPointerException}을 받았을 경우.
      */
-    private HoyoResponse<UserGameRoles> requestUserGameRoles(Hoyopass hoyopass, LtuidLtoken ltuidLtoken) {
+    private UserGameRoles requestUserGameRoles(Hoyopass hoyopass, LtuidLtoken ltuidLtoken) {
         try {
-            return accountApi.getUserGameRoles(ltuidLtoken);
+            return accountApi.getUserGameRoles(ltuidLtoken).getData();
         } catch (RetcodeException e) {
             throw new IllegalArgumentException(
                     String.format("UID를 조회할 수 없는 통행증입니다: %s", hoyopass), e);
@@ -73,13 +76,16 @@ public class HoyopassSearchClientAdapter implements HoyopassSearchClientPort {
      */
     private boolean requestContainsLumine(UserGameRole userGameRole, LtuidLtoken ltuidLtoken) {
         try {
-            String uid = userGameRole.getGameUid();
-            String region = userGameRole.getRegion();
-            HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllAvartars(ltuidLtoken, uid, region);
-            return apiResponse.getData().containsLumine();
+            boolean proceed = dataSwitchConfigurer.turnOnSwitches(ltuidLtoken);
+            if (proceed) {
+                String uid = userGameRole.getGameUid();
+                String region = userGameRole.getRegion();
+                HoyoResponse<GenshinAvatars> apiResponse = gameRecordApi.getAllAvartars(ltuidLtoken, uid, region);
+                return apiResponse.getData().containsLumine();
+            }
         } catch (NotLoggedInError e) {
             log.warn("주어진 통행증은 HoYoLab API를 이용할 수 없었습니다. 이 통행증에 대해 HoYoLab 닉네임 설정 여부 확인이 필요합니다.", e);
-            return false;
         }
+        return false;
     }
 }

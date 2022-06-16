@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.hoyopass;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
@@ -75,14 +75,14 @@ public class UserHoyopass {
     /**
      * 이 유저 통행증 객체에 호요버스 통행증을 추가한다.
      * @param credentials 통행증 크레덴셜
-     * @param hoyopassSearchClientPort 미호요 통행증 실제 조회를 위한 검색 서비스 객체
+     * @param uidSearchClientPort 미호요 통행증 실제 조회를 위한 검색 서비스 객체
      * @throws QuantityExceedException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
      * @throws DuplicationException 유저가 이미 소지한 통행증을 등록하려 할 경우
      * @throws InactiveStateException 통행증 Uid 조회 API 클라이언트에서 오류가 발생했을 경우
      */
-    public void addIncomplete(HoyopassCredentials credentials, HoyopassSearchClientPort hoyopassSearchClientPort) {
+    public void addIncomplete(HoyopassCredentials credentials, UidSearchClientPort uidSearchClientPort) {
         Hoyopass newHoyopass = Hoyopass.builder().credentials(credentials).build();
-        fillUids(newHoyopass, hoyopassSearchClientPort);
+        fillUids(newHoyopass, uidSearchClientPort);
         addComplete(newHoyopass);
     }
 
@@ -122,13 +122,13 @@ public class UserHoyopass {
     /**
      * 주어진 통행증과 연결된 Uid 정보를 긁어온다.
      * @param newHoyopass 이 유저에게 새로 추가하려는 통행증
-     * @param hoyopassSearchClientPort Uid 검색을 위한 API 클라이언트
+     * @param uidSearchClientPort Uid 검색을 위한 API 클라이언트
      * @throws InactiveStateException API 클라이언트 오류 발생시:
      * 호요버스 계정이 호요랩 비활성 상태 또는, 연결된 여행자가 없을 때
      */
-    private void fillUids(Hoyopass newHoyopass, HoyopassSearchClientPort hoyopassSearchClientPort) {
+    private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClientPort) {
         try {
-            newHoyopass.fillUids(hoyopassSearchClientPort);
+            newHoyopass.fillUids(uidSearchClientPort);
         } catch (Exception e) {
             throw new InactiveStateException(this, e);
         }

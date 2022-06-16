@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.infra.hoyopass.web;
 
+import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
@@ -22,8 +23,10 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig(classes = {HoyoApiWebClientConfigurer.class, TestHoyopassCredentialsConfig.class})
-class HoyopassSearchClientAdapterIntegTest {
+@SpringJUnitConfig(classes = {
+        HoyoApiWebClientConfigurer.class,
+        TestHoyopassCredentialsConfig.class})
+class UidSearchClientAdapterIntegTest {
 
     @Autowired
     HoyolabAccountApi accountApi;
@@ -32,33 +35,38 @@ class HoyopassSearchClientAdapterIntegTest {
     HoyolabGameRecordApi gameRecordApi;
 
     @Autowired
+    DataSwitchConfigurer dataSwitchConfigurer;
+
+    @Autowired
     @Qualifier("valid0")
     TestHoyopassCredentialsConfig.TestCredentials valid0;
 
     @Autowired
     TestHoyopassCredentialsConfig.InvalidTestCredentials invalid0;
 
-    HoyopassSearchClientAdapter hoyopassSearchClientAdapter;
+    UidSearchClientAdapter uidSearchClientAdapter;
 
     @BeforeEach
     public void setup() {
         assert accountApi != null;
         assert gameRecordApi != null;
-        hoyopassSearchClientAdapter = new HoyopassSearchClientAdapter(accountApi, gameRecordApi);
+        assert dataSwitchConfigurer != null;
+        uidSearchClientAdapter = new UidSearchClientAdapter(
+                accountApi, gameRecordApi, dataSwitchConfigurer);
     }
 
     @Test
     void givenValidHoyopass_findUids_returnsMatchingUids() {
         Hoyopass validHoyopass = givenHoyopassOf(valid0);
-        List<UserGameRole> realUserGameRoles = accountApi.getUserGameRoles(valid0)
+        List<UserGameRole> userGameRoles = accountApi.getUserGameRoles(valid0)
                 .getData().getList();
 
-        var uids = hoyopassSearchClientAdapter.findUids(validHoyopass);
+        var uids = uidSearchClientAdapter.findUids(validHoyopass);
 
-        assertThat(uids).hasSameSizeAs(realUserGameRoles);
+        assertThat(uids).hasSameSizeAs(userGameRoles);
         IntStream.range(0, uids.size()).forEach (i-> {
             var uid = uids.get(i);
-            var ugr = realUserGameRoles.get(i);
+            var ugr = userGameRoles.get(i);
             checkEquity(uid, ugr);
         });
     }
@@ -75,7 +83,7 @@ class HoyopassSearchClientAdapterIntegTest {
         Hoyopass invalidHoyopass = givenHoyopassOf(invalid0);
 
         assertThrows(IllegalArgumentException.class, ()->
-                hoyopassSearchClientAdapter.findUids(invalidHoyopass));
+                uidSearchClientAdapter.findUids(invalidHoyopass));
     }
 
     private Hoyopass givenHoyopassOf(LtuidLtoken ltuidLtoken) {
