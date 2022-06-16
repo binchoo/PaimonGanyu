@@ -141,9 +141,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
     @Override
     public HoyoResponse<ChangeDataSwitchResult> changeDataSwitch(LtuidLtoken ltuidLtoken, DataSwitch dataSwitch, boolean turnOn) {
         ResponseEntity<HoyoResponse<ChangeDataSwitchResult>> response = webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(API_CHANGE_DATASWITCH)
-                        .build())
+                .uri(API_CHANGE_DATASWITCH)
                 .headers(headers-> headers
                         .addAll(dsHeaderGenerator.generateDsHeader()))
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())

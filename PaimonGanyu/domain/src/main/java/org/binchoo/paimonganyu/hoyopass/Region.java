@@ -21,7 +21,7 @@ public enum Region {
     }
 
     private String cutPrefix() {
-        return this.name().substring(2);
+        return this.name().substring(3);
     }
 
     public static Region fromString(String s) {
