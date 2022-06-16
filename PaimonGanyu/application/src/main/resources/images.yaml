@@ -1,8 +1,10 @@
 s3:
   prefix: https://jbinchoobucket.s3.ap-northeast-1.amazonaws.com/paimonganyu/
   images:
-    aether: traveler_aether.png
-    lumine: traveler_lumine.png
+    aether_banner: aether_banner.png
+    lumine_banner: lumine_banner.png
+    aether_emoji: aether_emoji.png
+    lumine_emoji: lumine_emoji.png
     aether_ic_front: traveler_aether_ic_front.png
     lumine_ic_front: traveler_lumine_ic_front.png
     generic_thumb_0: generic_thumb_0.png

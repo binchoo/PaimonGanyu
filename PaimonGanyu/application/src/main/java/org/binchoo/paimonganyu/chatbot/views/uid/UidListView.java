@@ -29,8 +29,8 @@ public class UidListView extends AbstractSkillResopnseView {
 
     public static final String UIDS = "uids";
 
-    private static final String IMAGEKEY_AETHER = "aether";
-    private static final String IMAGEKEY_LUMINE = "lumine";
+    private static final String IMAGEKEY_AETHER = "aether_banner";
+    private static final String IMAGEKEY_LUMINE = "lumine_banner";
     private static final String PREFIX_LEVEL = "Lv.";
 
     public UidListView(Images images, QuickReplies quickReplies) {
@@ -124,8 +124,8 @@ public class UidListView extends AbstractSkillResopnseView {
         return BasicCard.builder()
                 .thumbnail(Thumbnail.builder()
                         .imageUrl(value.getImageUrl())
-                        .fixedRatio(true)
-                        .width(192).height(192)
+                        .fixedRatio(false)
+                        .width(800).height(400)
                         .build())
                 .title(value.getTitle())
                 .description(value.getDescription())
