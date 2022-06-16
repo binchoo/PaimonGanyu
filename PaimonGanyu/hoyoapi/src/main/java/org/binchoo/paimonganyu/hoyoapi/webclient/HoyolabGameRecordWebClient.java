@@ -2,11 +2,9 @@ package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
-import org.binchoo.paimonganyu.hoyoapi.error.exceptions.DataNotPublicError;
-import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
+import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 import org.binchoo.paimonganyu.hoyoapi.pojo.enums.HoyoGame;
 import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
 import org.springframework.core.ParameterizedTypeReference;
@@ -46,9 +44,6 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
         this.dsHeaderGenerator = dsHeaderGenerator;
     }
 
-    /**
-     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
-     */
     @Override
     public HoyoResponse<GenshinAvatars> getAllAvartars(LtuidLtoken ltuidLtoken, String uid, String server) {
         ResponseEntity<HoyoResponse<GenshinAvatars>> response = webClient.post()
@@ -112,10 +107,6 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
         List<Long> characterIds;
     }
 
-    /**
-     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
-     * @throws DataNotPublicError 실시간 노트 데이터 스위치를 켜지 않았을 때.
-     */
     @Override
     public HoyoResponse<DailyNote> getDailyNote(LtuidLtoken ltuidLtoken, String uid, String server) {
         ResponseEntity<HoyoResponse<DailyNote>> response = webClient.get()
@@ -135,9 +126,6 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
         return response.getBody();
     }
 
-    /**
-     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
-     */
     @Override
     public HoyoResponse<ChangeDataSwitchResult> changeDataSwitch(LtuidLtoken ltuidLtoken, DataSwitch dataSwitch, boolean turnOn) {
         ResponseEntity<HoyoResponse<ChangeDataSwitchResult>> response = webClient.post()

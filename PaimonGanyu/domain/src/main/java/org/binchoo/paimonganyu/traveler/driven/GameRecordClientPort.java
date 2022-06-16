@@ -7,6 +7,7 @@ import org.binchoo.paimonganyu.traveler.TravelerStatus;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 
 /**
  * @author : jbinchoo
@@ -36,7 +37,7 @@ public interface GameRecordClientPort {
      * @param pass uid를 소유를 증명할 통행증
      * @return 여행자 상태값
      */
-    TravelerStatus getStatusOf(Uid uid, Hoyopass pass);
+    Optional<TravelerStatus> getStatusOf(Uid uid, Hoyopass pass);
 
     void setTravelerStatusComparator(Comparator<TravelerStatus> comparator);
 }

@@ -36,7 +36,7 @@ public class BlockAndQuickConfig {
         this.quickReplies = new QuickReplies();
         blocks.forEach((name, block)-> {
             blockNameAndId.put(name, block.getId());
-            quickReplies.add(FallbackMethods.findByBlockName(name),
+            quickReplies.add(FallbackMethods.findByName(name),
                     new QuickReply(block.getLabel(), "block", null, block.getId(), null));
         });
     }

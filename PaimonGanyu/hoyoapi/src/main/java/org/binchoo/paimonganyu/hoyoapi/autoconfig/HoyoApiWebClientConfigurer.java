@@ -1,6 +1,10 @@
 package org.binchoo.paimonganyu.hoyoapi.autoconfig;
 
+import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
+import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.support.DefaultDataSwitchConfigurer;
 import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,5 +27,10 @@ public class HoyoApiWebClientConfigurer {
     @Bean
     public DsHeaderGenerator dsHeaderGenerator() {
         return DsHeaderGenerator.getDefault();
+    }
+
+    @Bean
+    public DataSwitchConfigurer dataSwitchConfigurer(HoyolabGameRecordApi gameRecordApi) {
+        return new DefaultDataSwitchConfigurer(gameRecordApi);
     }
 }

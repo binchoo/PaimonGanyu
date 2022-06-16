@@ -6,7 +6,7 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class HoyopassRegister implements HoyopassRegisterPort {
 
-    private final HoyopassSearchClientPort hoyopassSearchClientPort;
+    private final UidSearchClientPort uidSearchClientPort;
     private final UserHoyopassCrudPort userHoyopassCrudPort;
 
     @Override
@@ -39,7 +39,7 @@ public class HoyopassRegister implements HoyopassRegisterPort {
         UserHoyopass userHoyopass = userHoyopassCrudPort.findByBotUserId(botUserId)
                 .orElse(new UserHoyopass(botUserId));
 
-        userHoyopass.addIncomplete(credentials, hoyopassSearchClientPort);
+        userHoyopass.addIncomplete(credentials, uidSearchClientPort);
         return userHoyopassCrudPort.save(userHoyopass);
     }
 

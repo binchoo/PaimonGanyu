@@ -5,7 +5,7 @@ import org.binchoo.paimonganyu.hoyopass.Uid;
 
 import java.util.List;
 
-public interface HoyopassSearchClientPort {
+public interface UidSearchClientPort {
 
     /**
      * 주어진 {@link Hoyopass} 객체와 연관된 {@link Uid}를 색인하여 채워넣습니다.

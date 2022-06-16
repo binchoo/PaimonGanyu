@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.*;
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,11 +28,11 @@ public class Hoyopass implements Comparable<Hoyopass> {
     private LocalDateTime createAt = LocalDateTime.now();
 
     /**
-     * @param hoyopassSearchClientPort UID 색인 서비스 객체
+     * @param uidSearchClientPort UID 색인 서비스 객체
      * @throws IllegalArgumentException 이 통행증으로 UID를 색인하는 데 실패했을 경우
      */
-    public void fillUids(HoyopassSearchClientPort hoyopassSearchClientPort) {
-        List<Uid> findResult = hoyopassSearchClientPort.findUids(this);
+    public void fillUids(UidSearchClientPort uidSearchClientPort) {
+        List<Uid> findResult = uidSearchClientPort.findUids(this);
         this.uids = findResult;
     }
 

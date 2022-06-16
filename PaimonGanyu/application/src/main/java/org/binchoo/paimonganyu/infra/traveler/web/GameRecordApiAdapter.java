@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.infra.traveler.web;
 
 import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.error.exceptions.DataNotPublicError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
@@ -30,20 +31,23 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
 
     @Override
     public Collection<TravelerStatus> getStatusOf(UserHoyopass user, Comparator<TravelerStatus> comparator) {
-        PriorityQueue<TravelerStatus> pq = newHeapUsing(comparator);
+        PriorityQueue<TravelerStatus> heap = newHeapUsing(comparator);
         for (Hoyopass pass : user.getHoyopasses()) {
             Collection<TravelerStatus> statuses = getStatusOf(pass, comparator);
-            pq.addAll(statuses);
+            heap.addAll(statuses);
         }
-        return flatHeap(pq);
+        return flatHeap(heap);
     }
 
     @Override
     public Collection<TravelerStatus> getStatusOf(Hoyopass pass, Comparator<TravelerStatus> comparator) {
-        PriorityQueue<TravelerStatus> pq = newHeapUsing(comparator);
-        for (Uid uid : pass.getUids())
-            pq.add(getStatusOf(uid, pass));
-        return flatHeap(pq);
+        PriorityQueue<TravelerStatus> heap = newHeapUsing(comparator);
+        for (Uid uid : pass.getUids()) {
+            Optional<TravelerStatus> status = getStatusOf(uid, pass);
+            heap.add(status
+                    .orElse(TravelerStatus.erroneous()));
+        }
+        return flatHeap(heap);
     }
 
     private PriorityQueue<TravelerStatus> newHeapUsing(Comparator<TravelerStatus> comparator) {
@@ -58,17 +62,35 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
     }
 
     @Override
-    public TravelerStatus getStatusOf(Uid uid, Hoyopass pass) {
+    public Optional<TravelerStatus> getStatusOf(Uid uid, Hoyopass pass) {
         LtuidLtoken ltlt = new LtuidLtoken(pass.getLtuid(), pass.getLtoken());
         String uidString = uid.getUidString();
         String server = uid.getRegion().lowercase();
-        var result = gameRecordApi.getDailyNote(ltlt, uidString, server);
-        return mapStatus(result, uid);
+        return fetchTravelerStatus(uid, ltlt, uidString, server);
+
     }
 
-    private TravelerStatus mapStatus(HoyoResponse<DailyNote> result, Uid uid) {
-        DailyNote dailyNote = result.getData();
-        assert dailyNote != null;
+    private Optional<TravelerStatus> fetchTravelerStatus(Uid uid, LtuidLtoken ltlt, String uidString, String server) {
+        TravelerStatus status = null;
+        try {
+            var result = gameRecordApi.getDailyNote(ltlt, uidString, server);
+            status = buildTravelerStatus(result, uid);
+        } catch (DataNotPublicError e) {
+        }
+        return Optional.ofNullable(status);
+    }
+
+    private TravelerStatus buildTravelerStatus(HoyoResponse<DailyNote> result, Uid uid) {
+        TravelerStatus status = null;
+        if (result != null) {
+            DailyNote note = result.getData();
+            if (note != null)
+                status = buildTravelerStatus(uid, result.getData());
+        }
+        return status;
+    }
+
+    private TravelerStatus buildTravelerStatus(Uid uid, DailyNote dailyNote) {
         return TravelerStatus.builder()
                 .currentExpeditionNum(dailyNote.getCurrentExpeditionNum())
                 .resinRecoverySeconds(dailyNote.getResinRecoveryTime())
@@ -93,9 +115,5 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
         return Comparator.comparing(TravelerStatus::getLevel)
                 .thenComparing(TravelerStatus::getCurrentResin)
                 .thenComparing(TravelerStatus::getCurrentExpeditionNum).reversed();
-// same-as
-//       return Comparator.comparing(TravelerStatus::getLevel, Comparator.reverseOrder())
-//                .thenComparing(TravelerStatus::getCurrentResin, Comparator.reverseOrder())
-//                .thenComparing(TravelerStatus::getCurrentExpeditionNum);
     }
 }
