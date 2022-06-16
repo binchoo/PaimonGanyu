@@ -90,7 +90,7 @@ public class UidListView extends AbstractSkillResopnseView {
     private SkillTemplate templateOf(List<UidValue> modelValues) {
         return SkillTemplate.builder()
                 .addOutput(SimpleTextView.builder()
-                        .simpleText(new SimpleText(modelValues.size() + "명의 여행자들을 확인했어!"))
+                        .simpleText(new SimpleText("이제" + modelValues.size() + "명의 여행자들을 관리할게!"))
                         .build())
                 .addOutput(CarouselView.builder()
                         .carousel(carouselOf(modelValues))
