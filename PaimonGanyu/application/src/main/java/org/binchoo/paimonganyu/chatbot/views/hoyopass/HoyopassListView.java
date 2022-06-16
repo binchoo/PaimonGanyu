@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.chatbot.views.hoyopass;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
@@ -60,13 +59,8 @@ public class HoyopassListView extends AbstractSkillResopnseView {
         for (int i = 0; i < hoyopasses.size(); i++) {
             Hoyopass hoyopass = hoyopasses.get(i);
             ListCard listCard = ListCard.builder()
-                    .header(getCardHeader(hoyopass))
-                    .items(hoyopass.getUids().stream().map(uid-> ListItem.builder()
-                                    .title(getItemTitle(uid))
-                                    .imageUrl(getItemImage(uid))
-                                    .description(getItemDescription(uid))
-                                    .build())
-                            .collect(Collectors.toList()))
+                    .header(getListCardHeader(hoyopass))
+                    .items(getListItems(hoyopass))
                     .addButton(BlockButton.builder()
                             .label("출석체크")
                             .messageText("이 통행증 계정으로 출석체크 대신해줘")
@@ -85,19 +79,28 @@ public class HoyopassListView extends AbstractSkillResopnseView {
         return listCardArray;
     }
 
-    private ListItem getCardHeader(Hoyopass hoyopass) {
+    private List<ListItem> getListItems(Hoyopass hoyopass) {
+        return hoyopass.getUids().stream()
+                .map(uid -> ListItem.builder()
+                        .title(getItemTitle(uid))
+                        .imageUrl(getItemImage(uid))
+                        .description(getItemDescription(uid))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private ListItem getListCardHeader(Hoyopass hoyopass) {
         return ListItem.builder()
                 .title("통행증 번호:" + hoyopass.getLtuid())
                 .build();
     }
 
     private String getItemTitle(Uid uid) {
-        return String.format("%s Lv.%d %s",
-                uid.getRegion().lowercase(), uid.getCharacterLevel(), uid.getCharacterName());
+        return String.format("Lv.%d %s", uid.getCharacterLevel(), uid.getCharacterName());
     }
 
     private String getItemDescription(Uid uid) {
-        return String.format("UID: %s", uid.getUidString());
+        return String.format("UID: %s %s", uid.getRegion().suffixLargeCase(), uid.getUidString());
     }
 
     private String getItemImage(Uid uid) {

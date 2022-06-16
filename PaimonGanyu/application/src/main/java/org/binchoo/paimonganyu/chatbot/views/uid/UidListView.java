@@ -6,7 +6,6 @@ import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
 import org.binchoo.paimonganyu.error.FallbackMethod;
-import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -31,7 +30,6 @@ public class UidListView extends AbstractSkillResopnseView {
 
     private static final String IMAGEKEY_AETHER = "aether_banner";
     private static final String IMAGEKEY_LUMINE = "lumine_banner";
-    private static final String PREFIX_LEVEL = "Lv.";
 
     public UidListView(Images images, QuickReplies quickReplies) {
         super(images, quickReplies, null);
@@ -48,16 +46,11 @@ public class UidListView extends AbstractSkillResopnseView {
         private final boolean isLumine;
 
         public UidValue(Uid uid) {
-            this.server = cutOff(uid.getRegion(), 3);
+            this.server = uid.getRegion().suffixLargeCase();
             this.uid = uid.getUidString();
             this.name = uid.getCharacterName();
             this.level = uid.getCharacterLevel();
             this.isLumine = uid.getIsLumine();
-        }
-
-        private String cutOff(Region region, int start) {
-            String regionName = region.name();
-            return regionName.substring(start).toUpperCase();
         }
 
         private String getDescription() {
@@ -65,7 +58,7 @@ public class UidListView extends AbstractSkillResopnseView {
         }
 
         private String getTitle() {
-            return String.format("%s%s %s", PREFIX_LEVEL, this.level, this.name);
+            return String.format("%Lv.%d %s", this.level, this.name);
         }
 
         private String getImageUrl() {
