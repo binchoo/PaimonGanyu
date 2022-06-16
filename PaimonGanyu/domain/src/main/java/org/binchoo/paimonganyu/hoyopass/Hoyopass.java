@@ -1,8 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
 
 import java.time.LocalDateTime;
@@ -11,13 +9,16 @@ import java.util.List;
 @ToString
 @Getter
 @Builder(toBuilder = true)
-public class Hoyopass {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Hoyopass implements Comparable<Hoyopass> {
 
     private HoyopassCredentials credentials;
 
     /**
      * 이 통행증에 연결된 UID들 리스트
      */
+    @Singular("addUid")
     private List<Uid> uids;
 
     /**
@@ -59,5 +60,10 @@ public class Hoyopass {
     @Override
     public int hashCode() {
         return credentials.hashCode();
+    }
+
+    @Override
+    public int compareTo(Hoyopass o) {
+        return this.createAt.compareTo(o.createAt);
     }
 }

@@ -13,6 +13,9 @@ Globals:
     MemorySize: 512
     Architectures:
       - x86_64
+    Environment:
+      Variables:
+        TZ: Asia/Seoul
 
 Resources:
   # Hoyopass
@@ -29,23 +32,6 @@ Resources:
           KeyType: HASH
       StreamSpecification:
         StreamViewType: NEW_IMAGE
-
-#  PaimonGanyuSpringBootApp:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: #TODO
-#      Events:
-#        RestApi:
-#          Type: Api
-#          Properties:
-#            #TODO
-#      Policies:
-#        - DynamoDBCrudPolicy:
-#            TableName: !Ref UserHoyopassTable
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserRedeemTable
-#        - DynamoDBReadPolicy:
-#            TableName: !Ref UserDailyCheckTable
 
   # Hoyopass Fanout
   UserHoyopassTopic:
@@ -76,10 +62,10 @@ Resources:
       TableName: UserRedeem
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: botUserId
+        - AttributeName: id
           AttributeType: S
       KeySchema:
-        - AttributeName: botUserId
+        - AttributeName: id
           KeyType: HASH
 
   CodeBucket:
@@ -89,6 +75,8 @@ Resources:
 
   CodeRedeemRequestQueue:
     Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
 
   RedeemCodeDeliveryFunction:
     Type: AWS::Serverless::Function
@@ -139,6 +127,7 @@ Resources:
   CodeRedeemWorker:
     Type: AWS::Serverless::Function
     Properties:
+      Timeout: 300
       Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemWorkerLambda::handler
       Events:
         CodeRedeemRequestQueueEvent:
@@ -218,7 +207,6 @@ Resources:
         Variables:
           DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
 
-
   DailyCheckWorkerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -232,3 +220,36 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserDailyCheckTable
+
+  # PaimonGanyuChatbot
+  PaimonGanyuSpringBootApp:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
+      MemorySize: 1044
+      Timeout: 600
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserHoyopassTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserDailyCheckTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserRedeemTable
+        - SSMParameterReadPolicy:
+            ParameterName: HoyopassPrivateKey
+        - SSMParameterReadPolicy:
+            ParameterName: HoyopassPublicKey
+      Events:
+        RestApi:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+      Environment:
+        Variables:
+          PROFILE: stage
+      AutoPublishAlias: PaimonGanyuChatbot
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
+      DeploymentPreference:
+        Type: AllAtOnce

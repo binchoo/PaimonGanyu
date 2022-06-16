@@ -9,7 +9,7 @@ import org.binchoo.paimonganyu.lambda.RedeemUserDeliveryMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
-import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationService;
+import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationPort;
 import org.binchoo.paimonganyu.service.redeem.RedeemAllCodesOption;
 import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -30,7 +30,7 @@ public class RedeemUserDeliveryLambda {
 
     private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
-    private RedeemTaskEstimationService redeemTaskEstimationService;
+    private RedeemTaskEstimationPort redeemTaskEstimationPort;
     private RedeemCodeCrudPort redeemCodeCrudPort;
 
     public RedeemUserDeliveryLambda() {
@@ -40,9 +40,9 @@ public class RedeemUserDeliveryLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.redeemTaskEstimationService = context.getBean(RedeemTaskEstimationService.class);
+        this.redeemTaskEstimationPort = context.getBean(RedeemTaskEstimationPort.class);
         this.redeemCodeCrudPort = context.getBean(RedeemCodeCrudPort.class);
-        Objects.requireNonNull(this.redeemTaskEstimationService);
+        Objects.requireNonNull(this.redeemTaskEstimationPort);
         Objects.requireNonNull(this.redeemCodeCrudPort);
     }
 
@@ -52,7 +52,7 @@ public class RedeemUserDeliveryLambda {
         RedeemTaskEstimationOption estimationOption = new RedeemAllCodesOption(redeemCodeCrudPort, ()-> users.stream()
                     .map(UserHoyopassMessage::toDomain)
                     .collect(Collectors.toList()));
-        sendToQueue(redeemTaskEstimationService.generateTasks(estimationOption));
+        sendToQueue(redeemTaskEstimationPort.generateTasks(estimationOption));
     }
 
     private void sendToQueue(List<RedeemTask> redeemTasks) {

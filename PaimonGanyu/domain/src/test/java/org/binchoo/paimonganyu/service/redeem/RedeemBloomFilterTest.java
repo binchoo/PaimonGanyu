@@ -42,7 +42,7 @@ class RedeemBloomFilterTest {
     @BeforeEach
     void init() {
         redeemBloomFilter = new RedeemBloomFilter(userRedeemCrudPort);
-        userRedeemDone = new UserRedeem("user", "ltuid", mockRedeemCode, true);
+        userRedeemDone = new UserRedeem("botUserId", "uid", mockRedeemCode, true);
     }
 
     @DisplayName("매칭 이력이 안 내려오면, 이력 완수 여부는 거짓이다")
@@ -75,7 +75,7 @@ class RedeemBloomFilterTest {
                 .thenReturn(false);
 
         boolean hasRedeemed = redeemBloomFilter
-                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
+                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getUid(), userRedeemDone.getRedeemCode());
 
         assertThat(hasRedeemed).isFalse();
     }
@@ -97,7 +97,7 @@ class RedeemBloomFilterTest {
                 .willReturn(inclusiveSet(100000));
 
         redeemBloomFilter
-                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getLtuid(), userRedeemDone.getRedeemCode());
+                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getUid(), userRedeemDone.getRedeemCode());
 
         verify(userRedeemCrudPort).existMatches(userRedeemDone);
     }

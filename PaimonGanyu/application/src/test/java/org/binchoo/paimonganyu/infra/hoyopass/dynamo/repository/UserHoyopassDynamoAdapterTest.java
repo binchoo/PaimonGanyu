@@ -74,8 +74,9 @@ class UserHoyopassDynamoAdapterTest {
                 .thenReturn(Optional.of(mockUserHoyopassItem));
 
         Optional<UserHoyopass> result = userHoyopassDynamoAdapter.findByBotUserId(mockUserHoyopass.getBotUserId());
-        assertThat(result).isPresent();
-        assertThat(result).contains(mockUserHoyopass);
+        assertThat(result)
+                .isPresent()
+                .contains(mockUserHoyopass);
     }
 
     @Test

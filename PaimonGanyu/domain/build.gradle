@@ -5,4 +5,5 @@ plugins {
 
 dependencies {
     api "org.springframework.boot:spring-boot-starter-web:${bootVersion}"
+    api "org.springframework.boot:spring-boot-starter-data-jpa:${bootVersion}"
 }

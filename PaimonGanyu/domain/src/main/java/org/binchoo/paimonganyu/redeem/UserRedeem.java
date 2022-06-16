@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserRedeem {
 
     private final String botUserId;
-    private final String ltuid;
+    private final String uid;
     private final RedeemCode redeemCode;
     private boolean done;
 
@@ -28,13 +28,7 @@ public class UserRedeem {
         return this.done;
     }
 
-    protected void setDone(boolean isDone) {
-        this.done = isDone;
-    }
-
     public UserRedeem markDone() {
-        UserRedeem userRedeemDone = new UserRedeem(botUserId, ltuid, redeemCode);
-        userRedeemDone.setDone(true);
-        return userRedeemDone;
+        return new UserRedeem(botUserId, uid, redeemCode, true);
     }
 }

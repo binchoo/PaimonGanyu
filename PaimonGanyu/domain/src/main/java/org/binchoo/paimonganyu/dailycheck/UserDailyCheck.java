@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @Builder(toBuilder = true)
-public class UserDailyCheck {
+public class UserDailyCheck implements Comparable<UserDailyCheck> {
 
     private String botUserId;
 
@@ -32,7 +32,7 @@ public class UserDailyCheck {
         return this.isDone() && this.dateEquals(date);
     }
 
-    private boolean isDone() {
+    public boolean isDone() {
         return UserDailyCheckStatus.COMPLETED.equals(this.status)
                 || UserDailyCheckStatus.DUPLICATE.equals(this.status);
     }
@@ -42,13 +42,13 @@ public class UserDailyCheck {
     }
 
     public UserDailyCheck doRequest(DailyCheckClientPort dailyCheckClientPort) {
-        DailyCheckRequestResult dailyCheckRequestResult = dailyCheckClientPort.sendRequest(ltuid, ltoken);
-        if (dailyCheckRequestResult.hasFailed()) {
-            return this.markFail(dailyCheckRequestResult.getError());
-        } else if (dailyCheckRequestResult.isDuplicated()) {
+        DailyCheckRequestResult requestResult = dailyCheckClientPort.sendRequest(ltuid, ltoken);
+        if (requestResult.hasFailed()) {
+            return this.markFail(requestResult.getError());
+        } else if (requestResult.isDuplicated()) {
             return this.markDuplicate();
         } else {
-            log.info("DailyCheckResult message: {}", dailyCheckRequestResult.getMessage());
+            log.info("DailyCheckResult message: {}", requestResult.getMessage());
             return this.markComplete();
         }
     }
@@ -72,8 +72,25 @@ public class UserDailyCheck {
         return userDailyCheck;
     }
 
-    public static UserDailyCheck getInitialized(String botUserid, String ltuid, String ltoken) {
-        return UserDailyCheck.builder().botUserId(botUserid)
-                .ltuid(ltuid).ltoken(ltoken).status(UserDailyCheckStatus.QUEUED).build();
+    public boolean hasStatus(UserDailyCheckStatus status) {
+        return status.equals(this.status);
+    }
+
+    public static UserDailyCheck of(String botUserid, String ltuid, String ltoken) {
+        return UserDailyCheck.builder()
+                .status(UserDailyCheckStatus.QUEUED)
+                .botUserId(botUserid)
+                .ltoken(ltoken)
+                .ltuid(ltuid)
+                .build();
+    }
+
+    public boolean isInitialState() {
+        return this.status.equals(UserDailyCheckStatus.QUEUED);
+    }
+
+    @Override
+    public int compareTo(UserDailyCheck o) {
+        return o.timestamp.compareTo(timestamp);
     }
 }

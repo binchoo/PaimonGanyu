@@ -65,7 +65,7 @@ project(':application').dependencies {
     implementation project(':hoyoapi')
     implementation project(':awsutils')
     implementation (project(':ikakao')) {
-        because 'to render KAKAO chatbot views'
+        because 'to render skill response of kakao chatbot'
     }
     implementation project(':domain')
     testImplementation(testFixtures(project(':domain')))

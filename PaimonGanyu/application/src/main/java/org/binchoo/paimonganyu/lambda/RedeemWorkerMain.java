@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoRe
 import org.binchoo.paimonganyu.infra.redeem.web.RedemptionClientAdapter;
 import org.binchoo.paimonganyu.lambda.config.DynamoDBClientConfig;
 import org.binchoo.paimonganyu.lambda.config.UserRedeemTableConfig;
-import org.binchoo.paimonganyu.redeem.driving.RedemptionService;
+import org.binchoo.paimonganyu.redeem.driving.RedemptionPort;
 import org.binchoo.paimonganyu.service.redeem.Redeemer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +29,8 @@ public class RedeemWorkerMain {
      * @param redemptionApi from {@link HoyoApiWebClientConfigurer}
      */
     @Bean
-    public RedemptionService redemptionService(UserRedeemDynamoRepository redeemRepository,
-                                               HoyoCodeRedemptionApi redemptionApi) {
+    public RedemptionPort redemptionService(UserRedeemDynamoRepository redeemRepository,
+                                            HoyoCodeRedemptionApi redemptionApi) {
 
         return new Redeemer(new UserRedeemDynamoAdapter(redeemRepository),
                 new RedemptionClientAdapter(redemptionApi));

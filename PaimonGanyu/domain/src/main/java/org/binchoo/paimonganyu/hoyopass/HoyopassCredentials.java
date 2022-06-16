@@ -1,9 +1,6 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @author : jbinchoo
@@ -13,9 +10,11 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HoyopassCredentials {
 
-    private final String ltuid;
-    private final String ltoken;
-    private final String cookieToken;
+    private String ltuid;
+    private String ltoken;
+    private String cookieToken;
 }

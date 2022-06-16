@@ -22,7 +22,7 @@ class UserDailyCheckTest {
     @Test
     void whenRequestFailed_userDailyCheck_hasFailedStatus() {
         String random = RandomString.make();
-        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(random, random, random);
+        UserDailyCheck userDailyCheck = UserDailyCheck.of(random, random, random);
 
         when(dailyCheckClientPort.sendRequest(any(), any())).thenReturn(whenRequestFailed());
 
@@ -33,7 +33,7 @@ class UserDailyCheckTest {
     @Test
     void whenRequestDuplicated_userDailyCheck_hasDuplicatedStatus() {
         String random = RandomString.make();
-        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(random, random, random);
+        UserDailyCheck userDailyCheck = UserDailyCheck.of(random, random, random);
 
         when(dailyCheckClientPort.sendRequest(any(), any())).thenReturn(whenRequestDuplicated());
 
@@ -44,7 +44,7 @@ class UserDailyCheckTest {
     @Test
     void whenRequestCompleted_userDailyCheck_isDoneOnToday() {
         String random = RandomString.make();
-        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(random, random, random);
+        UserDailyCheck userDailyCheck = UserDailyCheck.of(random, random, random);
 
         when(dailyCheckClientPort.sendRequest(any(), any())).thenReturn(whenRequestCompleted());
 
@@ -56,7 +56,7 @@ class UserDailyCheckTest {
     @Test
     void whenRequestDuplicated_userDailyCheck_isDoneOnToday() {
         String random = RandomString.make();
-        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(random, random, random);
+        UserDailyCheck userDailyCheck = UserDailyCheck.of(random, random, random);
 
 
         when(dailyCheckClientPort.sendRequest(any(), any())).thenReturn(whenRequestDuplicated());
@@ -69,7 +69,7 @@ class UserDailyCheckTest {
     @Test
     void whenRequestCompleted_userDailyCheck_hasCompletedStatus() {
         String random = RandomString.make();
-        UserDailyCheck userDailyCheck = UserDailyCheck.getInitialized(random, random, random);
+        UserDailyCheck userDailyCheck = UserDailyCheck.of(random, random, random);
 
         when(dailyCheckClientPort.sendRequest(any(), any())).thenReturn(whenRequestCompleted());
 

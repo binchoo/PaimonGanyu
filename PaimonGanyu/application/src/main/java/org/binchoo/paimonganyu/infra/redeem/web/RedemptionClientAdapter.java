@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
+import org.binchoo.paimonganyu.hoyoapi.pojo.CodeRedemptionResult;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.redeem.RedeemResultCallback;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
@@ -29,11 +31,8 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks, RedeemResultCallback resultCallback) {
-        if (redeemTasks != null && !redeemTasks.isEmpty()) {
-            List<UserRedeem> userRedeems = sendRequest(redeemTasks, resultCallback);
-            log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
-            return userRedeems;
-        }
+        if (redeemTasks != null && !redeemTasks.isEmpty())
+            return sendRequest(redeemTasks, resultCallback);
         return Collections.emptyList();
     }
 
@@ -74,22 +73,24 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
         return wrap(response, userRedeem);
     }
 
-    private Mono<UserRedeem> wrap(Mono<?> response, UserRedeem userRedeem) {
-        return response.map(res-> userRedeem.markDone())
+    private Mono<UserRedeem> wrap(Mono<HoyoResponse<CodeRedemptionResult>> response, UserRedeem userRedeem) {
+        // must apply asychronous mapping: flatMap!
+        return response.flatMap(hoyoResponse-> Mono.just(userRedeem.markDone()))
                 .onErrorReturn(userRedeem);
     }
 
-    private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemList) {
-        List<UserRedeem> userRedeemContainer = new ArrayList<>();
-        wait(userRedeemList, userRedeemContainer);
-        return userRedeemContainer;
+    private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
+        List<UserRedeem> userRedeems = new ArrayList<>();
+        wait(userRedeemMonos, userRedeems);
+        log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
+        return userRedeems;
     }
 
-    private void wait(List<Mono<UserRedeem>> userRedeemList, List<UserRedeem> container) {
-        for (Mono<UserRedeem> userRedeem : userRedeemList) {
-            UserRedeem userRedeemObj = userRedeem.block();
-            if (container != null)
-                container.add(userRedeemObj);
+    private void wait(List<Mono<UserRedeem>> userRedeemMonos, List<UserRedeem> resultContainer) {
+        for (Mono<UserRedeem> userRedeemMono : userRedeemMonos) {
+            UserRedeem userRedeemObj = userRedeemMono.block();
+            if (resultContainer != null)
+                resultContainer.add(userRedeemObj);
         }
     }
 }

@@ -38,8 +38,8 @@ class UserRedeemDynamoAdapterTest {
         var userRedeem = givenDoneUserRedeem();
         userRedeemDynamoAdapter.findMatches(userRedeem);
 
-        verify(repository).findByBotUserIdAndLtuidAndCodeAndDone(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+        verify(repository).findByBotUserIdAndUidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getUid(),
                 userRedeem.getRedeemCode().getCode(), true);
     }
 
@@ -49,8 +49,8 @@ class UserRedeemDynamoAdapterTest {
         var userRedeem = givenNotDoneUserRedeem();
         userRedeemDynamoAdapter.findMatches(userRedeem);
 
-        verify(repository).findByBotUserIdAndLtuidAndCodeAndDone(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+        verify(repository).findByBotUserIdAndUidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getUid(),
                 userRedeem.getRedeemCode().getCode(),false);
     }
 
@@ -60,8 +60,8 @@ class UserRedeemDynamoAdapterTest {
         var userRedeem = givenDoneUserRedeem();
         userRedeemDynamoAdapter.existMatches(userRedeem);
 
-        verify(repository).existsByBotUserIdAndLtuidAndCodeAndDone(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+        verify(repository).existsByBotUserIdAndUidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getUid(),
                 userRedeem.getRedeemCode().getCode(), true);
     }
 
@@ -71,8 +71,8 @@ class UserRedeemDynamoAdapterTest {
         var userRedeem = givenNotDoneUserRedeem();
         userRedeemDynamoAdapter.existMatches(userRedeem);
 
-        verify(repository).existsByBotUserIdAndLtuidAndCodeAndDone(
-                userRedeem.getBotUserId(), userRedeem.getLtuid(),
+        verify(repository).existsByBotUserIdAndUidAndCodeAndDone(
+                userRedeem.getBotUserId(), userRedeem.getUid(),
                 userRedeem.getRedeemCode().getCode(), false);
     }
 

@@ -9,4 +9,16 @@ public enum UserDailyCheckStatus {
     DUPLICATE,
     /** This dailycheck request will be soon processed. */
     QUEUED;
+
+    public boolean isFailed() {
+        return this.equals(FAILED);
+    }
+
+    public boolean isCompleted() {
+        return this.equals(COMPLETED);
+    }
+
+    public boolean isDuplicate() {
+        return this.equals(DUPLICATE);
+    }
 }
