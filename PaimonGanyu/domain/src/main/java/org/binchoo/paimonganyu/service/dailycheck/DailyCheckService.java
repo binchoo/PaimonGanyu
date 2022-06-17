@@ -9,6 +9,7 @@ import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -59,9 +60,17 @@ public class DailyCheckService implements DailyCheckPort {
     @Override
     public List<List<UserDailyCheck>> historyOfUser(UserHoyopass user, int count) {
         String botUserId = user.getBotUserId();
-        return user.getHoyopasses().stream()
+        List<List<UserDailyCheck>> logs = user.getHoyopasses().stream()
                 .map(pass-> historyOfUser(botUserId, pass, count))
                 .collect(Collectors.toList());
+        return checkNotEmpty(user, logs);
+    }
+
+    private List<List<UserDailyCheck>> checkNotEmpty(UserHoyopass user, List<List<UserDailyCheck>> logs) {
+        long logCount =  logs.stream().flatMap(List::stream).count();
+        if (logCount <= 0)
+            throw new QuantityZeroException(user);
+        return logs;
     }
 
     @Override
