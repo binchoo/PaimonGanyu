@@ -5,7 +5,7 @@ blocks:
   # 3)FallbackMethods.{이름}는 FallbackMethods.searchMap에도 등록되어 합니다.
   Home:
     id: 62a33634d3ab72600628e825
-    label: '처음으로'
+    label: '홈'
   ValidationCs:
     id: 62a59aeb678c9b1480a53392
     label: '계정 유효성 안내'

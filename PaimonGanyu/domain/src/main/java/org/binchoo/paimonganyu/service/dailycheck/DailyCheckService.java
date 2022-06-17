@@ -77,15 +77,14 @@ public class DailyCheckService implements DailyCheckPort {
     public List<UserDailyCheck> historyOfUser(String botUserId, Hoyopass pass, int count) {
         String ltuid = pass.getLtuid();
         return repository.findByBotUserIdLtuid(botUserId, ltuid).stream()
-                .filter(it-> !it.isInitialState())
-                .sorted().limit(count)
+                .filter(it-> !it.isInitialState()).sorted()
+                .limit(count)
                 .collect(Collectors.toList());
     }
 
     @Override
     public boolean hasCheckedIn(String botUserId, String ltuid, LocalDate date) {
-        return repository
-                .findByBotUserIdLtuid(botUserId, ltuid).stream()
+        return repository.findByBotUserIdLtuid(botUserId, ltuid).stream()
                 .anyMatch(userDailyCheck-> userDailyCheck.isDoneOn(date));
     }
 
