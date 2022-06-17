@@ -7,7 +7,7 @@ import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
-import org.binchoo.paimonganyu.dailycheck.exception.QuantityZeroException;
+import org.binchoo.paimonganyu.dailycheck.exception.NoUserDailyCheckException;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class DailyCheckService implements DailyCheckPort {
     private List<List<UserDailyCheck>> checkNotEmpty(UserHoyopass user, List<List<UserDailyCheck>> logs) {
         long logCount = logs.stream().mapToLong(List::size).sum();
         if (logCount <= 0)
-            throw new QuantityZeroException(user);
+            throw new NoUserDailyCheckException(user);
         return logs;
     }
 
