@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.configs.error;
 
 import org.binchoo.paimonganyu.chatbot.errorbinders.CryptoExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.errorbinders.DailyCheckExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.errorbinders.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.errorbinders.HoyopassExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
@@ -50,6 +51,12 @@ public class ErrorExplainConfig {
         binders.add(CryptoExceptionBinder.builder()
                 .text("옳지 않은 방법으로 만들어진 QR 코드인 것 같습니다.")
                 .fallbacks(FallbackMethods.Home, FallbackMethods.ScanHoyopass, FallbackMethods.CommonCs)
+                .build());
+
+        binders.add(DailyCheckExceptionBinder.builder()
+                .error(QuantityZeroException.class)
+                .title("일일 출석을 수행한 이력이 없습니다.")
+                .fallbacks(FallbackMethods.Home)
                 .build());
 
         return binders;
