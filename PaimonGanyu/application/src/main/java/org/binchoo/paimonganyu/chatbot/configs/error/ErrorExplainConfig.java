@@ -54,7 +54,7 @@ public class ErrorExplainConfig {
                 .build());
 
         binders.add(DailyCheckExceptionBinder.builder()
-                .error(QuantityZeroException.class)
+                .error(org.binchoo.paimonganyu.dailycheck.exception.QuantityZeroException.class)
                 .title("일일 출석을 수행한 이력이 없습니다.")
                 .fallbacks(FallbackMethods.Home)
                 .build());
