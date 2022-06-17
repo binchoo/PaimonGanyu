@@ -4,7 +4,6 @@ import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
-import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CanCarousel;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -16,7 +15,6 @@ import org.binchoo.paimonganyu.traveler.TravelerStatus;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -110,11 +108,11 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     }
 
     private List<ItemList> renderItemLists(TravelerStatus status) {
-        long resin = status.getCurrentResin();
-        long m = TimeUnit.SECONDS.toMinutes(status.getCurrentResin());
-        resin -= m*60;
+        long recoverySeconds = status.getResinRecoverySeconds();
+        long min = recoverySeconds / 60;
+        long sec = recoverySeconds % 60;
         return List.of(new ItemList(TITLE_RESIN, status.ratioStringOfResin()),
-                new ItemList(TITLE_RESIN_RECOV, String.format("%dmin %ds", m, resin)),
+                new ItemList(TITLE_RESIN_RECOV, String.format("%dmin %ds", min, sec)),
                 new ItemList(TITLE_SEREN, status.ratioStringOfHomeCoin()),
                 new ItemList(TITLE_EXPED, String.valueOf(status.getCurrentExpeditionNum())));
     }
