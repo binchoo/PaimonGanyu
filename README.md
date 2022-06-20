@@ -3,8 +3,8 @@
 ## 3rd party Genshin Impact application
 
 PaimonGanyu is a java code base for my custom Genshin Impact applications.
-- Asynchrous & Automatic business workflows are based on PaimonGanyu's java modules.
-- Webflux webclients (most of which are in synchronous manner) and API adapters are defiend to fetch player data from Hoyoverse APIs.
+- Asynchrnous & Automatic business workflows are based on PaimonGanyu's java modules.
+- Webflux webclients (most of which implement synchronous apis) and API adapters are defiend to fetch player data from Hoyoverse APIs.
 - My KAKAOTALK chatbot [paimonganyu]() utilizes PaimonGanyu's Springboot controllers to handle the skill response and payload.
 
 ## All workflows
