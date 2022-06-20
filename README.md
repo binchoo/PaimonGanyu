@@ -3,15 +3,15 @@
 ## 3rd party Genshin Impact application
 
 PaimonGanyu is a java code base for my custom Genshin Impact applications.
-- Asynchrnous & Automatic business workflows are based on PaimonGanyu's java modules.
+- Asynchronous & Automatic business workflows are based on PaimonGanyu's java modules.
 - Webflux webclients (most of which implement synchronous apis) and API adapters are defiend to fetch player data from Hoyoverse APIs.
-- My KAKAOTALK chatbot [paimonganyu]() utilizes PaimonGanyu's Springboot controllers to handle the skill response and payload.
+- My KAKAOTALK chatbot [paimonganyu](https://github.com/binchoo/paimonganyu-doc) utilizes PaimonGanyu's Springboot controllers to handle the skill response and payload.
 
 ## All workflows
 
 [Currently defined workflows](https://github.com/binchoo/paimonganyu/issues/1#issuecomment-1087132930)
 
-Automatic & Asynchronous worflows that realize various use cases for Genshin Impact players are running on the AWS Serveless Application Model. (AWS SAM)
+There are workflows that realize various use cases for Genshin Impact players by leveraging the AWS Serveless Application Model. (AWS SAM)
 
 Use cases:
 
@@ -31,7 +31,7 @@ https://github.com/binchoo/PaimonGanyu/issues/7
 
 ## Project configurations
 
-In order to run Springboot controllers and JUnit test classes, three property files MAY be configured.
+In order to run Springboot controllers and JUnit test classes, three `properties` files **MAY** be configured.
 
 ### applications.properties (required)
 
@@ -61,6 +61,8 @@ listUserDailyCheck.maxCount = 4
 
 `:application> src> test> resources> amazon.properties`
 
+**Example:**
+
 ```properties
 amazon.aws.accesskey=ASDFASDFASDFASDFASDF
 amazon.aws.secretkey=asdfasfdfASDFASDFasdfasdfASDFASFd+-*/asdf
@@ -81,9 +83,9 @@ The production environment is AWS Lambda, hence IAM roles and IAM policies are r
 
 `:application> src> test> resources> accounts.properties`
 
-Some JUnit test cases require real Genshin Impact accounts to validate their functionalities. Hence, when user authentication is not provided, those cases fail.
+Some JUnit tests require real Genshin Impact accounts to validate their functionalities. Hence, when any user authentication is not provided, those tests fail.
 
-That being said, I know preparation of test accounts is not an easy step. `accounts.properties` is not required. You can give up running those test cases.
+That being said, I know test account preparation is not an easy step. The `accounts.properties` is not required. You can give up running those test cases.
 
 ## Deployment steps
 
@@ -158,7 +160,6 @@ I hope redundant system analysis and test (A&T) activities go with this project.
 I always welcome collaborators who can join A&T activities like below:
 
 - Spec Review
-
 - Code Review
 - Bug Report/Bug Fix
 - Proposal Kick-Off
