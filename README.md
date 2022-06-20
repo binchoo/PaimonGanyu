@@ -162,3 +162,18 @@ I always welcome collaborators who can join A&T activities like below:
 - Code Review
 - Bug Report/Bug Fix
 - Proposal Kick-Off
+
+## LICENSE
+
+**GPLv3**
+
+- [PaimonGanyu](https://github.com/binchoo/PaimonGanyu/blob/master/LICENSE)
+- [PaimonGanyu:application](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
+- [PaimonGanyu:application:infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
+
+**MIT**
+
+- [PaimonGanyu:awsutils](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/awsutils/LICENSE)
+- [PaimonGanyu:hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/hoyoapi/LICENSE)
+- [PaimonGanyu:ikakao](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/ikakao/LICENSE)
+- [PaimonGanyu:domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/domain/LICENSE)
