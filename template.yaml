@@ -5,6 +5,20 @@ Description: >
 
   SAM Template for paimonganyu
 
+Parameters:
+  Env:
+    Type: String
+    Default: test
+    AllowedValues:
+      - test
+      - prod
+    Description: The stage of this deployment.
+
+Conditions:
+  isProd: !Equals
+    - !Ref Env
+    - prod
+
 Globals:
   Function:
     CodeUri: application-0.5.zip # .aws-sam/build/application-${version}.zip
@@ -250,6 +264,6 @@ Resources:
           PROFILE: stage
       AutoPublishAlias: PaimonGanyuChatbot
       ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: 1
+        ProvisionedConcurrentExecutions: !If [isProd, 3, 1]
       DeploymentPreference:
-        Type: AllAtOnce
+        Type: !If [isProd, Canary10Percent10Minutes, AllAtOnce]
