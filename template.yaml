@@ -240,8 +240,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
-      MemorySize: 1044
-      Timeout: 600
+      MemorySize: !If [isProd, 1644, 512]
+      Timeout: 60
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserHoyopassTable
@@ -264,6 +264,6 @@ Resources:
           PROFILE: stage
       AutoPublishAlias: PaimonGanyuChatbot
       ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: !If [isProd, 3, 1]
+        ProvisionedConcurrentExecutions: !If [isProd, 2, 0]
       DeploymentPreference:
         Type: !If [isProd, Canary10Percent10Minutes, AllAtOnce]
