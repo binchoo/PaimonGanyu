@@ -259,11 +259,14 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: any
+            Auth:
+              ApiKeyRequired: true
       Environment:
         Variables:
-          PROFILE: stage
+          PROFILE: !If [isProd, prod, stage]
       AutoPublishAlias: PaimonGanyuChatbot
       ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: !If [isProd, 2, 0]
+        Condition: isProd
+        ProvisionedConcurrentExecutions: 2
       DeploymentPreference:
         Type: !If [isProd, Canary10Percent10Minutes, AllAtOnce]
