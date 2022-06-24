@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  paimonganyu-skill
+
+  SAM Template for paimonganyu-skill (KAKAOTALK Chatbot Skill Server)
+
+Parameters:
+
+  Env:
+    Type: String
+    Default: test
+    AllowedValues:
+      - test
+      - prod
+    Description: The stage of this deployment.
+
+  ArchiveVersion:
+    Type: String
+    Default: 0.0.1
+    Description: The version of the archive jar of paimoganyu-skill.
+
+Conditions:
+
+  isProd: !Equals [!Ref Env, prod]
+  isTest: !Equals [!Ref Env, test]
+
+Resources:
+  # paimonganyu-skill
+  PaimonGanyuSkillBeanstalkBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub elasticbeanstalk-${AWS::StackName}-${AWS::Region}
+
+  PaimonGanyuSkillApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: PaimonGanyu KAKAOTALK Skill Server
+      ApplicationName: !Ref AWS::StackName
+
+  PaimonGanyuSkillApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      Description: The verion of PaimonGanyu KAKAOTALK Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      SourceBundle:
+        S3Bucket: !Sub elasticbeanstalk-${AWS::StackName}-${AWS::Region}
+        S3Key: !Sub ${AWS::StackName}-${ArchiveVersion}.jar
+
+  PaimonGanyuSkillConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      Description: Configuration for PaimonGanyu KAKAOTALK Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      SolutionStackName: 64bit Amazon Linux 2 v3.2.16 running Corretto 11
+      OptionSettings:
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref PaimonGanyuSkillInstanceProfile
+
+  PaimonGanyuSkillProdEnv:
+    Type: AWS::ElasticBeanstalk::Environment
+    Condition: isProd
+    Properties:
+      Description: Production environment for PaimonGanyu Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
+      VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
+
+  PaimonGanyuSkillTestEnv:
+    Type: AWS::ElasticBeanstalk::Environment
+    Condition: isTest
+    Properties:
+      Description: Test environment for PaimonGanyu Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
+      VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
+
+  PaimonGanyuSkillRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+
+  PaimonGanyuSkillInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref PaimonGanyuSkillRole

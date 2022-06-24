@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  paimonganyu-skill
+
+  SAM Template for paimonganyu-skill beanstalk bucket
+
+Resources:
+
+  PaimonGanyuSkillBeanstalkBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub elasticbeanstalk-${AWS::StackName}-${AWS::Region}
