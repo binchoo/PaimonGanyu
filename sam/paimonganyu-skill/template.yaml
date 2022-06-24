@@ -114,6 +114,8 @@ Resources:
   ProxyMethod:
     Type: AWS::ApiGateway::Method
     Properties:
+      RequestParameters:
+        method.request.path.proxy: true
       HttpMethod: ANY
       ResourceId: !GetAtt ProxyResource.ResourceId
       RestApiId: !Ref PaimonGanyuSkillApi
@@ -125,6 +127,8 @@ Resources:
         Uri: !Sub
           - 'http://${Endpoint}/{proxy}' # The URI must be a fully formed if Type is HTTP or HTTP_PROXY.
           - Endpoint: !GetAtt PaimonGanyuSkillEnv.EndpointURL
+        RequestParameters:
+          integration.request.path.proxy: method.request.path.proxy
 
   Deployment:
     Type: AWS::ApiGateway::Deployment
@@ -147,9 +151,10 @@ Resources:
   DomainMapping:
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
-      BasePath: ''
       DomainName: !Ref ApiDomain
       RestApiId: !Ref PaimonGanyuSkillApi
+      BasePath: ''
+      Stage: !Ref Env
 
   IkakaoApiKey:
     Type: AWS::ApiGateway::ApiKey
