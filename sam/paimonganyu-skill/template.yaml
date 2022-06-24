@@ -9,7 +9,7 @@ Parameters:
 
   Env:
     Type: String
-    Default: test
+    Default: prod
     AllowedValues:
       - test
       - prod
@@ -20,10 +20,13 @@ Parameters:
     Default: 0.0.1
     Description: The version of the archive jar of paimoganyu-skill.
 
-Conditions:
+  ApiDomain:
+    Type: String
+    Default: skill.genshinjob.ga
 
-  isProd: !Equals [!Ref Env, prod]
-  isTest: !Equals [!Ref Env, test]
+  CertificateArn:
+    Type: String
+    Default: arn:aws:acm:ap-northeast-2:305992497901:certificate/2231d87b-8a59-417a-a2c6-ae90a256b714
 
 Resources:
   # paimonganyu-skill
@@ -58,20 +61,10 @@ Resources:
           OptionName: IamInstanceProfile
           Value: !Ref PaimonGanyuSkillInstanceProfile
 
-  PaimonGanyuSkillProdEnv:
+  PaimonGanyuSkillEnv:
     Type: AWS::ElasticBeanstalk::Environment
-    Condition: isProd
     Properties:
       Description: Production environment for PaimonGanyu Skill Server
-      ApplicationName: !Ref PaimonGanyuSkillApplication
-      TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
-      VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
-
-  PaimonGanyuSkillTestEnv:
-    Type: AWS::ElasticBeanstalk::Environment
-    Condition: isTest
-    Properties:
-      Description: Test environment for PaimonGanyu Skill Server
       ApplicationName: !Ref PaimonGanyuSkillApplication
       TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
       VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
@@ -100,3 +93,74 @@ Resources:
     Properties:
       Roles:
         - !Ref PaimonGanyuSkillRole
+
+  PaimonGanyuSkillApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: paimonganyu-skill
+      Description: PaimonGanyu Skill Server API Gateway
+      ApiKeySourceType: HEADER
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  ProxyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PaimonGanyuSkillApi
+      ParentId: !GetAtt PaimonGanyuSkillApi.RootResourceId
+      PathPart: "{proxy+}"
+
+  ProxyMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: ANY
+      ResourceId: !GetAtt ProxyResource.ResourceId
+      RestApiId: !Ref PaimonGanyuSkillApi
+      AuthorizationType: NONE
+      ApiKeyRequired: true
+      Integration:
+        Type: HTTP_PROXY
+        IntegrationHttpMethod: ANY
+        Uri: !Sub
+          - 'http://${Endpoint}/{proxy}' # The URI must be a fully formed if Type is HTTP or HTTP_PROXY.
+          - Endpoint: !GetAtt PaimonGanyuSkillEnv.EndpointURL
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - ProxyMethod
+    Properties:
+      RestApiId: !Ref PaimonGanyuSkillApi
+      Description: !Sub Deployment into ${Env} stage.
+      StageName: !Ref Env
+
+  DomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref ApiDomain
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: !Ref CertificateArn
+
+  DomainMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: ''
+      DomainName: !Ref ApiDomain
+      RestApiId: !Ref PaimonGanyuSkillApi
+
+  IkakaoApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn:
+      - Deployment
+    Properties:
+      CustomerId: ikakao
+      Description: API Key for PaimonGanyu chatbot itself
+      Enabled: true
+      Name: ikakao-api-key
+      StageKeys:
+        - RestApiId: !Ref PaimonGanyuSkillApi
+          StageName: !Ref Env
+      Value: 'ChangeThisValueManually1234567890'
