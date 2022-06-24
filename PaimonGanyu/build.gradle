@@ -8,8 +8,6 @@ allprojects {
     apply plugin: "jacoco"
     apply plugin: "org.sonarqube"
 
-    version = "0.5"
-
     ext {
         bootVersion = '2.4.2'
         awsSdkVersion = '1.11.914'
