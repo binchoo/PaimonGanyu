@@ -36,6 +36,10 @@ dependencies {
     }
 }
 
+bootJar {
+    archiveBaseName='paimonganyu-skill'
+}
+
 task buildZipNoTomcat(type: Zip) {
     from compileJava
     from processResources
