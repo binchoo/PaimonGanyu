@@ -155,17 +155,3 @@ Resources:
       RestApiId: !Ref PaimonGanyuSkillApi
       BasePath: ''
       Stage: !Ref Env
-
-  IkakaoApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    DependsOn:
-      - Deployment
-    Properties:
-      CustomerId: ikakao
-      Description: API Key for PaimonGanyu chatbot itself
-      Enabled: true
-      Name: ikakao-api-key
-      StageKeys:
-        - RestApiId: !Ref PaimonGanyuSkillApi
-          StageName: !Ref Env
-      Value: 'ChangeThisValueManually1234567890'
