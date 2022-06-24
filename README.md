@@ -92,37 +92,13 @@ That being said, I know test account preparation is not an easy step. The `accou
 
 ## Deployment steps
 
-1. Develop and test domain/infra/application modules.
-2. Determine the version of the artifacts. Assign that value to `project.version` variable in `build.gradle`.
-3. Change the `CodeUri` property of lambda resources defined in the `template.yaml`. This value should be pointing to `.aws-sam/build/application-${version}.zip` in relative manner.
-4. Run command `make` at `paimonganyu` directory, where the `template.yaml` file can be seen.  
-   1. Tasks in Makefile begin:
-      1. `sam build` analyzes and refactors the `template.yaml`.
-      2. In turn, `buildZip` task is triggered, which is defined in`build.gradle` in the root project.
-      3. In turn, `copyBuiltZip` task migrates the zip file created by `buildZip` task, into `.aws-sam/build/` directory.
-      4. In turn, `sam deploy --guided` occurs to deploy all resources within the owners aws account.
-      5. Finally a local test-run begins.
+Rewriting...
 
 ### buildZip and copyBuiltZip tasks
-`paimonganyu/PaimonGanyu/build.gradle`
-```groovy
-task buildZip(type: Zip) {
-   from compileJava
-   from processResources
-   into('lib') {
-      from configurations.runtimeClasspath
-   }
-}
 
-task copyBuiltZip(type: Copy) {
-   def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
-   from buildZip
-   into(dest)
-   doLast {
-      println "$project.name:$name has moved artifacts into $dest"
-   }
-}
-```
+`paimonganyu/PaimonGanyu/build.gradle`
+
+Rewrinting...
 
 #### buildZip
 
@@ -167,7 +143,7 @@ I always welcome collaborators who can join A&T activities like below:
 - Bug Report/Bug Fix
 - Proposal Kick-Off
 
-## LICENSE
+## LICENSES
 
 **GPLv3**
 
