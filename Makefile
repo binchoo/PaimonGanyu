@@ -26,10 +26,5 @@ build-template:
 	cd sam/paimonganyu; sam build --profile serverless
 	cd sam/paimonganyu-skill; sam build --profile serverless
 
-beanstalk-bucket:
-	cd sam/paimonganyu-skill; sam deploy -t beanstalkbucket.yaml \
-		--profile serverless \
-		--region ap-northeast-2
-
 localtest:
 	cd PaimonGanyu; ./gradlew -PlocalTest=true :application:test
