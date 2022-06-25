@@ -5,7 +5,7 @@ paimonganyu-skill-prod: build
 		--stack-name paimonganyu-skill \
 		--profile serverless \
 		--region ap-northeast-2 \
-		--parameter-overrides Env=prod Archive='paimonganyu-skill-$(version).jar'
+		--parameter-overrides Env=prod
 
 paimonganyu-prod: build
 	cd sam/paimonganyu; sam deploy --guided \
