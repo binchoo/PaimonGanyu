@@ -15,11 +15,6 @@ Parameters:
       - prod
     Description: The stage of this deployment.
 
-  ArchiveVersion:
-    Type: String
-    Default: 0.0.1
-    Description: The version of the archive jar of paimoganyu-skill.
-
   ApiDomain:
     Type: String
     Default: skill.genshinjob.ga
@@ -30,10 +25,6 @@ Parameters:
 
 Resources:
   # paimonganyu-skill
-  PaimonGanyuSkillBeanstalkBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub elasticbeanstalk-${AWS::StackName}-${AWS::Region}
 
   PaimonGanyuSkillApplication:
     Type: AWS::ElasticBeanstalk::Application
@@ -46,9 +37,7 @@ Resources:
     Properties:
       Description: The verion of PaimonGanyu KAKAOTALK Skill Server
       ApplicationName: !Ref PaimonGanyuSkillApplication
-      SourceBundle:
-        S3Bucket: !Sub elasticbeanstalk-${AWS::StackName}-${AWS::Region}
-        S3Key: !Sub ${AWS::StackName}-${ArchiveVersion}.jar
+      SourceBundle: ./.aws-sam/build/paimonganyu-skill-1.0.0.jar
 
   PaimonGanyuSkillConfigurationTemplate:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
