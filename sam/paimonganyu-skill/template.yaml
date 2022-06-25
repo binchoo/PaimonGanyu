@@ -25,7 +25,6 @@ Parameters:
 
 Resources:
   # paimonganyu-skill
-
   PaimonGanyuSkillApplication:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
@@ -127,6 +126,19 @@ Resources:
       RestApiId: !Ref PaimonGanyuSkillApi
       Description: !Sub Deployment into ${Env} stage.
       StageName: !Ref Env
+
+  IkakaoUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn: Deployment
+    Properties:
+      Description: Usage plan for ikakao chatbot
+      ApiStages:
+        - ApiId: !Ref PaimonGanyuSkillApi
+          Stage: !Ref Env
+      Throttle:
+        RateLimit: 300
+        BurstLimit: 350
+      UsagePlanName: ikakao-usage-plan
 
   DomainName:
     Type: AWS::ApiGateway::DomainName
