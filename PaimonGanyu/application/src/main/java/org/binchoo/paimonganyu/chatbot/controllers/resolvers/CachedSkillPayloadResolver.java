@@ -19,9 +19,9 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class ServletRequestSkillPayloadResolver implements SkillPayloadResolver {
+public class CachedSkillPayloadResolver implements SkillPayloadResolver {
 
-    private final ObjectMapper mapper;
+    private final ObjectMapper objectMapper;
 
     @Override
     public SkillPayload resolve(HttpServletRequest request) {
@@ -46,7 +46,7 @@ public class ServletRequestSkillPayloadResolver implements SkillPayloadResolver 
 
     private SkillPayload deserialize(byte[] requestBody) throws IOException {
         try {
-            return mapper.readValue(requestBody, SkillPayload.class);
+            return objectMapper.readValue(requestBody, SkillPayload.class);
         } catch (IOException e) {
             log.debug("Failed to deserialize a request body", e);
             log.debug("Payload: {}", requestBody);
