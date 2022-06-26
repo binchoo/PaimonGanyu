@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.views.traveler;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
-import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CanCarousel;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -14,16 +14,13 @@ import org.binchoo.paimonganyu.traveler.TravelerStatus;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * @author jbinchoo
  * @since 2022/06/14
  */
-public class TravelerStatusView extends AbstractSkillResopnseView {
-
-    public static final String STATUSES = "statuses";
+public class TravelerStatusView extends SkillResponseView {
 
     private static int thumbIndex = 0;
     private static final int thumbRobin = 5;
@@ -49,8 +46,8 @@ public class TravelerStatusView extends AbstractSkillResopnseView {
     }
 
     @Override
-    protected SkillResponse renderResponse(Map<String, ?> model) {
-        return renderSkillResponse((Collection<TravelerStatus>) model.get(STATUSES));
+    protected SkillResponse renderSkillResponse(Object modelContent) {
+        return this.renderSkillResponse((Collection<TravelerStatus>) modelContent);
     }
 
     public SkillResponse renderSkillResponse(Collection<TravelerStatus> status) {

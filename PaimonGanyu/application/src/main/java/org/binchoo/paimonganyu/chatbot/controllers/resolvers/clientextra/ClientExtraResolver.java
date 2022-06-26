@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.controllers.resolvers.id;
+package org.binchoo.paimonganyu.chatbot.controllers.resolvers.clientextra;
 
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.chatbot.controllers.resolvers.SkillPayloadResolver;
@@ -18,18 +18,23 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequiredArgsConstructor
 @Component
-public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
+public class ClientExtraResolver implements HandlerMethodArgumentResolver {
 
     private final SkillPayloadResolver skillPayloadResolver;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(UserId.class);
+        return parameter.hasParameterAnnotation(ClientExtra.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        ClientExtra clientExtra = parameter.getParameterAnnotation(ClientExtra.class);
         SkillPayload skillPayload = skillPayloadResolver.resolve(webRequest.getNativeRequest(HttpServletRequest.class));
-        return skillPayload.getUserRequest().getUser().getId();
+        if (skillPayload != null && clientExtra != null) {
+            String key = clientExtra.value();
+            return skillPayload.getAction().getClientExtra().get(key);
+        }
+        return null;
     }
 }

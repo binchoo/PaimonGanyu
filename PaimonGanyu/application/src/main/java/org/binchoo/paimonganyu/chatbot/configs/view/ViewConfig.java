@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.BeanNameViewResolver;
 
 /**
  * @author : jbinchoo
@@ -19,13 +21,10 @@ import org.springframework.context.annotation.Lazy;
 @Configuration
 public class ViewConfig {
 
-//    /**
-//     * @deprecated aws-serverless-java-container에서 이용할 수 없다.
-//     */
-//    @Bean
-//    public ViewResolver viewResolver() {
-//        return new BeanNameViewResolver();
-//    }
+    @Bean
+    public ViewResolver viewResolver() {
+        return new BeanNameViewResolver();
+    }
 
     @Lazy
     @Bean
@@ -51,8 +50,8 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public DailyCheckListView dailyCheckTrialListView(@Autowired Images images,
-                                                      @Autowired QuickReplies quickReplies) {
+    public DailyCheckListView dailyCheckListView(@Autowired Images images,
+                                                 @Autowired QuickReplies quickReplies) {
         return new DailyCheckListView(images, quickReplies);
     }
 }

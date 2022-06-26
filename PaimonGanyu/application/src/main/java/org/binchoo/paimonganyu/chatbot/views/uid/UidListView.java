@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
-import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
@@ -17,26 +17,19 @@ import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-public class UidListView extends AbstractSkillResopnseView {
-
-    public static final String UIDS = "uids";
+public class UidListView extends SkillResponseView {
 
     private static final String IMAGEKEY_AETHER = "aether_banner";
     private static final String IMAGEKEY_LUMINE = "lumine_banner";
 
     public UidListView(Images images, QuickReplies quickReplies) {
         super(images, quickReplies, null);
-    }
-
-    public UidListView(ObjectMapper objectMapper, Images images, QuickReplies quickReplies) {
-        super(objectMapper, images, quickReplies, null);
     }
 
     private final class UidValue {
@@ -70,12 +63,8 @@ public class UidListView extends AbstractSkillResopnseView {
     }
 
     @Override
-    protected SkillResponse renderResponse(Map<String, ?> model) {
-        if (!model.containsKey(UIDS))
-            throw new IllegalArgumentException("Model [" + model + "] does not contains List<Uid>");
-
-        Object uids = model.get(UIDS);
-        return renderSkillResponse((List<Uid>) uids);
+    protected SkillResponse renderSkillResponse(Object modelContent) {
+        return renderSkillResponse((List<Uid>) modelContent);
     }
 
     public SkillResponse renderSkillResponse(List<Uid> uids) {

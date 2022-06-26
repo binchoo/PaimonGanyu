@@ -1,7 +1,8 @@
 package org.binchoo.paimonganyu.chatbot.configs.web;
 
-import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserIdArgumentResolver;
-import org.binchoo.paimonganyu.chatbot.controllers.resolvers.param.ActionParamArgumentResolver;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.clientextra.ClientExtraResolver;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserIdResolver;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.param.ActionParamResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -17,14 +18,17 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
-    private ActionParamArgumentResolver actionParamArgumentResolver;
+    private ActionParamResolver actionParamResolver;
 
     @Autowired
-    private UserIdArgumentResolver userIdArgumentResolver;
+    private UserIdResolver userIdResolver;
+
+    @Autowired
+    private ClientExtraResolver clientExtraResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(actionParamArgumentResolver);
-        resolvers.add(userIdArgumentResolver);
+        resolvers.addAll(
+                List.of(actionParamResolver, userIdResolver, clientExtraResolver));
     }
 }

@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
-import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Uid;
@@ -27,17 +27,15 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-13
  */
-public class HoyopassListView extends AbstractSkillResopnseView {
-
-    public static final String HOYOPASSES = "hoyopasses";
+public class HoyopassListView extends SkillResponseView {
 
     public HoyopassListView(Images images, QuickReplies quickReplies, BlockIds blockIds) {
         super(images, quickReplies, blockIds);
     }
 
     @Override
-    protected SkillResponse renderResponse(Map<String, ?> model) {
-        return renderSkillResponse((List<Hoyopass>) model.get(HOYOPASSES));
+    protected SkillResponse renderSkillResponse(Object modelContent) {
+        return this.renderSkillResponse((List<Hoyopass>) modelContent);
     }
 
     public SkillResponse renderSkillResponse(List<Hoyopass> hoyopasses) {

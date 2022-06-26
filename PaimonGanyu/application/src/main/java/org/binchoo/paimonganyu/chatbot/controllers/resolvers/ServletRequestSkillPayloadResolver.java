@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author jbinchoo
@@ -22,25 +25,32 @@ public class ServletRequestSkillPayloadResolver implements SkillPayloadResolver 
 
     @Override
     public SkillPayload resolve(HttpServletRequest request) {
-        return resolvePayload(request);
+        assert request instanceof ContentCachingRequestWrapper;
+        return resolvePayload((ContentCachingRequestWrapper) request);
     }
 
-    private SkillPayload resolvePayload(HttpServletRequest request) {
-        assert request instanceof ContentCachingRequestWrapper;
-        return deserialize(getCachedContent((ContentCachingRequestWrapper) request));
+    private SkillPayload resolvePayload(ContentCachingRequestWrapper request) {
+        try {
+            ServletInputStream is = request.getInputStream();
+            return is.isFinished()? deserialize(getCachedContent(request))
+                    : deserialize(StreamUtils.copyToByteArray(is));
+        } catch (IOException e) {
+            log.error("The request body is not a SkillPayload.");
+        }
+        return null;
     }
 
     private byte[] getCachedContent(ContentCachingRequestWrapper request) {
         return request.getContentAsByteArray();
     }
 
-    private SkillPayload deserialize(byte[] requestBody) {
+    private SkillPayload deserialize(byte[] requestBody) throws IOException {
         try {
             return mapper.readValue(requestBody, SkillPayload.class);
-        } catch (Exception e) {
-            log.debug("Failed to deserialize a SkillPayload.", e);
+        } catch (IOException e) {
+            log.debug("Failed to deserialize a request body", e);
             log.debug("Payload: {}", requestBody);
+            throw e;
         }
-        return null;
     }
 }

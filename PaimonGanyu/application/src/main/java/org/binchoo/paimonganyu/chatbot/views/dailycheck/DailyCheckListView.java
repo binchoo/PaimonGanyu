@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.views.dailycheck;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
-import org.binchoo.paimonganyu.chatbot.views.AbstractSkillResopnseView;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.error.FallbackMethod;
@@ -19,8 +19,6 @@ import org.binchoo.paimonganyu.ikakao.type.buttons.BlockButton;
 import org.binchoo.paimonganyu.ikakao.type.subtype.Link;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,9 +29,8 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022-06-14
  */
-public class DailyCheckListView extends AbstractSkillResopnseView implements MessageSourceAware {
+public class DailyCheckListView extends SkillResponseView implements MessageSourceAware {
 
-    public static final String TRIALS = "trials";
     private static final String THUMB_FAIL = "dailycheck_fail";
     private static final String THUMB_DUPL = "dailycheck_duplicate";
     private static final String THUMB_COMPL = "dailycheck_complete";
@@ -44,13 +41,8 @@ public class DailyCheckListView extends AbstractSkillResopnseView implements Mes
     }
 
     @Override
-    protected SkillResponse renderResponse(Map<String, ?> model) {
-        Object value = model.get(TRIALS);
-        if (model.get(TRIALS) != null)
-            return renderSkillResponse((List<List<UserDailyCheck>>) value);
-
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                String.format("Model[%s] cannot be rendered by %s bean.", model, this.getBeanName()));
+    protected SkillResponse renderSkillResponse(Object content) {
+        return renderSkillResponse((List<List<UserDailyCheck>>) content);
     }
 
     public SkillResponse renderSkillResponse(List<List<UserDailyCheck>> dailyCheckCollection) {

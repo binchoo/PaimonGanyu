@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequiredArgsConstructor
 @Component
-public class ActionParamArgumentResolver implements HandlerMethodArgumentResolver {
+public class ActionParamResolver implements HandlerMethodArgumentResolver {
 
     private final SkillPayloadResolver skillPayloadResolver;
 

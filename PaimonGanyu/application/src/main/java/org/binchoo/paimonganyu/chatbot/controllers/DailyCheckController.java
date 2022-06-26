@@ -1,73 +1,59 @@
 package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckListView;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.clientextra.ClientExtra;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserId;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
-import org.binchoo.paimonganyu.ikakao.SkillPayload;
-import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 
 /**
  * @author : jbinchoo
  * @since : 2022-06-14
  */
-@Slf4j
 @RequestMapping("/ikakao/dailycheck")
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class DailyCheckController {
 
-    private final HoyopassRegisterPort hoyopassRegister;
+    private static final String CONTENT_KEY = SkillResponseView.CONTENT_KEY;
+
     private final DailyCheckPort dailyCheck;
-    private final DailyCheckListView view;
+    private final HoyopassRegisterPort hoyopassRegister;
 
     @Value("${listUserDailyCheck.maxCount}")
     private int maxCount;
 
     @PostMapping("/hoyopass")
-    public SkillResponse dailyCheckPerPass(@RequestBody SkillPayload skillPayload,
-                                           Model model) {
-        int index = parseIndex(skillPayload);
-        String botUserId = parseId(skillPayload);
+    public String dailyCheckPerPass(@UserId String botUserId,
+                                    @ClientExtra("index") int index, Model model) {
         UserHoyopass user = findUser(botUserId);
-
         Hoyopass pass = user.get(index);
+
         var result = List.of(dailyCheck.claimDailyCheckIn(botUserId, pass));
-        log.debug("UserDailyCheck: {}", result);
-        return view.renderSkillResponse(List.of(result));
+        model.addAttribute(CONTENT_KEY, List.of(result));
+
+        return "dailyCheckListView";
     }
 
     @PostMapping("/list")
-    public SkillResponse listUserDailyCheck(@RequestBody SkillPayload skillPayload,
-                                            Model model) {
-        String botUserId = parseId(skillPayload);
+    public String listUserDailyCheck(@UserId String botUserId, Model model) {
         UserHoyopass user = findUser(botUserId);
 
         var result = dailyCheck.historyOfUser(user, maxCount);
-        log.debug("UserDailyCheck: {}", result);
-        return view.renderSkillResponse(result);
-    }
+        model.addAttribute(CONTENT_KEY, result);
 
-    private String parseId(SkillPayload skillPayload) {
-        return skillPayload.getUserRequest().getUser().getId();
-    }
-
-    private int parseIndex(SkillPayload skillPayload) {
-        Object index = skillPayload.getAction().getClientExtra().get("index");
-        if (!(index instanceof Integer))
-            throw new RuntimeException();
-        return (Integer) index;
+        return "dailyCheckListView";
     }
 
     private UserHoyopass findUser(String botUserId) {

@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.controllers.filters;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -14,6 +15,7 @@ import java.io.IOException;
  * @author : jbinchoo
  * @since : 2022-06-26
  */
+@Slf4j
 @Component
 public class ContentCachingFilter extends OncePerRequestFilter {
 
