@@ -28,14 +28,14 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public UidListView listUidsView(@Autowired Images images,
+    public UidListView uidListView(@Autowired Images images,
                                     @Autowired QuickReplies quickReplies) {
         return new UidListView(images, quickReplies);
     }
 
     @Lazy
     @Bean
-    public HoyopassListView listHoyopassesView(@Autowired Images images,
+    public HoyopassListView hoyopassListView(@Autowired Images images,
                                                @Autowired QuickReplies quickReplies,
                                                @Autowired BlockIds blockIds) {
         return new HoyopassListView(images, quickReplies, blockIds);
