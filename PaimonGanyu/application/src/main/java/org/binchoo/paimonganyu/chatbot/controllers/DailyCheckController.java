@@ -11,8 +11,8 @@ import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class DailyCheckController {
     @Value("${listUserDailyCheck.maxCount}")
     private int maxCount;
 
-    @PostMapping("/hoyopass")
+    @RequestMapping(value = "/hoyopass", method = RequestMethod.POST)
     public String dailyCheckPerPass(@UserId String botUserId,
                                     @ClientExtra("index") int index, Model model) {
         UserHoyopass user = findUser(botUserId);
@@ -46,7 +46,7 @@ public class DailyCheckController {
         return "dailyCheckListView";
     }
 
-    @PostMapping("/list")
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String listUserDailyCheck(@UserId String botUserId, Model model) {
         UserHoyopass user = findUser(botUserId);
 

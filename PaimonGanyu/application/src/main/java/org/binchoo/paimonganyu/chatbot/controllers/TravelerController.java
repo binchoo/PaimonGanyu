@@ -8,6 +8,7 @@ import org.binchoo.paimonganyu.ikakao.SkillPayload;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.traveler.TravelerStatus;
 import org.binchoo.paimonganyu.traveler.driving.TravelerStatusPort;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +23,11 @@ import java.util.Collection;
  */
 @RequiredArgsConstructor
 @RequestMapping("/ikakao/traveler")
-@RestController
+@Controller
 public class TravelerController {
 
     private final HoyopassRegisterPort hoyopassRegister;
     private final TravelerStatusPort travelerStatus;
-    private final TravelerStatusView view;
 
     @PostMapping("/status")
     public SkillResponse listTravelerStatus(@RequestBody SkillPayload skillPayload,
