@@ -1,19 +1,16 @@
 package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserId;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
-import org.binchoo.paimonganyu.ikakao.SkillPayload;
-import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.traveler.TravelerStatus;
 import org.binchoo.paimonganyu.traveler.driving.TravelerStatusPort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 
@@ -29,14 +26,13 @@ public class TravelerController {
     private final HoyopassRegisterPort hoyopassRegister;
     private final TravelerStatusPort travelerStatus;
 
-    @PostMapping("/status")
-    public SkillResponse listTravelerStatus(@RequestBody SkillPayload skillPayload,
-                                            Model model) {
-        String botUserId = skillPayload.getUserRequest().getUser().getId();
-
+    @RequestMapping(value = "/status", method = RequestMethod.POST)
+    public String listTravelerStatus(@UserId String botUserId, Model model) {
         UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
-        Collection<TravelerStatus> status = travelerStatus.getCurrentStatus(user);
 
-        return view.renderSkillResponse(status);
+        Collection<TravelerStatus> status = travelerStatus.getCurrentStatus(user);
+        model.addAttribute(SkillResponseView.CONTENT_KEY, status);
+
+        return "travelerStatusView";
     }
 }
