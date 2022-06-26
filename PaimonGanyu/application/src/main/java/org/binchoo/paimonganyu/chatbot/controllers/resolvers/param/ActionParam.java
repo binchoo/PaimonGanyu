@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.controllers.resolver.id;
+package org.binchoo.paimonganyu.chatbot.controllers.resolvers.param;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,5 +11,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserId {
+public @interface ActionParam {
+
+    String value();
 }

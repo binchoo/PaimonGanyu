@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.configs.web;
 
-import org.binchoo.paimonganyu.chatbot.controllers.resolver.id.UserIdArgumentResolver;
-import org.binchoo.paimonganyu.chatbot.controllers.resolver.param.ActionParamArgumentResolver;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserIdArgumentResolver;
+import org.binchoo.paimonganyu.chatbot.controllers.resolvers.param.ActionParamArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
