@@ -13,7 +13,7 @@ import java.util.TimeZone;
  */
 @Slf4j
 @Configuration
-public class TimeZonConfig {
+public class TimeZoneConfig {
 
     @Value("${timezone}")
     private String timeZoneId;
