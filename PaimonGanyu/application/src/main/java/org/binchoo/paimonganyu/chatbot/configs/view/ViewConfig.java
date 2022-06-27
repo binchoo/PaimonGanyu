@@ -29,15 +29,15 @@ public class ViewConfig {
     @Lazy
     @Bean
     public UidListView uidListView(@Autowired Images images,
-                                    @Autowired QuickReplies quickReplies) {
+                                   @Autowired QuickReplies quickReplies) {
         return new UidListView(images, quickReplies);
     }
 
     @Lazy
     @Bean
     public HoyopassListView hoyopassListView(@Autowired Images images,
-                                               @Autowired QuickReplies quickReplies,
-                                               @Autowired BlockIds blockIds) {
+                                             @Autowired QuickReplies quickReplies,
+                                             @Autowired BlockIds blockIds) {
         return new HoyopassListView(images, quickReplies, blockIds);
     }
 
