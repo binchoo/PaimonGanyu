@@ -7,11 +7,12 @@ This repo is a java code base for my custom Genshin Impact applications.
 It includes two different stacks.
 
 ### paimonganyu-skill
-The skill server of KAKAOTALK chatbot [여행 비서 페이몬(paimonganyu)](https://github.com/binchoo/paimonganyu-doc).
+The skill server of my KAKAOTALK chatbot [여행 비서 페이몬](https://github.com/binchoo/paimonganyu-doc).
 
 ### paimonganyu
-- Some asynchronous & automatic workflows for Genshin users, which are integrated with the chatbot's skill server.
-- Webflux web clients (most of which implement synchronous apis) and API adapters to fetch player data from Hoyoverse APIs.
+- The behind workflows that supports my chatbot.
+- Some asynchronous & automatic workflows for Genshin users.
+- Webflux web clients, most of which implement synchrnous apis, and API adapters to fetch player data from Hoyoverse APIs.
 
 ## Engineering Wiki
 [Notion: PaimonGanyu 엔지니어링](https://hollow-leotard-0e1.notion.site/PaimonGanyu-81337fdfe052499f98a2a347f30afbcd)
