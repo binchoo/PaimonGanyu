@@ -10,9 +10,9 @@ It includes two different stacks.
 The skill server of my KAKAOTALK chatbot [여행 비서 페이몬](https://github.com/binchoo/paimonganyu-doc).
 
 ### paimonganyu
-- The behind workflows that supports my chatbot.
+- The behind workflows that support my chatbot.
 - Some asynchronous & automatic workflows for Genshin users.
-- Webflux web clients, most of which implement synchrnous apis, and API adapters to fetch player data from Hoyoverse APIs.
+- Webflux web clients, most of which implement synchronous apis, and API adapters to fetch player data from Hoyoverse APIs.
 
 ## Engineering Wiki
 [Notion: PaimonGanyu 엔지니어링](https://hollow-leotard-0e1.notion.site/PaimonGanyu-81337fdfe052499f98a2a347f30afbcd)
@@ -40,7 +40,7 @@ Use cases:
 https://github.com/binchoo/PaimonGanyu/issues/7
 
 ## Project configurations
-1. In order to deploy the serverless workflows, you just need a AWS account. No other configurations.
+1. In order to deploy the serverless workflows, you just need an AWS account. No other configurations required.
 2. In order to execute the Springboot skill server or JUnit test classes, three `properties` files **MAY** be configured.
 
 ### applications.properties (required)
@@ -85,17 +85,17 @@ amazon.ssm.hoyopass.publickeyname = HoyopassRsaPublicKey
 amazon.ssm.hoyopass.privatekeyname = HoyopassRsaPrivateKey
 ```
 
-These properties are only required by local intergration test runs. 
+These properties are only required by the local integration tests. 
 
-The production environment is AWS Lambda, hence IAM roles and IAM policies are responsible to configure the same properties.
+The production environment is AWS Lambda, hence IAM roles and IAM policies are responsible to configure these security options.
 
 ### accounts.properties (optional)
 
 `:application> src> test> resources> accounts.properties`
 
-Some JUnit tests require real Genshin Impact accounts to validate their functionalities. Hence, when any user authentication is not provided, those tests fail.
+Some tests require real Genshin Impact accounts to validate their functionalities. If any user authentication is not provided, those tests fail.
 
-That being said, I know test account preparation is not an easy step. The `accounts.properties` is not required. You can give up running those test cases.
+That being said, the preparation step for test accounts is not easy. This properties file is not required. You can give up running the test cases.
 
 ## Deployment steps
 
