@@ -25,10 +25,6 @@ public enum Region {
     }
 
     public static Region fromString(String s) {
-        try {
-            return Region.valueOf(s.toUpperCase());
-        } catch (Exception e) {
-        }
-        return OS_OTHER;
+        return Region.valueOf(s.toUpperCase());
     }
 }

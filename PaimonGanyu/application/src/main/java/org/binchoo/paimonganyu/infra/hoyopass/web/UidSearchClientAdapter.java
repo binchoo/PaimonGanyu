@@ -54,6 +54,7 @@ public class UidSearchClientAdapter implements UidSearchClientPort {
 
     private List<Uid> mapUserGameRoleToUid(List<UserGameRole> userGameRoles, LtuidLtoken ltuidLtoken) {
         return userGameRoles.stream()
+                .filter(UserGameRole::isGenshinImpactRole)
                 .map(ugr -> Uid.builder()
                         .uidString(ugr.getGameUid())
                         .characterLevel(ugr.getLevel())
