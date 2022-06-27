@@ -4,12 +4,11 @@ import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
+import org.binchoo.paimonganyu.hoyoapi.pojo.enums.HoyoGame;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Collections;
 
 import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
@@ -27,7 +26,6 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
     public HoyolabAccountWebClient() {
         this.webClient = WebClient.builder()
                 .baseUrl(getBaseUrl())
-                .defaultUriVariables(Collections.singletonMap(PARAM_GAME_BIZ, "hk4e_global"))
                 .build();
     }
 
@@ -38,7 +36,9 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
     @Override
     public HoyoResponse<UserGameRoles> getUserGameRoles(LtuidLtoken ltuidLtoken) {
         ResponseEntity<HoyoResponse<UserGameRoles>> response = webClient.get()
-                .uri(GET_USER_GAME_ROLE_URL)
+                .uri(uriBuilder -> uriBuilder.path(GET_USER_GAME_ROLE_URL)
+                        .queryParam(PARAM_GAME_BIZ, HoyoGame.GENSHIN_IMPACT.gameBizString())
+                        .build())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())
                 .retrieve()
@@ -58,6 +58,7 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
                 .uri(uriBuilder -> uriBuilder
                         .path(GET_USER_GAME_ROLE_URL)
                         .queryParam(PARAM_REGION, region)
+                        .queryParam(PARAM_GAME_BIZ, HoyoGame.GENSHIN_IMPACT.gameBizString())
                         .build())
                 .cookie(COOKIE_LTOKEN, ltuidLtoken.getLtoken())
                 .cookie(COOKIE_LTUID, ltuidLtoken.getLtuid())

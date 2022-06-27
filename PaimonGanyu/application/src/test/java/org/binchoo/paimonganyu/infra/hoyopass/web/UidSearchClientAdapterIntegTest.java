@@ -63,7 +63,7 @@ class UidSearchClientAdapterIntegTest {
 
         var uids = uidSearchClientAdapter.findUids(validHoyopass);
 
-        assertThat(uids).hasSameSizeAs(userGameRoles);
+        assertThat(userGameRoles).hasSameSizeAs(uids);
         IntStream.range(0, uids.size()).forEach (i-> {
             var uid = uids.get(i);
             var ugr = userGameRoles.get(i);

@@ -30,7 +30,7 @@ public class UidSearchClientAdapter implements UidSearchClientPort {
     @Override
     public List<Uid> findUids(Hoyopass hoyopass) {
         LtuidLtoken ltuidLtoken = getLtuidLtoken(hoyopass);
-        List<UserGameRole> userGameRoles = requestUserGameRoles(hoyopass, ltuidLtoken).getList();
+        List<UserGameRole> userGameRoles = requestUserGameRoles(hoyopass, ltuidLtoken);
         return mapUserGameRoleToUid(userGameRoles, ltuidLtoken);
     }
 
@@ -40,9 +40,11 @@ public class UidSearchClientAdapter implements UidSearchClientPort {
      * @throws IllegalArgumentException 통행증이 유효하지 않아 UID를 조회할 수 없었을 경우,
      * <p> API 응답에서 null 데이터가 담겨 {@link NullPointerException}을 받았을 경우.
      */
-    private UserGameRoles requestUserGameRoles(Hoyopass hoyopass, LtuidLtoken ltuidLtoken) {
+    private List<UserGameRole> requestUserGameRoles(Hoyopass hoyopass, LtuidLtoken ltuidLtoken) {
         try {
-            return accountApi.getUserGameRoles(ltuidLtoken).getData();
+            var userGameRoles =  accountApi.getUserGameRoles(ltuidLtoken).getData().getList();
+            log.info("UserGameRoles: {}", userGameRoles);
+            return userGameRoles;
         } catch (RetcodeException e) {
             throw new IllegalArgumentException(
                     String.format("UID를 조회할 수 없는 통행증입니다: %s", hoyopass), e);

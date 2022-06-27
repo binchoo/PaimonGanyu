@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.binchoo.paimonganyu.hoyoapi.pojo.enums.HoyoGame;
 
 @ToString
 @Setter
@@ -22,6 +23,6 @@ public class UserGameRole {
     boolean isOfficial;
 
     public boolean isGenshinImpactRole() {
-        return gameBiz.equals("hk4e_global");
+        return HoyoGame.GENSHIN_IMPACT.gameBizEquals(gameBiz);
     }
 }
