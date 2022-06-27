@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.hoyopass;
 
 public enum Region {
 
-    OS_USA, OS_EURO, OS_ASIA, OS_CHT;
+    OS_USA, OS_EURO, OS_ASIA, OS_CHT, OS_OTHER;
 
     public String lowercase() {
         return this.name().toLowerCase();
@@ -29,6 +29,6 @@ public enum Region {
             return Region.valueOf(s.toUpperCase());
         } catch (Exception e) {
         }
-        return OS_ASIA;
+        return OS_OTHER;
     }
 }
