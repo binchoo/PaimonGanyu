@@ -39,7 +39,7 @@ class AwsEventWrapperFactoryTest {
         var event = new SQSEvent();
         var expectedWrapper = new CustomSQSEventWrapper();
 
-        var eventWrapper = factory._getWrapper(event);
+        var eventWrapper = factory.getWrapper0(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }
@@ -94,6 +94,7 @@ class AwsEventWrapperFactoryTest {
     @Test
     void givenS3EventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new S3Event();
+        var badClient = AmazonDynamoDBClientBuilder.defaultClient();
 
         assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event, null);
@@ -102,15 +103,16 @@ class AwsEventWrapperFactoryTest {
             AwsEventWrapperFactory.getWrapper(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, AmazonDynamoDBClientBuilder.defaultClient());
+            AwsEventWrapperFactory.getWrapper(event, badClient);
         });
     }
 
+    @SuppressWarnings("Allowed null arguments.")
     @DisplayName("적절한 생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
     @Test
     void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new DynamodbEvent();
-
+        var badClient = AmazonS3ClientBuilder.defaultClient();
         assertThrows(IllegalArgumentException.class, ()-> {
             AwsEventWrapperFactory.getWrapper(event, null);
         });
@@ -118,7 +120,7 @@ class AwsEventWrapperFactoryTest {
             AwsEventWrapperFactory.getWrapper(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, AmazonS3ClientBuilder.defaultClient());
+            AwsEventWrapperFactory.getWrapper(event, badClient);
         });
     }
 

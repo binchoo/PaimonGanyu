@@ -6,7 +6,6 @@ plugins {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // Amazon DynamoDB
     implementation ("com.amazonaws:aws-java-sdk-dynamodb:${awsSdkVersion}") {
         because 'All workflows use the Amazon DynamoDB as their persistence system.'
     }
@@ -14,24 +13,56 @@ dependencies {
         because 'To automatically create some DynamoDB repositories.'
     }
 
-    // Amazon SNS
     implementation ("com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}") {
         because 'Hoyopass fanout leverages an SNS topic.'
     }
 
-    // AWS Systems Manager
     implementation ("com.amazonaws:aws-java-sdk-ssm:${awsSdkVersion}") {
         because 'Hoyopass could digest secured (RSA-signed) hoyopass strings.'
     }
 
-    // AWS lambda
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
-
-    runtimeOnly 'com.h2database:h2'
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot2:1.8.1'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+bootJar {
+    archiveBaseName='paimonganyu-skill'
+}
+
+task buildZipNoTomcat(type: Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from (configurations.runtimeClasspath) {
+            exclude 'tomcat-embed-*'
+        }
+    }
+}
+
+def samBuildDir(String stackName) {
+    '../'.repeat(project.depth + 1) + "sam/${stackName}/.aws-sam/build"
+}
+
+task copyBuiltZipNoTomcat(type: Copy) {
+    def dest = samBuildDir('paimonganyu')
+    from buildZipNoTomcat
+    into(dest)
+    doLast {
+        println "$project.name:$name has moved fat-zip into $dest"
+    }
+}
+
+task copyBootJar(type: Copy) {
+    def dest = samBuildDir('paimonganyu-skill')
+    from bootJar
+    into(dest)
+    doLast {
+        println "$project.name:$name has moved bootJar into $dest"
     }
 }
 

@@ -10,10 +10,8 @@ import org.binchoo.paimonganyu.infra.utils.LocalDateTimeStringConverter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
 @Slf4j
-@ToString
-@Setter // required for conversion and unconversion, never remove this.
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamoDBTable(tableName="UserDailyCheck")
@@ -38,13 +36,13 @@ public class UserDailyCheckItem {
     private UserDailyCheckStatus status;
 
     public static UserDailyCheckItem fromDomain(UserDailyCheck userDailyCheck) {
-        String botUserId = userDailyCheck.getBotUserId();
-        String ltuid = userDailyCheck.getLtuid();
-        String botUserIdLtuid = botUserId + "-" + ltuid;
-        LocalDateTime timestamp = userDailyCheck.getTimestamp();
-        UserDailyCheckStatus status = userDailyCheck.getStatus();
-        return new UserDailyCheckItem(UUID.randomUUID().toString(), botUserId,
-                botUserIdLtuid, ltuid, timestamp, status);
+        var botUserId = userDailyCheck.getBotUserId();
+        var ltuid = userDailyCheck.getLtuid();
+        var botUserIdLtuid = botUserId + "-" + ltuid;
+        var timestamp = userDailyCheck.getTimestamp();
+        var status = userDailyCheck.getStatus();
+        return new UserDailyCheckItem(UUID.randomUUID().toString(),
+                botUserId, botUserIdLtuid, ltuid, timestamp, status);
     }
 
     public static UserDailyCheck toDomain(UserDailyCheckItem item) {

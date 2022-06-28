@@ -44,7 +44,7 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
 
     private <T> List<T> doMapping(DynamodbEvent event, Class<T> clazz) {
         return event.getRecords().stream().filter(this::recordEventNameFilter)
-                .map(this::recordNewImageGetter)
+                .map(this::fromRecordToNewImage)
                 .map(AttributeValuePackageConversion::fromLambdaToDdb)
                 .map(newImage-> dynamoDBMapper.marshallIntoObject(clazz, newImage))
                 .collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
         return false;
     }
 
-    private Map<String, AttributeValue> recordNewImageGetter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
+    private Map<String, AttributeValue> fromRecordToNewImage(DynamodbEvent.DynamodbStreamRecord streamRecord) {
         return streamRecord.getDynamodb().getNewImage();
     }
 }

@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckService;
+import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckBatchRequesterMain;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class DailyCheckBatchRequesterLambda {
 
     private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
-    private DailyCheckService dailyCheckService;
+    private DailyCheckPort dailyCheckPort;
     private UserHoyopassCrudPort hoyopassCrudPort;
 
     public DailyCheckBatchRequesterLambda() {
@@ -31,17 +31,17 @@ public class DailyCheckBatchRequesterLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.dailyCheckService = context.getBean(DailyCheckService.class);
+        this.dailyCheckPort = context.getBean(DailyCheckPort.class);
         this.hoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
-        Objects.requireNonNull(dailyCheckService);
+        Objects.requireNonNull(dailyCheckPort);
         Objects.requireNonNull(hoyopassCrudPort);
     }
 
     public void handler(ScheduledEvent event) {
         logger.info("SchedueldEvent triggered at {}.", event.getTime());
-        hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::getList)
+        hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
-                .filter(task-> !dailyCheckService.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
-                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.getJson(objectMapper)));
+                .filter(task-> !dailyCheckPort.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
+                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.asJson(objectMapper)));
     }
 }

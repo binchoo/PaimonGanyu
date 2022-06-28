@@ -11,18 +11,17 @@ import java.util.Arrays;
 public class BloomFilter<T extends MultiHashable> {
 
     private final int filterSize;
-
-    private boolean[] bloomFilter;
+    private final boolean[] flags;
 
     public BloomFilter(int filterSize) {
         this.filterSize = filterSize;
-        this.bloomFilter = new boolean[filterSize];
+        this.flags = new boolean[filterSize];
     }
 
     public void insert(T item) {
         for (int h : item.getHashes()) {
             int i = Math.abs(h % filterSize);
-            bloomFilter[i] = true;
+            flags[i] = true;
         }
     }
 
@@ -34,18 +33,18 @@ public class BloomFilter<T extends MultiHashable> {
     public boolean containsProbably(T item) {
         for (int h : item.getHashes()) {
             int i = Math.abs(h % filterSize);
-            if (!bloomFilter[i]) {
-                log.debug("Item {} does not exist", item);
+            if (!flags[i]) {
+                log.debug("Item {} does not exist.", item);
                 return false;
             }
         }
-        log.debug("Item {} seems to exists", item);
+        log.debug("Item {} seems to exist.", item);
         return true;
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(bloomFilter);
+        return Arrays.toString(flags);
     }
 }
 

@@ -1,0 +1,158 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  paimonganyu-skill
+
+  SAM Template for paimonganyu-skill (KAKAOTALK Chatbot Skill Server)
+
+Parameters:
+
+  Env:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - test
+      - prod
+    Description: The stage of this deployment.
+
+  ApiDomain:
+    Type: String
+    Default: skill.genshinjob.ga
+
+  CertificateArn:
+    Type: String
+    Default: arn:aws:acm:ap-northeast-2:305992497901:certificate/2231d87b-8a59-417a-a2c6-ae90a256b714
+
+Resources:
+  # paimonganyu-skill
+  PaimonGanyuSkillApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: PaimonGanyu KAKAOTALK Skill Server
+      ApplicationName: !Ref AWS::StackName
+
+  PaimonGanyuSkillApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      Description: The verion of PaimonGanyu KAKAOTALK Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      SourceBundle: ./.aws-sam/build/paimonganyu-skill-1.0.0.jar
+
+  PaimonGanyuSkillConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      Description: Configuration for PaimonGanyu KAKAOTALK Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      SolutionStackName: 64bit Amazon Linux 2 v3.2.16 running Corretto 11
+      OptionSettings:
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref PaimonGanyuSkillInstanceProfile
+
+  PaimonGanyuSkillEnv:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      Description: Production environment for PaimonGanyu Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
+      VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
+
+  PaimonGanyuSkillRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+
+  PaimonGanyuSkillInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref PaimonGanyuSkillRole
+
+  PaimonGanyuSkillApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: paimonganyu-skill
+      Description: PaimonGanyu Skill Server API Gateway
+      ApiKeySourceType: HEADER
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  ProxyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PaimonGanyuSkillApi
+      ParentId: !GetAtt PaimonGanyuSkillApi.RootResourceId
+      PathPart: "{proxy+}"
+
+  ProxyMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RequestParameters:
+        method.request.path.proxy: true
+      HttpMethod: ANY
+      ResourceId: !GetAtt ProxyResource.ResourceId
+      RestApiId: !Ref PaimonGanyuSkillApi
+      AuthorizationType: NONE
+      ApiKeyRequired: true
+      Integration:
+        Type: HTTP_PROXY
+        IntegrationHttpMethod: ANY
+        Uri: !Sub
+          - 'http://${Endpoint}/{proxy}' # The URI must be a fully formed if Type is HTTP or HTTP_PROXY.
+          - Endpoint: !GetAtt PaimonGanyuSkillEnv.EndpointURL
+        RequestParameters:
+          integration.request.path.proxy: method.request.path.proxy
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - ProxyMethod
+    Properties:
+      RestApiId: !Ref PaimonGanyuSkillApi
+      Description: !Sub Deployment into ${Env} stage.
+      StageName: !Ref Env
+
+  IkakaoUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn: Deployment
+    Properties:
+      Description: Usage plan for ikakao chatbot
+      ApiStages:
+        - ApiId: !Ref PaimonGanyuSkillApi
+          Stage: !Ref Env
+      Throttle:
+        RateLimit: 300
+        BurstLimit: 350
+      UsagePlanName: ikakao-usage-plan
+
+  DomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref ApiDomain
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: !Ref CertificateArn
+
+  DomainMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref ApiDomain
+      RestApiId: !Ref PaimonGanyuSkillApi
+      BasePath: ''
+      Stage: !Ref Env

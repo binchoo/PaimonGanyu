@@ -71,7 +71,7 @@ public class AwsEventWrapperFactory {
      * if the wrapper's constructor needs it.
      */
     public static <E> AwsEventWrapper<E> getWrapper(E event, Object...constructorArgs) {
-        return defaultInstance._getWrapper(event, constructorArgs);
+        return defaultInstance.getWrapper0(event, constructorArgs);
     }
 
     /**
@@ -85,7 +85,7 @@ public class AwsEventWrapperFactory {
      * @throws IllegalArgumentException When {@code constructorArgs} is invalid or empty
      * if the wrapper's constructor needs it.
      */
-    public <E> AwsEventWrapper<E> _getWrapper(E event, Object...constructorArgs) {
+    public <E> AwsEventWrapper<E> getWrapper0(E event, Object...constructorArgs) {
         Class<E> eventClass = (Class<E>) event.getClass();
         isHandleableEventClass(eventClass);
         return createEventWrapper(eventClass, constructorArgs);

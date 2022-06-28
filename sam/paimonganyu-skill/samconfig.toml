@@ -1,0 +1,13 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "paimonganyu-skill"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-3t80l0g3f3ma"
+s3_prefix = "paimonganyu-skill"
+region = "ap-northeast-2"
+profile = "serverless"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Env=\"prod\" ApiDomain=\"skill.genshinjob.ga\" CertificateArn=\"arn:aws:acm:ap-northeast-2:305992497901:certificate/2231d87b-8a59-417a-a2c6-ae90a256b714\""
+image_repositories = []
+disable_rollback = true

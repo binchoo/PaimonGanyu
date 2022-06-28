@@ -4,13 +4,11 @@ public class DailyCheckRequestResult {
 
     private String message;
     private Throwable error;
-    private boolean hasFailed;
     private boolean isDuplicated;
 
     public DailyCheckRequestResult() {
         message = "";
         error = null;
-        hasFailed = false;
         isDuplicated = false;
     }
 
@@ -24,7 +22,7 @@ public class DailyCheckRequestResult {
 
 
     public boolean hasFailed() {
-        return hasFailed;
+        return error != null;
     }
 
     public Throwable getError() {
@@ -32,7 +30,6 @@ public class DailyCheckRequestResult {
     }
 
     public void setError(Exception e) {
-        hasFailed = true;
         error = e;
     }
 

@@ -1,14 +1,13 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @EqualsAndHashCode
 @ToString
 @Getter
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Uid {
 
     /**

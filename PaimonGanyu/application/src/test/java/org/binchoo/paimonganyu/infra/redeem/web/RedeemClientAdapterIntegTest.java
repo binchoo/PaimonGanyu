@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.infra.redeem.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author : jbinchoo
  * @since : 2022-05-12
  */
+@Slf4j
 @SpringJUnitConfig(HoyoApiWebClientConfigurer.class)
 class RedeemClientAdapterIntegTest {
 
@@ -29,7 +31,7 @@ class RedeemClientAdapterIntegTest {
     private RedemptionClientAdapter redeemClientAdapter;
 
     @BeforeEach
-    void init() {
+    void initAdapter() {
         redeemClientAdapter = new RedemptionClientAdapter(redemptionApi);
     }
 
@@ -37,20 +39,19 @@ class RedeemClientAdapterIntegTest {
     @Test
     void redeem() {
         var tasks = List.of(getMockTask("aaa"), getMockTask("bbb"), getMockTask("ccc"));
-        var result = redeemClientAdapter.redeem(tasks, System.out::println);
+        var result = redeemClientAdapter.redeem(tasks, it-> log.info(it.toString()));
 
-        assertThat(result).as("Added three tasks.")
-                .hasSize(3);
-        assertThat(result).as("Added invalid mock tasks.")
-                .allMatch((it)-> !it.isDone());
+        assertThat(result)
+                .as("Added three tasks.").hasSize(3)
+                .as("Added invalid mock tasks.").allMatch(it-> !it.isDone());
     }
 
-    private RedeemTask getMockTask(String id) {
+    private RedeemTask getMockTask(String placeholder) {
         var uid = HoyopassMockUtils.getMockUid();
         return RedeemTask.builder()
-                .botUserId(id)
+                .botUserId(placeholder)
                 .credentials(HoyopassCredentials.builder()
-                    .ltuid(id).ltoken(id).cookieToken(id)
+                    .ltuid(placeholder).ltoken(placeholder).cookieToken(placeholder)
                     .build())
                 .uid(uid)
                 .redeemCode(new RedeemCode("genshingift"))

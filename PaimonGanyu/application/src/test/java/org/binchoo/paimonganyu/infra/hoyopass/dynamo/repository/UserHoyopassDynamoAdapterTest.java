@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.*;
+import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.getMockUserHoyopass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +38,7 @@ class UserHoyopassDynamoAdapterTest {
         when(repository.findAll()).thenReturn(Collections.emptyList());
 
         List<UserHoyopass> result = userHoyopassDynamoAdapter.findAll();
-        assertThat(result).hasSize(0);
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -63,7 +62,7 @@ class UserHoyopassDynamoAdapterTest {
         when(repository.findByBotUserId(any())).thenReturn(Optional.empty());
 
         var result = userHoyopassDynamoAdapter.findByBotUserId(RandomString.make());
-        assertThat(result.isPresent()).isFalse();
+        assertThat(result).isNotPresent();
     }
 
     @Test
@@ -75,8 +74,9 @@ class UserHoyopassDynamoAdapterTest {
                 .thenReturn(Optional.of(mockUserHoyopassItem));
 
         Optional<UserHoyopass> result = userHoyopassDynamoAdapter.findByBotUserId(mockUserHoyopass.getBotUserId());
-        assertThat(result.isPresent()).isTrue();
-        assertThat(result.get()).isEqualTo(mockUserHoyopass);
+        assertThat(result)
+                .isPresent()
+                .contains(mockUserHoyopass);
     }
 
     @Test

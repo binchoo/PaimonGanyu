@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -30,10 +31,10 @@ public class SecureHoyopassCredentials {
             byte[] hoyopassComposite = decryptWithin(
                     base64Decoder.decode(signedString), privateKey);
             saveToFields(hoyopassComposite);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-                    | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
+                   IllegalArgumentException | BadPaddingException | IllegalBlockSizeException e) {
             log.error("Could not process a decryption for Hoyopass", e);
-            throw new IllegalStateException(e);
+            throw new CryptoException(this, e);
         }
     }
 

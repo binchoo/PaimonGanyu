@@ -20,4 +20,8 @@ public class UserGameRole {
     String regionName;
     boolean isChosen;
     boolean isOfficial;
+
+    public boolean isGenshinImpactRole() {
+        return gameBiz.equals("hk4e_global");
+    }
 }

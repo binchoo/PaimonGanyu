@@ -1,14 +1,13 @@
 package org.binchoo.paimonganyu.lambda.dailycheck.dto;
 
-import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
+import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -17,13 +16,15 @@ import java.util.stream.Collectors;
 public class UserHoyopassMessage {
 
     private String botUserId;
-    private List<Hoyopass> hoyopasses;
+    private List<HoyopassMessage> hoyopasses;
 
     public UserHoyopassMessage() { }
 
     public UserHoyopassMessage(UserHoyopass userHoyopass) {
         this.botUserId = userHoyopass.getBotUserId();
-        this.hoyopasses = Collections.unmodifiableList(userHoyopass.getHoyopasses());
+        this.hoyopasses = userHoyopass.getHoyopasses().stream()
+                .map(HoyopassMessage::new)
+                .collect(Collectors.toList());
     }
 
     public String getBotUserId() {
@@ -34,11 +35,11 @@ public class UserHoyopassMessage {
         this.botUserId = botUserId;
     }
 
-    public List<Hoyopass> getHoyopasses() {
+    public List<HoyopassMessage> getHoyopasses() {
         return hoyopasses;
     }
 
-    public void setHoyopasses(List<Hoyopass> hoyopasses) {
+    public void setHoyopasses(List<HoyopassMessage> hoyopasses) {
         this.hoyopasses = hoyopasses;
     }
 
@@ -50,7 +51,46 @@ public class UserHoyopassMessage {
     public UserHoyopass toDomain() {
         return UserHoyopass.builder()
                 .botUserId(botUserId)
-                .hoyopasses(hoyopasses)
+                .hoyopasses(hoyopasses.stream()
+                        .map(HoyopassMessage::toDomain)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+}
+
+class HoyopassMessage {
+
+    private HoyopassCredentials credentials;
+    private List<Uid> uids;
+
+    public HoyopassMessage() { }
+
+    public HoyopassMessage(Hoyopass hoyopass) {
+        this.credentials = hoyopass.getCredentials();
+        this.uids = Collections.unmodifiableList(hoyopass.getUids());
+    }
+
+    public void setCredentials(HoyopassCredentials credentials) {
+        this.credentials = credentials;
+    }
+
+    public void setUids(List<Uid> uids) {
+        this.uids = uids;
+    }
+
+    public HoyopassCredentials getCredentials() {
+        return credentials;
+    }
+
+    public List<Uid> getUids() {
+        return uids;
+    }
+
+    public Hoyopass toDomain() {
+        return Hoyopass.builder()
+                .credentials(credentials)
+                .createAt(LocalDateTime.now())
+                .uids(List.copyOf(uids))
                 .build();
     }
 }

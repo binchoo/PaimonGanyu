@@ -1,6 +1,9 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import org.binchoo.paimonganyu.hoyopass.driven.HoyopassSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
+import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
+import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -27,7 +30,7 @@ import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.*;
 class UserHoyopassTest {
 
     @Mock
-    HoyopassSearchClientPort mockSearchPort;
+    UidSearchClientPort mockSearchPort;
 
     private List<Hoyopass> givenNHoyopasses(int n) {
         List<Hoyopass> mockHoyopasses = new ArrayList<>();
@@ -42,7 +45,7 @@ class UserHoyopassTest {
         Hoyopass hoyopass = hoyopassList.get(0);
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        userHoyopass.addVerifiedHoyopass(hoyopass);
+        userHoyopass.addComplete(hoyopass);
 
         assertThat(userHoyopass.getHoyopasses().get(0)).isEqualTo(hoyopass);
     }
@@ -52,9 +55,9 @@ class UserHoyopassTest {
         List<Hoyopass> mockHoyopasses = givenNHoyopasses(2);
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        mockHoyopasses.forEach(userHoyopass::addVerifiedHoyopass);
+        mockHoyopasses.forEach(userHoyopass::addComplete);
 
-        assertThat(userHoyopass.getCount()).isEqualTo(2);
+        assertThat(userHoyopass.getSize()).isEqualTo(2);
         IntStream.of(0, 1).forEach(i-> {
             assertThat(userHoyopass.getHoyopasses().get(i))
                     .isEqualTo(mockHoyopasses.get(i));
@@ -64,22 +67,24 @@ class UserHoyopassTest {
     @Test
     void whenTwoHoyopassesAlreadyRegistered_registerHoyopass_fails() {
         List<Hoyopass> hoyopassList = givenNHoyopasses(2);
+        Hoyopass additionalHoyopass = getMockHoyopass();
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        hoyopassList.forEach(userHoyopass::addVerifiedHoyopass);
+        hoyopassList.forEach(userHoyopass::addComplete);
 
-        assertThrows(IllegalStateException.class, ()->
-                userHoyopass.addVerifiedHoyopass(getMockHoyopass()));
+        assertThrows(QuantityExceedException.class, ()->
+                userHoyopass.addComplete(additionalHoyopass));
     }
 
     @Test
     void givenInvalidHoyopass_registerHoyopass_fails() {
-        doThrow(IllegalArgumentException.class).when(mockSearchPort).findUids(any());
+        HoyopassCredentials invalidCred = new HoyopassCredentials("foo", "bar", "foobar");
+
+        doThrow(RuntimeException.class).when(mockSearchPort).findUids(any());
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        assertThrows(IllegalArgumentException.class, ()->
-                userHoyopass.addUnverifiedHoyopass(
-                        new HoyopassCredentials("foo", "bar", "foobar"), mockSearchPort));
+        assertThrows(InactiveStateException.class, ()->
+                userHoyopass.addIncomplete(invalidCred, mockSearchPort));
     }
 
     @Test
@@ -90,10 +95,10 @@ class UserHoyopassTest {
         when(mockSearchPort.findUids(any())).thenReturn(mockUidList);
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        userHoyopass.addUnverifiedHoyopass(
+        userHoyopass.addIncomplete(
                 new HoyopassCredentials("foo", "bar", "foobar"), mockSearchPort);
 
-        assertThat(userHoyopass.getCount()).isEqualTo(1);
+        assertThat(userHoyopass.getSize()).isEqualTo(1);
         assertThat(userHoyopass.listUids()).isEqualTo(mockUidList);
     }
 
@@ -102,10 +107,10 @@ class UserHoyopassTest {
         Hoyopass mockHoyopass = getMockHoyopass();
 
         UserHoyopass userHoyopass = new UserHoyopass();
-        userHoyopass.addVerifiedHoyopass(mockHoyopass);
+        userHoyopass.addComplete(mockHoyopass);
 
-        assertThrows(IllegalStateException.class, ()->
-                userHoyopass.addVerifiedHoyopass(mockHoyopass));
+        assertThrows(DuplicationException.class, ()->
+                userHoyopass.addComplete(mockHoyopass));
     }
 
     @Test
@@ -126,7 +131,7 @@ class UserHoyopassTest {
         UserHoyopass userHoyopass = new UserHoyopass("foobar", hoyopassList);
 
         assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
-        assertThat(userHoyopass.getCount()).isEqualTo(count);
+        assertThat(userHoyopass.getSize()).isEqualTo(count);
         for(int i = 0; i < count; i++)
             assertThat(userHoyopass.getHoyopasses().get(i))
                     .isEqualTo(hoyopassList.get(i));
@@ -168,10 +173,10 @@ class UserHoyopassTest {
         UserHoyopass userHoyopass = new UserHoyopass("foobar", hoyopassList);
 
         List<Uid> userUids = userHoyopass.listUids(-100);
-        assertThat(userUids.size()).isEqualTo(0);
+        assertThat(userUids).isEmpty();
 
         userUids = userHoyopass.listUids(100);
-        assertThat(userUids.size()).isEqualTo(0);
+        assertThat(userUids).isEmpty();
     }
 
     @Test
@@ -182,12 +187,12 @@ class UserHoyopassTest {
         Hoyopass hoyopass = userHoyopass.deleteAt(0);
 
         assertThat(hoyopass).isEqualTo(hoyopassList.get(0));
-        assertThat(userHoyopass.getCount()).isEqualTo(1);
+        assertThat(userHoyopass.getSize()).isEqualTo(1);
 
         hoyopass = userHoyopass.deleteAt(0);
 
         assertThat(hoyopass).isEqualTo(hoyopassList.get(1));
-        assertThat(userHoyopass.getCount()).isEqualTo(0);
+        assertThat(userHoyopass.getSize()).isZero();
     }
 
 
@@ -258,9 +263,11 @@ class UserHoyopassTest {
 
         String toStringResult = userHoyopass.toString();
 
-        assertThat(toStringResult).contains(botUserId);
-        assertThat(toStringResult).contains(userHoyopass.getHoyopasses().get(0).toString());
-        assertThat(toStringResult).contains(userHoyopass.getHoyopasses().get(1).toString());
+        assertThat(toStringResult)
+                .contains(botUserId)
+                .contains(userHoyopass.getHoyopasses().get(0).toString())
+                .contains(userHoyopass.getHoyopasses().get(1).toString());
+
         System.out.println(toStringResult);
     }
 }

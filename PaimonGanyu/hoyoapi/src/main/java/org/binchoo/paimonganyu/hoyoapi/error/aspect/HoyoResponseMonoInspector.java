@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.webclient.async.Retriable;
 import org.springframework.stereotype.Component;
@@ -24,16 +25,18 @@ public class HoyoResponseMonoInspector {
 
     private final HoyoResponseInspector inspectionDelegate;
     private final Set<Retriable> retriableTargets;
-    private final Function<HoyoResponse<?>, Mono<?>> errorMapper;
+    private final Function<HoyoResponse<?>, Mono<?>> errorDetector;
 
     public HoyoResponseMonoInspector() {
         this.inspectionDelegate = new HoyoResponseInspector();
         this.retriableTargets = new HashSet<>();
-        this.errorMapper = (hoyoResponse)-> {
+        this.errorDetector = hoyoResponse-> {
             try {
                 inspectionDelegate.inspectRetcode(hoyoResponse);
-            } catch (Throwable t) {
-                return Mono.error(t);
+            } catch (Exception e) {
+                if (RetcodeException.class.isAssignableFrom(e.getClass()))
+                    log.debug("Retcode {} caused an exception: ", hoyoResponse.getRetcode(), e);
+                return Mono.error(e);
             }
             return Mono.just(hoyoResponse);
         };
@@ -43,7 +46,7 @@ public class HoyoResponseMonoInspector {
     public Object inspectAndAppendRetry(ProceedingJoinPoint joinPoint) throws Throwable {
         registerTarget(joinPoint);
         Mono<HoyoResponse<?>> responseMono = (Mono<HoyoResponse<?>>) joinPoint.proceed(joinPoint.getArgs());
-        return addSubscribers(responseMono, errorMapper, getRetriable(joinPoint.getTarget()));
+        return addSubscribers(responseMono, errorDetector, getRetriable(joinPoint.getTarget()));
     }
 
     private void registerTarget(ProceedingJoinPoint joinPoint) {
@@ -55,7 +58,7 @@ public class HoyoResponseMonoInspector {
 
     private Object addSubscribers(Mono<HoyoResponse<?>> responseMono,
                                   Function<HoyoResponse<?>, Mono<?>> retcodeInspector, Retriable retriable) {
-        var withInspection = responseMono.flatMap(retcodeInspector);
+        Mono<Object> withInspection = responseMono.flatMap(retcodeInspector);
         if (retriable == null)
             return withInspection;
         return withInspection.retryWhen(retriable.getRetryObject());

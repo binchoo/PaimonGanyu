@@ -8,8 +8,6 @@ allprojects {
     apply plugin: "jacoco"
     apply plugin: "org.sonarqube"
 
-    version = "0.5"
-
     ext {
         bootVersion = '2.4.2'
         awsSdkVersion = '1.11.914'
@@ -33,23 +31,6 @@ allprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     }
 
-    task buildZip(type: Zip) {
-        from compileJava
-        from processResources
-        into('lib') {
-            from configurations.runtimeClasspath
-        }
-    }
-
-    task copyBuiltZip(type: Copy) {
-        def dest = '../'.repeat(project.depth + 1) + '.aws-sam/build'
-        from buildZip
-        into(dest)
-        doLast {
-            println "$project.name:$name has moved artifacts into $dest"
-        }
-    }
-
     test {
         useJUnitPlatform()
     }
@@ -65,7 +46,7 @@ project(':application').dependencies {
     implementation project(':hoyoapi')
     implementation project(':awsutils')
     implementation (project(':ikakao')) {
-        because 'to render KAKAO chatbot views'
+        because 'to render skill response of kakao chatbot'
     }
     implementation project(':domain')
     testImplementation(testFixtures(project(':domain')))

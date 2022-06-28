@@ -11,7 +11,7 @@ public final class MappingEntry<E> {
     private final Class<E> event;
     private WrapperSpec<E, ? extends AwsEventWrapper<E>> wrapperSpec;
 
-    protected MappingEntry(WrappingManual wrappingManual, Class<E> event) {
+    MappingEntry(WrappingManual wrappingManual, Class<E> event) {
         this.parent = wrappingManual;
         this.event = event;
         this.wrapperSpec = null;
@@ -29,19 +29,19 @@ public final class MappingEntry<E> {
         return this.parent;
     }
 
-    protected AwsEventWrapper<E> createWrapper(Object[] constructorArgs) {
+    AwsEventWrapper<E> createWrapper(Object[] constructorArgs) {
         return this.wrapperSpec.createInstance(constructorArgs);
     }
 
-    protected WrapperSpec<E, ? extends AwsEventWrapper<E>> getWrapperSpec() {
-        return this.wrapperSpec;
+    WrapperSpec<E, AwsEventWrapper<E>> getWrapperSpec() {
+        return (WrapperSpec<E, AwsEventWrapper<E>>) this.wrapperSpec;
     }
 
-    protected WrappingManual getParent() {
+    WrappingManual getParent() {
         return this.parent;
     }
 
-    protected Class<?> getEvent() {
+    Class<?> getEvent() {
         return this.event;
     }
 
