@@ -12,6 +12,8 @@ import org.binchoo.paimonganyu.ikakao.component.componentType.ItemCard;
 import org.binchoo.paimonganyu.ikakao.type.*;
 import org.binchoo.paimonganyu.traveler.TravelerStatus;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,11 +107,12 @@ public class TravelerStatusView extends SkillResponseView {
     }
 
     private List<ItemList> renderItemLists(TravelerStatus status) {
-        long recoverySeconds = status.getResinRecoverySeconds();
-        long min = recoverySeconds / 60;
-        long sec = recoverySeconds % 60;
+        Duration resinRecovery = Duration.ofSeconds(status.getResinRecoverySeconds());
+        long hour = resinRecovery.get(ChronoUnit.HOURS);
+        long min = resinRecovery.get(ChronoUnit.MINUTES);
+        long sec = resinRecovery.get(ChronoUnit.SECONDS);
         return List.of(new ItemList(TITLE_RESIN, status.ratioStringOfResin()),
-                new ItemList(TITLE_RESIN_RECOV, String.format("%dmin %ds", min, sec)),
+                new ItemList(TITLE_RESIN_RECOV, String.format("%dh %dm %ds", hour, min, sec)),
                 new ItemList(TITLE_SEREN, status.ratioStringOfHomeCoin()),
                 new ItemList(TITLE_EXPED, String.valueOf(status.getCurrentExpeditionNum())));
     }
