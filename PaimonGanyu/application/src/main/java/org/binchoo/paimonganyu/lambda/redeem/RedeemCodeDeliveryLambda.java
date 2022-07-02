@@ -12,15 +12,11 @@ import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationPort;
-import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author : jbinchoo
@@ -34,8 +30,8 @@ public class RedeemCodeDeliveryLambda {
     private AmazonS3 s3Client;
     private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
-    private RedeemTaskEstimationPort redeemTaskEstimationPort;
-    private UserHoyopassCrudPort userHoyopassCrudPort;
+    private RedeemTaskEstimationPort taskEstimation;
+    private UserHoyopassCrudPort userCrud;
 
     public RedeemCodeDeliveryLambda() {
         this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemCodeDeliveryMain.class));
@@ -45,27 +41,40 @@ public class RedeemCodeDeliveryLambda {
         this.s3Client = context.getBean(AmazonS3.class);
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.redeemTaskEstimationPort = context.getBean(RedeemTaskEstimationPort.class);
-        this.userHoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
-        Objects.requireNonNull(this.redeemTaskEstimationPort);
-        Objects.requireNonNull(this.userHoyopassCrudPort);
+        this.taskEstimation = context.getBean(RedeemTaskEstimationPort.class);
+        this.userCrud = context.getBean(UserHoyopassCrudPort.class);
+        Objects.requireNonNull(this.taskEstimation);
+        Objects.requireNonNull(this.userCrud);
     }
 
     public void handler(S3Event s3Event) {
         var eventWrapper = new S3EventObjectReader(s3Client);
         var redeemCodeList = eventWrapper.extractPojos(s3Event, RedeemCode.class);
-        RedeemTaskEstimationOption estimationOption = new RedeemAllUsersOption(userHoyopassCrudPort,
-                ()-> Collections.unmodifiableList(redeemCodeList));
-        sendToQueue(redeemTaskEstimationPort.generateTasks(estimationOption));
+        List<RedeemTask> tasks = taskEstimation.generateTasks(new RedeemAllUsersOption(userCrud,
+                ()-> Collections.unmodifiableList(redeemCodeList)));
+        sendToQueue(tasks);
     }
 
     private void sendToQueue(List<RedeemTask> redeemTasks) {
-        List<SendMessageBatchRequestEntry> batchMessage = new LinkedList<>();
-        for (int i = 0; i < redeemTasks.size(); i++) {
-            batchMessage.add(new SendMessageBatchRequestEntry()
-                    .withId(String.valueOf(i))
-                    .withMessageBody(redeemTasks.get(i).getJson(objectMapper)));
+        for (var batch : taskSplit(redeemTasks, 10))
+            sqsClient.sendMessageBatch(CODEREDEEM_QUEUE_NAME, batch);
+    }
+
+    protected List<List<SendMessageBatchRequestEntry>> taskSplit(List<RedeemTask> tasks, int batchSize) {
+        LinkedList<RedeemTask> taskQueue = new LinkedList<>(tasks);
+        List<List<SendMessageBatchRequestEntry>> batches = new ArrayList<>();
+        while (taskQueue.size() > 0) {
+            List<SendMessageBatchRequestEntry> batch = new ArrayList<>();
+
+            int fetch = Math.min(batchSize, taskQueue.size());
+            while (fetch-- > 0) {
+                RedeemTask task = taskQueue.removeFirst();
+                SendMessageBatchRequestEntry entry = new SendMessageBatchRequestEntry(
+                        task.getBotUserId(), task.getJson(objectMapper));
+                batch.add(entry);
+            }
+            batches.add(batch);
         }
-        sqsClient.sendMessageBatch(CODEREDEEM_QUEUE_NAME, batchMessage);
+        return batches;
     }
 }
