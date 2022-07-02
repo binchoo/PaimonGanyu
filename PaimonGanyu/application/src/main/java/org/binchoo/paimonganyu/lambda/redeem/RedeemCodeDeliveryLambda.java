@@ -69,8 +69,8 @@ public class RedeemCodeDeliveryLambda {
             int fetch = Math.min(batchSize, taskQueue.size());
             while (fetch-- > 0) {
                 RedeemTask task = taskQueue.removeFirst();
-                SendMessageBatchRequestEntry entry = new SendMessageBatchRequestEntry(
-                        task.getBotUserId(), task.getJson(objectMapper));
+                String uniqueId = UUID.randomUUID().toString();
+                SendMessageBatchRequestEntry entry = new SendMessageBatchRequestEntry(uniqueId, task.getJson(objectMapper));
                 batch.add(entry);
             }
             batches.add(batch);

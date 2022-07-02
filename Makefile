@@ -9,12 +9,14 @@ paimonganyu-skill-prod: build
 
 paimonganyu-prod: build
 	cd sam/paimonganyu; sam deploy --guided \
+        --stack-name paimonganyu \
 		--profile serverless \
 		--region ap-northeast-2 \
 		--parameter-overrides Env=prod
 
 paimonganyu-test: build
 	cd sam/paimonganyu; sam deploy --guided \
+        --stack-name paimonganyu-test
 		--profile serverless \
 		--region ap-northeast-1 \
 		--parameter-overrides Env=test

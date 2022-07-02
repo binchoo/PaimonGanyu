@@ -54,6 +54,21 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
         return wait(userRedeemList);
     }
 
+    private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
+        List<UserRedeem> userRedeems = new ArrayList<>();
+        wait(userRedeemMonos, userRedeems);
+        log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
+        return userRedeems;
+    }
+
+    private void wait(List<Mono<UserRedeem>> userRedeemMonos, List<UserRedeem> resultContainer) {
+        for (Mono<UserRedeem> userRedeemMono : userRedeemMonos) {
+            UserRedeem userRedeemObj = userRedeemMono.block();
+            if (resultContainer != null)
+                resultContainer.add(userRedeemObj);
+        }
+    }
+
     /**
      * 리뎀션 API를 호출하여 유저 리뎀션 수행 이력을 Mono 타입 리스트로 얻습니다.
      * @param redeemTask 리딤 태스크 명세
@@ -75,22 +90,8 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
 
     private Mono<UserRedeem> wrap(Mono<HoyoResponse<CodeRedemptionResult>> response, UserRedeem userRedeem) {
         // must apply asychronous mapping: flatMap!
-        return response.flatMap(hoyoResponse-> Mono.just(userRedeem.markDone()))
+        return response.log()
+                .flatMap(hoyoResponse-> Mono.just(userRedeem.markDone()))
                 .onErrorReturn(userRedeem);
-    }
-
-    private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
-        List<UserRedeem> userRedeems = new ArrayList<>();
-        wait(userRedeemMonos, userRedeems);
-        log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
-        return userRedeems;
-    }
-
-    private void wait(List<Mono<UserRedeem>> userRedeemMonos, List<UserRedeem> resultContainer) {
-        for (Mono<UserRedeem> userRedeemMono : userRedeemMonos) {
-            UserRedeem userRedeemObj = userRedeemMono.block();
-            if (resultContainer != null)
-                resultContainer.add(userRedeemObj);
-        }
     }
 }

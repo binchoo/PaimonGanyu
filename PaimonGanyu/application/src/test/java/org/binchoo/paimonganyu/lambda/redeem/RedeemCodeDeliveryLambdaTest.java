@@ -23,11 +23,11 @@ class RedeemCodeDeliveryLambdaTest {
 
     @Test
     void taskSplit() {
-        int n = 100, batchSize = 10;
+        int n = 101, batchSize = 10;
         int expectedBatches = (n % batchSize == 0)? n / batchSize : (n / batchSize + 1);
-        var codeDelivery = new RedeemCodeDeliveryLambda();
         var tasks = task(n);
 
+        var codeDelivery = new RedeemCodeDeliveryLambda();
         var batch = codeDelivery.taskSplit(tasks, batchSize);
 
         assertThat(batch).hasSize(expectedBatches);

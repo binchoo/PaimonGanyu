@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-@Slf4j
-@EqualsAndHashCode
-@ToString
-@Getter
+@Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class UserRedeem {
