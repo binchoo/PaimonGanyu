@@ -20,8 +20,8 @@ import java.util.List;
 @Service
 public class Redeemer implements RedemptionPort {
 
-    private final UserRedeemCrudPort userRedeemCrudPort;
-    private final RedemptionClientPort redeemApiPort;
+    private final UserRedeemCrudPort userRedeemCrud;
+    private final RedemptionClientPort redemptionClient;
 
     @Override
     public UserRedeem redeem(RedeemTask redeemTask) {
@@ -32,7 +32,7 @@ public class Redeemer implements RedemptionPort {
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks) {
-        List<UserRedeem> result = redeemApiPort.redeem(redeemTasks, null);
-        return userRedeemCrudPort.saveAll(result);
+        List<UserRedeem> result = redemptionClient.redeem(redeemTasks, null);
+        return userRedeemCrud.saveAll(result);
     }
 }

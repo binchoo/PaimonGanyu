@@ -13,10 +13,7 @@ import org.binchoo.paimonganyu.redeem.driven.RedemptionClientPort;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author : jbinchoo
@@ -57,7 +54,7 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
         List<UserRedeem> userRedeems = new ArrayList<>();
         wait(userRedeemMonos, userRedeems);
-        log.debug("{} user redemption has occurred: {}", userRedeems.size(), userRedeems);
+        log.debug("User redemptions (count {}) has occurred: {}", userRedeems.size(), userRedeems);
         return userRedeems;
     }
 
@@ -89,9 +86,8 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     }
 
     private Mono<UserRedeem> wrap(Mono<HoyoResponse<CodeRedemptionResult>> response, UserRedeem userRedeem) {
-        // must apply asychronous mapping: flatMap!
-        return response.log()
+        return response
                 .flatMap(hoyoResponse-> Mono.just(userRedeem.markDone()))
-                .onErrorReturn(userRedeem);
+                .onErrorResume(e-> Mono.just(userRedeem));
     }
 }
