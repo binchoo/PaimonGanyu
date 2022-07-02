@@ -1,0 +1,272 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  paimonganyu
+
+  SAM Template for paimonganyu
+
+Parameters:
+  Env:
+    Type: String
+    Default: test
+    AllowedValues:
+      - test
+      - prod
+    Description: The stage of this deployment.
+
+Conditions:
+  isProd: !Equals
+    - !Ref Env
+    - prod
+
+Globals:
+  Function:
+    CodeUri: application-1.0.2.zip # .aws-sam/build/application-${version}.zip
+    Timeout: 60
+    Runtime: java11
+    MemorySize: 512
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TZ: Asia/Seoul
+
+Resources:
+  # Hoyopass
+  UserHoyopassTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserHoyopass
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: botUserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: botUserId
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+
+  # Hoyopass Fanout
+  UserHoyopassTopic:
+    Type: AWS::SNS::Topic
+
+  UserHoyopassFanoutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.fanout.UserHoyopassFanoutLambda::handler
+      Events:
+        NewUserHoyopassEvent:
+          Type: DynamoDB
+          Properties:
+            StartingPosition: LATEST
+            Stream: !GetAtt UserHoyopassTable.StreamArn
+            Enabled: true
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt UserHoyopassTopic.TopicName
+      Environment:
+        Variables:
+          USERHOYOPASS_TOPIC: !Ref UserHoyopassTopic
+
+  # Code Redeem
+  UserRedeemTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserRedeem
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  CodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+
+  CodeRedeemRequestQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
+
+  RedeemCodeDeliveryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemCodeDeliveryLambda::handler
+      Events:
+        NewRedeemCodeEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref CodeBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: json
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserHoyopassTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserRedeemTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+      Environment:
+        Variables:
+          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+
+  RedeemUserDeliveryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemUserDeliveryLambda::handler
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub codebucket-${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CodeRedeemRequestQueue.QueueName
+      Environment:
+        Variables:
+          CODEREDEEM_QUEUE_NAME: !Ref CodeRedeemRequestQueue
+
+  CodeRedeemWorker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 300
+      Handler: org.binchoo.paimonganyu.lambda.redeem.RedeemWorkerLambda::handler
+      Events:
+        CodeRedeemRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CodeRedeemRequestQueue.Arn
+            BatchSize: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserRedeemTable
+
+  # Daily Check
+  UserDailyCheckTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserDailyCheck
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: botUserIdLtuid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: botUserIdLtuid
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+            - AttributeName: botUserIdLtuid
+              KeyType: HASH
+
+  DailyCheckRequestQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 60
+
+  DailyCheckHitoriRequesterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckHitoriRequesterLambda::handler
+      Events:
+        NewUserHoyopassEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserHoyopassTopic
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserDailyCheckTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+      Environment:
+        Variables:
+          DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
+
+  DailyCheckBatchRequesterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckBatchRequesterLambda::handler
+      Events:
+        BatchDailyCheckEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(1 0/8 ? * * *)' # everyday 01:01AM, 09:01AM, 05:01PM GMT+9 (Seoul)
+            Name: batched-dailycheck
+            Description: Do batched dailycheck three times a day!
+            Enabled: true
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserDailyCheckTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserHoyopassTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+      Environment:
+        Variables:
+          DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
+
+  DailyCheckWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckWorkerLambda::handler
+      Events:
+        DailyCheckRequestQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt DailyCheckRequestQueue.Arn
+            BatchSize: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserDailyCheckTable
+
+  # PaimonGanyuChatbot
+#  PaimonGanyuSpringBootApp:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
+#      MemorySize: !If [isProd, 1644, 512]
+#      Timeout: 60
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref UserHoyopassTable
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref UserDailyCheckTable
+#        - DynamoDBReadPolicy:
+#            TableName: !Ref UserRedeemTable
+#        - SSMParameterReadPolicy:
+#            ParameterName: HoyopassPrivateKey
+#        - SSMParameterReadPolicy:
+#            ParameterName: HoyopassPublicKey
+#      Events:
+#        RestApi:
+#          Type: Api
+#          Properties:
+#            Path: /{proxy+}
+#            Method: any
+#            Auth:
+#              ApiKeyRequired: true
+#      Environment:
+#        Variables:
+#          PROFILE: !If [isProd, prod, stage]
+#      AutoPublishAlias: PaimonGanyuChatbot
+#      ProvisionedConcurrencyConfig:
+#        Condition: isProd
+#        ProvisionedConcurrentExecutions: 2
+#      DeploymentPreference:
+#        Type: !If [isProd, Canary10Percent10Minutes, AllAtOnce]
