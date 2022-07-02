@@ -9,10 +9,7 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.webclient.async.Retriable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Function;
+import reactor.util.retry.Retry;
 
 /**
  * @author : jbinchoo
@@ -24,49 +21,44 @@ import java.util.function.Function;
 public class HoyoResponseMonoInspector {
 
     private final HoyoResponseInspector inspectionDelegate;
-    private final Set<Retriable> retriableTargets;
-    private final Function<HoyoResponse<?>, Mono<?>> errorDetector;
 
     public HoyoResponseMonoInspector() {
         this.inspectionDelegate = new HoyoResponseInspector();
-        this.retriableTargets = new HashSet<>();
-        this.errorDetector = hoyoResponse-> {
-            try {
-                inspectionDelegate.inspectRetcode(hoyoResponse);
-            } catch (Exception e) {
-                if (RetcodeException.class.isAssignableFrom(e.getClass()))
-                    log.debug("Retcode {} caused an exception: ", hoyoResponse.getRetcode(), e);
-                return Mono.error(e);
-            }
-            return Mono.just(hoyoResponse);
-        };
     }
 
     @Around("execution(* org.binchoo.paimonganyu.hoyoapi.webclient.async.*.*(..))")
     public Object inspectAndAppendRetry(ProceedingJoinPoint joinPoint) throws Throwable {
-        registerTarget(joinPoint);
-        Mono<HoyoResponse<?>> responseMono = (Mono<HoyoResponse<?>>) joinPoint.proceed(joinPoint.getArgs());
-        return addSubscribers(responseMono, errorDetector, getRetriable(joinPoint.getTarget()));
+        Mono<HoyoResponse<?>> responseBody = (Mono<HoyoResponse<?>>) joinPoint.proceed(joinPoint.getArgs());
+        return configure(responseBody, joinPoint.getTarget());
     }
 
-    private void registerTarget(ProceedingJoinPoint joinPoint) {
-        Object target = joinPoint.getTarget();
-        if (!retriableTargets.contains(target) && target instanceof Retriable) {
-            retriableTargets.add((Retriable) target);
+    private Object configure(Mono<HoyoResponse<?>> responseBody, Object target) {
+        var inspectedBody = attachRetcodeInspection(responseBody);
+        return attachRetry(inspectedBody, target);
+    }
+
+    private Mono<? extends HoyoResponse<?>> attachRetry(Mono<? extends HoyoResponse<?>> publisher, Object target) {
+        if (target instanceof Retriable) {
+            Retriable retriable = (Retriable) target;
+            Retry r = retriable.getRetry();
+            return publisher.retryWhen(r);
         }
+        return publisher;
     }
 
-    private Object addSubscribers(Mono<HoyoResponse<?>> responseMono,
-                                  Function<HoyoResponse<?>, Mono<?>> retcodeInspector, Retriable retriable) {
-        Mono<Object> withInspection = responseMono.flatMap(retcodeInspector);
-        if (retriable == null)
-            return withInspection;
-        return withInspection.retryWhen(retriable.getRetryObject());
-    }
-
-    private Retriable getRetriable(Object target) {
-        if (retriableTargets.contains(target))
-            return (Retriable) target;
-        return null;
+    private Mono<? extends HoyoResponse<?>> attachRetcodeInspection(Mono<HoyoResponse<?>> responseBody) {
+        return responseBody.flatMap(body -> {
+            try {
+                this.inspectionDelegate.inspectRetcode(body);
+            } catch (RetcodeException e) {
+                log.error("HoyoResponse caused a RetcodeException: {}.", body.getRetcode(), e);
+                return Mono.error(e);
+            } catch (Exception e) {
+                log.error("HoyoResponse caused an Exception.", e);
+                return Mono.error(e);
+            }
+            log.debug("HoyoResponse is OK: {}", body);
+            return Mono.just(body);
+        });
     }
 }

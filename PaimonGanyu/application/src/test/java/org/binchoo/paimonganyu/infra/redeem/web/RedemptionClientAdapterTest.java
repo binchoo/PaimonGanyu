@@ -51,7 +51,8 @@ class RedemptionClientAdapterTest {
     @Test
     void givenSuccessfulRedemptionResponse_userRedeem_savedAsDone() {
         when(redemptionApi.redeem(any(), any(), any(), any()))
-                .thenReturn(Mono.just(new HoyoResponse<>()));
+                .thenReturn(Mono.just(new HoyoResponse<>()))
+                .thenThrow(new RuntimeException("This exception is not reachable"));
 
         List<UserRedeem> userRedeems = redemptionClientAdapter.redeem(List.of(task), null);
 

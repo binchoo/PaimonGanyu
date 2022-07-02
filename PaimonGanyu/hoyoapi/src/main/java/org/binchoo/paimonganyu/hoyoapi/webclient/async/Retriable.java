@@ -9,5 +9,5 @@ import reactor.util.retry.Retry;
 public interface Retriable {
 
     void setRetry(Retry retry);
-    Retry getRetryObject();
+    Retry getRetry();
 }

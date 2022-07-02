@@ -64,7 +64,7 @@ public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable
     }
 
     @Override
-    public Retry getRetryObject() {
+    public Retry getRetry() {
         return retryObject;
     }
 }
