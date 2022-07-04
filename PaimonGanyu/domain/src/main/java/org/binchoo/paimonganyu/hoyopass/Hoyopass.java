@@ -32,8 +32,7 @@ public class Hoyopass implements Comparable<Hoyopass> {
      * @throws IllegalArgumentException 이 통행증으로 UID를 색인하는 데 실패했을 경우
      */
     public void fillUids(UidSearchClientPort uidSearchClientPort) {
-        List<Uid> findResult = uidSearchClientPort.findUids(this);
-        this.uids = findResult;
+        this.uids = uidSearchClientPort.findUids(this);
     }
 
     public String getLtuid() {
@@ -64,6 +63,11 @@ public class Hoyopass implements Comparable<Hoyopass> {
 
     @Override
     public int compareTo(Hoyopass o) {
-        return this.createAt.compareTo(o.createAt);
+        int ascendingCreateAt = this.createAt.compareTo(o.createAt);
+        if (ascendingCreateAt == 0) {
+            int ascendingLtuid = this.getLtuid().compareTo(o.getLtuid());
+            return ascendingLtuid;
+        }
+        return ascendingCreateAt;
     }
 }

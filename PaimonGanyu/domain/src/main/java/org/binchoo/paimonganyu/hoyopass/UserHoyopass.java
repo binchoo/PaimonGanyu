@@ -198,9 +198,9 @@ public class UserHoyopass {
         return hoyopasses.size();
     }
 
-    public Hoyopass get(int i) {
-        if (0 <= i && i < this.getSize()) {
-            if (i == 0)
+    public Hoyopass getHoyopass(int index) {
+        if (0 <= index && index < this.getSize()) {
+            if (index == 0)
                 return hoyopasses.first();
             else
                 return hoyopasses.last();
