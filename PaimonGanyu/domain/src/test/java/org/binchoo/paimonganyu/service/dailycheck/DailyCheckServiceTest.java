@@ -4,8 +4,8 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
+import org.binchoo.paimonganyu.dailycheck.exception.NoUserDailyCheckException;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,10 +30,10 @@ class DailyCheckServiceTest {
     DailyCheckService dailyCheckService;
 
     @Mock
-    UserDailyCheckCrudPort userDailyCheckCrudPort;
+    UserDailyCheckCrudPort mockUserDailyCheckCrud;
 
     @Mock
-    DailyCheckClientPort dailyCheckClientPort;
+    DailyCheckClientPort mockDailyCheckClient;
 
     @Mock
     UserDailyCheck mockUserDailyCheck;
@@ -44,7 +44,7 @@ class DailyCheckServiceTest {
         LocalDate someDay = getRandomDate();
 
         when(mockUserDailyCheck.isDoneOn(someDay)).thenReturn(true);
-        when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
+        when(mockUserDailyCheckCrud.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckService.hasCheckedIn(random, random, someDay);
@@ -64,7 +64,7 @@ class DailyCheckServiceTest {
         LocalDate someDay = getRandomDate();
 
         when(mockUserDailyCheck.isDoneOn(someDay)).thenReturn(false);
-        when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
+        when(mockUserDailyCheckCrud.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckService.hasCheckedIn(random, random, someDay);
@@ -77,7 +77,7 @@ class DailyCheckServiceTest {
         LocalDate today = LocalDate.now();
 
         when(mockUserDailyCheck.isDoneOn(today)).thenReturn(true);
-        when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
+        when(mockUserDailyCheckCrud.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckService.hasCheckedInToday(random, random);
@@ -90,7 +90,7 @@ class DailyCheckServiceTest {
         LocalDate today = LocalDate.now();
 
         when(mockUserDailyCheck.isDoneOn(today)).thenReturn(false);
-        when(userDailyCheckCrudPort.findByBotUserIdLtuid(random, random)).thenReturn(
+        when(mockUserDailyCheckCrud.findByBotUserIdLtuid(random, random)).thenReturn(
                 Collections.singletonList(mockUserDailyCheck));
 
         boolean hasCheckedInToday = dailyCheckService.hasCheckedInToday(random, random);
@@ -100,20 +100,20 @@ class DailyCheckServiceTest {
     @Test
     void whenUserDailyCheckIsEmpty_historyOfUser_throwsException() {
         UserHoyopass user = HoyopassMockUtils.getMockUserHoyopass();
-        when(userDailyCheckCrudPort.findByBotUserIdLtuid(any(), any()))
+        when(mockUserDailyCheckCrud.findByBotUserIdLtuid(any(), any()))
                 .thenReturn(Collections.emptyList());
 
-        assertThrows(QuantityZeroException.class,
+        assertThrows(NoUserDailyCheckException.class,
                 ()-> dailyCheckService.historyOfUser(user, 4)) ;
     }
 
     @Test
     void getDailyCheckClientPort() {
-        assertThat(dailyCheckService.getDailyCheckClient()).isEqualTo(dailyCheckClientPort);
+        assertThat(dailyCheckService.getDailyCheckClient()).isEqualTo(mockDailyCheckClient);
     }
 
     @Test
     void getRepository() {
-        assertThat(dailyCheckService.getRepository()).isEqualTo(userDailyCheckCrudPort);
+        assertThat(dailyCheckService.getRepository()).isEqualTo(mockUserDailyCheckCrud);
     }
 }

@@ -38,7 +38,7 @@ public class DailyCheckController {
     public String dailyCheckPerPass(@UserId String botUserId,
                                     @ClientExtra("index") int index, Model model) {
         UserHoyopass user = findUser(botUserId);
-        Hoyopass pass = user.get(index);
+        Hoyopass pass = user.getHoyopass(index);
 
         var result = List.of(dailyCheck.claimDailyCheckIn(botUserId, pass));
         model.addAttribute(CONTENT_KEY, List.of(result));
