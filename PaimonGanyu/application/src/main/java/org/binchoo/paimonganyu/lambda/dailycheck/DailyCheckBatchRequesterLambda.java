@@ -21,8 +21,8 @@ public class DailyCheckBatchRequesterLambda {
 
     private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
-    private DailyCheckPort dailyCheckPort;
-    private UserHoyopassCrudPort hoyopassCrudPort;
+    private DailyCheckPort dailyCheck;
+    private UserHoyopassCrudPort hoyopassCrud;
 
     public DailyCheckBatchRequesterLambda() {
         this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckBatchRequesterMain.class));
@@ -31,17 +31,17 @@ public class DailyCheckBatchRequesterLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.dailyCheckPort = context.getBean(DailyCheckPort.class);
-        this.hoyopassCrudPort = context.getBean(UserHoyopassCrudPort.class);
-        Objects.requireNonNull(dailyCheckPort);
-        Objects.requireNonNull(hoyopassCrudPort);
+        this.dailyCheck = context.getBean(DailyCheckPort.class);
+        this.hoyopassCrud = context.getBean(UserHoyopassCrudPort.class);
+        Objects.requireNonNull(dailyCheck);
+        Objects.requireNonNull(hoyopassCrud);
     }
 
     public void handler(ScheduledEvent event) {
         logger.info("SchedueldEvent triggered at {}.", event.getTime());
-        hoyopassCrudPort.findAll().stream().map(DailyCheckTaskSpec::specify)
+        hoyopassCrud.findAll().stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
-                .filter(task-> !dailyCheckPort.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
+                .filter(task-> !dailyCheck.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
                 .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.asJson(objectMapper)));
     }
 }

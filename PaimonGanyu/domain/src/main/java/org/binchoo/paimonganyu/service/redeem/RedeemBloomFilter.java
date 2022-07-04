@@ -28,17 +28,17 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
     public static final int DEFAULT_BLOOMFILTER_SIZE = 1000;
 
     private final int bloomFilterSize;
-    private final UserRedeemCrudPort userRedeemCrudPort;
+    private final UserRedeemCrudPort userRedeemCrud;
     private final Map<RedeemCode, BloomFilter<SearchWord>> bloomFilters;
 
-    public RedeemBloomFilter(UserRedeemCrudPort userRedeemCrudPort) {
-        this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrudPort);
+    public RedeemBloomFilter(UserRedeemCrudPort userRedeemCrud) {
+        this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrud);
     }
 
-    public RedeemBloomFilter(int bloomFilterSize, UserRedeemCrudPort userRedeemCrudPort) {
+    public RedeemBloomFilter(int bloomFilterSize, UserRedeemCrudPort userRedeemCrud) {
         this.bloomFilterSize = (bloomFilterSize) > 0? bloomFilterSize : DEFAULT_BLOOMFILTER_SIZE;
         this.bloomFilters = new HashMap<>();
-        this.userRedeemCrudPort = userRedeemCrudPort;
+        this.userRedeemCrud = userRedeemCrud;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
         var searchWord = new SearchWord(itemToSearch);
         var bloomFilter = getOrCreateBloomFilter(redeemCode);
         if (bloomFilter.containsProbably(searchWord)) {
-            return userRedeemCrudPort.existMatches(itemToSearch);
+            return userRedeemCrud.existMatches(itemToSearch);
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
             return false;
@@ -61,7 +61,7 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
 
     private BloomFilter<SearchWord> createBloomFilterOf(RedeemCode redeemCode) {
         var bloomFilter = new BloomFilter<SearchWord>(bloomFilterSize);
-        userRedeemCrudPort.findByRedeemCode(redeemCode).stream()
+        userRedeemCrud.findByRedeemCode(redeemCode).stream()
                 .map(SearchWord::new)
                 .forEach(bloomFilter::insert);
         return bloomFilter;

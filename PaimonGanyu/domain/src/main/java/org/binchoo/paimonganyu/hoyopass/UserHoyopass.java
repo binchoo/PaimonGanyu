@@ -124,14 +124,14 @@ public class UserHoyopass {
     /**
      * 주어진 통행증과 연결된 Uid 정보를 긁어온다.
      * @param newHoyopass 이 유저에게 새로 추가하려는 통행증
-     * @param uidSearchClientPort Uid 검색을 위한 API 클라이언트
+     * @param uidSearchClient Uid 검색을 위한 API 클라이언트
      * @throws InactiveStateException API 클라이언트 오류 발생시:
      * 호요버스 계정이 호요랩 비활성 상태 또는, 연결된 여행자가 없을 때
      */
-    private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClientPort) {
+    private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClient) {
         assertAppendable(newHoyopass);
         try {
-            newHoyopass.fillUids(uidSearchClientPort);
+            newHoyopass.fillUids(uidSearchClient);
         } catch (Exception e) {
             throw new InactiveStateException(this, e);
         }

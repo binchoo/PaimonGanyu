@@ -9,7 +9,6 @@ import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class RedeemTaskEstimator implements RedeemTaskEstimationPort {
 
-    private final RedeemHistoryPort redeemHistoryPort;
+    private final RedeemHistoryPort redeemHistory;
 
     @Override
     public List<RedeemTask> generateTasks(RedeemTaskEstimationOption estimationOption) {
@@ -35,7 +34,7 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationPort {
     }
 
     private boolean hasNotRedeemed(RedeemTask redeemTask) {
-        return redeemHistoryPort.hasNotRedeemed(redeemTask.getBotUserId(),
-                UUID.randomUUID().toString(), redeemTask.getRedeemCode());
+        return redeemHistory.hasNotRedeemed(redeemTask.getBotUserId(),
+                redeemTask.getUidString(), redeemTask.getRedeemCode());
     }
 }

@@ -20,12 +20,12 @@ import java.util.List;
 @Service
 public class HoyopassRegister implements HoyopassRegisterPort {
 
-    private final UidSearchClientPort uidSearchClientPort;
-    private final UserHoyopassCrudPort userHoyopassCrudPort;
+    private final UidSearchClientPort uidSearchClient;
+    private final UserHoyopassCrudPort userHoyopassCrud;
 
     @Override
     public UserHoyopass findUserHoyopass(String botUserId) {
-        return userHoyopassCrudPort.findByBotUserId(botUserId)
+        return userHoyopassCrud.findByBotUserId(botUserId)
                 .orElseThrow(()-> new QuantityZeroException(null));
     }
 
@@ -36,16 +36,16 @@ public class HoyopassRegister implements HoyopassRegisterPort {
      */
     @Override
     public UserHoyopass registerHoyopass(String botUserId, HoyopassCredentials credentials) {
-        UserHoyopass userHoyopass = userHoyopassCrudPort.findByBotUserId(botUserId)
+        UserHoyopass userHoyopass = userHoyopassCrud.findByBotUserId(botUserId)
                 .orElse(new UserHoyopass(botUserId));
 
-        userHoyopass.addIncomplete(credentials, uidSearchClientPort);
-        return userHoyopassCrudPort.save(userHoyopass);
+        userHoyopass.addIncomplete(credentials, uidSearchClient);
+        return userHoyopassCrud.save(userHoyopass);
     }
 
     @Override
     public List<Hoyopass> listHoyopasses(String botUserId) {
-        return userHoyopassCrudPort.findByBotUserId(botUserId)
+        return userHoyopassCrud.findByBotUserId(botUserId)
                 .map(UserHoyopass::getHoyopasses)
                 .filter(it-> !it.isEmpty())
                 .orElseThrow(()-> new QuantityZeroException(null));
@@ -53,22 +53,22 @@ public class HoyopassRegister implements HoyopassRegisterPort {
 
     @Override
     public List<Uid> listUids(String botUserId) {
-        return userHoyopassCrudPort.findByBotUserId(botUserId).map(UserHoyopass::listUids)
+        return userHoyopassCrud.findByBotUserId(botUserId).map(UserHoyopass::listUids)
                 .orElse(new ArrayList<>());
     }
 
     @Override
     public List<Uid> listUids(String botUserId, int order) {
-        return userHoyopassCrudPort.findByBotUserId(botUserId).map(userHoyopass-> userHoyopass.listUids(order))
+        return userHoyopassCrud.findByBotUserId(botUserId).map(userHoyopass-> userHoyopass.listUids(order))
                 .orElse(new ArrayList<>());
     }
 
     @Override
     public void deleteHoyopass(String botUserId, int order) {
-        userHoyopassCrudPort.findByBotUserId(botUserId)
+        userHoyopassCrud.findByBotUserId(botUserId)
                 .ifPresent(userHoyopass-> {
                     if (userHoyopass.deleteAt(order) != null) {
-                        userHoyopassCrudPort.save(userHoyopass);
+                        userHoyopassCrud.save(userHoyopass);
                     }
                 });
     }

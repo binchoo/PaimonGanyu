@@ -30,8 +30,8 @@ public class RedeemUserDeliveryLambda {
 
     private AmazonSQS sqsClient;
     private ObjectMapper objectMapper;
-    private RedeemTaskEstimationPort redeemTaskEstimationPort;
-    private RedeemCodeCrudPort redeemCodeCrudPort;
+    private RedeemTaskEstimationPort redeemTaskEstimation;
+    private RedeemCodeCrudPort redeemCodeCrud;
 
     public RedeemUserDeliveryLambda() {
         this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemUserDeliveryMain.class));
@@ -40,19 +40,19 @@ public class RedeemUserDeliveryLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.redeemTaskEstimationPort = context.getBean(RedeemTaskEstimationPort.class);
-        this.redeemCodeCrudPort = context.getBean(RedeemCodeCrudPort.class);
-        Objects.requireNonNull(this.redeemTaskEstimationPort);
-        Objects.requireNonNull(this.redeemCodeCrudPort);
+        this.redeemTaskEstimation = context.getBean(RedeemTaskEstimationPort.class);
+        this.redeemCodeCrud = context.getBean(RedeemCodeCrudPort.class);
+        Objects.requireNonNull(this.redeemTaskEstimation);
+        Objects.requireNonNull(this.redeemCodeCrud);
     }
 
     public void handler(SNSEvent snsEvent) {
         var eventWrapper = AwsEventWrapperFactory.getWrapper(snsEvent);
         var users = eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class);
-        RedeemTaskEstimationOption estimationOption = new RedeemAllCodesOption(redeemCodeCrudPort, ()-> users.stream()
+        RedeemTaskEstimationOption estimationOption = new RedeemAllCodesOption(redeemCodeCrud, ()-> users.stream()
                     .map(UserHoyopassMessage::toDomain)
                     .collect(Collectors.toList()));
-        sendToQueue(redeemTaskEstimationPort.generateTasks(estimationOption));
+        sendToQueue(redeemTaskEstimation.generateTasks(estimationOption));
     }
 
     private void sendToQueue(List<RedeemTask> redeemTasks) {
