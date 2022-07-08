@@ -7,8 +7,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
@@ -36,8 +35,8 @@ public class UserHoyopassFanoutLambda extends AsyncEventWrappingLambda<DynamodbE
     }
 
     @Override
-    protected void doHandle(DynamodbEvent event, AwsEventWrapper<DynamodbEvent> eventWrapper) {
-        eventWrapper.extractPojos(event, UserHoyopassItem.class).stream()
+    protected void doHandle(DynamodbEvent event, AwsEventParser<DynamodbEvent> eventParser) {
+        eventParser.extractPojos(event, UserHoyopassItem.class).stream()
                 .map(UserHoyopassItem::toDomain)
                 .map(this::createMessage)
                 .forEach(this::publish);

@@ -2,17 +2,17 @@ package org.binchoo.paimonganyu.awsutils.sqs;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.JsonPayloadAwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.JsonPayloadAwsEventParser;
 
 import java.util.stream.Stream;
 
-public class SQSEventWrapper extends JsonPayloadAwsEventWrapper<SQSEvent> {
+public class SQSEventParser extends JsonPayloadAwsEventParser<SQSEvent> {
 
-    public SQSEventWrapper() {
+    public SQSEventParser() {
         super();
     }
 
-    public SQSEventWrapper(ObjectMapper objectMapper) {
+    public SQSEventParser(ObjectMapper objectMapper) {
         super(objectMapper);
     }
 

@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.awsutils.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * This utility class can convert the NewImage JSONs of DynamodbEvent to a list of java POJO.
  */
-public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
+public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
     private static final DynamodbEventName[] defaultAllowedEventNames
             = {DynamodbEventName.MODIFY, DynamodbEventName.INSERT};
@@ -24,11 +24,11 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
     /**
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
      */
-    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper) {
         this(dynamoDBMapper, defaultAllowedEventNames);
     }
 
-    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
         this.dynamoDBMapper = dynamoDBMapper;
         this.allowedEventNames = allowedEventNames;
     }

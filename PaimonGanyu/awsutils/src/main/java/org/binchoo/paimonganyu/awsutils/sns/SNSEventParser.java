@@ -2,17 +2,17 @@ package org.binchoo.paimonganyu.awsutils.sns;
 
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.JsonPayloadAwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.JsonPayloadAwsEventParser;
 
 import java.util.stream.Stream;
 
-public class SNSEventWrapper extends JsonPayloadAwsEventWrapper<SNSEvent> {
+public class SNSEventParser extends JsonPayloadAwsEventParser<SNSEvent> {
 
-    public SNSEventWrapper() {
+    public SNSEventParser() {
         super();
     }
 
-    public SNSEventWrapper(ObjectMapper objectMapper) {
+    public SNSEventParser(ObjectMapper objectMapper) {
         super(objectMapper);
     }
 

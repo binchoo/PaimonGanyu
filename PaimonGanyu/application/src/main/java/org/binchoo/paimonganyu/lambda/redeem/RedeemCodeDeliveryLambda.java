@@ -6,8 +6,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
@@ -51,8 +50,8 @@ public class RedeemCodeDeliveryLambda extends AsyncEventWrappingLambda<S3Event> 
     }
 
     @Override
-    protected void doHandle(S3Event event, AwsEventWrapper<S3Event> eventWrapper) {
-        var redeemCodeList = eventWrapper.extractPojos(event, RedeemCode.class);
+    protected void doHandle(S3Event event, AwsEventParser<S3Event> eventParser) {
+        var redeemCodeList = eventParser.extractPojos(event, RedeemCode.class);
         List<RedeemTask> tasks = taskEstimation.generateTasks(new RedeemAllUsersOption(userCrud,
                 ()-> Collections.unmodifiableList(redeemCodeList)));
         sendToQueue(tasks);

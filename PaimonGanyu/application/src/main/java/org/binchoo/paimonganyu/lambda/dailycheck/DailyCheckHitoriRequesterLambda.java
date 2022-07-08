@@ -3,8 +3,7 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckHitoriRequesterMain;
@@ -32,8 +31,8 @@ public class DailyCheckHitoriRequesterLambda extends AsyncEventWrappingLambda<SN
     }
 
     @Override
-    protected void doHandle(SNSEvent event, AwsEventWrapper<SNSEvent> eventWrapper) {
-        eventWrapper.extractPojos(event, UserHoyopassMessage.class)
+    protected void doHandle(SNSEvent event, AwsEventParser<SNSEvent> eventParser) {
+        eventParser.extractPojos(event, UserHoyopassMessage.class)
                 .stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
                 .filter(this::ifNotDoneToday)

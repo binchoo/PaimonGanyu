@@ -4,11 +4,11 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.events.*;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
+import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventParser;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
-import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
-import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
+import org.binchoo.paimonganyu.awsutils.sns.SNSEventParser;
+import org.binchoo.paimonganyu.awsutils.sqs.SQSEventParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,54 +21,54 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author : jbinchoo
  * @since : 2022-04-24
  */
-class AwsEventWrapperFactoryTest {
+class AwsEventParserFactoryTest {
 
-    AwsEventWrapperFactory defaultFactory = AwsEventWrapperFactory.getDefault();
+    AwsEventParserFactory defaultFactory = AwsEventParserFactory.getDefault();
 
     @DisplayName("AwsEventWrapperFactory 타입이 잘 로드된다.")
     @Test
     void clinit() {
-        var foobar = AwsEventWrapperFactory.class;
+        var foobar = AwsEventParserFactory.class;
     }
 
     @DisplayName("AwsEventWrapperFactory의 커스텀 버전을 생성할 수 있다.")
     @Test
     void configure() {
-        var factory = AwsEventWrapperFactory.newInstance(mappingManual -> {
+        var factory = AwsEventParserFactory.newInstance(mappingManual -> {
             mappingManual.whenEvent(SQSEvent.class)
-                    .wrapIn(CustomSQSEventWrapper.class);
+                    .wrapIn(CustomSQSEventParser.class);
         });
         var event = new SQSEvent();
-        var expectedWrapper = new CustomSQSEventWrapper();
+        var expectedWrapper = new CustomSQSEventParser();
 
         var eventWrapper = factory.newWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }
 
-    @DisplayName("SQSEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("SQSEvent에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
     void givenSQSEvent_returnsSpecifiedEventWrapper() {
         var event = new SQSEvent();
-        var exepectedWraper = new SQSEventWrapper();
+        var exepectedWraper = new SQSEventParser();
 
         var eventWrapper = defaultFactory.newWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("SNSEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("SNSEvent에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
     void givenSNSEvent_returnsSpecifiedEventWrapper() {
         var event = new SNSEvent();
-        var exepectedWraper = new SNSEventWrapper();
+        var exepectedWraper = new SNSEventParser();
 
         var eventWrapper = defaultFactory.newWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("S3Event에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("S3Event에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
     void givenS3Event_returnsSpecifiedEventWrapper() {
         var event = new S3Event();
@@ -80,19 +80,19 @@ class AwsEventWrapperFactoryTest {
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("DynamodbEvent에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
     void givenDynamodbEvent_returnsSpecifiedEventWrapper() {
         var event = new DynamodbEvent();
         var dynamodbMapper = new DynamoDBMapper(AmazonDynamoDBClientBuilder.defaultClient());
-        var exepectedWraper = new DynamodbEventWrapper(dynamodbMapper);
+        var exepectedWraper = new DynamodbEventParser(dynamodbMapper);
 
         var eventWrapper = defaultFactory.newWrapper(event, dynamodbMapper);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("적절한 생성자 인자 없이는 S3Event에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
+    @DisplayName("적절한 생성자 인자 없이는 S3Event에 대해 명세된 이벤트 파서를 반환할 수 없다.")
     @Test
     void givenS3EventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new S3Event();
@@ -110,7 +110,7 @@ class AwsEventWrapperFactoryTest {
     }
 
     @SuppressWarnings("Allowed null arguments.")
-    @DisplayName("적절한 생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
+    @DisplayName("적절한 생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 파서를 반환할 수 없다.")
     @Test
     void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
         var event = new DynamodbEvent();
@@ -126,7 +126,7 @@ class AwsEventWrapperFactoryTest {
         });
     }
 
-    public static final class CustomSQSEventWrapper implements AwsEventWrapper<SQSEvent> {
+    public static final class CustomSQSEventParser implements AwsEventParser<SQSEvent> {
 
         @Override
         public <T> List<T> extractPojos(SQSEvent event, Class<T> clazz) {
@@ -134,7 +134,7 @@ class AwsEventWrapperFactoryTest {
         }
     }
 
-    @DisplayName("매핑 메뉴얼에 없는 람다 이벤트로는 이벤트 래퍼를 얻을 수 없다.")
+    @DisplayName("매핑 메뉴얼에 없는 람다 이벤트로는 이벤트 파서를 얻을 수 없다.")
     @Test
     void givenUnregisterdLambdaEvent_cannotCreateAEventWrapper() {
         var event = new ScheduledEvent();

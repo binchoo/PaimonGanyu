@@ -1,11 +1,11 @@
 package org.binchoo.paimonganyu.awsutils.support.template;
 
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventParserFactory;
 
 /**
  * <p> 비동기 동작을 하는 (handler의 반환 타입이 없는) 람다 핸들러를 작성합니다.
- * <p> 이 람다 핸들러는 이벤트를 {@link AwsEventWrapper} 형태로 전달받아 {@code doHandle()}에서 처리합니다.
+ * <p> 이 람다 핸들러는 이벤트를 {@link AwsEventParser} 형태로 전달받아 {@code doHandle()}에서 처리합니다.
  * <p> 주의하세요. 람다의 핸들러 메서드를 지정할 때는 {@code doHandle()}이 아닌 {@code handler()} 메서드를 택해야 합니다.
  * @author : jbinchoo
  * @since : 2022-07-08
@@ -13,30 +13,30 @@ import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
  */
 public abstract class AsyncEventWrappingLambda<T> {
 
-    private final AwsEventWrapperFactory factory;
+    private final AwsEventParserFactory factory;
 
     public AsyncEventWrappingLambda() {
         this.lookupDependencies();
-        this.factory = getAwsEventWrapperFactory();
+        this.factory = getAwsEventParserFactory();
     }
     
     public void handler(T event) {
-        AwsEventWrapper<T> eventWrapper = factory.newWrapper(event, getConstructorArgs());
-        this.doHandle(event, eventWrapper);
+        AwsEventParser<T> eventParser = factory.newWrapper(event, getConstructorArgs());
+        this.doHandle(event, eventParser);
     }
 
     /**
-     * Override this to use a custom {@link AwsEventWrapperFactory}.
+     * Override this to use a custom {@link AwsEventParserFactory}.
      * @return default - {@code AwsEventWrapperFactory.getDefault()}
      */
-    protected AwsEventWrapperFactory getAwsEventWrapperFactory() {
-        return AwsEventWrapperFactory.getDefault();
+    protected AwsEventParserFactory getAwsEventParserFactory() {
+        return AwsEventParserFactory.getDefault();
     }
 
     /**
-     * Override this when the construction of targeting {@link AwsEventWrapper}
+     * Override this when the construction of targeting {@link AwsEventParser}
      * requires some constructor arguments.
-     * @return An array of argument values to be injected when the construction of {@link AwsEventWrapper}.
+     * @return An array of argument values to be injected when the construction of {@link AwsEventParser}.
      */
     protected Object[] getConstructorArgs() {
         return new Object[] {};
@@ -52,7 +52,7 @@ public abstract class AsyncEventWrappingLambda<T> {
      * Implements a asynchronous handler for the aws lambda event.
      * You must not refer this method when assigning the lambda's {@CodeUri} property.
      * Refer to the '@code handler()` method instead.
-     * @param eventWrapper An event wrapper that contains the received event.
+     * @param eventParser An event wrapper that contains the received event.
      */
-    protected abstract void doHandle(T event, AwsEventWrapper<T> eventWrapper);
+    protected abstract void doHandle(T event, AwsEventParser<T> eventParser);
 }

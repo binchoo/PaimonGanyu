@@ -1,8 +1,7 @@
 package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckWorkerMain;
@@ -23,8 +22,8 @@ public class DailyCheckWorkerLambda extends AsyncEventWrappingLambda<SQSEvent> {
     }
 
     @Override
-    protected void doHandle(SQSEvent event, AwsEventWrapper<SQSEvent> eventWrapper) {
-        eventWrapper.extractPojos(event, DailyCheckTaskSpec.class)
+    protected void doHandle(SQSEvent event, AwsEventParser<SQSEvent> eventParser) {
+        eventParser.extractPojos(event, DailyCheckTaskSpec.class)
                 .forEach(taskSpec -> dailyCheckPort
                         .claimDailyCheckIn(taskSpec.getBotUserId(), taskSpec.getLtuid(), taskSpec.getLtoken()));
     }
