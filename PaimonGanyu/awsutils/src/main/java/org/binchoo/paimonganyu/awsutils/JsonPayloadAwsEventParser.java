@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,12 +27,10 @@ public abstract class JsonPayloadAwsEventParser<E> implements AwsEventParser<E> 
 
     @Override
     public <T> List<T> extractPojos(E event, Class<T> clazz) {
-        return Collections.unmodifiableList(
-                this.getJsonStream(event)
-                        .map(json -> this.deserialize(json, clazz))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList())
-        );
+        return this.getJsonStream(event)
+                .map(json -> this.deserialize(json, clazz))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     protected abstract Stream<String> getJsonStream(E event);
