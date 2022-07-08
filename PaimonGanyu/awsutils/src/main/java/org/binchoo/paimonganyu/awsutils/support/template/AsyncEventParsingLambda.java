@@ -11,11 +11,11 @@ import org.binchoo.paimonganyu.awsutils.support.AwsEventParserFactory;
  * @since : 2022-07-08
  * @param <T> {@code com.amazonaws.services.lambda.runtime.events}에 정의된 AWS 람다의 이벤트 타입.
  */
-public abstract class AsyncEventWrappingLambda<T> {
+public abstract class AsyncEventParsingLambda<T> {
 
     private final AwsEventParserFactory factory;
 
-    public AsyncEventWrappingLambda() {
+    public AsyncEventParsingLambda() {
         this.lookupDependencies();
         this.factory = getAwsEventParserFactory();
     }

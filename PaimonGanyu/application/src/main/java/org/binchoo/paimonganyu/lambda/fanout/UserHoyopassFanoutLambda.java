@@ -8,7 +8,7 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
-import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventParsingLambda;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
@@ -16,7 +16,7 @@ import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 /**
  * Fanout lambda should start fast, so do not use spring context.
  */
-public class UserHoyopassFanoutLambda extends AsyncEventWrappingLambda<DynamodbEvent> {
+public class UserHoyopassFanoutLambda extends AsyncEventParsingLambda<DynamodbEvent> {
 
     private static final String USERHOYOPASS_TOPIC = System.getenv("USERHOYOPASS_TOPIC");
 

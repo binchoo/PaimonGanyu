@@ -7,7 +7,7 @@ import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
-import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventParsingLambda;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
@@ -24,7 +24,7 @@ import java.util.*;
  * @since : 2022/04/17
  */
 @Slf4j
-public class RedeemCodeDeliveryLambda extends AsyncEventWrappingLambda<S3Event> {
+public class RedeemCodeDeliveryLambda extends AsyncEventParsingLambda<S3Event> {
 
     private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 

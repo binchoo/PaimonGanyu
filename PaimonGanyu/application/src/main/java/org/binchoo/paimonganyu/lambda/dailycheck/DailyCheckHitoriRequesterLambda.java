@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
-import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventParsingLambda;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckHitoriRequesterMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
@@ -14,7 +14,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import java.util.List;
 import java.util.Objects;
 
-public class DailyCheckHitoriRequesterLambda extends AsyncEventWrappingLambda<SNSEvent> {
+public class DailyCheckHitoriRequesterLambda extends AsyncEventParsingLambda<SNSEvent> {
 
     private static final String DAILYCHECK_QUEUE_URL = System.getenv("DAILYCHECK_QUEUE_URL");
 

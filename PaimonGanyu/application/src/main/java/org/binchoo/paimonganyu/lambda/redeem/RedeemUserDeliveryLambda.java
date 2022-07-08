@@ -5,7 +5,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
-import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventParsingLambda;
 import org.binchoo.paimonganyu.lambda.RedeemUserDeliveryMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @since : 2022/04/17
  */
 @Slf4j
-public class RedeemUserDeliveryLambda extends AsyncEventWrappingLambda<SNSEvent> {
+public class RedeemUserDeliveryLambda extends AsyncEventParsingLambda<SNSEvent> {
 
     private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 

@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
-import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventParsingLambda;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckWorkerMain;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -10,7 +10,7 @@ import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.Objects;
 
-public class DailyCheckWorkerLambda extends AsyncEventWrappingLambda<SQSEvent> {
+public class DailyCheckWorkerLambda extends AsyncEventParsingLambda<SQSEvent> {
 
     private DailyCheckPort dailyCheckPort;
 

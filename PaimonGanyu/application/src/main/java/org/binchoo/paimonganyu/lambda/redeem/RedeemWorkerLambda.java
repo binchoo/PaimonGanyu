@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.lambda.redeem;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
-import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventParsingLambda;
 import org.binchoo.paimonganyu.lambda.RedeemWorkerMain;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
@@ -19,7 +19,7 @@ import java.util.Objects;
  * @since : 2022-04-21
  */
 @Slf4j
-public class RedeemWorkerLambda extends AsyncEventWrappingLambda<SQSEvent> {
+public class RedeemWorkerLambda extends AsyncEventParsingLambda<SQSEvent> {
 
     private RedemptionPort codeRedeemService;
 
