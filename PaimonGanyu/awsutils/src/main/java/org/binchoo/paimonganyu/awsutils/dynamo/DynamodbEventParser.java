@@ -13,28 +13,28 @@ import java.util.stream.Collectors;
  */
 public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
-    private static final EnumSet<DynamodbEventName> defaultAllowedEventNames
+    private static final EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS
             = EnumSet.of(DynamodbEventName.MODIFY, DynamodbEventName.INSERT);
 
     private final DynamoDBMapper dynamoDBMapper;
-    private final EnumSet<DynamodbEventName> allowedEventNames;
+    private final EnumSet<DynamodbEventName> allowedDDBEvents;
 
     /**
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
      */
     public DynamodbEventParser(DynamoDBMapper dynamoDBMapper) {
-        this(dynamoDBMapper, defaultAllowedEventNames);
+        this(dynamoDBMapper, DEFAULT_ALLOWED_DDB_EVENTS);
     }
 
-    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedDDBEvents) {
         this.dynamoDBMapper = dynamoDBMapper;
-        this.allowedEventNames = EnumSet.noneOf(DynamodbEventName.class);
-        this.allowedEventNames.addAll(Arrays.asList(allowedEventNames));
+        this.allowedDDBEvents = EnumSet.noneOf(DynamodbEventName.class);
+        this.allowedDDBEvents.addAll(Arrays.asList(allowedDDBEvents));
     }
 
-    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> defaultAllowedEventNames) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS) {
         this.dynamoDBMapper = dynamoDBMapper;
-        this.allowedEventNames = defaultAllowedEventNames.clone();
+        this.allowedDDBEvents = DEFAULT_ALLOWED_DDB_EVENTS.clone();
     }
 
     /**
@@ -56,7 +56,7 @@ public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
     private boolean recordEventNameFilter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
         DynamodbEventName eventName = DynamodbEventName.valueOf(streamRecord.getEventName());
-        for (DynamodbEventName allowedEventName : allowedEventNames)
+        for (DynamodbEventName allowedEventName : allowedDDBEvents)
             if (eventName.equals(allowedEventName))
                 return true;
         return false;
