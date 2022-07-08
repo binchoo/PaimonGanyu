@@ -31,10 +31,8 @@ public class DailyCheckBatchRequesterLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.dailyCheck = context.getBean(DailyCheckPort.class);
-        this.hoyopassCrud = context.getBean(UserHoyopassCrudPort.class);
-        Objects.requireNonNull(dailyCheck);
-        Objects.requireNonNull(hoyopassCrud);
+        this.dailyCheck = Objects.requireNonNull(context.getBean(DailyCheckPort.class));;
+        this.hoyopassCrud = Objects.requireNonNull(context.getBean(UserHoyopassCrudPort.class));;
     }
 
     public void handler(ScheduledEvent event) {

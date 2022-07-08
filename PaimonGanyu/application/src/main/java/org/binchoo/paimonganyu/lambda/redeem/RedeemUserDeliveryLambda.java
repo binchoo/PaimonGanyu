@@ -40,10 +40,8 @@ public class RedeemUserDeliveryLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.redeemTaskEstimation = context.getBean(RedeemTaskEstimationPort.class);
-        this.redeemCodeCrud = context.getBean(RedeemCodeCrudPort.class);
-        Objects.requireNonNull(this.redeemTaskEstimation);
-        Objects.requireNonNull(this.redeemCodeCrud);
+        this.redeemTaskEstimation = Objects.requireNonNull(context.getBean(RedeemTaskEstimationPort.class));
+        this.redeemCodeCrud = Objects.requireNonNull(context.getBean(RedeemCodeCrudPort.class));
     }
 
     public void handler(SNSEvent snsEvent) {

@@ -18,8 +18,7 @@ public class DailyCheckWorkerLambda {
     }
 
     private void lookupDependencies(GenericApplicationContext context) {
-        this.dailyCheckPort = context.getBean(DailyCheckPort.class);
-        Objects.requireNonNull(dailyCheckPort);
+        this.dailyCheckPort = Objects.requireNonNull(context.getBean(DailyCheckPort.class));
     }
 
     public void handler(SQSEvent event) {

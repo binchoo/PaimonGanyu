@@ -28,8 +28,7 @@ public class DailyCheckHitoriRequesterLambda {
     private void lookupDependencies(GenericApplicationContext context) {
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.dailyCheckPort = context.getBean(DailyCheckPort.class);
-        Objects.requireNonNull(dailyCheckPort);
+        this.dailyCheckPort = Objects.requireNonNull(context.getBean(DailyCheckPort.class));
     }
 
     public void handler(SNSEvent snsEvent) {

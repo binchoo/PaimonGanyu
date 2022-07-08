@@ -13,12 +13,12 @@ import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
 import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
 
 /**
- * <p> {@link AwsEventWrapper} 구현체에 대한 팩토리 클래스입니다. 팩토리가 이벤트 래퍼를 생성하기 위해서
- * {@code AWS 이벤트 대 이벤트 래퍼} 매핑을 정의하는 {@link WrappingManual} 객체가 필요합니다.
- * <p> 하지만 이미 클래스 수준에서 기본 매핑이 정의되어 있습니다!
- * <p> 매핑을 커스터마이징 하려면 {@link AwsEventWrapperFactoryConfigurer}를 사용합니다. 별도의 매핑 설정을 갖는
- * 새로운 팩토리 객체를 만들 수 있습니다.
- * {@link AwsEventWrapper} 구현체는 동적 생성이 가능하도록, 접근 가능한 하나 이상의 생성자를 갖고 있어야 합니다.
+ * <p> {@link AwsEventWrapper} 구현체에 대한 팩토리 클래스입니다.
+ * <p> 팩토리가 이벤트 래퍼를 생성하기 위해'{@code AWS이벤트 - 이벤트 래퍼}'매핑을 정의하는 {@link WrappingManual} 객체가 필요합니다.
+ * <p> 이미 정의된 기본 매핑을 쓰려면 {@code getDefault()} 인스턴스를 이용합니다.
+ * <p> 매핑을 커스터마이징 하려면 별도로 구현한 {@link AwsEventWrapperFactoryConfigurer}를 주입합니다.
+ * 해당 매핑 설정을 갖는 새로운 팩토리 객체를 만들 수 있습니다.
+ * <p> {@link AwsEventWrapper}가 이 팩토리를 통해 만들어지려면, 접근 가능한 하나 이상의 생성자를 갖고 있어야 합니다.
  * @author : jbinchoo
  * @since : 2022-04-24
  */
