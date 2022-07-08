@@ -4,7 +4,9 @@ import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.lambda.RedeemUserDeliveryMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
  * @since : 2022/04/17
  */
 @Slf4j
-public class RedeemUserDeliveryLambda {
+public class RedeemUserDeliveryLambda extends AsyncEventWrappingLambda<SNSEvent> {
 
     private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 
@@ -33,24 +35,21 @@ public class RedeemUserDeliveryLambda {
     private RedeemTaskEstimationPort redeemTaskEstimation;
     private RedeemCodeCrudPort redeemCodeCrud;
 
-    public RedeemUserDeliveryLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemUserDeliveryMain.class));
-    }
-
-    private void lookupDependencies(GenericApplicationContext context) {
+    @Override
+    protected void lookupDependencies() {
+        GenericApplicationContext context = new AnnotationConfigApplicationContext(RedeemUserDeliveryMain.class);
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.redeemTaskEstimation = Objects.requireNonNull(context.getBean(RedeemTaskEstimationPort.class));
         this.redeemCodeCrud = Objects.requireNonNull(context.getBean(RedeemCodeCrudPort.class));
     }
 
-    public void handler(SNSEvent snsEvent) {
-        var factory = AwsEventWrapperFactory.getDefault();
-        var eventWrapper = factory.newWrapper(snsEvent);
-        var users = eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class);
+    @Override
+    protected void doHandle(SNSEvent event, AwsEventWrapper<SNSEvent> eventWrapper) {
+        var users = eventWrapper.extractPojos(event, UserHoyopassMessage.class);
         RedeemTaskEstimationOption estimationOption = new RedeemAllCodesOption(redeemCodeCrud, ()-> users.stream()
-                    .map(UserHoyopassMessage::toDomain)
-                    .collect(Collectors.toList()));
+                .map(UserHoyopassMessage::toDomain)
+                .collect(Collectors.toList()));
         sendToQueue(redeemTaskEstimation.generateTasks(estimationOption));
     }
 

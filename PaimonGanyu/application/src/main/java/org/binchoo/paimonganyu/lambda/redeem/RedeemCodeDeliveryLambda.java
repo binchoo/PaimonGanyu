@@ -6,7 +6,9 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
@@ -23,7 +25,7 @@ import java.util.*;
  * @since : 2022/04/17
  */
 @Slf4j
-public class RedeemCodeDeliveryLambda {
+public class RedeemCodeDeliveryLambda extends AsyncEventWrappingLambda<S3Event> {
 
     private static final String CODEREDEEM_QUEUE_NAME = System.getenv("CODEREDEEM_QUEUE_NAME");
 
@@ -33,23 +35,24 @@ public class RedeemCodeDeliveryLambda {
     private RedeemTaskEstimationPort taskEstimation;
     private UserHoyopassCrudPort userCrud;
 
-    public RedeemCodeDeliveryLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(RedeemCodeDeliveryMain.class));
-    }
-
-    private void lookupDependencies(GenericApplicationContext context) {
+    @Override
+    protected void lookupDependencies() {
+        GenericApplicationContext context = new AnnotationConfigApplicationContext(RedeemCodeDeliveryMain.class);
         this.s3Client = context.getBean(AmazonS3.class);
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.taskEstimation = context.getBean(RedeemTaskEstimationPort.class);
-        this.userCrud = context.getBean(UserHoyopassCrudPort.class);
-        Objects.requireNonNull(this.taskEstimation);
-        Objects.requireNonNull(this.userCrud);
+        this.taskEstimation = Objects.requireNonNull(context.getBean(RedeemTaskEstimationPort.class));
+        this.userCrud = Objects.requireNonNull(context.getBean(UserHoyopassCrudPort.class));
     }
 
-    public void handler(S3Event s3Event) {
-        var eventWrapper = new S3EventObjectReader(s3Client);
-        var redeemCodeList = eventWrapper.extractPojos(s3Event, RedeemCode.class);
+    @Override
+    protected Object[] getConstructorArgs() {
+        return new Object[] { s3Client };
+    }
+
+    @Override
+    protected void doHandle(S3Event event, AwsEventWrapper<S3Event> eventWrapper) {
+        var redeemCodeList = eventWrapper.extractPojos(event, RedeemCode.class);
         List<RedeemTask> tasks = taskEstimation.generateTasks(new RedeemAllUsersOption(userCrud,
                 ()-> Collections.unmodifiableList(redeemCodeList)));
         sendToQueue(tasks);
