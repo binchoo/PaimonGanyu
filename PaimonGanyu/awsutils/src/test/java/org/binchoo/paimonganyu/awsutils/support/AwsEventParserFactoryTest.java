@@ -41,7 +41,7 @@ class AwsEventParserFactoryTest {
         var event = new SQSEvent();
         var expectedWrapper = new CustomSQSEventParser();
 
-        var eventWrapper = factory.newWrapper(event);
+        var eventWrapper = factory.newParser(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }
@@ -52,7 +52,7 @@ class AwsEventParserFactoryTest {
         var event = new SQSEvent();
         var exepectedWraper = new SQSEventParser();
 
-        var eventWrapper = defaultFactory.newWrapper(event);
+        var eventWrapper = defaultFactory.newParser(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -63,7 +63,7 @@ class AwsEventParserFactoryTest {
         var event = new SNSEvent();
         var exepectedWraper = new SNSEventParser();
 
-        var eventWrapper = defaultFactory.newWrapper(event);
+        var eventWrapper = defaultFactory.newParser(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -75,7 +75,7 @@ class AwsEventParserFactoryTest {
         var s3Client = AmazonS3ClientBuilder.defaultClient();
         var exepectedWraper = new S3EventObjectReader(s3Client);
 
-        var eventWrapper = defaultFactory.newWrapper(event,s3Client);
+        var eventWrapper = defaultFactory.newParser(event,s3Client);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -87,7 +87,7 @@ class AwsEventParserFactoryTest {
         var dynamodbMapper = new DynamoDBMapper(AmazonDynamoDBClientBuilder.defaultClient());
         var exepectedWraper = new DynamodbEventParser(dynamodbMapper);
 
-        var eventWrapper = defaultFactory.newWrapper(event, dynamodbMapper);
+        var eventWrapper = defaultFactory.newParser(event, dynamodbMapper);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -99,13 +99,13 @@ class AwsEventParserFactoryTest {
         var badClient = AmazonDynamoDBClientBuilder.defaultClient();
 
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, null);
+            defaultFactory.newParser(event, null);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event);
+            defaultFactory.newParser(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, badClient);
+            defaultFactory.newParser(event, badClient);
         });
     }
 
@@ -116,13 +116,13 @@ class AwsEventParserFactoryTest {
         var event = new DynamodbEvent();
         var badClient = AmazonS3ClientBuilder.defaultClient();
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, null);
+            defaultFactory.newParser(event, null);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event);
+            defaultFactory.newParser(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, badClient);
+            defaultFactory.newParser(event, badClient);
         });
     }
 
@@ -139,7 +139,7 @@ class AwsEventParserFactoryTest {
     void givenUnregisterdLambdaEvent_cannotCreateAEventWrapper() {
         var event = new ScheduledEvent();
         assertThrows(UnknownError.class, ()-> {
-            defaultFactory.newWrapper(event);
+            defaultFactory.newParser(event);
         });
     }
 }

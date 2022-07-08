@@ -37,7 +37,7 @@ public final class ParserSpec<E, P extends AwsEventParser<E>> {
         return this.parent.getParent();
     }
 
-    P newWrapper(Object[] constructorArgs) {
+    P newParser(Object[] constructorArgs) {
         try {
             var constructor = parserClass.getDeclaredConstructor(this.constructorArgTypes);
             return constructor.newInstance(constructorArgs);

@@ -42,7 +42,7 @@ public class AwsEventParserFactory {
     /**
      * Create a custom {@link AwsEventParserFactory} instance
      * whose mapping behavior is customized by the given {@link AwsEventParserFactoryConfigurer}.
-     * @param configurer The configurer that customizes the {@code Event to EventWrapper} mappings.
+     * @param configurer The configurer that customizes the {@code Event to EventParser} mappings.
      */
     public static AwsEventParserFactory newInstance(AwsEventParserFactoryConfigurer configurer) {
         return (configurer == null)? DEFAULT_INSTANCE : new AwsEventParserFactory(configurer);
@@ -50,7 +50,7 @@ public class AwsEventParserFactory {
 
     /**
      * Create a {@link AwsEventParserFactory} with given {@link AwsEventParserFactoryConfigurer}
-     * @param configurer The configurer that customizes the {@code Event to EventWrapper} mappings.
+     * @param configurer The configurer that customizes the {@code Event to EventParser} mappings.
      */
     private AwsEventParserFactory(AwsEventParserFactoryConfigurer configurer) {
         this.manual = new WrappingManual();
@@ -67,10 +67,10 @@ public class AwsEventParserFactory {
      * @throws IllegalArgumentException When matched {@link AwsEventParser} requires a constructor args,
      * but those are not provided.
      */
-    public <E> AwsEventParser<E> newWrapper(E event, Object...constructorArgs) {
+    public <E> AwsEventParser<E> newParser(E event, Object...constructorArgs) {
         Class<?> eClass = event.getClass();
         MappingEntry<E> mappingEntry = mappingEntryOf((Class<E>) eClass);
-        return mappingEntry.newWrapper(constructorArgs);
+        return mappingEntry.newParser(constructorArgs);
     }
 
     private <E> MappingEntry<E> mappingEntryOf(Class<E> eClass) {
@@ -79,15 +79,15 @@ public class AwsEventParserFactory {
     }
 
     private void assertHandleable(Class<?> eClass) {
-        boolean hasMatchingEventWrapper = manual.contains(eClass);
+        boolean hasMatchingEventParser = manual.contains(eClass);
         boolean isLambdaEvent = AWS_LAMBDA_EVENTS_PACKAGE.equals(eClass.getPackageName());
-        if ( !hasMatchingEventWrapper || !isLambdaEvent)
+        if ( !hasMatchingEventParser || !isLambdaEvent)
             throw new UnknownError(String.format("Class %s is unknown", eClass));
     }
 
     @Override
     public String toString() {
-        return "AwsEventWrapperFactory{" +
+        return "AwsEventParserFactory{" +
                 "eventWrappingManual=" + manual +
                 '}';
     }

@@ -29,8 +29,8 @@ public final class MappingEntry<E> {
         return this.parent;
     }
 
-    AwsEventParser<E> newWrapper(Object[] constructorArgs) {
-        return this.parserSpec.newWrapper(constructorArgs);
+    AwsEventParser<E> newParser(Object[] constructorArgs) {
+        return this.parserSpec.newParser(constructorArgs);
     }
 
     ParserSpec<E, AwsEventParser<E>> getWrapperSpec() {

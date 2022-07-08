@@ -21,7 +21,7 @@ public abstract class AsyncEventParsingLambda<T> {
     }
     
     public void handler(T event) {
-        AwsEventParser<T> eventParser = factory.newWrapper(event, getConstructorArgs());
+        AwsEventParser<T> eventParser = factory.newParser(event, getConstructorArgs());
         this.doHandle(event, eventParser);
     }
 
