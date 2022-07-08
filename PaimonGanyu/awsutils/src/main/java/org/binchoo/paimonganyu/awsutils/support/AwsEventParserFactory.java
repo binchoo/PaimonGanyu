@@ -45,7 +45,7 @@ public class AwsEventParserFactory {
      * @param configurer The configurer that customizes the {@code Event to EventParser} mappings.
      */
     public static AwsEventParserFactory newInstance(AwsEventParserFactoryConfigurer configurer) {
-        return (configurer == null)? DEFAULT_INSTANCE : new AwsEventParserFactory(configurer);
+        return (configurer == null)? getDefault() : new AwsEventParserFactory(configurer);
     }
 
     /**
