@@ -47,7 +47,8 @@ public class RedeemUserDeliveryLambda {
     }
 
     public void handler(SNSEvent snsEvent) {
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(snsEvent);
+        var factory = AwsEventWrapperFactory.getDefault();
+        var eventWrapper = factory.newWrapper(snsEvent);
         var users = eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class);
         RedeemTaskEstimationOption estimationOption = new RedeemAllCodesOption(redeemCodeCrud, ()-> users.stream()
                     .map(UserHoyopassMessage::toDomain)

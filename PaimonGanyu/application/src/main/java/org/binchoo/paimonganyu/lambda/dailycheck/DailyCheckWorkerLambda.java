@@ -23,7 +23,8 @@ public class DailyCheckWorkerLambda {
     }
 
     public void handler(SQSEvent event) {
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(event);
+        var factory = AwsEventWrapperFactory.getDefault();
+        var eventWrapper = factory.newWrapper(event);
         eventWrapper.extractPojos(event, DailyCheckTaskSpec.class)
                 .forEach(taskSpec -> dailyCheckPort
                         .claimDailyCheckIn(taskSpec.getBotUserId(), taskSpec.getLtuid(), taskSpec.getLtoken()));

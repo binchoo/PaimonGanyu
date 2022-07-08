@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 class AwsEventWrapperFactoryTest {
 
+    AwsEventWrapperFactory defaultFactory = AwsEventWrapperFactory.getDefault();
+
     @DisplayName("AwsEventWrapperFactory 타입이 잘 로드된다.")
     @Test
     void clinit() {
@@ -32,14 +34,14 @@ class AwsEventWrapperFactoryTest {
     @DisplayName("AwsEventWrapperFactory의 커스텀 버전을 생성할 수 있다.")
     @Test
     void configure() {
-        var factory = AwsEventWrapperFactory.create(mappingManual -> {
+        var factory = AwsEventWrapperFactory.newInstance(mappingManual -> {
             mappingManual.whenEvent(SQSEvent.class)
                     .wrapIn(CustomSQSEventWrapper.class);
         });
         var event = new SQSEvent();
         var expectedWrapper = new CustomSQSEventWrapper();
 
-        var eventWrapper = factory.getWrapper0(event);
+        var eventWrapper = factory.newWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }
@@ -50,7 +52,7 @@ class AwsEventWrapperFactoryTest {
         var event = new SQSEvent();
         var exepectedWraper = new SQSEventWrapper();
 
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(event);
+        var eventWrapper = defaultFactory.newWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -61,7 +63,7 @@ class AwsEventWrapperFactoryTest {
         var event = new SNSEvent();
         var exepectedWraper = new SNSEventWrapper();
 
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(event);
+        var eventWrapper = defaultFactory.newWrapper(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -73,7 +75,7 @@ class AwsEventWrapperFactoryTest {
         var s3Client = AmazonS3ClientBuilder.defaultClient();
         var exepectedWraper = new S3EventObjectReader(s3Client);
 
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(event,s3Client);
+        var eventWrapper = defaultFactory.newWrapper(event,s3Client);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -85,7 +87,7 @@ class AwsEventWrapperFactoryTest {
         var dynamodbMapper = new DynamoDBMapper(AmazonDynamoDBClientBuilder.defaultClient());
         var exepectedWraper = new DynamodbEventWrapper(dynamodbMapper);
 
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(event, dynamodbMapper);
+        var eventWrapper = defaultFactory.newWrapper(event, dynamodbMapper);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -97,13 +99,13 @@ class AwsEventWrapperFactoryTest {
         var badClient = AmazonDynamoDBClientBuilder.defaultClient();
 
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, null);
+            defaultFactory.newWrapper(event, null);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event);
+            defaultFactory.newWrapper(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, badClient);
+            defaultFactory.newWrapper(event, badClient);
         });
     }
 
@@ -114,13 +116,13 @@ class AwsEventWrapperFactoryTest {
         var event = new DynamodbEvent();
         var badClient = AmazonS3ClientBuilder.defaultClient();
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, null);
+            defaultFactory.newWrapper(event, null);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event);
+            defaultFactory.newWrapper(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event, badClient);
+            defaultFactory.newWrapper(event, badClient);
         });
     }
 
@@ -137,7 +139,7 @@ class AwsEventWrapperFactoryTest {
     void givenUnregisterdLambdaEvent_cannotCreateAEventWrapper() {
         var event = new ScheduledEvent();
         assertThrows(UnknownError.class, ()-> {
-            AwsEventWrapperFactory.getWrapper(event);
+            defaultFactory.newWrapper(event);
         });
     }
 }

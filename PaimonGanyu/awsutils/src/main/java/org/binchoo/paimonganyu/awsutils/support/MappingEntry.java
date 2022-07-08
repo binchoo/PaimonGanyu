@@ -29,8 +29,8 @@ public final class MappingEntry<E> {
         return this.parent;
     }
 
-    AwsEventWrapper<E> createWrapper(Object[] constructorArgs) {
-        return this.wrapperSpec.createInstance(constructorArgs);
+    AwsEventWrapper<E> newWrapper(Object[] constructorArgs) {
+        return this.wrapperSpec.newWrapper(constructorArgs);
     }
 
     WrapperSpec<E, AwsEventWrapper<E>> getWrapperSpec() {

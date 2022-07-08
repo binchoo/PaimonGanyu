@@ -33,7 +33,8 @@ public class DailyCheckHitoriRequesterLambda {
     }
 
     public void handler(SNSEvent snsEvent) {
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(snsEvent);
+        var factory = AwsEventWrapperFactory.getDefault();
+        var eventWrapper = factory.newWrapper(snsEvent);
         eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class)
                 .stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)

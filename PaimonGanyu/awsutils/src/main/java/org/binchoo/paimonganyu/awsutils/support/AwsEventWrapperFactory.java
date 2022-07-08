@@ -24,85 +24,72 @@ import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
  */
 public class AwsEventWrapperFactory {
 
-    private static final String AWS_LAMBDA_EVENTS_PACKAGE;
-    private static final AwsEventWrapperFactory defaultInstance;
+    private static final String AWS_LAMBDA_EVENTS_PACKAGE = "com.amazonaws.services.lambda.runtime.events";
+    private static AwsEventWrapperFactory DEFAULT_INSTANCE;
 
-    static {
-        AWS_LAMBDA_EVENTS_PACKAGE = "com.amazonaws.services.lambda.runtime.events";
-        defaultInstance = AwsEventWrapperFactory.create(new DefaultFactoryConfigurer());
-    }
+    private final WrappingManual manual;
 
-    private final WrappingManual wrappingManual;
-
-    protected AwsEventWrapperFactory() {
-        this.wrappingManual = new WrappingManual();
+    /**
+     * Get the default instance of {@link AwsEventWrapperFactory}
+     * @return The default singleton instance of {@link AwsEventWrapperFactory}
+     */
+    public static AwsEventWrapperFactory getDefault() {
+        if (DEFAULT_INSTANCE == null)
+            DEFAULT_INSTANCE = AwsEventWrapperFactory.newInstance(new DefaultFactoryConfigurer());
+        return DEFAULT_INSTANCE;
     }
 
     /**
      * Create a custom {@link AwsEventWrapperFactory} instance
-     * whose mapping behavior is customized by the given configurer.
-     * @param configurer The configurer that customizes {@code event to event wrapper} mappings.
+     * whose mapping behavior is customized by the given {@link AwsEventWrapperFactoryConfigurer}.
+     * @param configurer The configurer that customizes the {@code Event to EventWrapper} mappings.
      */
-    public static AwsEventWrapperFactory create(AwsEventWrapperFactoryConfigurer configurer) {
-        if (configurer !=null) {
-            AwsEventWrapperFactory factory = new AwsEventWrapperFactory();
-            configurer.configure(factory.wrappingManual);
-            return factory;
-        }
-        return AwsEventWrapperFactory.defaultInstance;
+    public static AwsEventWrapperFactory newInstance(AwsEventWrapperFactoryConfigurer configurer) {
+        return (configurer == null)? DEFAULT_INSTANCE : new AwsEventWrapperFactory(configurer);
     }
 
     /**
-     * Get an event wrapper that can handle the given event. This is a static method
-     * that refers {@code defaultInstance} of {@link AwsEventWrapperFactory}, which means,
-     * it uses the default, class-level-defined event wrapper mapping.
-     * <p> A basic use-case:
-     * <pre>
-     * SQSEvent event = ...;
-     * AwsEventWrapper&lt;SQSEvent&gt; eventWrapper = AwsEventWrapper.getWrapper(event);
-     * List&lt;Message&gt; messages = eventWrapper.extractPojos(Message.class);
-     * </pre>
-     * @param event One of AWS lambda events.
-     * @param constructorArgs The constructor args for the event wrapper class.
-     * @param <E> The class of {@code event}.
-     * @return A event wrapper.
-     * @throws UnknownError When {@code event} is unknown event to {@link WrappingManual}.
-     * @throws IllegalArgumentException When {@code constructorArgs} is invalid or empty
-     * if the wrapper's constructor needs it.
+     * Create a {@link AwsEventWrapperFactory} with given {@link AwsEventWrapperFactoryConfigurer}
+     * @param configurer The configurer that customizes the {@code Event to EventWrapper} mappings.
      */
-    public static <E> AwsEventWrapper<E> getWrapper(E event, Object...constructorArgs) {
-        return defaultInstance.getWrapper0(event, constructorArgs);
+    private AwsEventWrapperFactory(AwsEventWrapperFactoryConfigurer configurer) {
+        this.manual = new WrappingManual();
+        configurer.configure(this.manual);
     }
 
     /**
-     * Get an event wrapper that can handle the given event.
-     * This refers instance-level-defined event wrapper mapping.
-     * @param event One of AWS lambda events.
-     * @param constructorArgs The constructor args for the event wrapper class.
-     * @param <E> The class of {@code event}.
-     * @return A event wrapper.
-     * @throws UnknownError When {@code event} is unknown event to {@link WrappingManual}
-     * @throws IllegalArgumentException When {@code constructorArgs} is invalid or empty
-     * if the wrapper's constructor needs it.
+     * Get an {@link AwsEventWrapper} that can handle the event of the given type.
+     * @param event An aws lambda event object you want to handle.
+     * @param constructorArgs The constructor args required by the event wrapper construction.
+     * @param <E> The type of the {@code event}.
+     * @return An event wrapper instance that can handle the {@code event}.
+     * @throws UnknownError When the type of {@code event} is unknown to {@link WrappingManual}.
+     * @throws IllegalArgumentException When matched {@link AwsEventWrapper} requires a constructor args,
+     * but those are not provided.
      */
-    public <E> AwsEventWrapper<E> getWrapper0(E event, Object...constructorArgs) {
-        Class<E> eventClass = (Class<E>) event.getClass();
-        isHandleableEventClass(eventClass);
-        return createEventWrapper(eventClass, constructorArgs);
+    public <E> AwsEventWrapper<E> newWrapper(E event, Object...constructorArgs) {
+        Class<?> eClass = event.getClass();
+        MappingEntry<E> mappingEntry = mappingEntryOf((Class<E>) eClass);
+        return mappingEntry.newWrapper(constructorArgs);
     }
 
-    private void isHandleableEventClass(Class<?> eventClass) {
-        String packageName = eventClass.getPackageName();
-        boolean withinLambdaEventPacakge = AWS_LAMBDA_EVENTS_PACKAGE.equals(packageName);
-        boolean hasWrapperMappings = wrappingManual.contains(eventClass);
-        if ( !withinLambdaEventPacakge || !hasWrapperMappings )
-            throw new UnknownError(String.format("Class %s is unknown", eventClass));
+    private <E> MappingEntry<E> mappingEntryOf(Class<E> eClass) {
+        assertHandleable(eClass);
+        return manual.getMappingEntry(eClass);
     }
 
+    private void assertHandleable(Class<?> eClass) {
+        boolean hasMatchingEventWrapper = manual.contains(eClass);
+        boolean isLambdaEvent = AWS_LAMBDA_EVENTS_PACKAGE.equals(eClass.getPackageName());
+        if ( !hasMatchingEventWrapper || !isLambdaEvent)
+            throw new UnknownError(String.format("Class %s is unknown", eClass));
+    }
 
-    private <E> AwsEventWrapper<E> createEventWrapper(Class<E> eventClass, Object[] constructorArgs) {
-        MappingEntry<E> mappingEntry = wrappingManual.getMappingEntry(eventClass);
-        return mappingEntry.createWrapper(constructorArgs);
+    @Override
+    public String toString() {
+        return "AwsEventWrapperFactory{" +
+                "eventWrappingManual=" + manual +
+                '}';
     }
 
     /**
@@ -125,12 +112,5 @@ public class AwsEventWrapperFactory {
                     .whenEvent(DynamodbEvent.class)
                         .wrapIn(DynamodbEventWrapper.class).argTypes(DynamoDBMapper.class);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "AwsEventWrapperFactory{" +
-                "eventWrappingManual=" + wrappingManual +
-                '}';
     }
 }

@@ -30,7 +30,8 @@ public class RedeemWorkerLambda {
     }
 
     public void handler(SQSEvent sqsEvent) {
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(sqsEvent);
+        var factory = AwsEventWrapperFactory.getDefault();
+        var eventWrapper = factory.newWrapper(sqsEvent);
         List<RedeemTask> tasks = eventWrapper.extractPojos(sqsEvent, RedeemTask.class);
         List<UserRedeem> results = codeRedeemService.redeem(tasks);
         log.info("Code Redemption Result: {}", results);

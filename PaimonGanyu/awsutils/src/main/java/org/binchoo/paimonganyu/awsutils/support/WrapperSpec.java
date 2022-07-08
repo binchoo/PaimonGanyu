@@ -37,7 +37,7 @@ public final class WrapperSpec<E, W extends AwsEventWrapper<E>> {
         return this.parent.getParent();
     }
 
-    W createInstance(Object[] constructorArgs) {
+    W newWrapper(Object[] constructorArgs) {
         try {
             var constructor = wrapper.getDeclaredConstructor(this.constructorArgTypes);
             return constructor.newInstance(constructorArgs);

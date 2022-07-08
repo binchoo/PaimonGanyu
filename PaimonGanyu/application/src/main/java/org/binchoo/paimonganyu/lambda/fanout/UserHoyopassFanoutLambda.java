@@ -24,7 +24,8 @@ public class UserHoyopassFanoutLambda {
     private final AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
 
     public void handler(DynamodbEvent dynamodbEvent) {
-        var eventWrapper = AwsEventWrapperFactory.getWrapper(dynamodbEvent, dynamodbMapper);
+        var factory = AwsEventWrapperFactory.getDefault();
+        var eventWrapper = factory.newWrapper(dynamodbEvent, dynamodbMapper);
         eventWrapper.extractPojos(dynamodbEvent, UserHoyopassItem.class).stream()
                 .map(UserHoyopassItem::toDomain)
                 .map(this::createMessage)
