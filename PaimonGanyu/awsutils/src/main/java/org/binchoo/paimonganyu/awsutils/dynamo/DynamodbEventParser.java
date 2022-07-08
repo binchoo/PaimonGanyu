@@ -34,7 +34,7 @@ public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
     public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> defaultAllowedEventNames) {
         this.dynamoDBMapper = dynamoDBMapper;
-        this.allowedEventNames = defaultAllowedEventNames;
+        this.allowedEventNames = defaultAllowedEventNames.clone();
     }
 
     /**
@@ -43,7 +43,7 @@ public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
      */
     @Override
     public <T> List<T> extractPojos(DynamodbEvent event, Class<T> clazz) {
-        return Collections.unmodifiableList(this.doMapping(event, clazz));
+        return this.doMapping(event, clazz);
     }
 
     private <T> List<T> doMapping(DynamodbEvent event, Class<T> clazz) {
@@ -51,7 +51,7 @@ public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
                 .map(this::fromRecordToNewImage)
                 .map(AttributeValuePackageConversion::fromLambdaToDdb)
                 .map(newImage-> dynamoDBMapper.marshallIntoObject(clazz, newImage))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private boolean recordEventNameFilter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
