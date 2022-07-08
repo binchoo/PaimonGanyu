@@ -3,7 +3,9 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.support.template.AsyncEventWrappingLambda;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckHitoriRequesterMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
@@ -13,7 +15,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import java.util.List;
 import java.util.Objects;
 
-public class DailyCheckHitoriRequesterLambda {
+public class DailyCheckHitoriRequesterLambda extends AsyncEventWrappingLambda<SNSEvent> {
 
     private static final String DAILYCHECK_QUEUE_URL = System.getenv("DAILYCHECK_QUEUE_URL");
 
@@ -21,20 +23,17 @@ public class DailyCheckHitoriRequesterLambda {
     private ObjectMapper objectMapper;
     private DailyCheckPort dailyCheckPort;
 
-    public DailyCheckHitoriRequesterLambda() {
-        this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckHitoriRequesterMain.class));
-    }
-
-    private void lookupDependencies(GenericApplicationContext context) {
+    @Override
+    protected void lookupDependencies() {
+        GenericApplicationContext context = new AnnotationConfigApplicationContext(DailyCheckHitoriRequesterMain.class);
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
         this.dailyCheckPort = Objects.requireNonNull(context.getBean(DailyCheckPort.class));
     }
 
-    public void handler(SNSEvent snsEvent) {
-        var factory = AwsEventWrapperFactory.getDefault();
-        var eventWrapper = factory.newWrapper(snsEvent);
-        eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class)
+    @Override
+    protected void doHandle(SNSEvent event, AwsEventWrapper<SNSEvent> eventWrapper) {
+        eventWrapper.extractPojos(event, UserHoyopassMessage.class)
                 .stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
                 .filter(this::ifNotDoneToday)
