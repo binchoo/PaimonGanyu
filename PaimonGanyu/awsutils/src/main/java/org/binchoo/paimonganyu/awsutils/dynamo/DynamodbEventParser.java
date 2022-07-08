@@ -5,9 +5,7 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
 import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -15,11 +13,11 @@ import java.util.stream.Collectors;
  */
 public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
-    private static final DynamodbEventName[] defaultAllowedEventNames
-            = {DynamodbEventName.MODIFY, DynamodbEventName.INSERT};
+    private static final EnumSet<DynamodbEventName> defaultAllowedEventNames
+            = EnumSet.of(DynamodbEventName.MODIFY, DynamodbEventName.INSERT);
 
     private final DynamoDBMapper dynamoDBMapper;
-    private final DynamodbEventName[] allowedEventNames;
+    private final EnumSet<DynamodbEventName> allowedEventNames;
 
     /**
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
@@ -30,7 +28,13 @@ public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
     public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
         this.dynamoDBMapper = dynamoDBMapper;
-        this.allowedEventNames = allowedEventNames;
+        this.allowedEventNames = EnumSet.noneOf(DynamodbEventName.class);
+        this.allowedEventNames.addAll(Arrays.asList(allowedEventNames));
+    }
+
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> defaultAllowedEventNames) {
+        this.dynamoDBMapper = dynamoDBMapper;
+        this.allowedEventNames = defaultAllowedEventNames;
     }
 
     /**
@@ -52,11 +56,9 @@ public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
     private boolean recordEventNameFilter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
         DynamodbEventName eventName = DynamodbEventName.valueOf(streamRecord.getEventName());
-        for (DynamodbEventName allowedEventName : allowedEventNames) {
-            if (eventName.equals(allowedEventName)) {
+        for (DynamodbEventName allowedEventName : allowedEventNames)
+            if (eventName.equals(allowedEventName))
                 return true;
-            }
-        }
         return false;
     }
 
