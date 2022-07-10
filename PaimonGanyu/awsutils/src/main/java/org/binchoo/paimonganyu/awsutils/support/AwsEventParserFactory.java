@@ -14,7 +14,7 @@ import org.binchoo.paimonganyu.awsutils.sqs.SQSEventParser;
 
 /**
  * <p> {@link AwsEventParser} 구현체에 대한 팩토리 클래스입니다.
- * <p> 팩토리가 이벤트 래퍼를 생성하기 위해'{@code AWS이벤트 - 이벤트 래퍼}'매핑을 정의하는 {@link ParsingManual} 객체가 필요합니다.
+ * <p> 팩토리가 이벤트 파서를 생성하기 위해'{@code AWS이벤트 - 이벤트 파서}'매핑을 정의하는 {@link ParsingManual} 객체가 필요합니다.
  * <p> 이미 정의된 기본 매핑을 쓰려면 {@code getDefault()} 인스턴스를 이용합니다.
  * <p> 매핑을 커스터마이징 하려면 별도로 구현한 {@link AwsEventParserFactoryConfigurer}를 주입합니다.
  * 해당 매핑 설정을 갖는 새로운 팩토리 객체를 만들 수 있습니다.

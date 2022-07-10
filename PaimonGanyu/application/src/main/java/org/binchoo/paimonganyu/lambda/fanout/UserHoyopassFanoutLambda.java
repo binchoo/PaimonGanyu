@@ -25,8 +25,8 @@ public class UserHoyopassFanoutLambda {
 
     public void handler(DynamodbEvent dynamodbEvent) {
         var factory = AwsEventParserFactory.getDefault();
-        var eventWrapper = factory.newParser(dynamodbEvent, dynamodbMapper);
-        eventWrapper.extractPojos(dynamodbEvent, UserHoyopassItem.class).stream()
+        var eventParser = factory.newParser(dynamodbEvent, dynamodbMapper);
+        eventParser.extractPojos(dynamodbEvent, UserHoyopassItem.class).stream()
                 .map(UserHoyopassItem::toDomain)
                 .map(this::createMessage)
                 .forEach(this::publish);

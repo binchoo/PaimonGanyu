@@ -25,13 +25,13 @@ class AwsEventParserFactoryTest {
 
     AwsEventParserFactory defaultFactory = AwsEventParserFactory.getDefault();
 
-    @DisplayName("AwsEventWrapperFactory 타입이 잘 로드된다.")
+    @DisplayName("AwsEventParserFactory 타입이 잘 로드된다.")
     @Test
     void clinit() {
         var foobar = AwsEventParserFactory.class;
     }
 
-    @DisplayName("AwsEventWrapperFactory의 커스텀 버전을 생성할 수 있다.")
+    @DisplayName("AwsEventParserFactory의 커스텀 버전을 생성할 수 있다.")
     @Test
     void configure() {
         var factory = AwsEventParserFactory.newInstance(mappingManual -> {
@@ -41,60 +41,60 @@ class AwsEventParserFactoryTest {
         var event = new SQSEvent();
         var expectedWrapper = new CustomSQSEventParser();
 
-        var eventWrapper = factory.newParser(event);
+        var eventParser = factory.newParser(event);
 
-        assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
+        assertThat(eventParser).hasSameClassAs(expectedWrapper);
     }
 
-    @DisplayName("SQSEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("SQSEvent에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
-    void givenSQSEvent_returnsSpecifiedEventWrapper() {
+    void givenSQSEvent_returnsSpecifiedEventParser() {
         var event = new SQSEvent();
         var exepectedWraper = new SQSEventParser();
 
-        var eventWrapper = defaultFactory.newParser(event);
+        var eventParser = defaultFactory.newParser(event);
 
-        assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
+        assertThat(eventParser).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("SNSEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("SNSEvent에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
-    void givenSNSEvent_returnsSpecifiedEventWrapper() {
+    void givenSNSEvent_returnsSpecifiedEventParser() {
         var event = new SNSEvent();
         var exepectedWraper = new SNSEventParser();
 
-        var eventWrapper = defaultFactory.newParser(event);
+        var eventParser = defaultFactory.newParser(event);
 
-        assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
+        assertThat(eventParser).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("S3Event에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("S3Event에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
-    void givenS3Event_returnsSpecifiedEventWrapper() {
+    void givenS3Event_returnsSpecifiedEventParser() {
         var event = new S3Event();
         var s3Client = AmazonS3ClientBuilder.defaultClient();
         var exepectedWraper = new S3EventObjectReader(s3Client);
 
-        var eventWrapper = defaultFactory.newParser(event,s3Client);
+        var eventParser = defaultFactory.newParser(event,s3Client);
 
-        assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
+        assertThat(eventParser).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환한다.")
+    @DisplayName("DynamodbEvent에 대해 명세된 이벤트 파서를 반환한다.")
     @Test
-    void givenDynamodbEvent_returnsSpecifiedEventWrapper() {
+    void givenDynamodbEvent_returnsSpecifiedEventParser() {
         var event = new DynamodbEvent();
         var dynamodbMapper = new DynamoDBMapper(AmazonDynamoDBClientBuilder.defaultClient());
         var exepectedWraper = new DynamodbEventParser(dynamodbMapper);
 
-        var eventWrapper = defaultFactory.newParser(event, dynamodbMapper);
+        var eventParser = defaultFactory.newParser(event, dynamodbMapper);
 
-        assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
+        assertThat(eventParser).hasSameClassAs(exepectedWraper);
     }
 
-    @DisplayName("적절한 생성자 인자 없이는 S3Event에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
+    @DisplayName("적절한 생성자 인자 없이는 S3Event에 대해 명세된 이벤트 파서를 반환할 수 없다.")
     @Test
-    void givenS3EventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
+    void givenS3EventAndInvalidConstructorArgs_cannotCreateEventParser() {
         var event = new S3Event();
         var badClient = AmazonDynamoDBClientBuilder.defaultClient();
 
@@ -110,9 +110,9 @@ class AwsEventParserFactoryTest {
     }
 
     @SuppressWarnings("Allowed null arguments.")
-    @DisplayName("적절한 생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 래퍼를 반환할 수 없다.")
+    @DisplayName("적절한 생성자 인자 없이는 DynamodbEvent에 대해 명세된 이벤트 파서를 반환할 수 없다.")
     @Test
-    void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateAEventWrapper() {
+    void givenDynamodbEventAndInvalidConstructorArgs_cannotCreateEventParser() {
         var event = new DynamodbEvent();
         var badClient = AmazonS3ClientBuilder.defaultClient();
         assertThrows(IllegalArgumentException.class, ()-> {
@@ -134,9 +134,9 @@ class AwsEventParserFactoryTest {
         }
     }
 
-    @DisplayName("매핑 메뉴얼에 없는 람다 이벤트로는 이벤트 래퍼를 얻을 수 없다.")
+    @DisplayName("매핑 메뉴얼에 없는 람다 이벤트로는 이벤트 파서를 얻을 수 없다.")
     @Test
-    void givenUnregisterdLambdaEvent_cannotCreateAEventWrapper() {
+    void givenUnregisterdLambdaEvent_cannotCreateEventParser() {
         var event = new ScheduledEvent();
         assertThrows(UnknownError.class, ()-> {
             defaultFactory.newParser(event);

@@ -33,8 +33,8 @@ public class DailyCheckHitoriRequesterLambda {
 
     public void handler(SNSEvent snsEvent) {
         var factory = AwsEventParserFactory.getDefault();
-        var eventWrapper = factory.newParser(snsEvent);
-        eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class)
+        var eventParser = factory.newParser(snsEvent);
+        eventParser.extractPojos(snsEvent, UserHoyopassMessage.class)
                 .stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
                 .filter(this::ifNotDoneToday)

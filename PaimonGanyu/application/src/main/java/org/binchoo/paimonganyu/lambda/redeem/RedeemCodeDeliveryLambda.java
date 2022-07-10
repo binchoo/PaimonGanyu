@@ -48,8 +48,8 @@ public class RedeemCodeDeliveryLambda {
     }
 
     public void handler(S3Event s3Event) {
-        var eventWrapper = new S3EventObjectReader(s3Client);
-        var redeemCodeList = eventWrapper.extractPojos(s3Event, RedeemCode.class);
+        var eventParser = new S3EventObjectReader(s3Client);
+        var redeemCodeList = eventParser.extractPojos(s3Event, RedeemCode.class);
         List<RedeemTask> tasks = taskEstimation.generateTasks(new RedeemAllUsersOption(userCrud,
                 ()-> Collections.unmodifiableList(redeemCodeList)));
         sendToQueue(tasks);
