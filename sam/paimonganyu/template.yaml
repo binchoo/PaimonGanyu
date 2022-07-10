@@ -21,7 +21,7 @@ Conditions:
 
 Globals:
   Function:
-    CodeUri: application-1.0.2.zip # .aws-sam/build/application-${version}.zip
+    CodeUri: application-1.0.3.zip # .aws-sam/build/application-${version}.zip
     Timeout: 60
     Runtime: java11
     MemorySize: 512
