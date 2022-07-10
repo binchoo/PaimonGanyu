@@ -5,7 +5,8 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
 import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,22 +16,28 @@ import java.util.stream.Collectors;
  */
 public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
 
-    private static final DynamodbEventName[] defaultAllowedEventNames
-            = {DynamodbEventName.MODIFY, DynamodbEventName.INSERT};
+    private static final EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS
+            = EnumSet.of(DynamodbEventName.MODIFY, DynamodbEventName.INSERT);
 
     private final DynamoDBMapper dynamoDBMapper;
-    private final DynamodbEventName[] allowedEventNames;
+    private final EnumSet<DynamodbEventName> allowedDDBEvents;
 
     /**
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
      */
     public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper) {
-        this(dynamoDBMapper, defaultAllowedEventNames);
+        this(dynamoDBMapper, DEFAULT_ALLOWED_DDB_EVENTS);
     }
 
-    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedEventNames) {
+    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedDDBEvents) {
         this.dynamoDBMapper = dynamoDBMapper;
-        this.allowedEventNames = allowedEventNames;
+        this.allowedDDBEvents = EnumSet.noneOf(DynamodbEventName.class);
+        this.allowedDDBEvents.addAll(Arrays.asList(allowedDDBEvents));
+    }
+
+    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS) {
+        this.dynamoDBMapper = dynamoDBMapper;
+        this.allowedDDBEvents = DEFAULT_ALLOWED_DDB_EVENTS.clone();
     }
 
     /**
@@ -39,7 +46,7 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
      */
     @Override
     public <T> List<T> extractPojos(DynamodbEvent event, Class<T> clazz) {
-        return Collections.unmodifiableList(this.doMapping(event, clazz));
+        return this.doMapping(event, clazz);
     }
 
     private <T> List<T> doMapping(DynamodbEvent event, Class<T> clazz) {
@@ -47,16 +54,14 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
                 .map(this::fromRecordToNewImage)
                 .map(AttributeValuePackageConversion::fromLambdaToDdb)
                 .map(newImage-> dynamoDBMapper.marshallIntoObject(clazz, newImage))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private boolean recordEventNameFilter(DynamodbEvent.DynamodbStreamRecord streamRecord) {
         DynamodbEventName eventName = DynamodbEventName.valueOf(streamRecord.getEventName());
-        for (DynamodbEventName allowedEventName : allowedEventNames) {
-            if (eventName.equals(allowedEventName)) {
+        for (DynamodbEventName allowedEventName : allowedDDBEvents)
+            if (eventName.equals(allowedEventName))
                 return true;
-            }
-        }
         return false;
     }
 
