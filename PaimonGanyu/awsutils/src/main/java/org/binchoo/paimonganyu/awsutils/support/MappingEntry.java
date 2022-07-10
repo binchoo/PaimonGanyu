@@ -33,7 +33,7 @@ public final class MappingEntry<E> {
         return this.parserSpec.newParser(constructorArgs);
     }
 
-    ParserSpec<E, AwsEventParser<E>> getWrapperSpec() {
+    ParserSpec<E, AwsEventParser<E>> getParserSpec() {
         return (ParserSpec<E, AwsEventParser<E>>) this.parserSpec;
     }
 
