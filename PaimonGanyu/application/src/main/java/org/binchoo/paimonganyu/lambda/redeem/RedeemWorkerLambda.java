@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.lambda.redeem;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventParserFactory;
 import org.binchoo.paimonganyu.lambda.RedeemWorkerMain;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
@@ -30,8 +30,8 @@ public class RedeemWorkerLambda {
     }
 
     public void handler(SQSEvent sqsEvent) {
-        var factory = AwsEventWrapperFactory.getDefault();
-        var eventWrapper = factory.newWrapper(sqsEvent);
+        var factory = AwsEventParserFactory.getDefault();
+        var eventWrapper = factory.newParser(sqsEvent);
         List<RedeemTask> tasks = eventWrapper.extractPojos(sqsEvent, RedeemTask.class);
         List<UserRedeem> results = codeRedeemService.redeem(tasks);
         log.info("Code Redemption Result: {}", results);

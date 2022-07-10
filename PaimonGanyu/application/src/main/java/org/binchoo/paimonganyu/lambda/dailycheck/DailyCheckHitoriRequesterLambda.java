@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.lambda.dailycheck;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventParserFactory;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.lambda.DailyCheckHitoriRequesterMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
@@ -32,8 +32,8 @@ public class DailyCheckHitoriRequesterLambda {
     }
 
     public void handler(SNSEvent snsEvent) {
-        var factory = AwsEventWrapperFactory.getDefault();
-        var eventWrapper = factory.newWrapper(snsEvent);
+        var factory = AwsEventParserFactory.getDefault();
+        var eventWrapper = factory.newParser(snsEvent);
         eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class)
                 .stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)

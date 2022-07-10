@@ -4,11 +4,11 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.events.*;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
-import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventWrapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
+import org.binchoo.paimonganyu.awsutils.dynamo.DynamodbEventParser;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
-import org.binchoo.paimonganyu.awsutils.sns.SNSEventWrapper;
-import org.binchoo.paimonganyu.awsutils.sqs.SQSEventWrapper;
+import org.binchoo.paimonganyu.awsutils.sns.SNSEventParser;
+import org.binchoo.paimonganyu.awsutils.sqs.SQSEventParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,27 +21,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author : jbinchoo
  * @since : 2022-04-24
  */
-class AwsEventWrapperFactoryTest {
+class AwsEventParserFactoryTest {
 
-    AwsEventWrapperFactory defaultFactory = AwsEventWrapperFactory.getDefault();
+    AwsEventParserFactory defaultFactory = AwsEventParserFactory.getDefault();
 
     @DisplayName("AwsEventWrapperFactory 타입이 잘 로드된다.")
     @Test
     void clinit() {
-        var foobar = AwsEventWrapperFactory.class;
+        var foobar = AwsEventParserFactory.class;
     }
 
     @DisplayName("AwsEventWrapperFactory의 커스텀 버전을 생성할 수 있다.")
     @Test
     void configure() {
-        var factory = AwsEventWrapperFactory.newInstance(mappingManual -> {
+        var factory = AwsEventParserFactory.newInstance(mappingManual -> {
             mappingManual.whenEvent(SQSEvent.class)
-                    .wrapIn(CustomSQSEventWrapper.class);
+                    .wrapIn(CustomSQSEventParser.class);
         });
         var event = new SQSEvent();
-        var expectedWrapper = new CustomSQSEventWrapper();
+        var expectedWrapper = new CustomSQSEventParser();
 
-        var eventWrapper = factory.newWrapper(event);
+        var eventWrapper = factory.newParser(event);
 
         assertThat(eventWrapper).hasSameClassAs(expectedWrapper);
     }
@@ -50,9 +50,9 @@ class AwsEventWrapperFactoryTest {
     @Test
     void givenSQSEvent_returnsSpecifiedEventWrapper() {
         var event = new SQSEvent();
-        var exepectedWraper = new SQSEventWrapper();
+        var exepectedWraper = new SQSEventParser();
 
-        var eventWrapper = defaultFactory.newWrapper(event);
+        var eventWrapper = defaultFactory.newParser(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -61,9 +61,9 @@ class AwsEventWrapperFactoryTest {
     @Test
     void givenSNSEvent_returnsSpecifiedEventWrapper() {
         var event = new SNSEvent();
-        var exepectedWraper = new SNSEventWrapper();
+        var exepectedWraper = new SNSEventParser();
 
-        var eventWrapper = defaultFactory.newWrapper(event);
+        var eventWrapper = defaultFactory.newParser(event);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -75,7 +75,7 @@ class AwsEventWrapperFactoryTest {
         var s3Client = AmazonS3ClientBuilder.defaultClient();
         var exepectedWraper = new S3EventObjectReader(s3Client);
 
-        var eventWrapper = defaultFactory.newWrapper(event,s3Client);
+        var eventWrapper = defaultFactory.newParser(event,s3Client);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -85,9 +85,9 @@ class AwsEventWrapperFactoryTest {
     void givenDynamodbEvent_returnsSpecifiedEventWrapper() {
         var event = new DynamodbEvent();
         var dynamodbMapper = new DynamoDBMapper(AmazonDynamoDBClientBuilder.defaultClient());
-        var exepectedWraper = new DynamodbEventWrapper(dynamodbMapper);
+        var exepectedWraper = new DynamodbEventParser(dynamodbMapper);
 
-        var eventWrapper = defaultFactory.newWrapper(event, dynamodbMapper);
+        var eventWrapper = defaultFactory.newParser(event, dynamodbMapper);
 
         assertThat(eventWrapper).hasSameClassAs(exepectedWraper);
     }
@@ -99,13 +99,13 @@ class AwsEventWrapperFactoryTest {
         var badClient = AmazonDynamoDBClientBuilder.defaultClient();
 
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, null);
+            defaultFactory.newParser(event, null);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event);
+            defaultFactory.newParser(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, badClient);
+            defaultFactory.newParser(event, badClient);
         });
     }
 
@@ -116,17 +116,17 @@ class AwsEventWrapperFactoryTest {
         var event = new DynamodbEvent();
         var badClient = AmazonS3ClientBuilder.defaultClient();
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, null);
+            defaultFactory.newParser(event, null);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event);
+            defaultFactory.newParser(event);
         });
         assertThrows(IllegalArgumentException.class, ()-> {
-            defaultFactory.newWrapper(event, badClient);
+            defaultFactory.newParser(event, badClient);
         });
     }
 
-    public static final class CustomSQSEventWrapper implements AwsEventWrapper<SQSEvent> {
+    public static final class CustomSQSEventParser implements AwsEventParser<SQSEvent> {
 
         @Override
         public <T> List<T> extractPojos(SQSEvent event, Class<T> clazz) {
@@ -139,7 +139,7 @@ class AwsEventWrapperFactoryTest {
     void givenUnregisterdLambdaEvent_cannotCreateAEventWrapper() {
         var event = new ScheduledEvent();
         assertThrows(UnknownError.class, ()-> {
-            defaultFactory.newWrapper(event);
+            defaultFactory.newParser(event);
         });
     }
 }

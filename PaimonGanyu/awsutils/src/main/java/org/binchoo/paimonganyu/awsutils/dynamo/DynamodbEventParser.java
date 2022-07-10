@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.awsutils.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * This utility class can convert the NewImage JSONs of DynamodbEvent to a list of java POJO.
  */
-public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
+public class DynamodbEventParser implements AwsEventParser<DynamodbEvent> {
 
     private static final EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS
             = EnumSet.of(DynamodbEventName.MODIFY, DynamodbEventName.INSERT);
@@ -25,17 +25,17 @@ public class DynamodbEventWrapper implements AwsEventWrapper<DynamodbEvent> {
     /**
      * @param dynamoDBMapper the {@link DynamoDBMapper} to use
      */
-    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper) {
         this(dynamoDBMapper, DEFAULT_ALLOWED_DDB_EVENTS);
     }
 
-    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedDDBEvents) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, DynamodbEventName... allowedDDBEvents) {
         this.dynamoDBMapper = dynamoDBMapper;
         this.allowedDDBEvents = EnumSet.noneOf(DynamodbEventName.class);
         this.allowedDDBEvents.addAll(Arrays.asList(allowedDDBEvents));
     }
 
-    public DynamodbEventWrapper(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS) {
+    public DynamodbEventParser(DynamoDBMapper dynamoDBMapper, EnumSet<DynamodbEventName> DEFAULT_ALLOWED_DDB_EVENTS) {
         this.dynamoDBMapper = dynamoDBMapper;
         this.allowedDDBEvents = DEFAULT_ALLOWED_DDB_EVENTS.clone();
     }

@@ -1,11 +1,11 @@
 package org.binchoo.paimonganyu.awsutils.support;
 
 
-public final class WrappingManual {
+public final class ParsingManual {
 
     private final MappingEntries mappingEntries;
 
-    public WrappingManual() {
+    public ParsingManual() {
         this.mappingEntries = new MappingEntries();
     }
 
@@ -28,7 +28,7 @@ public final class WrappingManual {
 
     @Override
     public String toString() {
-        return "AwsEventWrappingManual{" +
+        return "ParsingManual{" +
                 "mappingEntries=" + mappingEntries +
                 '}';
     }

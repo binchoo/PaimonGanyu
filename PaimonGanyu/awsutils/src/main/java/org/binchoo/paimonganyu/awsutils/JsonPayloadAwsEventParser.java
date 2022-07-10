@@ -14,15 +14,15 @@ import java.util.stream.Stream;
  * @param <E> One of AWS lambda's event types
  */
 @Slf4j
-public abstract class JsonPayloadAwsEventWrapper<E> implements AwsEventWrapper<E> {
+public abstract class JsonPayloadAwsEventParser<E> implements AwsEventParser<E> {
 
     private final ObjectMapper objectMapper;
 
-    protected JsonPayloadAwsEventWrapper() {
+    protected JsonPayloadAwsEventParser() {
         this(new ObjectMapper());
     }
 
-    protected JsonPayloadAwsEventWrapper(ObjectMapper objectMapper) {
+    protected JsonPayloadAwsEventParser(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

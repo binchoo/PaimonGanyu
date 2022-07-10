@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.support.AwsEventWrapperFactory;
+import org.binchoo.paimonganyu.awsutils.support.AwsEventParserFactory;
 import org.binchoo.paimonganyu.lambda.RedeemUserDeliveryMain;
 import org.binchoo.paimonganyu.lambda.dailycheck.dto.UserHoyopassMessage;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
@@ -45,8 +45,8 @@ public class RedeemUserDeliveryLambda {
     }
 
     public void handler(SNSEvent snsEvent) {
-        var factory = AwsEventWrapperFactory.getDefault();
-        var eventWrapper = factory.newWrapper(snsEvent);
+        var factory = AwsEventParserFactory.getDefault();
+        var eventWrapper = factory.newParser(snsEvent);
         var users = eventWrapper.extractPojos(snsEvent, UserHoyopassMessage.class);
         RedeemTaskEstimationOption estimationOption = new RedeemAllCodesOption(redeemCodeCrud, ()-> users.stream()
                     .map(UserHoyopassMessage::toDomain)
