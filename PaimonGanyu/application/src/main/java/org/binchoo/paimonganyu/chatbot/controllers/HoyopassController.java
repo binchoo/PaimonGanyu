@@ -23,7 +23,6 @@ import java.util.List;
 @Controller
 public class HoyopassController {
 
-    private final ObjectMapper objectMapper;
     private final SecureHoyopassRegisterPort secureHoyopassRegister;
 
     @RequestMapping(value = "/post", method = RequestMethod.POST)
