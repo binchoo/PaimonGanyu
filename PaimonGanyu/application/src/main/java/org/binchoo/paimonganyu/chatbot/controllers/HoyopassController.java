@@ -9,13 +9,13 @@ import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecureHoyopassRegisterPort;
+import org.binchoo.paimonganyu.ikakao.type.BarcodeData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -28,8 +28,8 @@ public class HoyopassController {
 
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     public String addHoyopass(@UserId String botUserId,
-                              @ActionParam("secure_hoyopass") String barcode, Model model) {
-        String secureHoyopass = parseBarcode(barcode);
+                              @ActionParam("secure_hoyopass") BarcodeData barcodeData, Model model) {
+        String secureHoyopass = barcodeData.getBarcodeData();
 
         UserHoyopass user = secureHoyopassRegister.registerHoyopass(botUserId, secureHoyopass);
         model.addAttribute(SkillResponseView.CONTENT_KEY, user.listUids());
@@ -54,14 +54,5 @@ public class HoyopassController {
         model.addAttribute(SkillResponseView.CONTENT_KEY, hoyopasses);
 
         return "hoyopassListView";
-    }
-
-    private String parseBarcode(String barcodeObject) {
-        try {
-            Map<String, String> map = (Map<String, String>) objectMapper.readValue(barcodeObject, Map.class);
-            return map.get("barcodeData");
-        } catch (Exception e) {
-            return null;
-        }
     }
 }
