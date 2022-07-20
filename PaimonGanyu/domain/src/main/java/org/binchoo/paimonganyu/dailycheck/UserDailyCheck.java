@@ -18,8 +18,8 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
     private String ltuid;
 
     /**
-     * Note that, for security reason, ltoken is not saved to repository.
-     * So this will be null if it's read from repository.
+     * Note that, for security reason, ltoken is not saved to the table.
+     * So this attribute is null when the item is read from the table.
      */
     private String ltoken;
 
@@ -48,7 +48,7 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
         } else if (requestResult.isDuplicated()) {
             return this.markDuplicate();
         } else {
-            log.info("DailyCheckResult message: {}", requestResult.getMessage());
+            log.info("Daily check-in request result: {}", requestResult.getMessage());
             return this.markComplete();
         }
     }
@@ -58,7 +58,7 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
     }
 
     private UserDailyCheck markFail(Throwable t) {
-        log.warn("Received an exception.", t);
+        log.warn("Daily check-in throws an exception.", t);
         return this.changeStatus(UserDailyCheckStatus.FAILED);
     }
 
@@ -68,7 +68,7 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
 
     private UserDailyCheck changeStatus(UserDailyCheckStatus status) {
         UserDailyCheck userDailyCheck = this.toBuilder().status(status).build();
-        log.info("Marked the status as {}: {}", status, userDailyCheck);
+        log.info("UserDailyCheck state transfer: {}", userDailyCheck);
         return userDailyCheck;
     }
 

@@ -1,21 +1,25 @@
 package org.binchoo.paimonganyu.infra.dailycheck.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheckStatus;
 import org.binchoo.paimonganyu.infra.utils.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Data
 @Slf4j
-@AllArgsConstructor
 @NoArgsConstructor
 @DynamoDBTable(tableName="UserDailyCheck")
 public class UserDailyCheckItem {
+
+    private static final long EXPIRY_DAYS = 7;
 
     @DynamoDBHashKey
     private String id;
@@ -32,17 +36,33 @@ public class UserDailyCheckItem {
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
     private LocalDateTime timestamp;
 
+    private Long ttl;
+
     @DynamoDBTypeConvertedEnum
     private UserDailyCheckStatus status;
 
+    public UserDailyCheckItem(String id, String botUserId, String ltuid, LocalDateTime timestamp, UserDailyCheckStatus status) {
+        this.id = id;
+        this.botUserId = botUserId;
+        this.botUserIdLtuid = botUserId + "-" + ltuid;
+        this.ltuid = ltuid;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.setTtl(timestamp);
+    }
+
+    private void setTtl(LocalDateTime timestamp) {
+        this.ttl = timestamp.atZone(ZoneId.systemDefault())
+                .plus(EXPIRY_DAYS, ChronoUnit.DAYS).toEpochSecond();
+    }
+
     public static UserDailyCheckItem fromDomain(UserDailyCheck userDailyCheck) {
+        var id = UUID.randomUUID().toString();
         var botUserId = userDailyCheck.getBotUserId();
         var ltuid = userDailyCheck.getLtuid();
-        var botUserIdLtuid = botUserId + "-" + ltuid;
         var timestamp = userDailyCheck.getTimestamp();
         var status = userDailyCheck.getStatus();
-        return new UserDailyCheckItem(UUID.randomUUID().toString(),
-                botUserId, botUserIdLtuid, ltuid, timestamp, status);
+        return new UserDailyCheckItem(id, botUserId, ltuid, timestamp, status);
     }
 
     public static UserDailyCheck toDomain(UserDailyCheckItem item) {

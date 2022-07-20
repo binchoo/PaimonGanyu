@@ -36,7 +36,7 @@ Resources:
     Properties:
       Description: The verion of PaimonGanyu KAKAOTALK Skill Server
       ApplicationName: !Ref PaimonGanyuSkillApplication
-      SourceBundle: ./.aws-sam/build/paimonganyu-skill-1.0.3.jar
+      SourceBundle: ./.aws-sam/build/paimonganyu-skill-1.0.4.jar
 
   PaimonGanyuSkillConfigurationTemplate:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate

@@ -34,7 +34,6 @@ class UserDailyCheckDynamoAdapterTest {
         when(repository.save(any())).thenReturn(item);
 
         UserDailyCheck saved = dynamoAdapter.save(original);
-
         assertThat(saved.getLtoken()).isNull();
         assertEquals(original, saved);
     }
@@ -55,7 +54,7 @@ class UserDailyCheckDynamoAdapterTest {
         List<UserDailyCheck> found = dynamoAdapter
                 .findByBotUserIdLtuid(original.getBotUserId(), original.getLtuid());
 
-        found.stream().forEach(it-> {
+        found.forEach(it-> {
             assertThat(it.getLtoken()).isNull();
             assertEquals(original, it);
         });
