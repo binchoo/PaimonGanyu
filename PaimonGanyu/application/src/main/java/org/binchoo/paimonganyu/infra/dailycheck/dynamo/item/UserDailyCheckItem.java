@@ -2,7 +2,6 @@ package org.binchoo.paimonganyu.infra.dailycheck.dynamo.item;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheck;
 import org.binchoo.paimonganyu.dailycheck.UserDailyCheckStatus;
@@ -15,7 +14,6 @@ import java.util.UUID;
 
 @Data
 @Slf4j
-@NoArgsConstructor
 @DynamoDBTable(tableName="UserDailyCheck")
 public class UserDailyCheckItem {
 
@@ -36,10 +34,13 @@ public class UserDailyCheckItem {
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
     private LocalDateTime timestamp;
 
-    private Long ttl;
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.N)
+    private long ttl;
 
     @DynamoDBTypeConvertedEnum
     private UserDailyCheckStatus status;
+
+    public UserDailyCheckItem() { /* required by dynamodb */}
 
     public UserDailyCheckItem(String id, String botUserId, String ltuid, LocalDateTime timestamp, UserDailyCheckStatus status) {
         this.id = id;
@@ -48,10 +49,10 @@ public class UserDailyCheckItem {
         this.ltuid = ltuid;
         this.timestamp = timestamp;
         this.status = status;
-        this.setTtl(timestamp);
+        this.assignTtl(timestamp);
     }
 
-    private void setTtl(LocalDateTime timestamp) {
+    private void assignTtl(LocalDateTime timestamp) {
         this.ttl = timestamp.atZone(ZoneId.systemDefault())
                 .plus(EXPIRY_DAYS, ChronoUnit.DAYS).toEpochSecond();
     }
