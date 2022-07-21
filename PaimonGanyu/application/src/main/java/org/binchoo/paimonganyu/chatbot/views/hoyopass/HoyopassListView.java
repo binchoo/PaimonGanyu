@@ -47,7 +47,7 @@ public class HoyopassListView extends SkillResponseView {
                                         .items(listCardsOf(hoyopasses))
                                         .build())
                                 .build()))
-                        .quickReplies(quickReplyRepo().findByFallbackMethod(getFallbacks()))
+                        .quickReplies(quickReplies().findByFallbackMethod(getFallbacks()))
                         .build())
                 .build();
     }
@@ -62,13 +62,13 @@ public class HoyopassListView extends SkillResponseView {
                     .addButton(BlockButton.builder()
                             .label("출석체크")
                             .messageText("이 통행증 계정으로 출석체크 대신해줘")
-                            .blockId(blockIdRepo().findByFallbackMethod(FallbackMethods.DailyCheckIn))
+                            .blockId(blocks().findByFallbackMethod(FallbackMethods.DailyCheckIn))
                             .extra(Map.of("index", i))
                             .build())
                     .addButton(BlockButton.builder()
                             .label("제거하기")
                             .messageText("이 통행증 지워줬으면 해")
-                            .blockId(blockIdRepo().findByFallbackMethod(FallbackMethods.DeleteHoyopass))
+                            .blockId(blocks().findByFallbackMethod(FallbackMethods.DeleteHoyopass))
                             .extra(Map.of("index", i))
                             .build())
                     .build();
@@ -102,7 +102,7 @@ public class HoyopassListView extends SkillResponseView {
     }
 
     private String getItemImage(Uid uid) {
-        return imageRepo().findByName((uid.getIsLumine())? "lumine_ic_front":"aether_ic_front");
+        return images().findByName((uid.getIsLumine())? "lumine_ic_front":"aether_ic_front");
     }
 
     private FallbackMethod[] getFallbacks() {

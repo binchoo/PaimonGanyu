@@ -55,9 +55,9 @@ public class UidListView extends SkillResponseView {
 
         private String getImageUrl() {
             if (this.isLumine)
-                return imageRepo().findByName(IMAGEKEY_LUMINE);
+                return images().findByName(IMAGEKEY_LUMINE);
             else
-                return imageRepo().findByName(IMAGEKEY_AETHER);
+                return images().findByName(IMAGEKEY_AETHER);
         }
     }
 
@@ -83,7 +83,7 @@ public class UidListView extends SkillResponseView {
                 .addOutput(CarouselView.builder()
                         .carousel(carouselOf(modelValues))
                         .build())
-                .quickReplies(quickReplyRepo().findByFallbackMethod(getFallbacks()))
+                .quickReplies(quickReplies().findByFallbackMethod(getFallbacks()))
                 .build();
     }
 

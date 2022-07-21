@@ -51,7 +51,7 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
                         .addOutput(CarouselView.builder()
                                 .carousel(renderCarousel(dailyCheckCollection))
                                 .build())
-                        .quickReplies(quickReplyRepo().findByFallbackMethod(getFallbacks()))
+                        .quickReplies(quickReplies().findByFallbackMethod(getFallbacks()))
                         .build())
                 .build();
     }
@@ -104,15 +104,15 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
         if (status.isDuplicate()) {
             title = "중복";
             description = "이미 출석 했었네...?";
-            imageUrl = imageRepo().findByName(THUMB_DUPL);
+            imageUrl = images().findByName(THUMB_DUPL);
         } else if (status.isFailed()) {
             title = "실패..";
             description = "아잇.. 왜 오류가 난거야";
-            imageUrl = imageRepo().findByName(THUMB_FAIL);
+            imageUrl = images().findByName(THUMB_FAIL);
         } else if (status.isCompleted()) {
             title = "성공!";
             description = "페이몬이 대신 출첵해줬어!";
-            imageUrl = imageRepo().findByName(THUMB_COMPL);
+            imageUrl = images().findByName(THUMB_COMPL);
         } else {
             throw new RuntimeException("UserDailyCheckStatus of [" + status + "] is not supported.");
         }
@@ -141,7 +141,7 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
 
     private List<Button> renderBlockButton() {
         return List.of(BlockButton.builder()
-                .blockId(blockIdRepo().findByFallbackMethod(FallbackMethods.DailyCheckIn))
+                .blockId(blocks().findByFallbackMethod(FallbackMethods.DailyCheckIn))
                 .label("호요랩 출석 요청")
                 .build());
     }

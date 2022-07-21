@@ -60,15 +60,15 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
      */
     protected abstract SkillResponse renderSkillResponse(Object modelContent);
 
-    public Images imageRepo() {
+    public Images images() {
         return images;
     }
 
-    public Blocks blockIdRepo() {
+    public Blocks blocks() {
         return blocks;
     }
 
-    public QuickReplies quickReplyRepo() {
+    public QuickReplies quickReplies() {
         return quickReplies;
     }
 }
