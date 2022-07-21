@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.configs.view;
 
-import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
+import org.binchoo.paimonganyu.chatbot.resources.Blocks;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckListView;
@@ -37,8 +37,8 @@ public class ViewConfig {
     @Bean
     public HoyopassListView hoyopassListView(@Autowired Images images,
                                              @Autowired QuickReplies quickReplies,
-                                             @Autowired BlockIds blockIds) {
-        return new HoyopassListView(images, quickReplies, blockIds);
+                                             @Autowired Blocks blocks) {
+        return new HoyopassListView(images, quickReplies, blocks);
     }
 
     @Lazy

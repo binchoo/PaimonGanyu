@@ -1,6 +1,5 @@
 package org.binchoo.paimonganyu.chatbot.views.uid;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
@@ -56,9 +55,9 @@ public class UidListView extends SkillResponseView {
 
         private String getImageUrl() {
             if (this.isLumine)
-                return imageRepo().findById(IMAGEKEY_LUMINE);
+                return imageRepo().findByName(IMAGEKEY_LUMINE);
             else
-                return imageRepo().findById(IMAGEKEY_AETHER);
+                return imageRepo().findByName(IMAGEKEY_AETHER);
         }
     }
 

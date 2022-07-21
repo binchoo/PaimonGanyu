@@ -1,9 +1,9 @@
 package org.binchoo.paimonganyu.chatbot.configs.resource;
 
-import lombok.Data;
 import lombok.Setter;
 import org.binchoo.paimonganyu.chatbot.configs.YamlPropertySourceFactory;
-import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
+import org.binchoo.paimonganyu.chatbot.resources.BlockSpec;
+import org.binchoo.paimonganyu.chatbot.resources.Blocks;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.ikakao.type.QuickReply;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,38 +23,25 @@ import java.util.Map;
 @Configuration
 @ConfigurationProperties
 @PropertySource(value = "classpath:blocks.yaml", factory = YamlPropertySourceFactory.class)
-public class BlockAndQuickConfig {
+public class BlockQuickReplyConfig {
 
-    private Map<String, ReadBlock> blocks;
-    private Map<String, String> blockNameAndId;
+    private Map<String, BlockSpec> blocks;
+    private Blocks blocksSingleton;
     private QuickReplies quickReplies;
 
     @PostConstruct
-    public void initRepos() {
-        this.blockNameAndId = new HashMap<>();
-        this.quickReplies = new QuickReplies();
-        blocks.forEach((name, block)-> {
-            blockNameAndId.put(name, block.getId());
-            quickReplies.add(FallbackMethods.findByName(name),
-                    new QuickReply(block.getLabel(), "block", null, block.getId(), null));
-        });
+    public void initResources() {
+        this.blocksSingleton = new Blocks(this.blocks);
+        this.quickReplies = new QuickReplies(this.blocks);
     }
 
     @Bean
-    public BlockIds blockIds() {
-        return new BlockIds(blockNameAndId);
+    public Blocks blocks() {
+        return this.blocksSingleton;
     }
 
     @Bean
     public QuickReplies quickReplies() {
         return this.quickReplies;
-    }
-
-    @Data
-    @Setter
-    private static class ReadBlock {
-
-        private String id;
-        private String label;
     }
 }

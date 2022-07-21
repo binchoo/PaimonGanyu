@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.views;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
+import org.binchoo.paimonganyu.chatbot.resources.Blocks;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
@@ -21,22 +21,22 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
     public static final String CONTENT_KEY = "Content";
 
     protected final Images images;
-    protected final BlockIds blockIds;
+    protected final Blocks blocks;
     protected final QuickReplies quickReplies;
 
-    public SkillResponseView(Images images, QuickReplies quickReplies, BlockIds blockIds) {
+    public SkillResponseView(Images images, QuickReplies quickReplies, Blocks blocks) {
         super();
         this.images = images;
-        this.blockIds = blockIds;
+        this.blocks = blocks;
         this.quickReplies = quickReplies;
         this.setExtractValueFromSingleKeyModel(true);
     }
 
     public SkillResponseView(ObjectMapper objectMapper,
-                             Images images, QuickReplies quickReplies, BlockIds blockIds) {
+                             Images images, QuickReplies quickReplies, Blocks blocks) {
         super(objectMapper);
         this.images = images;
-        this.blockIds = blockIds;
+        this.blocks = blocks;
         this.quickReplies = quickReplies;
         this.setExtractValueFromSingleKeyModel(true);
     }
@@ -64,8 +64,8 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
         return images;
     }
 
-    public BlockIds blockIdRepo() {
-        return blockIds;
+    public Blocks blockIdRepo() {
+        return blocks;
     }
 
     public QuickReplies quickReplyRepo() {

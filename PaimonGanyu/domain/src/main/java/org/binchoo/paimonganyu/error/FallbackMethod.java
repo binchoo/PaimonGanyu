@@ -12,5 +12,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FallbackMethod {
 
-    private final String id;
+    private final String key;
 }

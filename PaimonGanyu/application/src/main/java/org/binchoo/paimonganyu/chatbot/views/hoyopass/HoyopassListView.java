@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.views.hoyopass;
 
-import org.binchoo.paimonganyu.chatbot.resources.BlockIds;
+import org.binchoo.paimonganyu.chatbot.resources.Blocks;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  */
 public class HoyopassListView extends SkillResponseView {
 
-    public HoyopassListView(Images images, QuickReplies quickReplies, BlockIds blockIds) {
-        super(images, quickReplies, blockIds);
+    public HoyopassListView(Images images, QuickReplies quickReplies, Blocks blocks) {
+        super(images, quickReplies, blocks);
     }
 
     @Override
@@ -62,13 +62,13 @@ public class HoyopassListView extends SkillResponseView {
                     .addButton(BlockButton.builder()
                             .label("출석체크")
                             .messageText("이 통행증 계정으로 출석체크 대신해줘")
-                            .blockId(blockIdRepo().findByName(FallbackMethods.DailyCheckIn))
+                            .blockId(blockIdRepo().findByFallbackMethod(FallbackMethods.DailyCheckIn))
                             .extra(Map.of("index", i))
                             .build())
                     .addButton(BlockButton.builder()
                             .label("제거하기")
                             .messageText("이 통행증 지워줬으면 해")
-                            .blockId(blockIdRepo().findByName(FallbackMethods.DeleteHoyopass))
+                            .blockId(blockIdRepo().findByFallbackMethod(FallbackMethods.DeleteHoyopass))
                             .extra(Map.of("index", i))
                             .build())
                     .build();
@@ -102,7 +102,7 @@ public class HoyopassListView extends SkillResponseView {
     }
 
     private String getItemImage(Uid uid) {
-        return imageRepo().findById((uid.getIsLumine())? "lumine_ic_front":"aether_ic_front");
+        return imageRepo().findByName((uid.getIsLumine())? "lumine_ic_front":"aether_ic_front");
     }
 
     private FallbackMethod[] getFallbacks() {

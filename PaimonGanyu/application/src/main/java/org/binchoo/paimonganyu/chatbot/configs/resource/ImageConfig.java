@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Setter
 @Configuration
@@ -22,20 +21,18 @@ public class ImageConfig {
 
     @Bean
     public Images images() {
-        this.concatSuffix();
-        return new Images(images);
+        return new Images(this.concatUrl());
     }
 
-    private void concatSuffix() {
+    private Map<String, String> concatUrl() {
         StringBuilder sb = new StringBuilder();
-
-        Objects.requireNonNull(images);
-        for (Map.Entry<String, String> entry : images.entrySet()) {
-            String imgName = entry.getKey();
-            String objSuffix = entry.getValue();
+        for (Map.Entry<String, String> entry : this.images.entrySet()) {
+            String imageName = entry.getKey();
+            String imageS3Suffix = entry.getValue();
             sb.setLength(0);
             sb.append(prefix);
-            images.put(imgName, sb.append(objSuffix).toString());
+            this.images.put(imageName, sb.append(imageS3Suffix).toString());
         }
+        return this.images;
     }
 }

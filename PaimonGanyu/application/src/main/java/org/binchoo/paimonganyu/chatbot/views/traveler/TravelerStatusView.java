@@ -91,7 +91,7 @@ public class TravelerStatusView extends SkillResponseView {
 
     private ItemCard.Thumbnail selectRandom(Images imageRepo) {
         String robin = nextThumbnail();
-        String imageUrl = imageRepo.findById(robin);
+        String imageUrl = imageRepo.findByName(robin);
         return new ItemCard.Thumbnail(imageUrl, THUMB_FIXED_WIDTH, THUMB_FIXED_HEIGHT);
     }
 
@@ -124,12 +124,12 @@ public class TravelerStatusView extends SkillResponseView {
     }
 
     private String profileImageStrategy(TravelerStatus status) {
-        return imageRepo().findById((status.ratioOfResin() > status.ratioOfHomeCoin())?
+        return imageRepo().findByName((status.ratioOfResin() > status.ratioOfHomeCoin())?
                 THUMB_RESIN : THUMB_SEREN);
     }
 
     private String profileImageStrategy(boolean isLumine) {
-        return imageRepo().findById(isLumine? THUMB_LUMINE : THUMB_AETHER);
+        return imageRepo().findByName(isLumine? THUMB_LUMINE : THUMB_AETHER);
     }
 
     private String profileTitleStrategy(TravelerStatus status) {
