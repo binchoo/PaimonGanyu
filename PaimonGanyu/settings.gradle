@@ -1,3 +1,6 @@
 rootProject.name = 'PaimonGanyu'
-include 'application', 'domain', 'hoyoapi', 'awsutils', 'ikakao'
 
+include 'paimonganyu-app', 'paimonganyu-app:paimonganyu', 'paimonganyu-app:paimonganyu-skill'
+include 'paimonganyu-domain', 'paimonganyu-infra', 'paimonganyu-hoyoapi';
+include 'awsutils'
+include 'ikakao'

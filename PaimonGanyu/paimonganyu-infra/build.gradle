@@ -1,0 +1,30 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version "${bootVersion}"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    api project(':paimonganyu-domain')
+    api project(':paimonganyu-hoyoapi')
+
+    api ("com.amazonaws:aws-java-sdk-dynamodb:${awsSdkVersion}") {
+        because 'All workflows use the Amazon DynamoDB as their persistence system.'
+    }
+    api ('com.github.derjust:spring-data-dynamodb:5.1.0') {
+        because 'To automatically create some DynamoDB repositories.'
+    }
+    api ("com.amazonaws:aws-java-sdk-ssm:${awsSdkVersion}") {
+        because 'Hoyopass could digest secured (RSA-signed) hoyopass strings.'
+    }
+
+    testImplementation(testFixtures(project(':paimonganyu-domain')))
+}

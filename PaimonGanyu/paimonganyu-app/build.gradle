@@ -1,0 +1,3 @@
+def samBuildDir(Project project, String stackName) {
+    '../'.repeat(project.depth + 1) + "sam/${stackName}/.aws-sam/build"
+}
