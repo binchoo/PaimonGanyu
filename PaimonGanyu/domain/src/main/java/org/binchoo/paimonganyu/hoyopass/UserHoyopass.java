@@ -21,8 +21,9 @@ public class UserHoyopass {
 
     public static final int MAX_HOYOPASS_COUNT = 2;
 
-    private String botUserId;
     private final TreeSet<Hoyopass> hoyopasses;
+
+    private String botUserId;
 
     public static final class UserHoyopasBuilder {
 
@@ -177,13 +178,9 @@ public class UserHoyopass {
      * @throws IndexOutOfBoundsException 잘못된 인덱스 지정일 때
      */
     public Hoyopass deleteAt(int i) {
-        if (0 <= i && i < this.getSize()) {
-            if (i == 0)
-                return hoyopasses.pollFirst();
-            else
-                return hoyopasses.pollLast();
-        }
-        throw new IndexOutOfBoundsException();
+        if (i < 0 || i >= this.getSize())
+            throw new IndexOutOfBoundsException();
+        return (i == 0)? hoyopasses.pollFirst() : hoyopasses.pollLast();
     }
 
     /**
