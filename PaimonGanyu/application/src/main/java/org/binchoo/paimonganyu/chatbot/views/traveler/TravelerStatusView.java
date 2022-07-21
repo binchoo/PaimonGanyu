@@ -75,7 +75,7 @@ public class TravelerStatusView extends SkillResponseView {
     }
 
     private ItemCard renderItemCard(TravelerStatus status) {
-        ItemCard.Thumbnail thumb = selectRandom(imageRepo());
+        ItemCard.Thumbnail thumb = selectRandom(images());
         Profile profile = renderProfile(status);
         ImageTitle imageTitle = renderImageTitle(status);
         List<ItemList> itemLists = renderItemLists(status);
@@ -124,12 +124,12 @@ public class TravelerStatusView extends SkillResponseView {
     }
 
     private String profileImageStrategy(TravelerStatus status) {
-        return imageRepo().findByName((status.ratioOfResin() > status.ratioOfHomeCoin())?
+        return images().findByName((status.ratioOfResin() > status.ratioOfHomeCoin())?
                 THUMB_RESIN : THUMB_SEREN);
     }
 
     private String profileImageStrategy(boolean isLumine) {
-        return imageRepo().findByName(isLumine? THUMB_LUMINE : THUMB_AETHER);
+        return images().findByName(isLumine? THUMB_LUMINE : THUMB_AETHER);
     }
 
     private String profileTitleStrategy(TravelerStatus status) {
@@ -146,7 +146,7 @@ public class TravelerStatusView extends SkillResponseView {
     }
 
     private Collection<? extends QuickReply> getQuickReplies() {
-        return List.of(quickReplyRepo()
+        return List.of(quickReplies()
                 .findByFallbackMethod(FallbackMethods.Home));
     }
 
