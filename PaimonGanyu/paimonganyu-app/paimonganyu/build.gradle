@@ -1,0 +1,41 @@
+plugins {
+    id "org.springframework.boot" version "${bootVersion}"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+
+bootJar {
+    enabled = false;
+}
+
+dependencies {
+    implementation project(':awsutils')
+    implementation project(':paimonganyu-hoyoapi')
+    implementation project(':paimonganyu-infra')
+    testImplementation(testFixtures(project(':paimonganyu-domain')))
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation ("com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}") {
+        because 'Hoyopass fanout leverages an SNS topic.'
+    }
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+}
+
+task buildZipNoTomcat(type: Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from (configurations.runtimeClasspath) {
+            exclude 'tomcat-embed-*'
+        }
+    }
+}
+
+task copyZipNoTomcat(type: Copy) {
+    def dest = samBuildDir(project, 'paimonganyu')
+    from buildZipNoTomcat
+    into(dest)
+    doLast {
+        println "$project.name:$name has moved fat-zip into $dest"
+    }
+}
