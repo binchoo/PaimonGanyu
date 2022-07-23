@@ -20,25 +20,25 @@ This repository contains two [CloudFormation stacks](https://docs.aws.amazon.com
 
 The behind AWS workflows that support the chatbot's features, and dependencies.
 
-**Application pacakge**
+**Application module**
 
-`:application:lambda`
+`:paimonganyu-app:paimonganyu`
 
-**Dependent packages**
+**Dependent modules**
 
-`:application:infra`, `:domain`, `:awsutils`, `:hoyoapi`
+`:paimonganyu-infra`, `:paimonganyu-domain`, `:paimonganyu-hoyoapi`, `:awsutils`
 
 ### 2. paimonganyu-skill
 
 The code of skill server that handles user requests and renders skill responses, and dependencies.
 
-**Application package**
+**Application module**
 
-`:application:chatbot`
+`:paimonganyu-app:paimonganyu-skill`
 
-**Dependent packages**
+**Dependent modules**
 
-`:application:infra`, `:domain`, `:ikakao`, `:hoyoapi`
+`:paimonganyu-infra`, `:paimonganyu-domain`, `:paimonganyu-hoyoapi`, `:ikakao` 
 
 ## Engineering Wiki
 [Notion: PaimonGanyu 엔지니어링](https://hollow-leotard-0e1.notion.site/PaimonGanyu-81337fdfe052499f98a2a347f30afbcd)
@@ -123,15 +123,15 @@ If any account authentication is not provided, those tests will fail. That being
 
 ## Makefile shortcuts
 
-**Deploying the serveless workflows**
+**Deploy the serveless workflows**
 
 `make paimonganyu-prod version=1.0.0`
 
-**Deploying the skill server**
+**Deploy the skill server**
 
 `make paimonganyu-skill-prod version=1.0.0`
 
-**Running a local system test** (Needs at least three test accounts.)
+**Run a local system test**
 
 `make localtest`
 

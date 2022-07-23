@@ -20,25 +20,25 @@
 
 챗봇 기능을 지원하는 백엔드 워크플로들과 그 의존성입니다.
 
-**Application pacakge**
+**응용 모듈**
 
-`:application:lambda`
+`:paimonganyu-app:paimonganyu`
 
-**Dependent packages**
+**의존 모듈**
 
-`:application:infra`, `:domain`, `:awsutils`, `:hoyoapi`
+`:paimonganyu-infra`, `:paimonganyu-domain`, `:paimonganyu-hoyoapi`, `:awsutils`
 
 ### 2. paimonganyu-skill
 
 챗봇 유저 요청을 처리하고, 스킬 응답을 렌더링하는 스킬 서버 코드와 그 의존성입니다.
 
-**Application package**
+**응용 모듈**
 
-`:application:chatbot`
+`:paimonganyu-app:paimonganyu-skill`
 
-**Dependent packages**
+**의존 모듈**
 
-`:application:infra`, `:domain`, `:ikakao`, `:hoyoapi`
+`:paimonganyu-infra`, `:paimonganyu-domain`, `:paimonganyu-hoyoapi`, `:ikakao` 
 
 ## 프로젝트 일지
 [Notion: PaimonGanyu 엔지니어링](https://hollow-leotard-0e1.notion.site/PaimonGanyu-81337fdfe052499f98a2a347f30afbcd) 개인적인 프로젝트 일지입니다.
@@ -73,7 +73,7 @@ paimonganyu-skill 배포시 Amazon Elastic Beanstalk 응용으로서 CloudFormat
 
 ### applications.properties (required)
 
-`:application> src> main> resources> applications.properties`
+`:paimonganyu-app:paimonganyu-skill> src> main> resources> applications.properties`
 
 ```properties
 amazon.ssm.hoyopass.publickeyname = HoyopassRsaPublicKey
@@ -95,7 +95,7 @@ listUserDailyCheck.maxCount = 4
 
 ### amazon.properties (optional)
 
-`:application> src> test> resources> amazon.properties`
+`:paimonganyu-app:paimonganyu-skill> src> test> resources> amazon.properties`
 
 ```properties
 amazon.aws.accesskey=ASDFASDFASDFASDFASDF
@@ -115,7 +115,7 @@ amazon.ssm.hoyopass.privatekeyname = HoyopassRsaPrivateKey
 
 ### accounts.properties (optional)
 
-`:application> src> test> resources> accounts.properties`
+`:paimonganyu-app:paimonganyu-skill> src> test> resources> accounts.properties`
 
 몇 가지 테스트는 기능 점검을 위해 실제 원신 계정을 요구합니다.
 
