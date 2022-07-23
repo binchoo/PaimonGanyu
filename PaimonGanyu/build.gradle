@@ -12,7 +12,7 @@ allprojects {
         bootVersion = '2.4.2'
         awsSdkVersion = '1.11.914'
         jacksonVersion = '2.11.4'
-        lombokVersion = '1.18.22'
+        lombokVersion = '1.18.24'
     }
 
     repositories {
@@ -40,14 +40,4 @@ allprojects {
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-}
-
-project(':application').dependencies {
-    implementation project(':hoyoapi')
-    implementation project(':awsutils')
-    implementation (project(':ikakao')) {
-        because 'to render skill response of kakao chatbot'
-    }
-    implementation project(':domain')
-    testImplementation(testFixtures(project(':domain')))
 }
