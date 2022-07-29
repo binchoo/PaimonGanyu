@@ -19,8 +19,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author : jbinchoo
@@ -31,26 +30,26 @@ import static org.mockito.Mockito.verify;
 class RedeemBloomFilterTest {
 
     @Mock
-    RedeemCode mockRedeemCode;
+    UserRedeemCrudPort mockUserRedeemCrud;
 
-    @Mock
-    UserRedeemCrudPort userRedeemCrudPort;
-
-    RedeemBloomFilter redeemBloomFilter;
-    UserRedeem userRedeemDone;
+    RedeemBloomFilter testBloomFilter;
+    RedeemCode testCode;
+    UserRedeem testUserRedeem;
 
     @BeforeEach
     void init() {
-        redeemBloomFilter = new RedeemBloomFilter(userRedeemCrudPort);
-        userRedeemDone = new UserRedeem("botUserId", "uid", mockRedeemCode, true);
+        testBloomFilter = new RedeemBloomFilter(mockUserRedeemCrud);
+        testCode = new RedeemCode("foobar");
+        testUserRedeem = new UserRedeem("botUserId", "uid", testCode, true);
     }
 
     @DisplayName("매칭 이력이 안 내려오면, 이력 완수 여부는 거짓이다")
     @Test
     void givenEmptyHistories_hasRedeemed_returnsFalse() {
-        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
+        given(mockUserRedeemCrud.findByRedeemCode(testCode))
+                .willReturn(Collections.emptyList());
 
-        boolean hasRedeemed = redeemBloomFilter.hasRedeemed("foo", "bar", mockRedeemCode);
+        boolean hasRedeemed = testBloomFilter.hasRedeemed("foo", "bar", testCode);
 
         assertThat(hasRedeemed).isFalse();
     }
@@ -58,9 +57,10 @@ class RedeemBloomFilterTest {
     @DisplayName("매칭 이력 안 내려오면, 이력 미완수 여부는 참이다")
     @Test
     void givenEmptyHistories_hasNotRedeemed_returnsTrue() {
-        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode)).willReturn(Collections.emptyList());
+        given(mockUserRedeemCrud.findByRedeemCode(testCode))
+                .willReturn(Collections.emptyList());
 
-        boolean hasNotRedeemed = redeemBloomFilter.hasNotRedeemed("foo", "bar", mockRedeemCode);
+        boolean hasNotRedeemed = testBloomFilter.hasNotRedeemed("foo", "bar", testCode);
 
         assertThat(hasNotRedeemed).isTrue();
     }
@@ -68,49 +68,47 @@ class RedeemBloomFilterTest {
     @DisplayName("여집합이 내려오면, 이력 완수 여부는 거짓이다")
     @Test
     void givenComplementHistories_hasRedeemed_returnsFalse() {
-        given(mockRedeemCode.getCode()).willReturn("foobarcode");
-        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
-                .willReturn(complementSet(100000));
-        lenient().when(userRedeemCrudPort.existMatches(userRedeemDone))
+        given(mockUserRedeemCrud.findByRedeemCode(testCode))
+                .willReturn(complementSet(100000, testUserRedeem));
+        lenient().when(mockUserRedeemCrud.existMatches(testUserRedeem))
                 .thenReturn(false);
 
-        boolean hasRedeemed = redeemBloomFilter
-                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getUid(), userRedeemDone.getRedeemCode());
+        boolean hasRedeemed = testBloomFilter.hasRedeemed(
+                testUserRedeem.getBotUserId(), testUserRedeem.getUid(), testUserRedeem.getRedeemCode());
 
         assertThat(hasRedeemed).isFalse();
     }
 
-    private List<UserRedeem> complementSet(int len) {
+    private List<UserRedeem> complementSet(int len, UserRedeem userRedeem) {
         return IntStream.range(0, len).mapToObj(it-> {
                     String random = RandomString.make();
-                    return new UserRedeem(random, random, userRedeemDone.getRedeemCode());
+                    return new UserRedeem(random, random, userRedeem.getRedeemCode());
                 })
-                .filter(it-> !it.equals(userRedeemDone))
+                .filter(it-> !it.equals(userRedeem))
                 .collect(Collectors.toList());
     }
 
     @DisplayName("포함집합이 내려오면, 블룸필터는 참을 반환하니, 포트에 쿼리를 날리게 될 것이다")
     @Test
     void givenInclusiveHistories_hasRedeemed_callExistMatches() {
-        given(mockRedeemCode.getCode()).willReturn("foobarcode");
-        given(userRedeemCrudPort.findByRedeemCode(mockRedeemCode))
-                .willReturn(inclusiveSet(100000));
+        given(mockUserRedeemCrud.findByRedeemCode(testCode))
+                .willReturn(inclusiveSet(100000, testUserRedeem));
 
-        redeemBloomFilter
-                .hasRedeemed(userRedeemDone.getBotUserId(), userRedeemDone.getUid(), userRedeemDone.getRedeemCode());
+        testBloomFilter.hasRedeemed(
+                testUserRedeem.getBotUserId(), testUserRedeem.getUid(), testUserRedeem.getRedeemCode());
 
-        verify(userRedeemCrudPort).existMatches(userRedeemDone);
+        verify(mockUserRedeemCrud).existMatches(testUserRedeem);
     }
 
-    private List<UserRedeem> inclusiveSet(int len) {
+    private List<UserRedeem> inclusiveSet(int len, UserRedeem userRedeem) {
         final int includeAt = Math.abs(new Random().nextInt()) % len;
         return IntStream.range(0, len).mapToObj(it-> {
                     String random = RandomString.make();
                     if (includeAt == it) {
                         System.out.println("Inserted at " + it);
-                        return userRedeemDone;
+                        return userRedeem;
                     }
-                    return new UserRedeem(random, random, userRedeemDone.getRedeemCode());
+                    return new UserRedeem(random, random, userRedeem.getRedeemCode());
                 })
                 .collect(Collectors.toList());
     }
@@ -118,7 +116,7 @@ class RedeemBloomFilterTest {
     @DisplayName("블룸필터 사이즈를 별도로 설정하지 않으면, 기본 설정값을 사용한다")
     @Test
     void whenBloomFilterSizeNotConfigured_testGetBloomFilterSize_returnsDefaultValue() {
-        var bloomFilterSize = redeemBloomFilter.getBloomFilterSize();
+        var bloomFilterSize = testBloomFilter.getBloomFilterSize();
 
         assertThat(bloomFilterSize).isEqualTo(RedeemBloomFilter.DEFAULT_BLOOMFILTER_SIZE);
     }
@@ -127,9 +125,9 @@ class RedeemBloomFilterTest {
     @Test
     void givenBloomFilterSizeOfNonPositiveValue_testGetBloomFilterSize_returnsTheSameValue() {
         IntStream.of(-21474836, 0).forEach(myBloomFilterSize-> {
-            RedeemBloomFilter redeemBloomFilter = new RedeemBloomFilter(myBloomFilterSize, userRedeemCrudPort);
+            RedeemBloomFilter newBloomFilter = new RedeemBloomFilter(myBloomFilterSize, mockUserRedeemCrud);
 
-            var bloomFilterSize = redeemBloomFilter.getBloomFilterSize();
+            var bloomFilterSize = newBloomFilter.getBloomFilterSize();
 
             assertThat(bloomFilterSize).isEqualTo(RedeemBloomFilter.DEFAULT_BLOOMFILTER_SIZE);
         });
@@ -139,9 +137,9 @@ class RedeemBloomFilterTest {
     @Test
     void givenBloomFilterSizeOfPositiveValue_testGetBloomFilterSize_returnsTheSameValue() {
         int myBloomFilterSize = 10000;
-        RedeemBloomFilter redeemBloomFilter = new RedeemBloomFilter(myBloomFilterSize, userRedeemCrudPort);
+        RedeemBloomFilter newBloomFilter = new RedeemBloomFilter(myBloomFilterSize, mockUserRedeemCrud);
 
-        var bloomFilterSize = redeemBloomFilter.getBloomFilterSize();
+        var bloomFilterSize = newBloomFilter.getBloomFilterSize();
 
         assertThat(bloomFilterSize).isEqualTo(myBloomFilterSize);
     }

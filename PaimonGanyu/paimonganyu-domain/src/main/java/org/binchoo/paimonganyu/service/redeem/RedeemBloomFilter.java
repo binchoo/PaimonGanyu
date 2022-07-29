@@ -13,11 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p> 이 구현체는 각 리딤코드 별로 {@link BloomFilter}를 지연 생성하므로 쿼리 수를 줄입니다. 싱글턴으로 사용되도록 의도되었습니다.
- * <p> 스냅샷을 쓰는 결정은 유효합니다. {@code FalseNegative}는 코드 리딤 요청을 누락시키지 않기 때문입니다.
+ * <p> 리딤 이력의 존재 여부를 조회하는 {@link RedeemHistoryPort} 구현체입니다.
+ * <p> 리딤코드 별 리딤 이력 스냅샷을 따서 상수 크기 자료구조인 {@link BloomFilter}에 저장합니다.
+ * <p> SQL 관계 연산을 쓰지 못하는 경우를 상정해 블룸필터를 도입하여 쿼리 수를 줄입니다.
+ * <p> 스냅샷을 쓰는 결정은 유효합니다. 코드 리딤은 멱등 연산이므로 {@code FalseNegative} 판정의 영향력이 없습니다.
  * <p> 블룸필터를 쓰는 결정은 유효합니다. {@code FalsePositive}인 경우에만 DB 쿼리를 하면 되는데
- * '했다고 판단'할 확률이 상대적으로 낮기 때문입니다.
- * <p> 블룸필터는 고정된 크기로 기능을 달성합니다. 자세한 내용은 블룸필터를 참조하십시오.
+ * <p> 'Positive' 판단 확률이 상대적으로 낮기 때문입니다. 자세한 내용은 블룸필터를 참조하십시오.
  * @author : jbinchoo
  * @since : 2022/04/17
  */
@@ -73,28 +74,29 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
      */
     private static final class SearchWord implements MultiHashable {
 
-        private static final StringBuilder stringBuilder = new StringBuilder();
-
-        private final String botUserId;
-        private final String uid;
-        private final String code;
-        private final boolean isDone;
+        private int[] hashes;
 
         public SearchWord(UserRedeem userRedeem) {
-            this.botUserId = userRedeem.getBotUserId();
-            this.uid = userRedeem.getUid();
-            this.code = userRedeem.getRedeemCode().getCode();
-            this.isDone = userRedeem.isDone();
+            multiHashing(userRedeem);
+        }
+
+        private void multiHashing(UserRedeem userRedeem) {
+            this.hashes = new int[] {
+                    userRedeem.hashCode(),
+                    (userRedeem.getBotUserId().hashCode()
+                            + userRedeem.getUid().hashCode()*31
+                            + userRedeem.getRedeemCode().hashCode())*37
+            };
         }
 
         @Override
         public int[] getHashes() {
-            var s0 = stringBuilder.append(botUserId).append(uid).toString();
-            var s1 = stringBuilder.append(code).append(isDone).toString();
-            stringBuilder.setLength(0);
-            return new int[] {
-                    s0.hashCode(), s0.hashCode() + s1.hashCode(),
-            };
+            return this.hashes;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.hashes[0];
         }
     }
 
