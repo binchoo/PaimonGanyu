@@ -5,6 +5,5 @@ package org.binchoo.paimonganyu.algorithm;
  * @since : 2022/04/17
  */
 public interface MultiHashable {
-
     int[] getHashes();
 }
