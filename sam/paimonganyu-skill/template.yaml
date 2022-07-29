@@ -48,6 +48,9 @@ Resources:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
           Value: !Ref PaimonGanyuSkillInstanceProfile
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance
 
   PaimonGanyuSkillEnv:
     Type: AWS::ElasticBeanstalk::Environment
