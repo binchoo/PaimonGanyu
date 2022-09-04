@@ -15,13 +15,13 @@ Parameters:
     Description: The stage of this deployment.
 
 Conditions:
-  isProd: !Equals
+  CreateProd: !Equals
     - !Ref Env
     - prod
 
 Globals:
   Function:
-    CodeUri: paimonganyu-1.0.4.zip # .aws-sam/build/application-${version}.zip
+    CodeUri: ../paimonganyu
     Timeout: 60
     Runtime: java11
     MemorySize: 512
@@ -243,7 +243,7 @@ Resources:
 #    Type: AWS::Serverless::Function
 #    Properties:
 #      Handler: org.binchoo.paimonganyu.chatbot.PaimonGanyuLambda::handleRequest
-#      MemorySize: !If [isProd, 1644, 512]
+#      MemorySize: !If [CreateProd, 1644, 512]
 #      Timeout: 60
 #      Policies:
 #        - DynamoDBCrudPolicy:
@@ -266,10 +266,10 @@ Resources:
 #              ApiKeyRequired: true
 #      Environment:
 #        Variables:
-#          PROFILE: !If [isProd, prod, stage]
+#          PROFILE: !If [CreateProd, prod, stage]
 #      AutoPublishAlias: PaimonGanyuChatbot
 #      ProvisionedConcurrencyConfig:
-#        Condition: isProd
+#        Condition: CreateProd
 #        ProvisionedConcurrentExecutions: 2
 #      DeploymentPreference:
-#        Type: !If [isProd, Canary10Percent10Minutes, AllAtOnce]
+#        Type: !If [CreateProd, Canary10Percent10Minutes, AllAtOnce]

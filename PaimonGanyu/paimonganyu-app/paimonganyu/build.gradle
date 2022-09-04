@@ -7,6 +7,10 @@ bootJar {
     enabled = false;
 }
 
+jar {
+    enabled = true;
+}
+
 dependencies {
     implementation project(':awsutils')
     implementation project(':paimonganyu-hoyoapi')
@@ -21,21 +25,23 @@ dependencies {
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
 }
 
-task buildZipNoTomcat(type: Zip) {
-    from compileJava
-    from processResources
-    into('lib') {
-        from (configurations.runtimeClasspath) {
-            exclude 'tomcat-embed-*'
-        }
-    }
+def profile() {
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
 }
 
-task copyZipNoTomcat(type: Copy) {
-    def dest = samBuildDir(project, 'paimonganyu')
-    from buildZipNoTomcat
-    into(dest)
-    doLast {
-        println "$project.name:$name has moved fat-zip into $dest"
-    }
+def params() {
+    ['Env': project.findProperty('env')]
+}
+
+task samBuild(type: Exec) {
+    dependsOn build
+    test.enabled = false
+    workingDir = projectDir
+    commandLine = ['sam', 'build']
+}
+
+task samDeploy(type: Exec) {
+    def command = deployCommand(this, "ap-northeast-2", "paimonganyu", profile(), params())
+    workingDir = projectDir
+    commandLine = ['bash', '-c', command]
 }
