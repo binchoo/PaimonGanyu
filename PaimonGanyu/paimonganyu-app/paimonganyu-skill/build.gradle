@@ -20,13 +20,25 @@ bootJar {
     archiveBaseName='paimonganyu-skill'
 }
 
-task copyBootJar(type: Copy) {
-    def dest = samBuildDir(project, 'paimonganyu-skill')
-    from bootJar
-    into(dest)
-    doLast {
-        println "$project.name:$name has moved bootJar into $dest"
-    }
+def profile() {
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
+}
+
+def params() {
+    ['Env': project.findProperty('env')]
+}
+
+task samBuild(type: Exec) {
+    dependsOn bootJar
+    test.enabled = false
+    workingDir = projectDir
+    commandLine = ['sam', 'build']
+}
+
+task samDeploy(type: Exec) {
+    def command = deployCommand(this, "ap-northeast-2", "paimonganyu-skill", profile(), params())
+    workingDir = projectDir
+    commandLine = ['bash', '-c', command]
 }
 
 task stopRunningDynamoDBContainer(type: Exec) {
