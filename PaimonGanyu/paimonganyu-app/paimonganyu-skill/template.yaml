@@ -110,9 +110,7 @@ Resources:
 
         - Namespace: aws:elbv2:loadbalancer
           OptionName: SecurityGroups
-          Value: !Join
-            - ','
-            - [!GetAtt IKakaoSkillConnectorSG.GroupId, !GetAtt DeveloperSG.GroupId]
+          Value: !Join [',', [!GetAtt IKakaoSkillConnectorSG.GroupId, !GetAtt DeveloperSG.GroupId]]
 
         - Namespace: aws:elbv2:listener:443
           OptionName: DefaultProcess
@@ -133,12 +131,7 @@ Resources:
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
-          Value: !If
-            - CreateALB
-            - ''
-            - !Join
-              - ','
-              - [!Ref IKakaoSkillConnectorSG, !Ref DeveloperSG]
+          Value: !If [CreateALB, !Ref IKakaoSkillConnectorSG, !Join [',', [!Ref IKakaoSkillConnectorSG, !Ref DeveloperSG]]]
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
           Value: !Ref PaimonGanyuSkillInstanceProfile
