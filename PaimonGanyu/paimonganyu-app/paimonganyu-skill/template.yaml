@@ -127,6 +127,10 @@ Resources:
           OptionName: ListenerEnabled
           Value: false
 
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckPath
+          Value: /health
+
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !If
