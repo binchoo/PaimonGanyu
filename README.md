@@ -68,7 +68,7 @@ There are ways to realize various use cases for Genshin Impact players by levera
 
 ![](https://img.shields.io/badge/aws%20sam--06A0CE?logo=amazonaws&color=4053D6&labelColor=FFFFFF&logoColor=4053D6) ![](https://img.shields.io/badge/elastic%20beanstalk--06A0CE?logo=amazonaws&color=FF9900&labelColor=FFFFFF&logoColor=FF9900) ![](https://img.shields.io/badge/springboot--06A0CE?logo=springboot&color=6DB33F&labelColor=FFFFFF) 
 
-The chatbot 「여행 비서 페이몬!」(PaimonGanyu) communicates with the Hoyovers APIs via the skill server, which is a Spring Boot application. This may require you to prepare three `properties` before running the application.
+The chatbot 「여행 비서 페이몬!」(PaimonGanyu) communicates with the Hoyoverse APIs via the skill server, which is a Spring Boot application. This may require you to prepare three `properties` before running the application.
 paimonganyu-skill will be deployed to your AWS cloud as an application of Amazon Elastic Beanstalk under a CloudFormation stack.
 
 ### applications.properties (required)
@@ -123,21 +123,33 @@ If any account authentication is not provided, those tests will fail. That being
 
 ## Makefile shortcuts
 
+> Before you run makefile shortcuts, note that they may require two AWS credentials profiles: `pgprod` and `pgtest`. If needed, please modify the Gradle scripts in `paimonganyu-app` module to set your cli profiles.
+
+```groovy
+def profile() { // change this function
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
+}
+```
+
 **Deploy the serveless workflows**
 
-`make paimonganyu-prod version=1.0.0`
+`make paimonganyu`
+
+`make paimonganyu-test`
 
 **Deploy the skill server**
 
-`make paimonganyu-skill-prod version=1.0.0`
+`make paimonganyu-skill`
+
+`make paimonganyu-skill-test`
 
 **Run a local system test**
 
 `make localtest`
 
 ## IaC
-- [paimonganyu template](https://github.com/binchoo/PaimonGanyu/blob/master/sam/paimonganyu/template.yaml)
-- [paimonganyu-skill template](https://github.com/binchoo/PaimonGanyu/blob/master/sam/paimonganyu-skill/template.yaml)
+- [paimonganyu template](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/paimonganyu-skill/template.yaml)
+- [paimonganyu-skill template](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/paimonganyu/template.yaml)
 
 ## Contribution
 
@@ -148,12 +160,11 @@ Your gentle contributions are always welcome. Please feel free to ask questions,
 **GPLv3**
 
 - [PaimonGanyu](https://github.com/binchoo/PaimonGanyu/blob/master/LICENSE)
-- [PaimonGanyu:application](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
-- [PaimonGanyu:application:infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
+- [PaimonGanyu:paimonganyu-app](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/LICENSE)
+- [PaimonGanyu:paimonganyu-infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-infra/LICENSE)
 
 **MIT**
-
+- [PaimonGanyu:paimonganyu-domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-domain/LICENSE)
+- [PaimonGanyu:paimonganyu-hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-hoyoapi/LICENSE)
 - [PaimonGanyu:awsutils](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/awsutils/LICENSE)
-- [PaimonGanyu:hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/hoyoapi/LICENSE)
 - [PaimonGanyu:ikakao](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/ikakao/LICENSE)
-- [PaimonGanyu:domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/domain/LICENSE)

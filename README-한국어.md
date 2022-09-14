@@ -123,21 +123,33 @@ amazon.ssm.hoyopass.privatekeyname = HoyopassRsaPrivateKey
 
 ## Makefile 숏컷
 
+> 배포 숏컷을 실행하기 전에 `pgprod` 및 `pgtest` 이름의 AWS CLI 크레덴셜 프로필을 준비했습니까? 이에 맞춰 크레덴셜을 준비하거나 그레이들 스크립트를 수정해 사용 프로필을 바꾸십시오.
+
+```groovy
+def profile() { // change this function
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
+}
+```
+
 **서버리스 워크플로의 배포**
 
-`make paimonganyu-prod version=1.0.0`
+`make paimonganyu`
+
+`make paimonganyu-test`
 
 **스킬 서버의 배포**
 
-`make paimonganyu-skill-prod version=1.0.0`
+`make paimonganyu-skill`
+
+`make paimonganyu-skill-test`
 
 **로컬 시스템 테스트의 수행**(최소 3개의 실제 계정을 사용함)
 
 `make localtest`
 
 ## 코드형 인프라(IaC)
-- [paimonganyu template](https://github.com/binchoo/PaimonGanyu/blob/master/sam/paimonganyu/template.yaml)
-- [paimonganyu-skill template](https://github.com/binchoo/PaimonGanyu/blob/master/sam/paimonganyu-skill/template.yaml)
+- [paimonganyu template](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/paimonganyu-skill/template.yaml)
+- [paimonganyu-skill template](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/paimonganyu/template.yaml)
 
 ## 기여하기
 
@@ -148,12 +160,11 @@ amazon.ssm.hoyopass.privatekeyname = HoyopassRsaPrivateKey
 **GPLv3**
 
 - [PaimonGanyu](https://github.com/binchoo/PaimonGanyu/blob/master/LICENSE)
-- [PaimonGanyu:application](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
-- [PaimonGanyu:application:infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
+- [PaimonGanyu:paimonganyu-app](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/LICENSE)
+- [PaimonGanyu:paimonganyu-infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-infra/LICENSE)
 
 **MIT**
-
+- [PaimonGanyu:paimonganyu-domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-domain/LICENSE)
+- [PaimonGanyu:paimonganyu-hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-hoyoapi/LICENSE)
 - [PaimonGanyu:awsutils](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/awsutils/LICENSE)
-- [PaimonGanyu:hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/hoyoapi/LICENSE)
 - [PaimonGanyu:ikakao](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/ikakao/LICENSE)
-- [PaimonGanyu:domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/domain/LICENSE)
