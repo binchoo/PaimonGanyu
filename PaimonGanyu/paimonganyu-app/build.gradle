@@ -24,3 +24,7 @@ def deployCommand(project, region, stackName, profile, params) {
     def openTerminal = "echo \"${samDeploy}\" > ${script}; chmod +x ${script}; open -a Terminal ${script}"
     return openTerminal
 }
+
+dependencies {
+    testImplementation(testFixtures(project(':paimonganyu-domain')))
+}

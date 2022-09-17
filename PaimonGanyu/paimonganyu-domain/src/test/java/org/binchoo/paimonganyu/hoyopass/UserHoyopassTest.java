@@ -60,7 +60,7 @@ class UserHoyopassTest {
     void whenContainingTwoHoyopasses_additionalAddComplete_fails() {
         int createCount = 2;
         List<Hoyopass> passes = hoyopasses(createCount);
-        Hoyopass third = getMockHoyopass();
+        Hoyopass third = mockHoyopass();
 
         UserHoyopass user = new UserHoyopass();
         passes.forEach(user::addComplete);
@@ -99,7 +99,7 @@ class UserHoyopassTest {
 
     @Test
     void givenDuplicateHoyopass_addComplete_fails() {
-        Hoyopass pass = getMockHoyopass();
+        Hoyopass pass = mockHoyopass();
 
         UserHoyopass user = new UserHoyopass();
         user.addComplete(pass);
@@ -203,7 +203,7 @@ class UserHoyopassTest {
     @Test
     void givenSameBotUserIdAndHoyopass_twoUsersAreEqual() {
         String botUserId = "foobar";
-        Hoyopass pass = getMockHoyopass();
+        Hoyopass pass = mockHoyopass();
 
         UserHoyopass user1 = new UserHoyopass(botUserId,
                 Collections.singletonList(pass));
@@ -228,7 +228,7 @@ class UserHoyopassTest {
     @Test
     void givenDifferentHoyopasses_twoUsersAreNotEqual() {
         String botUserId = "foobar";
-        Hoyopass pass1 = getMockHoyopass(), pass2 = getMockHoyopass();
+        Hoyopass pass1 = mockHoyopass(), pass2 = mockHoyopass();
 
         UserHoyopass user1 = new UserHoyopass(botUserId,
                 Collections.singletonList(pass1));
@@ -267,14 +267,14 @@ class UserHoyopassTest {
 
     private List<Hoyopass> hoyopasses(int n) {
         return IntStream.range(0, n)
-                .mapToObj(i-> getMockHoyopass())
+                .mapToObj(i-> mockHoyopass())
                 .sorted()
                 .collect(Collectors.toList());
     }
 
     private List<Uid> uids(int uidCount) {
         return IntStream.range(0, uidCount)
-                .mapToObj(i -> getMockUid())
+                .mapToObj(i -> mockUid())
                 .collect(Collectors.toList());
     }
 }

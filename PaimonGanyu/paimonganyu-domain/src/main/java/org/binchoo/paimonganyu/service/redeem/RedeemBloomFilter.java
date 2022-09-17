@@ -8,6 +8,7 @@ import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
     private final UserRedeemCrudPort userRedeemCrud;
     private final Map<RedeemCode, BloomFilter<SearchWord>> bloomFilters;
 
+    @Autowired
     public RedeemBloomFilter(UserRedeemCrudPort userRedeemCrud) {
         this(DEFAULT_BLOOMFILTER_SIZE, userRedeemCrud);
     }
@@ -46,16 +48,25 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
 
     @Override
     public boolean hasRedeemed(String botUserId, String uid, RedeemCode redeemCode) {
-        var itemToSearch = new UserRedeem(botUserId, uid, redeemCode, true);
-        var searchWord = new SearchWord(itemToSearch);
+        var targetedItem = finishedUserRedeem(botUserId, uid, redeemCode);
+        var searchWord = new SearchWord(targetedItem);
         var bloomFilter = getOrCreateBloomFilter(redeemCode);
         if (bloomFilter.containsProbably(searchWord)) {
-            return userRedeemCrud.existMatches(itemToSearch);
+            return userRedeemCrud.existMatches(targetedItem);
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
         } else {
             return false;
             // 아이템 미삽입이 보장되므로 바로 반환한다.
         }
+    }
+
+    private UserRedeem finishedUserRedeem(String botUserId, String uid, RedeemCode redeemCode) {
+        return UserRedeem.builder()
+                .botUserId(botUserId)
+                .uid(uid)
+                .redeemCode(redeemCode)
+                .done(true)
+                .build();
     }
 
     private BloomFilter<SearchWord> getOrCreateBloomFilter(RedeemCode key) {
@@ -109,6 +120,11 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
 
     public int getBloomFilterSize() {
         return this.bloomFilterSize;
+    }
+
+    @Override
+    public List<UserRedeem> findAll() {
+        return userRedeemCrud.findAll();
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import org.binchoo.paimonganyu.chatbot.PaimonGanyu;
+import org.binchoo.paimonganyu.testconfig.TestUserHoyopassTableSetup;
 import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
@@ -42,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {
-        TestAmazonClientsConfig.class, TestHoyopassCredentialsConfig.class,
+        TestAmazonClientsConfig.class, TestHoyopassCredentialsConfig.class, TestUserHoyopassTableSetup.class,
         PaimonGanyu.class})
 class SecuredHoyopassRegistryLocalSystemTest {
 

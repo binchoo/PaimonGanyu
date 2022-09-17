@@ -7,12 +7,10 @@ import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -81,8 +79,10 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
 
     @Override
     public List<UserRedeem> findByUser(UserHoyopass user, int limit) {
-        return repository.findByBotUserId(user.getBotUserId(),
-                PageRequest.of(0, limit, Sort.by(Order.desc("date")))).stream()
-                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
+        return repository.findByBotUserId(user.getBotUserId()).stream()
+                .sorted(Comparator.comparing(UserRedeemItem::getDate).reversed())
+                .limit(limit)
+                .map(UserRedeemItem::toDomain)
+                .collect(Collectors.toList());
     }
 }

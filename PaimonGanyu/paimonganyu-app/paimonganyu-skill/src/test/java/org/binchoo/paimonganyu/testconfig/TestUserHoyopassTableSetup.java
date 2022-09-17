@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.configs.aws;
+package org.binchoo.paimonganyu.testconfig;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -6,7 +6,6 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,10 +14,9 @@ import javax.annotation.PostConstruct;
  * @author jbinchoo
  * @since 2022/07/02
  */
-@Profile("test")
 @RequiredArgsConstructor
 @Component
-public class TestDynamoDBTable {
+public class TestUserHoyopassTableSetup {
 
     private final AmazonDynamoDB dynamoClient;
 

@@ -89,7 +89,7 @@ class DailyCheckServiceTest {
 
     @Test
     void whenUserDailyCheckIsEmpty_historyOfUser_throwsException() {
-        UserHoyopass user = HoyopassMockUtils.getMockUserHoyopass();
+        UserHoyopass user = HoyopassMockUtils.mockUserHoyopass();
         when(mockCrud.findByBotUserIdLtuid(any(), any()))
                 .thenReturn(Collections.emptyList());
 

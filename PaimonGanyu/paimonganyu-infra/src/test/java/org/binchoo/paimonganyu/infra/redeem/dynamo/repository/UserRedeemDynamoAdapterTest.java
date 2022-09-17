@@ -141,7 +141,11 @@ class UserRedeemDynamoAdapterTest {
 
     private UserRedeem randomUserRedeem() {
         var random = RandomString.make();
-        return new UserRedeem(random, random, new RedeemCode(random));
+        return UserRedeem.builder()
+                .botUserId(random)
+                .uid(random)
+                .redeemCode(new RedeemCode(random))
+                .build();
     }
 
     private UserRedeemItem randomUserRedeemItem() {

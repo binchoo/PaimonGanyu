@@ -77,7 +77,11 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
         String uid = redeemTask.getUidString();
         String server = redeemTask.getRegionString();
         String code = redeemTask.getCodeString();
-        UserRedeem userRedeem = new UserRedeem(redeemTask.getBotUserId(), uid, redeemTask.getRedeemCode());
+        UserRedeem userRedeem = UserRedeem.builder()
+                .botUserId(redeemTask.getBotUserId())
+                .uid(uid)
+                .redeemCode(redeemTask.getRedeemCode())
+                .build();
 
         var response = redemptionApi.redeem(
                 new AccountIdCookieToken(accountId, cookieToken), uid, server, code);

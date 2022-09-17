@@ -48,7 +48,7 @@ class RedeemClientAdapterIntegTest {
     }
 
     private RedeemTask getMockTask(String placeholder) {
-        var uid = HoyopassMockUtils.getMockUid();
+        var uid = HoyopassMockUtils.mockUid();
         return RedeemTask.builder()
                 .botUserId(placeholder)
                 .credentials(HoyopassCredentials.builder()

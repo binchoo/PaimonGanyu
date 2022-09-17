@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableDynamoDBRepositories(
         basePackages = {
                 "org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository",
-                "org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository"
+                "org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository",
+                "org.binchoo.paimonganyu.infra.redeem.dynamo.repository"
         })
 @Configuration
 public class DynamoTableConfig {

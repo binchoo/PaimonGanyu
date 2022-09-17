@@ -40,7 +40,12 @@ class RedeemBloomFilterTest {
     void init() {
         testBloomFilter = new RedeemBloomFilter(mockUserRedeemCrud);
         testCode = new RedeemCode("foobar");
-        testUserRedeem = new UserRedeem("botUserId", "uid", testCode, true);
+        testUserRedeem = UserRedeem.builder()
+                .botUserId("botUserId")
+                .uid("uid")
+                .redeemCode(testCode)
+                .done(true)
+                .build();
     }
 
     @DisplayName("매칭 이력이 안 내려오면, 이력 완수 여부는 거짓이다")
@@ -80,12 +85,18 @@ class RedeemBloomFilterTest {
     }
 
     private List<UserRedeem> complementSet(int len, UserRedeem userRedeem) {
-        return IntStream.range(0, len).mapToObj(it-> {
-                    String random = RandomString.make();
-                    return new UserRedeem(random, random, userRedeem.getRedeemCode());
-                })
+        return IntStream.range(0, len).mapToObj(it-> randomize(userRedeem))
                 .filter(it-> !it.equals(userRedeem))
                 .collect(Collectors.toList());
+    }
+
+    private UserRedeem randomize(UserRedeem userRedeem) {
+        String random = RandomString.make();
+        return UserRedeem.builder()
+                .botUserId(random)
+                .uid(random)
+                .redeemCode(userRedeem.getRedeemCode())
+                .build();
     }
 
     @DisplayName("포함집합이 내려오면, 블룸필터는 참을 반환하니, 포트에 쿼리를 날리게 될 것이다")
@@ -103,12 +114,11 @@ class RedeemBloomFilterTest {
     private List<UserRedeem> inclusiveSet(int len, UserRedeem userRedeem) {
         final int includeAt = Math.abs(new Random().nextInt()) % len;
         return IntStream.range(0, len).mapToObj(it-> {
-                    String random = RandomString.make();
                     if (includeAt == it) {
                         System.out.println("Inserted at " + it);
                         return userRedeem;
                     }
-                    return new UserRedeem(random, random, userRedeem.getRedeemCode());
+                    return randomize(userRedeem);
                 })
                 .collect(Collectors.toList());
     }

@@ -15,30 +15,33 @@ public class HoyopassMockUtils {
 
     private HoyopassMockUtils() { }
 
-    public static UserHoyopass getMockUserHoyopass() {
-        String botUserId = generateRandom();
+    public static UserHoyopass mockUserHoyopass() {
+        return mockUserHoyopass(genRandom());
+    }
+
+    public static UserHoyopass mockUserHoyopass(String botUserId) {
         return UserHoyopass.builder()
                 .botUserId(botUserId)
-                .hoyopasses(Arrays.asList(getMockHoyopass(), getMockHoyopass()))
+                .hoyopasses(Arrays.asList(mockHoyopass(), mockHoyopass()))
                 .build();
     }
 
-    public static Hoyopass getMockHoyopass() {
-        String ltoken = generateRandom();
-        String ltuid = generateRandom();
-        String cookieToken = generateRandom();
+    public static Hoyopass mockHoyopass() {
+        String ltoken = genRandom();
+        String ltuid = genRandom();
+        String cookieToken = genRandom();
         return Hoyopass.builder()
                 .credentials(HoyopassCredentials.builder()
                         .ltuid(ltuid)
                         .ltoken(ltoken)
                         .cookieToken(cookieToken)
                         .build())
-                .uids(Arrays.asList(getMockUid(), getMockUid()))
+                .uids(Arrays.asList(mockUid(), mockUid()))
                 .build();
     }
 
-    public static Uid getMockUid() {
-        String characterName = "MockCharacterName-" + generateRandom();
+    public static Uid mockUid() {
+        String characterName = "MockCharacterName-" + genRandom();
         Random rand = new Random();
         boolean isLumie = rand.nextBoolean();
         int characterLevel = rand.nextInt();
@@ -51,7 +54,7 @@ public class HoyopassMockUtils {
                 .build();
     }
 
-    private static String generateRandom() {
+    private static String genRandom() {
         int leftLimit = 97;
         int rightLimit = 122;
         int targetStringLength = 10;

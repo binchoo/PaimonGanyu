@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.getMockUserHoyopass;
+import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.mockUserHoyopass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +45,7 @@ class UserHoyopassDynamoAdapterTest {
     void withSomeEntries_findAll_returnsEveryEntry() {
         int entryCount = 20;
         var mockUserHoyopassList = IntStream.range(0, entryCount)
-                .mapToObj(i-> getMockUserHoyopass())
+                .mapToObj(i-> mockUserHoyopass())
                 .collect(Collectors.toList());
 
         when(repository.findAll()).thenReturn(mockUserHoyopassList.stream()
@@ -67,7 +67,7 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void withMatchingEntry_findByBotUserId_returnsPresentOptional() {
-        var mockUserHoyopass = getMockUserHoyopass();
+        var mockUserHoyopass = mockUserHoyopass();
         var mockUserHoyopassItem = UserHoyopassItem.fromDomain(mockUserHoyopass);
 
         when(repository.findByBotUserId(mockUserHoyopassItem.getBotUserId()))
@@ -81,7 +81,7 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void save() {
-        var userHoyopass = getMockUserHoyopass();
+        var userHoyopass = mockUserHoyopass();
         var userHoyopassItem = UserHoyopassItem.fromDomain(userHoyopass);
 
         when(repository.save(any())).thenReturn(userHoyopassItem);
@@ -92,7 +92,7 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void withoutMatchingEntry_existsByBotUserId_returnsFalse() {
-        var userHoyopass = getMockUserHoyopass();
+        var userHoyopass = mockUserHoyopass();
 
         when(repository.existsByBotUserId(userHoyopass.getBotUserId()))
                 .thenReturn(false);
@@ -103,7 +103,7 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void withMatchingEntry_existsByBotUserId_returnsFalse() {
-        var userHoyopass = getMockUserHoyopass();
+        var userHoyopass = mockUserHoyopass();
 
         when(repository.existsByBotUserId(userHoyopass.getBotUserId()))
                 .thenReturn(true);

@@ -14,12 +14,11 @@ import static org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem.TA
  * @author : jbinchoo
  * @since : 2022-04-19
  */
-@ToString
 @Setter // required for conversion and unconversion, never remove this.
-@Getter
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @DynamoDBTable(tableName = TABLE_NAME)
 public class UserRedeemItem {
 
@@ -42,11 +41,11 @@ public class UserRedeemItem {
     private boolean done;
 
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
-    private LocalDateTime createAt;
+    private LocalDateTime date;
 
     public static UserRedeem toDomain(UserRedeemItem userRedeemItem) {
         return new UserRedeem(userRedeemItem.botUserId,
-                userRedeemItem.uid, new RedeemCode(userRedeemItem.code), userRedeemItem.done);
+                userRedeemItem.uid, new RedeemCode(userRedeemItem.code), userRedeemItem.done, userRedeemItem.date);
     }
 
     public static UserRedeemItem fromDomain(UserRedeem userRedeem) {
@@ -55,6 +54,7 @@ public class UserRedeemItem {
                 .uid(userRedeem.getUid())
                 .code(userRedeem.getRedeemCode().getCode())
                 .done(userRedeem.isDone())
+                .date(userRedeem.getDate())
                 .build();
     }
 }
