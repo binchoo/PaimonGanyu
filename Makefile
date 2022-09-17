@@ -1,30 +1,22 @@
 main:
 
-paimonganyu-skill-prod: build
-	cd sam/paimonganyu-skill; sam deploy --guided \
-		--stack-name paimonganyu-skill \
-		--profile serverless \
-		--region ap-northeast-2 \
-		--parameter-overrides Env=prod
+paimonganyu-test: build-paimonganyu
+	cd PaimonGanyu; ./gradlew -Penv=test paimonganyu-app:paimonganyu:sD
 
-paimonganyu-prod: build
-	cd sam/paimonganyu; sam deploy --guided \
-		--profile serverless \
-		--region ap-northeast-2 \
-		--parameter-overrides Env=prod
+paimonganyu-skill-test: build-paimonganyu-skill
+	cd PaimonGanyu; ./gradlew -Penv=test paimonganyu-app:paimonganyu-skill:sD
 
-paimonganyu-test: build
-	cd sam/paimonganyu; sam deploy --guided \
-		--profile serverless \
-		--region ap-northeast-1 \
-		--parameter-overrides Env=test
+paimonganyu: build-paimonganyu
+	cd PaimonGanyu; ./gradlew -Penv=prod paimonganyu-app:paimonganyu:sD
 
-build: build-template
-	cd PaimonGanyu; ./gradlew -Pversion=$(version) -x test clean :application:copyBuiltZipNoTomcat :application:copyBootJar
+paimonganyu-skill: build-paimonganyu-skill
+	cd PaimonGanyu; ./gradlew -Penv=prod paimonganyu-app:paimonganyu-skill:sD
 
-build-template:
-	cd sam/paimonganyu; sam build --profile serverless
-	cd sam/paimonganyu-skill; sam build --profile serverless
+build-paimonganyu:
+	cd PaimonGanyu; ./gradlew paimonganyu-app:paimonganyu:sB
+
+build-paimonganyu-skill:
+	cd PaimonGanyu; ./gradlew paimonganyu-app:paimonganyu-skill:sB
 
 localtest:
-	cd PaimonGanyu; ./gradlew -PlocalTest=true :application:test
+	cd PaimonGanyu; ./gradlew -PlocalTest=true clean test

@@ -1,53 +1,79 @@
-# PaimonGanyu
+# PaimonGanyu [![](https://img.shields.io/badge/chatbot--06A0CE?logo=kakaotalk&color=FFCD00&logoColor=00000)](https://pf.kakao.com/_mtPFb)
 
-## Genshin Impact KAKAOTALK Chatbot
+**PaimonGanyu** is the English name for  [「여행 비서 페이몬!」](https://github.com/binchoo/paimonganyu-doc), which is a Kakaotalk chatbot that provides convenience features for [Genshin Impact](https://genshin.hoyoverse.com/en/) users.
 
-### Two Stacks
-This repo is a java code base for my custom Genshin Impact applications.
-It includes two different stacks.
+This repository is the java code base for the chatbot's skill-server & back-end serverless workflows.
 
-### paimonganyu-skill
-The skill server of my KAKAOTALK chatbot [여행 비서 페이몬](https://github.com/binchoo/paimonganyu-doc).
+## Requirements
 
-### paimonganyu
-- The behind workflows that support my chatbot.
-- Some asynchronous & automatic workflows for Genshin users.
-- Webflux web clients, most of which implement synchronous apis, and API adapters to fetch player data from Hoyoverse APIs.
+- JDK 11 or later
+- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) : You require the SAM CLI to run `sam deploy` to construct your own AWS infrastructure from the IaC of **PaimonGanyu.** See also, [AWS SAM specification](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification.html).
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) and your [AWS account](https://aws.amazon.com/) : To deploy the applications, you obviously need your own AWS account and the CLI that is holding the account credentials.
+- Serveral security resources in AWS SSM. (See, [HoyopassPrivateKey and HoyopassPublicKey](#applicationsproperties-required) parameters)
+- [Docker CLI](https://docs.docker.com/engine/reference/commandline/cli/) for running local system tests only if you want to.
+
+## Two stacks
+
+This repository contains two [CloudFormation stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html) that AWS SAM deploys to your AWS cloud.
+
+### 1. paimonganyu
+
+The behind AWS workflows that support the chatbot's features, and dependencies.
+
+**Application module**
+
+`:paimonganyu-app:paimonganyu`
+
+**Dependent modules**
+
+`:paimonganyu-infra`, `:paimonganyu-domain`, `:paimonganyu-hoyoapi`, `:awsutils`
+
+### 2. paimonganyu-skill
+
+The code of skill server that handles user requests and renders skill responses, and dependencies.
+
+**Application module**
+
+`:paimonganyu-app:paimonganyu-skill`
+
+**Dependent modules**
+
+`:paimonganyu-infra`, `:paimonganyu-domain`, `:paimonganyu-hoyoapi`, `:ikakao` 
 
 ## Engineering Wiki
 [Notion: PaimonGanyu 엔지니어링](https://hollow-leotard-0e1.notion.site/PaimonGanyu-81337fdfe052499f98a2a347f30afbcd)
 
-## All workflows
+## paimonganyu
 
-[All workflows](https://github.com/binchoo/paimonganyu/issues/1#issuecomment-1087132930)
 
-There are ways to realize various use cases for Genshin Impact players by leveraging the AWS Serveless Application Model. (AWS SAM)
+![](https://img.shields.io/badge/lambda--06A0CE?logo=awslambda&color=FF9900&labelColor=FFFFFF) ![](https://img.shields.io/badge/aws%20sam--06A0CE?logo=amazonaws&color=4053D6&labelColor=FFFFFF&logoColor=4053D6) ![](https://img.shields.io/badge/dynamodb--06A0CE?logo=amazondynamodb&color=4053D6&labelColor=FFFFFF&logoColor=4053D6) ![](https://img.shields.io/badge/sqs--06A0CE?logo=amazonsqs&color=FF4F8B&labelColor=FFFFFF) ![](https://img.shields.io/badge/event%20bridge--06A0CE?logo=amazoncloudwatch&color=FF4F8B&labelColor=FFFFFF) ![](https://img.shields.io/badge/s3--06A0CE?logo=amazons3&color=569A31&labelColor=FFFFFF) ![](https://img.shields.io/badge/spring--06A0CE?logo=spring&color=6DB33F&labelColor=FFFFFF)
 
-Use cases:
+There are ways to realize various use cases for Genshin Impact players by leveraging the AWS Serveless Application Model(AWS SAM). Please refer to the issue [All workflows](https://github.com/binchoo/paimonganyu/issues/1#issuecomment-1087132930) to get more information about the back-end workflows that fulfill the use cases below.
 
-- Daily Check-In
+**Use cases**
+
+- **Daily Check-In**
   - New User Event Daily Check-In
   - Cron-based Automatic Daily Check-In
-- Code Redemption
+- **Code Redemption**
   - New User Event Code Redemption
   - New Redeem Code Distribution
-- Hoyopass Fanout
+- **Hoyopass Fanout**
   - New User Hoyopass SNS(AWS SNS) Publishing
-- Hoyopass CRUD Operations to DynamoDB Tables
+- **Hoyopass CRUD Operations** to DynamoDB Tables
 
-## All java modules
+※ In order to deploy the serverless workflows, you should have your own AWS account. 
 
-https://github.com/binchoo/PaimonGanyu/issues/7
+## paimonganyu-skill
 
-## Project configurations
-1. In order to deploy the serverless workflows, you just need an AWS account. No other configurations required.
-2. In order to execute the Springboot skill server or JUnit test classes, three `properties` files **MAY** be configured.
+![](https://img.shields.io/badge/aws%20sam--06A0CE?logo=amazonaws&color=4053D6&labelColor=FFFFFF&logoColor=4053D6) ![](https://img.shields.io/badge/elastic%20beanstalk--06A0CE?logo=amazonaws&color=FF9900&labelColor=FFFFFF&logoColor=FF9900) ![](https://img.shields.io/badge/springboot--06A0CE?logo=springboot&color=6DB33F&labelColor=FFFFFF) 
+
+The chatbot 「여행 비서 페이몬!」(PaimonGanyu) communicates with the Hoyoverse APIs via the skill server, which is a Spring Boot application. This may require you to prepare three `properties` before running the application.
+paimonganyu-skill will be deployed to your AWS cloud as an application of Amazon Elastic Beanstalk under a CloudFormation stack.
 
 ### applications.properties (required)
 
 `:application> src> main> resources> applications.properties`
-
-**Example:**
 
 ```properties
 amazon.ssm.hoyopass.publickeyname = HoyopassRsaPublicKey
@@ -71,8 +97,6 @@ listUserDailyCheck.maxCount = 4
 
 `:application> src> test> resources> amazon.properties`
 
-**Example:**
-
 ```properties
 amazon.aws.accesskey=ASDFASDFASDFASDFASDF
 amazon.aws.secretkey=asdfasfdfASDFASDFasdfasdfASDFASFd+-*/asdf
@@ -85,162 +109,62 @@ amazon.ssm.hoyopass.publickeyname = HoyopassRsaPublicKey
 amazon.ssm.hoyopass.privatekeyname = HoyopassRsaPrivateKey
 ```
 
-These properties are only required by the local integration tests. 
+These are only required by the local integration tests. 
 
-The production environment is AWS Lambda, hence IAM roles and IAM policies are responsible to configure these security options.
+The production environment is AWS, hence IAM roles and IAM policies are responsible to configure security options.
 
 ### accounts.properties (optional)
 
 `:application> src> test> resources> accounts.properties`
 
-Some tests require real Genshin Impact accounts to validate their functionalities. If any user authentication is not provided, those tests fail.
+Some tests need your real Genshin Impact accounts to validate their functionalities. 
 
-That being said, the preparation step for test accounts is not easy. This properties file is not required. You can give up running the test cases.
+If any account authentication is not provided, those tests will fail. That being said I know account preparation of your own is not easy. This properties file is not required. You can give up running test cases.
 
-## Deployment steps
+## Makefile shortcuts
 
-1. Code, build and test the application/infra/domain modules with Gradle tasks.
-2. Use SAM CLI to deploy the PaimonGanyu's artifacts to your AWS account.
-
-### Deploying the serveless workflows (`paimonganyu`)
-```bash
-cd sam/paimonganyu-skill; sam build --profile serverless
-cd PaimonGanyu; ./gradlew -Pversion=$(version) -x test clean :application:copyBuiltZipNoTomcat :application:copyBootJar
-cd sam/paimonganyu-skill; sam deploy --guided \
-	--stack-name paimonganyu-skill \
-	--profile serverless \
-	--region ap-northeast-2 \
-	--parameter-overrides Env=prod
-```
-
-### Deploying the skill server (`paimonganyu-skill`)
-```bash
-cd sam/paimonganyu-skill; sam build --profile serverless
-cd PaimonGanyu; ./gradlew -Pversion=$(version) -x test clean :application:copyBuiltZipNoTomcat :application:copyBootJar
-cd sam/paimonganyu; sam deploy --guided \
-		--profile serverless \
-		--region ap-northeast-2 \
-		--parameter-overrides Env=prod
-```
-
-### Makefile shortcuts
-
-**Deploying the serveless workflows**
-
-`make paimonganyu-prod version=1.0.0`
-
-**Deploying the skill server**
-
-`make paimonganyu-skill-prod version=1.0.0`
-
-## Gradle tasks
-
-### BuildZipNoTomcat
+> Before you run makefile shortcuts, note that they may require two AWS credentials profiles: `pgprod` and `pgtest`. If needed, please modify the Gradle scripts in `paimonganyu-app` module to set your cli profiles.
 
 ```groovy
-task buildZipNoTomcat(type: Zip) {
-    from compileJava
-    from processResources
-    into('lib') {
-        from (configurations.runtimeClasspath) {
-            exclude 'tomcat-embed-*'
-        }
-    }
+def profile() { // change this function
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
 }
 ```
 
-To deploy a compiled java handler onto AWS Lambda, the handler class itself and any other dependent runtime classpaths should be packaged in one archive file.
+**Deploy the serveless workflows**
 
-In the sam `template.yaml`, the `CodeUri` property of `AWS::Serverless::Function` resource should point to that file. 
+`make paimonganyu`
 
-See also, [Deploy Java Lambda functions with .zip or JAR file archives (AWS Docs)](https://docs.aws.amazon.com/lambda/latest/dg/java-package.html#java-package-libraries).
+`make paimonganyu-test`
 
-### copyBuiltZipNoTomcat
+**Deploy the skill server**
 
-```groovy
-def samBuildDir(String stackName) {
-    '../'.repeat(project.depth + 1) + "sam/${stackName}/.aws-sam/build"
-}
+`make paimonganyu-skill`
 
-task copyBuiltZipNoTomcat(type: Copy) {
-    def dest = samBuildDir('paimonganyu')
-    from buildZipNoTomcat
-    into(dest)
-    doLast {
-        println "$project.name:$name has moved fat-zip into $dest"
-    }
-}
-```
+`make paimonganyu-skill-test`
 
-To shorten the value of the `CodeUri` property of a `AWS::Serverless::Function` resource, I copy-paste the generated archive file to the sam build directory.
+**Run a local system test**
 
-Below shows the difference of `CodeUri`s, with and without the `copyBuiltZip` task.
+`make localtest`
 
-| with CopyBuildZip              | without CopyBuildZip                          |
-| ------------------------------ | --------------------------------------------- |
-| CodeUri: application-1.0.0.zip | CodeUri: .aws-sam/build/application-1.0.0.zip |
+## IaC
+- [paimonganyu template](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/paimonganyu-skill/template.yaml)
+- [paimonganyu-skill template](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/paimonganyu/template.yaml)
 
+## Contribution
 
-### CopyBootJar
-
-```groovy
-task copyBootJar(type: Copy) {
-    def dest = samBuildDir('paimonganyu-skill')
-    from bootJar
-    into(dest)
-    doLast {
-        println "$project.name:$name has moved bootJar into $dest"
-    }
-}
-```
-This task is the same as the `CopyBuiltZip`, however it copies the Springboot fat-jar of the skill server.
-
-| with CopyBootJar                          | without CopyBootJar                                 |
-|-------------------------------------------|-----------------------------------------------------|
-| SourceBundle: paimonganyu-skill-1.0.0.jar | SourceBundle: .aws-sam/build/paimonganyu-skill-1.0.0.jar |
-
-### Running a local system test
-Some functionalities need to be verified with real-running infrastructures. eg. A service layer depending on a DynamoDB table.
-
-A docker container can be created from `amazon/dynamodb-local` image, 
-and system test classes can use its endpoint url (`http://localhost:3306`) to interact with dynamodb tables.
-
-Running a container, including or excluding some test classes for the system test are managed by the build script of `:application`.
-
-To start a local system test, provide an argument named `-PlocalTest` and set this to be true.
-This will run a dynamodb container before the gradle test runs.
-```bash
-./gradlew -PlocalTest=true :application:test
----
-> Task :application:stopRunningDynamoDBContainer
-Container stopped: c02efd80497c
-
-> Task :application:startDynamoDBContainer
-Container started: fdd3f9b691ef9f026935ef2429d7d067c037b80fe4559225f58fbe12ae6b0394
-```
-
-## Help Needed for Quality Assurance
-
-I hope redundant system analysis and test (A&T) activities go with this project.
-
-I always welcome collaborators who can join A&T activities like below:
-
-- Spec Review
-- Code Review
-- Bug Report/Bug Fix
-- Proposal Kick-Off
+Your gentle contributions are always welcome. Please feel free to ask questions, to open issues, and to commit your works.
 
 ## LICENSES
 
 **GPLv3**
 
 - [PaimonGanyu](https://github.com/binchoo/PaimonGanyu/blob/master/LICENSE)
-- [PaimonGanyu:application](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
-- [PaimonGanyu:application:infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/application/LICENSE)
+- [PaimonGanyu:paimonganyu-app](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-app/LICENSE)
+- [PaimonGanyu:paimonganyu-infra](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-infra/LICENSE)
 
 **MIT**
-
+- [PaimonGanyu:paimonganyu-domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-domain/LICENSE)
+- [PaimonGanyu:paimonganyu-hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/paimonganyu-hoyoapi/LICENSE)
 - [PaimonGanyu:awsutils](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/awsutils/LICENSE)
-- [PaimonGanyu:hoyoapi](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/hoyoapi/LICENSE)
 - [PaimonGanyu:ikakao](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/ikakao/LICENSE)
-- [PaimonGanyu:domain](https://github.com/binchoo/PaimonGanyu/blob/master/PaimonGanyu/domain/LICENSE)

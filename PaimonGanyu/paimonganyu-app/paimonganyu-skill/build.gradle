@@ -1,0 +1,71 @@
+plugins {
+    id "org.springframework.boot" version "${bootVersion}"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+
+dependencies {
+    implementation project(':paimonganyu-infra')
+    implementation project(':ikakao')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot2:1.8.1'
+
+    testImplementation(testFixtures(project(':paimonganyu-domain')))
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+bootJar {
+    archiveBaseName='paimonganyu-skill'
+}
+
+def profile() {
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
+}
+
+def params() {
+    ['Env': project.findProperty('env')]
+}
+
+task samBuild(type: Exec) {
+    dependsOn bootJar
+    test.enabled = false
+    workingDir = projectDir
+    commandLine = ['sam', 'build']
+}
+
+task samDeploy(type: Exec) {
+    def command = deployCommand(this, "ap-northeast-2", "paimonganyu-skill", profile(), params())
+    workingDir = projectDir
+    commandLine = ['bash', '-c', command]
+}
+
+task stopRunningDynamoDBContainer(type: Exec) {
+    standardOutput = new ByteArrayOutputStream()
+    commandLine = ['bash', '-c',
+                   'docker ps -q | while read line; do if [[ $(docker port $line) == *"3306"* ]]; then docker stop $line; fi; done;']
+    doLast {
+        println "Container stopped: ${standardOutput.toString()}"
+    }
+}
+
+task startDynamoDBContainer(type: Exec) {
+    dependsOn stopRunningDynamoDBContainer
+    standardOutput = new ByteArrayOutputStream()
+    commandLine = ['docker', 'run', '-p', '3306:8000', '-d', 'amazon/dynamodb-local']
+    doLast {
+        println "Container started: ${standardOutput.toString()}"
+    }
+}
+
+test {
+    def isLocalTest = Boolean.parseBoolean(project.findProperty('localTest'))
+    if (isLocalTest) {
+        dependsOn startDynamoDBContainer
+    } else {
+        filter {
+            excludeTestsMatching("org.binchoo.paimonganyu.integration.hoyopass.SecuredHoyopassRegistryLocalSystemTest")
+        }
+    }
+}

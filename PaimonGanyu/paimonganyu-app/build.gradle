@@ -1,0 +1,26 @@
+import java.util.stream.Collectors
+
+def samBuildDir(Project project, String stackName) {
+    '../'.repeat(project.depth + 1) + "sam/${stackName}/.aws-sam/build"
+}
+
+def paramString(Map<String, String> params) {
+    def strings = []
+    if (params != null) {
+        for (Map.Entry<String, String> param : params.entrySet())
+            strings.add(param.getKey() + "=" + param.getValue())
+    }
+    strings.stream().collect(Collectors.joining(","))
+}
+
+def deployCommand(project, region, stackName, profile, params) {
+    def script = "/tmp/${stackName}.sh"
+    def samDeploy = """cat ${script}; rm ${script}; cd ${project.projectDir};
+                |sam deploy --guided
+                | --region ${region}
+                | --stack-name ${stackName}
+                | --profile ${profile}
+                | --parameter-overrides ${paramString(params)}""".stripMargin().replace("\n", "")
+    def openTerminal = "echo \"${samDeploy}\" > ${script}; chmod +x ${script}; open -a Terminal ${script}"
+    return openTerminal
+}

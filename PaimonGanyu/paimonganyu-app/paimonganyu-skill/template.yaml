@@ -1,0 +1,186 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  paimonganyu-skill
+
+  SAM Template for paimonganyu-skill (KakaoTalk Chatbot Skill Server)
+
+Parameters:
+  Env:
+    Type: String
+    Default: test
+    AllowedValues:
+      - test
+      - prod
+    Description: The enviroment type of this deployment.
+
+  UseALB:
+    Type: String
+    Default: 'False'
+    AllowedValues:
+      - 'True'
+      - 'False'
+    Description: Whether to create an ALB. If Env=prod, an ALB is always created.
+
+Conditions:
+  CreateProd: !Equals [!Ref Env, prod]
+  CreateALB: !Or [Condition: CreateProd, !Equals [!Ref UseALB, 'True']]
+
+Mappings:
+  EnvMap:
+    HostedZone:
+      prod: paimon.studio.
+      test: test.paimon.studio.
+    ApiDomain:
+      prod: skill.paimon.studio
+      test: skill.test.paimon.studio
+
+  RegionEnvMap:
+    ap-northeast-2:
+      prod: SeoulProd
+      test: SeoulTest
+    ap-northeast-1:
+      prod: TokyoProd
+      test: TokyoTest
+    CACert:
+      SeoulProd: arn:aws:acm:ap-northeast-2:305992497901:certificate/9023abac-1279-4647-8056-ec5be058af4c
+      SeoulTest: arn:aws:acm:ap-northeast-2:254804608366:certificate/3ee23337-94cb-47ba-9ce4-b91c0b71ac1b
+      TokyoProd: arn:aws:acm:ap-northeast-1:305992497901:certificate/eb2ba354-e8c3-49ec-836d-5003be9c0da7
+
+Resources:
+  # paimonganyu-skill
+  IKakaoSkillConnectorSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'Enable access from iKakao skill connectors'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 219.249.231.40/30
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 219.249.231.40/30
+
+  DeveloperSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'Enable access from developer PC'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 182.216.211.35/32
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 182.216.211.35/32
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 182.216.211.35/32
+
+  PaimonGanyuSkillApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: PaimonGanyu KakaoTalk Skill Server
+      ApplicationName: !Ref AWS::StackName
+
+  PaimonGanyuSkillApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      Description: The verion of PaimonGanyu KakaoTALK Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      SourceBundle: ./build/libs/paimonganyu-skill.jar
+
+  PaimonGanyuSkillConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      Description: Configuration for PaimonGanyu KakaoTALK Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      SolutionStackName: 64bit Amazon Linux 2 v3.3.2 running Corretto 11
+      OptionSettings:
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: !If [CreateALB, LoadBalanced, SingleInstance]
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerType
+          Value: application
+
+        - Namespace: aws:elbv2:loadbalancer
+          OptionName: SecurityGroups
+          Value: !Join [',', [!GetAtt IKakaoSkillConnectorSG.GroupId, !GetAtt DeveloperSG.GroupId]]
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: DefaultProcess
+          Value: default
+        - Namespace: aws:elbv2:listener:443
+          OptionName: Protocol
+          Value: HTTPS
+        - Namespace: aws:elbv2:listener:443
+          OptionName: SSLCertificateArns
+          Value: !FindInMap [RegionEnvMap, CACert, !FindInMap [RegionEnvMap, !Ref AWS::Region, !Ref Env]]
+        - Namespace: aws:elbv2:listener:default
+          OptionName: ListenerEnabled
+          Value: false
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckPath
+          Value: /health
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !If [CreateALB, !Ref IKakaoSkillConnectorSG, !Join [',', [!Ref IKakaoSkillConnectorSG, !Ref DeveloperSG]]]
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref PaimonGanyuSkillInstanceProfile
+
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateEnabled
+          Value: !If [CreateALB, true, false]
+
+  PaimonGanyuSkillEnv:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      Description: Production environment for PaimonGanyu Skill Server
+      ApplicationName: !Ref PaimonGanyuSkillApplication
+      TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
+      VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
+
+  PaimonGanyuSkillRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+
+  PaimonGanyuSkillInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref PaimonGanyuSkillRole
+
+  ApiRecordSet:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !FindInMap [EnvMap, HostedZone, !Ref Env]
+      Comment: Zone apex alias targeted to ALB of PaimoGanyu Skill API
+      RecordSets:
+        - Name: !FindInMap [EnvMap, ApiDomain, !Ref Env]
+          Type: !If [CreateALB, CNAME, A]
+          TTL: 300
+          ResourceRecords:
+            - !GetAtt PaimonGanyuSkillEnv.EndpointURL

@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.awsutils.JsonPayloadAwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.JsonPayloadAwsEventParser;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @since : 2022/04/17
  */
 @Slf4j
-public class S3EventObjectReader extends JsonPayloadAwsEventWrapper<S3Event> {
+public class S3EventObjectReader extends JsonPayloadAwsEventParser<S3Event> {
 
     private final AmazonS3 s3Client;
 

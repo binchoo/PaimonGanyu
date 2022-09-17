@@ -1,0 +1,47 @@
+plugins {
+    id "org.springframework.boot" version "${bootVersion}"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+
+bootJar {
+    enabled = false;
+}
+
+jar {
+    enabled = true;
+}
+
+dependencies {
+    implementation project(':awsutils')
+    implementation project(':paimonganyu-hoyoapi')
+    implementation project(':paimonganyu-infra')
+    testImplementation(testFixtures(project(':paimonganyu-domain')))
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation ("com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}") {
+        because 'Hoyopass fanout leverages an SNS topic.'
+    }
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+}
+
+def profile() {
+    [prod: 'pgprod', test: 'pgtest'].get(project.findProperty('env'))
+}
+
+def params() {
+    ['Env': project.findProperty('env')]
+}
+
+task samBuild(type: Exec) {
+    dependsOn build
+    test.enabled = false
+    workingDir = projectDir
+    commandLine = ['sam', 'build']
+}
+
+task samDeploy(type: Exec) {
+    def command = deployCommand(this, "ap-northeast-2", "paimonganyu", profile(), params())
+    workingDir = projectDir
+    commandLine = ['bash', '-c', command]
+}

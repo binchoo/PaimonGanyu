@@ -1,43 +1,43 @@
 package org.binchoo.paimonganyu.awsutils.support;
 
-import org.binchoo.paimonganyu.awsutils.AwsEventWrapper;
+import org.binchoo.paimonganyu.awsutils.AwsEventParser;
 
 /**
  * @param <E> The type of lambda event.
  */
 public final class MappingEntry<E> {
 
-    private final WrappingManual parent;
+    private final ParsingManual parent;
     private final Class<E> event;
-    private WrapperSpec<E, ? extends AwsEventWrapper<E>> wrapperSpec;
+    private ParserSpec<E, ? extends AwsEventParser<E>> parserSpec;
 
-    MappingEntry(WrappingManual wrappingManual, Class<E> event) {
-        this.parent = wrappingManual;
+    MappingEntry(ParsingManual parsingManual, Class<E> event) {
+        this.parent = parsingManual;
         this.event = event;
-        this.wrapperSpec = null;
+        this.parserSpec = null;
     }
 
     /**
-     * A event wrapper class that will wrap the preceded event class.
+     * A event parser class that will wrap the preceded event class.
      */
-    public <W extends AwsEventWrapper<E>> WrapperSpec<E, W> wrapIn(Class<W> wrapperClass) {
-        this.wrapperSpec = new WrapperSpec<>(this, wrapperClass);
-        return (WrapperSpec<E, W>) this.wrapperSpec;
+    public <W extends AwsEventParser<E>> ParserSpec<E, W> wrapIn(Class<W> parserClass) {
+        this.parserSpec = new ParserSpec<>(this, parserClass);
+        return (ParserSpec<E, W>) this.parserSpec;
     }
 
-    public WrappingManual and() {
+    public ParsingManual and() {
         return this.parent;
     }
 
-    AwsEventWrapper<E> createWrapper(Object[] constructorArgs) {
-        return this.wrapperSpec.createInstance(constructorArgs);
+    AwsEventParser<E> newParser(Object[] constructorArgs) {
+        return this.parserSpec.newParser(constructorArgs);
     }
 
-    WrapperSpec<E, AwsEventWrapper<E>> getWrapperSpec() {
-        return (WrapperSpec<E, AwsEventWrapper<E>>) this.wrapperSpec;
+    ParserSpec<E, AwsEventParser<E>> getParserSpec() {
+        return (ParserSpec<E, AwsEventParser<E>>) this.parserSpec;
     }
 
-    WrappingManual getParent() {
+    ParsingManual getParent() {
         return this.parent;
     }
 
@@ -49,7 +49,7 @@ public final class MappingEntry<E> {
     public String toString() {
         return "MappingEntry{" +
                 ", event=" + event +
-                ", wrapperSpec=" + wrapperSpec +
+                ", parserSpec=" + parserSpec +
                 '}';
     }
 }
