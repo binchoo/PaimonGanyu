@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.redeem.driven;
 
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 
@@ -52,4 +53,8 @@ public interface UserRedeemCrudPort {
      * @param userRedeems 코드 리딤 이력 집단
      */
     List<UserRedeem> saveAll(Collection<UserRedeem> userRedeems);
+
+    List<UserRedeem> findByUser(UserHoyopass user);
+
+    List<UserRedeem> findByUser(UserHoyopass user, int limit);
 }

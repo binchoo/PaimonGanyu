@@ -2,10 +2,14 @@ package org.binchoo.paimonganyu.infra.redeem.dynamo.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -66,6 +70,19 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
         Iterable<UserRedeemItem> entities = repository.saveAll(userRedeems.stream()
                 .map(UserRedeemItem::fromDomain).collect(Collectors.toList()));
         return StreamSupport.stream(entities.spliterator(), false)
+                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserRedeem> findByUser(UserHoyopass user) {
+        return repository.findByBotUserId(user.getBotUserId()).stream()
+                .map(UserRedeemItem::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserRedeem> findByUser(UserHoyopass user, int limit) {
+        return repository.findByBotUserId(user.getBotUserId(),
+                PageRequest.of(0, limit, Sort.by(Order.desc("date")))).stream()
                 .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 }

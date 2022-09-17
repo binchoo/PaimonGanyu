@@ -41,7 +41,7 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
     }
 
     @Override
-    protected SkillResponse renderSkillResponse(Object content) {
+    protected SkillResponse render(Object content) {
         return renderSkillResponse((List<List<UserDailyCheck>>) content);
     }
 

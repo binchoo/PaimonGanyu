@@ -24,12 +24,12 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
     protected final Blocks blocks;
     protected final QuickReplies quickReplies;
 
+    public SkillResponseView() {
+        this(null, null, null, null);
+    }
+
     public SkillResponseView(Images images, QuickReplies quickReplies, Blocks blocks) {
-        super();
-        this.images = images;
-        this.blocks = blocks;
-        this.quickReplies = quickReplies;
-        this.setExtractValueFromSingleKeyModel(true);
+        this(null, images, quickReplies, blocks);
     }
 
     public SkillResponseView(ObjectMapper objectMapper,
@@ -47,7 +47,7 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
         if (model != null) {
             Object modelContent = model.get(CONTENT_KEY);
             if (modelContent != null) {
-                SkillResponse skillResponse = renderSkillResponse(modelContent);
+                SkillResponse skillResponse = render(modelContent);
                 model = Map.of(VIEW_KEY, skillResponse);
             }
         }
@@ -58,7 +58,7 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
      * @param modelContent the content to be contained in the new {@link SkillResponse}, never null.
      * @return {@link SkillResponse} object that's rendered via attributes in {@code model} object.
      */
-    protected abstract SkillResponse renderSkillResponse(Object modelContent);
+    protected abstract SkillResponse render(Object modelContent);
 
     public Images images() {
         return images;

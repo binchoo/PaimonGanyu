@@ -3,6 +3,7 @@ package org.binchoo.paimonganyu.service.redeem;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.algorithm.BloomFilter;
 import org.binchoo.paimonganyu.algorithm.MultiHashable;
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
@@ -10,6 +11,7 @@ import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -107,5 +109,15 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
 
     public int getBloomFilterSize() {
         return this.bloomFilterSize;
+    }
+
+    @Override
+    public List<UserRedeem> findByUser(UserHoyopass user) {
+        return userRedeemCrud.findByUser(user);
+    }
+
+    @Override
+    public List<UserRedeem> findByUser(UserHoyopass user, int limit) {
+        return userRedeemCrud.findByUser(user, limit);
     }
 }

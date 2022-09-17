@@ -5,6 +5,8 @@ import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
 import org.binchoo.paimonganyu.chatbot.views.dailycheck.DailyCheckListView;
 import org.binchoo.paimonganyu.chatbot.views.hoyopass.HoyopassListView;
+import org.binchoo.paimonganyu.chatbot.views.redeem.RedeemListTextView;
+import org.binchoo.paimonganyu.chatbot.views.redeem.RedeemListView;
 import org.binchoo.paimonganyu.chatbot.views.traveler.TravelerStatusView;
 import org.binchoo.paimonganyu.chatbot.views.uid.UidListView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +55,18 @@ public class ViewConfig {
     public DailyCheckListView dailyCheckListView(@Autowired Images images,
                                                  @Autowired QuickReplies quickReplies) {
         return new DailyCheckListView(images, quickReplies);
+    }
+
+    @Lazy
+    @Bean
+    public RedeemListView redeemListView(@Autowired Images images,
+                                         @Autowired QuickReplies quickReplies) {
+        return new RedeemListView(images, quickReplies);
+    }
+
+    @Lazy
+    @Bean
+    public RedeemListTextView redeemListTextView() {
+        return new RedeemListTextView();
     }
 }

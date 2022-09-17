@@ -46,7 +46,7 @@ public class TravelerStatusView extends SkillResponseView {
     }
 
     @Override
-    protected SkillResponse renderSkillResponse(Object modelContent) {
+    protected SkillResponse render(Object modelContent) {
         return this.renderSkillResponse((Collection<TravelerStatus>) modelContent);
     }
 

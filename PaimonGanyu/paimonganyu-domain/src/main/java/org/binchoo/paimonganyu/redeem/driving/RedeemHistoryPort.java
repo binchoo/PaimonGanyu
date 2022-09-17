@@ -1,6 +1,10 @@
 package org.binchoo.paimonganyu.redeem.driving;
 
+import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
+import org.binchoo.paimonganyu.redeem.UserRedeem;
+
+import java.util.List;
 
 /**
  * 특정 통행증과 리딤 코드를 사용한 코드 리딤 이력이 존재하는지 여부를 제공합니다.
@@ -26,4 +30,8 @@ public interface RedeemHistoryPort {
      * @return {@link #hasRedeemed}의 인버트
      */
     boolean hasNotRedeemed(String botUserId, String uid, RedeemCode redeemCode);
+
+    List<UserRedeem> findByUser(UserHoyopass user);
+
+    List<UserRedeem> findByUser(UserHoyopass user, int limit);
 }

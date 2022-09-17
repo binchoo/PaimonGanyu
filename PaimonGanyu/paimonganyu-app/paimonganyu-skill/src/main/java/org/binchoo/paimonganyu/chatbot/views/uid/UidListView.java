@@ -62,7 +62,7 @@ public class UidListView extends SkillResponseView {
     }
 
     @Override
-    protected SkillResponse renderSkillResponse(Object modelContent) {
+    protected SkillResponse render(Object modelContent) {
         return renderSkillResponse((List<Uid>) modelContent);
     }
 
