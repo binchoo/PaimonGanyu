@@ -140,6 +140,16 @@ Resources:
           OptionName: RollingUpdateEnabled
           Value: !If [CreateALB, true, false]
 
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: StreamLogs
+          Value: true
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: DeleteOnTerminate
+          Value: false
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: RetentionInDays
+          Value: 180
+
   PaimonGanyuSkillEnv:
     Type: AWS::ElasticBeanstalk::Environment
     Properties:

@@ -91,7 +91,6 @@ public class RedeemListView extends SkillResponseView {
     }
 
     private ListItem renderListItem(PassRedeem.RedeemCodeStatistic statistic) {
-        String description = statistic.getCode();
         String imageUrl, successFail;
 
         if (statistic.getSuccessRate() == 1.d) {
@@ -103,10 +102,12 @@ public class RedeemListView extends SkillResponseView {
             if (success == 0)
                 successFail = "실패";
             else
-                successFail = String.format("%s/%s성공", success, statistic.getTotalCount());
+                successFail = String.format("%s/%s", success, statistic.getTotalCount());
         }
 
-        String title = String.format("%s-%s %s", successFail, printTime(statistic.getDate()), statistic.getReason());
+        String title = String.format("%s %s", printTime(statistic.getDate()), statistic.getReason());
+        String description = String.format("%s %s", statistic.getCode(), successFail);
+
         return ListItem.builder()
                 .description(description)
                 .imageUrl(imageUrl)
@@ -115,6 +116,6 @@ public class RedeemListView extends SkillResponseView {
     }
 
     private String printTime(LocalDateTime timestamp) {
-        return timestamp.format(DateTimeFormatter.ofPattern("M월d일 H시m분", Locale.KOREA));
+        return timestamp.format(DateTimeFormatter.ofPattern("M월d일", Locale.KOREA));
     }
 }

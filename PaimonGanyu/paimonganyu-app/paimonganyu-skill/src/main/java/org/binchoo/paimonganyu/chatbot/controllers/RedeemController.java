@@ -35,8 +35,8 @@ public class RedeemController {
     public String listUserRedeem(@UserId String botUserId, Model model) {
         UserHoyopass user = findUser(botUserId);
 
-        var allRedeems = redeemHistory.findByUser(user);
-        model.addAttribute(CONTENT_KEY, PassRedeem.organize(user, allRedeems, maxCount));
+        var recentRedeems = redeemHistory.findByUser(user, maxCount);
+        model.addAttribute(CONTENT_KEY, PassRedeem.organize(user, recentRedeems, maxCount));
 
         return "redeemListView";
     }

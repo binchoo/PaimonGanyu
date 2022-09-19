@@ -133,4 +133,9 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
         if (userRedeems.isEmpty()) throw new NoUserRedeemException(user);
         return userRedeems;
     }
+
+    @Override
+    public List<UserRedeem> findByUser(UserHoyopass user, int limit) {
+        return userRedeemCrud.findByUser(user, limit);
+    }
 }
