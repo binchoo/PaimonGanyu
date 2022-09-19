@@ -7,15 +7,12 @@ import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
 import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
 import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
 import org.binchoo.paimonganyu.testconfig.TestUserRedeemTableSetup;
-import org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,16 +37,16 @@ public class UserRedeemListSystemTest {
         assertThat(items).isNotEmpty();
         log.info("Test items: {}", items);
     }
-
-    @DisplayName("최신 n건의 리딤 이력을 조회할 수 있다.")
-    @Test
-    public void givenLimit_findByUser_returnsTopLatestItems() {
-        int limit = 4;
-        List<UserRedeem> queryResult = redeemHistory.findByUser(
-                HoyopassMockUtils.mockUserHoyopass("testuser-3"), limit);
-
-        assertThat(queryResult).hasSizeLessThanOrEqualTo(limit);
-        assertThat(queryResult).containsSequence(queryResult.stream().sorted(Comparator.comparing(UserRedeem::getDate).reversed()).collect(Collectors.toList()));
-        log.info("Top lasted {} items: {}", limit, queryResult);
-    }
+//
+//    @DisplayName("최신 n건의 리딤 이력을 조회할 수 있다.")
+//    @Test
+//    public void givenLimit_findByUser_returnsTopLatestItems() {
+//        int limit = 4;
+//        List<UserRedeem> queryResult = redeemHistory.findByUser(
+//                HoyopassMockUtils.mockUserHoyopass("testuser-3"), limit);
+//
+//        assertThat(queryResult).hasSizeLessThanOrEqualTo(limit);
+//        assertThat(queryResult).containsSequence(queryResult.stream().sorted(Comparator.comparing(UserRedeem::getDate).reversed()).collect(Collectors.toList()));
+//        log.info("Top lasted {} items: {}", limit, queryResult);
+//    }
 }

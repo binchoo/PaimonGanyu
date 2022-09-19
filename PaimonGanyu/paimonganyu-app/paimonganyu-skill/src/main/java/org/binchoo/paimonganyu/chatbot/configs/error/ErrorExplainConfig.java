@@ -10,6 +10,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
+import org.binchoo.paimonganyu.redeem.exception.NoUserRedeemException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,6 +52,12 @@ public class ErrorExplainConfig {
         binders.add(HoyopassExceptionBinder.builder()
                 .error(NoUserDailyCheckException.class)
                 .title("일일 출석을 수행한 이력이 없습니다.")
+                .fallbacks(FallbackMethods.Home)
+                .build());
+
+        binders.add(HoyopassExceptionBinder.builder()
+                .error(NoUserRedeemException.class)
+                .title("리딤이 수행된 이력이 없습니다.")
                 .fallbacks(FallbackMethods.Home)
                 .build());
 

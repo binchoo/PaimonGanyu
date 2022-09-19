@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -65,9 +66,10 @@ public class TestUserRedeemTableSetup {
                 int hashcode = r.hashCode();
                 return UserRedeemItem.fromDomain(UserRedeem.builder()
                         .botUserId(USER_PREFIX + hashcode % USER_COUNT)
-                        .uid(r + "uid")
+                        .uid("964073")// r + "uid"
                         .done(hashcode % 2 == 0)
                         .redeemCode(RedeemCode.of(r))
+                        .date(LocalDateTime.now())
                         .build());
         }).collect(Collectors.toList());
     }

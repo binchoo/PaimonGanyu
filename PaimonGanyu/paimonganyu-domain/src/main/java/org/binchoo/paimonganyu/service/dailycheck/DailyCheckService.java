@@ -67,8 +67,7 @@ public class DailyCheckService implements DailyCheckPort {
 
     private List<List<UserDailyCheck>> checkNotEmpty(UserHoyopass user, List<List<UserDailyCheck>> logs) {
         long logCount = logs.stream().mapToLong(List::size).sum();
-        if (logCount <= 0)
-            throw new NoUserDailyCheckException(user);
+        if (logCount <= 0) throw new NoUserDailyCheckException(user);
         return logs;
     }
 

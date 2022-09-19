@@ -74,6 +74,7 @@ public class UserRedeemDynamoAdapter implements UserRedeemCrudPort {
     @Override
     public List<UserRedeem> findByUser(UserHoyopass user) {
         return repository.findByBotUserId(user.getBotUserId()).stream()
+                .sorted(Comparator.comparing(UserRedeemItem::getDate).reversed())
                 .map(UserRedeemItem::toDomain).collect(Collectors.toList());
     }
 

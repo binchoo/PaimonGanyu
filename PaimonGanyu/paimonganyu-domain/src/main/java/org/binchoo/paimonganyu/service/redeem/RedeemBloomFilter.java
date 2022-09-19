@@ -8,6 +8,7 @@ import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
 import org.binchoo.paimonganyu.redeem.driven.UserRedeemCrudPort;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
+import org.binchoo.paimonganyu.redeem.exception.NoUserRedeemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,11 +129,8 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
 
     @Override
     public List<UserRedeem> findByUser(UserHoyopass user) {
-        return userRedeemCrud.findByUser(user);
-    }
-
-    @Override
-    public List<UserRedeem> findByUser(UserHoyopass user, int limit) {
-        return userRedeemCrud.findByUser(user, limit);
+        List<UserRedeem> userRedeems = userRedeemCrud.findByUser(user);
+        if (userRedeems.isEmpty()) throw new NoUserRedeemException(user);
+        return userRedeems;
     }
 }

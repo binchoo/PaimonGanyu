@@ -21,20 +21,15 @@ public abstract class SkillResponseView extends MappingJackson2JsonView {
     public static final String CONTENT_KEY = "Content";
 
     protected final Images images;
-    protected final Blocks blocks;
     protected final QuickReplies quickReplies;
+    protected final Blocks blocks;
 
     public SkillResponseView() {
-        this(null, null, null, null);
+        this(null, null, null);
     }
 
     public SkillResponseView(Images images, QuickReplies quickReplies, Blocks blocks) {
-        this(null, images, quickReplies, blocks);
-    }
-
-    public SkillResponseView(ObjectMapper objectMapper,
-                             Images images, QuickReplies quickReplies, Blocks blocks) {
-        super(objectMapper);
+        super(new ObjectMapper());
         this.images = images;
         this.blocks = blocks;
         this.quickReplies = quickReplies;

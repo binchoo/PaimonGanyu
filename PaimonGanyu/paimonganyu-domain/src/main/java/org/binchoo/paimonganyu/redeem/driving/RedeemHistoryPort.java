@@ -33,7 +33,5 @@ public interface RedeemHistoryPort {
 
     List<UserRedeem> findByUser(UserHoyopass user);
 
-    List<UserRedeem> findByUser(UserHoyopass user, int limit);
-
     List<UserRedeem> findAll();
 }

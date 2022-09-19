@@ -19,3 +19,5 @@ s3:
     dailycheck_complete: paimon_smiling.png
     paimon_crying: paimon_crying.png
     paimon_cheers: paimon_cheers.png
+    redeem_fail: paimon_nervous.png
+    redeem_complete: paimon_primogem.png
