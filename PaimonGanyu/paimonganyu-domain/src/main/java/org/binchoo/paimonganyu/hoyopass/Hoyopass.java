@@ -47,6 +47,10 @@ public class Hoyopass implements Comparable<Hoyopass> {
         return credentials.getCookieToken();
     }
 
+    public int getSize() {
+        return uids.size();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Hoyopass) {

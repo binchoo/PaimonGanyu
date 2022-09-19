@@ -5,13 +5,12 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.lambda.redeem.dto.RedeemDeployDto;
-import org.binchoo.paimonganyu.redeem.RedeemDeploy;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationPort;
 import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
+@Setter
 @Slf4j
 public class RedeemCodeDeliveryLambda {
 
