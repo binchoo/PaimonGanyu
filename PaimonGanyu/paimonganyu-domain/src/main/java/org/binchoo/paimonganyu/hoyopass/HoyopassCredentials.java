@@ -6,9 +6,7 @@ import lombok.*;
  * @author : jbinchoo
  * @since : 2022-04-22
  */
-@EqualsAndHashCode
-@ToString
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

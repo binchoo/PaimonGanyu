@@ -8,10 +8,11 @@ import lombok.*;
  * @since : 2022/04/17
  */
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class RedeemCode {
 
-    private final String code;
+    private String code;
 
     public static RedeemCode of(String code) {
         return new RedeemCode(code);

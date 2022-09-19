@@ -2,9 +2,7 @@ package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.*;
 
-@EqualsAndHashCode
-@ToString
-@Getter
+@Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor

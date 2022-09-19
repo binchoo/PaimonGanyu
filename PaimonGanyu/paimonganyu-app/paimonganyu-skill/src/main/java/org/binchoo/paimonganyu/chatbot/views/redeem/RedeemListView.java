@@ -91,18 +91,22 @@ public class RedeemListView extends SkillResponseView {
     }
 
     private ListItem renderListItem(PassRedeem.RedeemCodeStatistic statistic) {
-        String title, imageUrl, description = statistic.getCode();
+        String description = statistic.getCode();
+        String imageUrl, successFail;
 
         if (statistic.getSuccessRate() == 1.d) {
-            title = "성공";
             imageUrl = images().findByName(THUMB_COMPL);
+            successFail = "성공";
         } else {
-            title = String.format("%s/%s성공", statistic.getSuccessCount(), statistic.getTotalCount());
+            int success = statistic.getSuccessCount();
             imageUrl = images().findByName(THUMB_FAIL);
+            if (success == 0)
+                successFail = "실패";
+            else
+                successFail = String.format("%s/%s성공", success, statistic.getTotalCount());
         }
 
-        title = String.format("%s %s %s", title, printTime(statistic.getDate()), statistic.getReason());
-
+        String title = String.format("%s-%s %s", successFail, printTime(statistic.getDate()), statistic.getReason());
         return ListItem.builder()
                 .description(description)
                 .imageUrl(imageUrl)
