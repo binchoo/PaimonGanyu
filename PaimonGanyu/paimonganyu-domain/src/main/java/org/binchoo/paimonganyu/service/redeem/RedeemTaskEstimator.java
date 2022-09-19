@@ -28,8 +28,9 @@ public class RedeemTaskEstimator implements RedeemTaskEstimationPort {
         List<RedeemTask> filteredTasks = estimatedTasks.stream()
                 .filter(this::hasNotRedeemed)
                 .collect(Collectors.toList());
-        log.debug("Generated tasks: {}", estimatedTasks);
-        log.debug("Filtered tasks: {}", filteredTasks);
+
+        log.debug("Generated tasks: {}", estimatedTasks.size());
+        log.debug("Remaining tasks: {}", filteredTasks.size());
         return filteredTasks;
     }
 

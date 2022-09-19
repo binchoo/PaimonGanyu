@@ -39,7 +39,7 @@ class RedeemCodeDeliveryLambdaTest {
         while (n--> 0)
             tasks.add(RedeemTask.builder()
                     .botUserId(RandomString.make())
-                    .redeemCode(new RedeemCode(RandomString.make()))
+                    .redeemCode(RedeemCode.of(RandomString.make()))
                     .build());
         return tasks;
     }

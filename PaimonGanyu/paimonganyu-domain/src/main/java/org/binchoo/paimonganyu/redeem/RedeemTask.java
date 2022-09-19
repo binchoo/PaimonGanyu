@@ -18,13 +18,15 @@ import org.binchoo.paimonganyu.hoyopass.Uid;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class RedeemTask {
 
     private String botUserId;
     private HoyopassCredentials credentials;
     private Uid uid;
     private RedeemCode redeemCode;
+    private String reason;
+
+    public RedeemTask() { }
 
     public String getJson(ObjectMapper objectMapper) {
         try {

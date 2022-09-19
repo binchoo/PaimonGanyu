@@ -39,7 +39,7 @@ class RedeemBloomFilterTest {
     @BeforeEach
     void init() {
         testBloomFilter = new RedeemBloomFilter(mockUserRedeemCrud);
-        testCode = new RedeemCode("foobar");
+        testCode = RedeemCode.of("foobar");
         testUserRedeem = UserRedeem.builder()
                 .botUserId("botUserId")
                 .uid("uid")

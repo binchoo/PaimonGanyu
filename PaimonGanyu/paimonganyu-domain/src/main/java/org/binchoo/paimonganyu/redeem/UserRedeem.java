@@ -1,9 +1,6 @@
 package org.binchoo.paimonganyu.redeem;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,15 +9,16 @@ import java.time.LocalDateTime;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-@EqualsAndHashCode(exclude = "date")
 @Getter
 @Builder
-@AllArgsConstructor
+@EqualsAndHashCode(exclude = "date")
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRedeem {
 
     private final String botUserId;
     private final String uid;
     private final RedeemCode redeemCode;
+    private final String reason;
     private boolean done;
 
     @Builder.Default
@@ -34,11 +32,12 @@ public class UserRedeem {
     }
 
     public UserRedeem markDone() {
-        return new UserRedeem(botUserId, uid, redeemCode, true, date);
+        return new UserRedeem(botUserId, uid, redeemCode, reason, true, date);
     }
 
     @Override
     public String toString() {
+        // TODO: change string format
         return String.format("%s %s %s", done, date, redeemCode.getCode());
     }
 }

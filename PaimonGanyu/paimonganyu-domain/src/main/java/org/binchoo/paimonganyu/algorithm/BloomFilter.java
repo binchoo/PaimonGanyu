@@ -30,7 +30,7 @@ public class BloomFilter<T extends MultiHashable> {
      * @return {@code true} 블룸필터에 {@code item}이 "존재하는 것 같을때"
      * <p> {@code false} 블룸필터에 {@code item}이 존재하지 않을 때
      */
-    public boolean containsProbably(T item) {
+    public boolean probablyContains(T item) {
         for (int h : item.getHashes()) {
             int i = Math.abs(h % filterSize);
             if (!flags[i]) {

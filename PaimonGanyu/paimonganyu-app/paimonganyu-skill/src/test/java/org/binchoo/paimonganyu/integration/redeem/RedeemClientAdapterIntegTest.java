@@ -55,7 +55,7 @@ class RedeemClientAdapterIntegTest {
                     .ltuid(placeholder).ltoken(placeholder).cookieToken(placeholder)
                     .build())
                 .uid(uid)
-                .redeemCode(new RedeemCode("genshingift"))
+                .redeemCode(RedeemCode.of("genshingift"))
                 .build();
     }
 }

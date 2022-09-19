@@ -7,13 +7,13 @@ import lombok.*;
  * @author : jbinchoo
  * @since : 2022/04/17
  */
-@EqualsAndHashCode
-@ToString
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
+@RequiredArgsConstructor
 public class RedeemCode {
 
-    private String code;
+    private final String code;
+
+    public static RedeemCode of(String code) {
+        return new RedeemCode(code);
+    }
 }

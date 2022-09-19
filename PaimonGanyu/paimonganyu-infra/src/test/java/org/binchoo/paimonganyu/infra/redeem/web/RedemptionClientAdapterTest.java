@@ -44,7 +44,7 @@ class RedemptionClientAdapterTest {
         when(task.getRegionString()).thenReturn(null);
         when(task.getCodeString()).thenReturn(null);
         when(task.getBotUserId()).thenReturn("botUserId");
-        when(task.getRedeemCode()).thenReturn(new RedeemCode("redeemCode"));
+        when(task.getRedeemCode()).thenReturn(RedeemCode.of("redeemCode"));
     }
 
     @DisplayName("API 정상 응답이 내려오면 완수 상태의 UserRedeem을 반환한다.")
@@ -60,7 +60,7 @@ class RedemptionClientAdapterTest {
         UserRedeem userRedeem = userRedeems.get(0);
         assertThat(userRedeem.getBotUserId()).isEqualTo("botUserId");
         assertThat(userRedeem.getUid()).isEqualTo("uid");
-        assertThat(userRedeem.getRedeemCode()).isEqualTo(new RedeemCode("redeemCode"));
+        assertThat(userRedeem.getRedeemCode()).isEqualTo(RedeemCode.of("redeemCode"));
         assertThat(userRedeem.isDone()).isTrue();
     }
 
@@ -76,7 +76,7 @@ class RedemptionClientAdapterTest {
         UserRedeem userRedeem = userRedeems.get(0);
         assertThat(userRedeem.getBotUserId()).isEqualTo("botUserId");
         assertThat(userRedeem.getUid()).isEqualTo("uid");
-        assertThat(userRedeem.getRedeemCode()).isEqualTo(new RedeemCode("redeemCode"));
+        assertThat(userRedeem.getRedeemCode()).isEqualTo(RedeemCode.of("redeemCode"));
         assertThat(userRedeem.isDone()).isFalse();
     }
 }

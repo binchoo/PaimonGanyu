@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.awsutils.s3.S3EventObjectReader;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
+import org.binchoo.paimonganyu.lambda.redeem.dto.RedeemDeployDto;
+import org.binchoo.paimonganyu.redeem.RedeemDeploy;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationPort;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author : jbinchoo
@@ -41,18 +44,16 @@ public class RedeemCodeDeliveryLambda {
         this.s3Client = context.getBean(AmazonS3.class);
         this.sqsClient = context.getBean(AmazonSQS.class);
         this.objectMapper = context.getBean(ObjectMapper.class);
-        this.taskEstimation = context.getBean(RedeemTaskEstimationPort.class);
-        this.userCrud = context.getBean(UserHoyopassCrudPort.class);
-        Objects.requireNonNull(this.taskEstimation);
-        Objects.requireNonNull(this.userCrud);
+        this.taskEstimation = Objects.requireNonNull(context.getBean(RedeemTaskEstimationPort.class));
+        this.userCrud = Objects.requireNonNull(context.getBean(UserHoyopassCrudPort.class));
     }
 
     public void handler(S3Event s3Event) {
         var eventParser = new S3EventObjectReader(s3Client);
-        var redeemCodeList = eventParser.extractPojos(s3Event, RedeemCode.class);
-        List<RedeemTask> tasks = taskEstimation.generateTasks(new RedeemAllUsersOption(userCrud,
-                ()-> Collections.unmodifiableList(redeemCodeList)));
-        sendToQueue(tasks);
+        var redeemDeployList = eventParser.extractPojos(s3Event, RedeemDeployDto.class);
+        var redeemOption = new RedeemAllUsersOption(userCrud,
+                ()-> redeemDeployList.stream().map(RedeemDeployDto::toDomain).collect(Collectors.toUnmodifiableList()));
+        sendToQueue(taskEstimation.generateTasks(redeemOption));
     }
 
     private void sendToQueue(List<RedeemTask> redeemTasks) {

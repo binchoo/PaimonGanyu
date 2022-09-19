@@ -54,7 +54,18 @@ public interface UserRedeemCrudPort {
      */
     List<UserRedeem> saveAll(Collection<UserRedeem> userRedeems);
 
+    /**
+     * 유저에게 수행된 코드 리딤 이력을 모두 조회합니다.
+     * @param user 유저 통행증
+     * @return 코드 리딤 이력 집단
+     */
     List<UserRedeem> findByUser(UserHoyopass user);
 
+    /**
+     * 유저에게 수행된 코드 리딤 이력 중 최신 n개를 조회합니다.
+     * @param user 유저 통행증
+     * @param limit 조회할 최신 이력 개수
+     * @return 코드 리딤 이력 집단
+     */
     List<UserRedeem> findByUser(UserHoyopass user, int limit);
 }

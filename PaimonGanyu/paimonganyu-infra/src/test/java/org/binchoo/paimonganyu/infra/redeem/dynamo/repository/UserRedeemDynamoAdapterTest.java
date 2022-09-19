@@ -144,7 +144,7 @@ class UserRedeemDynamoAdapterTest {
         return UserRedeem.builder()
                 .botUserId(random)
                 .uid(random)
-                .redeemCode(new RedeemCode(random))
+                .redeemCode(RedeemCode.of(random))
                 .build();
     }
 

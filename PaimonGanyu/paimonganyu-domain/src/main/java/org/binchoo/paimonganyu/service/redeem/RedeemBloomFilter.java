@@ -51,13 +51,12 @@ public class RedeemBloomFilter implements RedeemHistoryPort {
         var targetedItem = finishedUserRedeem(botUserId, uid, redeemCode);
         var searchWord = new SearchWord(targetedItem);
         var bloomFilter = getOrCreateBloomFilter(redeemCode);
-        if (bloomFilter.containsProbably(searchWord)) {
-            return userRedeemCrud.existMatches(targetedItem);
+        if (bloomFilter.probablyContains(searchWord)) {
             // 아이템 삽입이 보장되지 않으므로 실제로 쿼리를 날려 보아야 한다.
-        } else {
-            return false;
-            // 아이템 미삽입이 보장되므로 바로 반환한다.
+            return userRedeemCrud.existMatches(targetedItem);
         }
+        // 아이템 미삽입이 보장되므로 바로 반환한다.
+        return false;
     }
 
     private UserRedeem finishedUserRedeem(String botUserId, String uid, RedeemCode redeemCode) {

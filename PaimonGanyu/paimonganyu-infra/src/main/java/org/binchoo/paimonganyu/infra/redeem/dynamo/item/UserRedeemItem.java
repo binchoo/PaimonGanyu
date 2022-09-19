@@ -17,7 +17,6 @@ import static org.binchoo.paimonganyu.infra.redeem.dynamo.item.UserRedeemItem.TA
 @Setter // required for conversion and unconversion, never remove this.
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @DynamoDBTable(tableName = TABLE_NAME)
 public class UserRedeemItem {
@@ -37,15 +36,26 @@ public class UserRedeemItem {
     @DynamoDBAttribute
     private String code;
 
+    @DynamoDBAttribute
+    private String reason;
+
     @DynamoDBConvertedBool(DynamoDBConvertedBool.Format.true_false)
     private boolean done;
 
     @DynamoDBTypeConverted(converter = LocalDateTimeStringConverter.class)
     private LocalDateTime date;
 
+    public UserRedeemItem() { }
+
     public static UserRedeem toDomain(UserRedeemItem userRedeemItem) {
-        return new UserRedeem(userRedeemItem.botUserId,
-                userRedeemItem.uid, new RedeemCode(userRedeemItem.code), userRedeemItem.done, userRedeemItem.date);
+        return UserRedeem.builder()
+                .botUserId(userRedeemItem.botUserId)
+                .uid(userRedeemItem.uid)
+                .redeemCode(RedeemCode.of(userRedeemItem.code))
+                .done(userRedeemItem.done)
+                .reason(userRedeemItem.reason)
+                .date(userRedeemItem.date)
+                .build();
     }
 
     public static UserRedeemItem fromDomain(UserRedeem userRedeem) {
@@ -53,6 +63,7 @@ public class UserRedeemItem {
                 .botUserId(userRedeem.getBotUserId())
                 .uid(userRedeem.getUid())
                 .code(userRedeem.getRedeemCode().getCode())
+                .reason(userRedeem.getReason())
                 .done(userRedeem.isDone())
                 .date(userRedeem.getDate())
                 .build();

@@ -37,7 +37,6 @@ public class TestUserRedeemTableSetup {
         init();
         ddl(UserRedeemItem.class, 100L, 100L);
         dml(loadData(NUM_DATA));
-        System.out.println();
     }
 
     @PreDestroy
@@ -68,7 +67,7 @@ public class TestUserRedeemTableSetup {
                         .botUserId(USER_PREFIX + hashcode % USER_COUNT)
                         .uid(r + "uid")
                         .done(hashcode % 2 == 0)
-                        .redeemCode(new RedeemCode(r))
+                        .redeemCode(RedeemCode.of(r))
                         .build());
         }).collect(Collectors.toList());
     }
