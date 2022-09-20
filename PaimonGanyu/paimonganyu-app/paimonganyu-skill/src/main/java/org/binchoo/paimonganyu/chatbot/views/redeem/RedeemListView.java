@@ -106,7 +106,7 @@ public class RedeemListView extends SkillResponseView {
         String reason = userRedeem.getReason();
 
         return new ItemList(date,
-                String.format("%s|%s|%s", code, successful, reason));
+                String.format("%s%n%s 사유:%s", code, successful, reason));
     }
 
     private ImageTitle renderImageTitle(UidRedeem uidRedeem) {
