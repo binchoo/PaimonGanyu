@@ -1,5 +1,6 @@
 package org.binchoo.paimonganyu.chatbot.views.dailycheck;
 
+import org.binchoo.paimonganyu.chatbot.resources.Blocks;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
@@ -36,8 +37,8 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
     private static final String THUMB_COMPL = "dailycheck_complete";
     private static final String DAILY_CHECK_URL = "https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481&lang=ko-kr";
 
-    public DailyCheckListView(Images images, QuickReplies quickReplies) {
-        super(images, quickReplies, null);
+    public DailyCheckListView(Images images, QuickReplies quickReplies, Blocks blocks) {
+        super(images, quickReplies, blocks);
     }
 
     @Override
@@ -60,27 +61,28 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
         return new FallbackMethod[] { FallbackMethods.Home, FallbackMethods.ListUserDailyCheck};
     }
 
-    private Carousel renderCarousel(List<List<UserDailyCheck>> trials) {
+    private Carousel renderCarousel(List<List<UserDailyCheck>> dailyCheckPerPass) {
         return Carousel.builder()
                 .type("listCard")
-                .items(renderListCards(trials))
+                .items(renderListCards(dailyCheckPerPass))
                 .build();
     }
 
-    private Collection<? extends CanCarousel> renderListCards(List<List<UserDailyCheck>> dailyCheckCollection) {
+    private Collection<? extends CanCarousel> renderListCards(List<List<UserDailyCheck>> dailyCheckPerPass) {
         List<ListCard> listCards = new ArrayList<>();
-        for (List<UserDailyCheck> dailyCheckPerPass : dailyCheckCollection) {
-            if (!dailyCheckPerPass.isEmpty()) 
-                listCards.add(renderListCard(dailyCheckPerPass));
+        for (int index = 0; index < dailyCheckPerPass.size(); index++) {
+            List<UserDailyCheck> dailyChecks = dailyCheckPerPass.get(index);
+            if (!dailyChecks.isEmpty())
+                listCards.add(renderListCard(index, dailyChecks));
         }
         return listCards;
     }
 
-    private ListCard renderListCard(List<UserDailyCheck> dailyChecks) {
+    private ListCard renderListCard(int index, List<UserDailyCheck> dailyChecks) {
         return ListCard.builder()
                 .header(renderHeader(dailyChecks))
                 .items(renderListItems(dailyChecks))
-                .buttons(renderButtons(dailyChecks))
+                .buttons(renderButtons(index, dailyChecks))
                 .build();
     }
 
@@ -134,14 +136,15 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
         return timestamp.format(DateTimeFormatter.ofPattern("M월 d일 H시 m분", Locale.KOREA));
     }
 
-    private List<Button> renderButtons(List<UserDailyCheck> dailyChecks) {
+    private List<Button> renderButtons(int index, List<UserDailyCheck> dailyChecks) {
         boolean isButtonRequired = !dailyChecks.get(0).isDone();
-        return isButtonRequired? renderBlockButton() : Collections.emptyList();
+        return isButtonRequired? renderBlockButton(index) : Collections.emptyList();
     }
 
-    private List<Button> renderBlockButton() {
+    private List<Button> renderBlockButton(int index) {
         return List.of(BlockButton.builder()
                 .blockId(blocks().findByFallbackMethod(FallbackMethods.DailyCheckIn))
+                .extra(Map.of("index", index))
                 .label("호요랩 출석 요청")
                 .build());
     }

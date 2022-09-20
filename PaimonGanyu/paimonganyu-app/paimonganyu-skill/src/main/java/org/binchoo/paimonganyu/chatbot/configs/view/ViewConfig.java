@@ -53,8 +53,9 @@ public class ViewConfig {
     @Lazy
     @Bean
     public DailyCheckListView dailyCheckListView(@Autowired Images images,
-                                                 @Autowired QuickReplies quickReplies) {
-        return new DailyCheckListView(images, quickReplies);
+                                                 @Autowired QuickReplies quickReplies,
+                                                 @Autowired Blocks blocks) {
+        return new DailyCheckListView(images, quickReplies, blocks);
     }
 
     @Lazy
