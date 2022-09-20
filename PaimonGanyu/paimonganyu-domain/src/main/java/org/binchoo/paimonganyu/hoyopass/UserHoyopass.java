@@ -8,10 +8,7 @@ import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode
@@ -203,5 +200,13 @@ public class UserHoyopass {
                 return hoyopasses.last();
         }
         throw new IndexOutOfBoundsException();
+    }
+
+    public Optional<Hoyopass> findHoyopass(String ltuid) {
+        return hoyopasses.stream().filter(hoyopass-> ltuid.equals(hoyopass.getLtuid())).findFirst();
+    }
+
+    public Optional<Uid> findUid(String uid) {
+        return listUids().stream().filter(it-> uid.equals(it.getUidString())).findFirst();
     }
 }

@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserId;
 import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
-import org.binchoo.paimonganyu.chatbot.views.redeem.PassRedeem;
+import org.binchoo.paimonganyu.chatbot.views.redeem.UidRedeem;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
@@ -36,7 +36,7 @@ public class RedeemController {
         UserHoyopass user = findUser(botUserId);
 
         var recentRedeems = redeemHistory.findByUser(user, maxCount);
-        model.addAttribute(CONTENT_KEY, PassRedeem.organize(user, recentRedeems, maxCount));
+        model.addAttribute(CONTENT_KEY, UidRedeem.organize(user, recentRedeems, 4));
 
         return "redeemListView";
     }
