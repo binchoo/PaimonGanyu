@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class RedeemListTextView extends SkillResponseView {
 
-    private static final String FORMAT_DATE = "yyyy/mm/dd HH:mm:SS";
+    private static final String FORMAT_DATE = "yyyy/MM/dd HH:mm:SS";
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
     private static final String LEGEND = "날짜|시간|코드|리딤사유|성패|UID";
     private static final String LINE_SPLIT = "\n_______________\n";
