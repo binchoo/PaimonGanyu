@@ -34,6 +34,7 @@ public final class FallbackMethods {
     public static FallbackMethod DailyCheckIn;
     public static FallbackMethod ListUserDailyCheck;
 
+    public static FallbackMethod ListUserRedeem;
     public static FallbackMethod ListUserRedeemText;
 
     private static Map<String, FallbackMethod> fallbackMethods = new HashMap<>();

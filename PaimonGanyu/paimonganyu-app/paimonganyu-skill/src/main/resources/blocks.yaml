@@ -43,6 +43,9 @@ blocks:
     id: 62a6f1a9c9058012cdfadb82
     label: '출첵 로그'
 
+  ListUserRedeem:
+    id: 6325c4039a89c94b38666e4f
+    label: '여행자 별 로그'
   ListUserRedeemText:
     id: 6325c40c9a89c94b38666e51
     label: '텍스트 로그'

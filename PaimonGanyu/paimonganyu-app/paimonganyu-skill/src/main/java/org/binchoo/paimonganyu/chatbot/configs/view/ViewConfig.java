@@ -66,7 +66,7 @@ public class ViewConfig {
 
     @Lazy
     @Bean
-    public RedeemListTextView redeemListTextView() {
-        return new RedeemListTextView();
+    public RedeemListTextView redeemListTextView(@Autowired QuickReplies quickReplies) {
+        return new RedeemListTextView(quickReplies);
     }
 }
