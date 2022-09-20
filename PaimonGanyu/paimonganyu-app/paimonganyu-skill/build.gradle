@@ -65,7 +65,7 @@ test {
         dependsOn startDynamoDBContainer
     } else {
         filter {
-            excludeTestsMatching("org.binchoo.paimonganyu.integration.hoyopass.SecuredHoyopassRegistryLocalSystemTest")
+            excludeTestsMatching("org.binchoo.paimonganyu.integration.*")
         }
     }
 }

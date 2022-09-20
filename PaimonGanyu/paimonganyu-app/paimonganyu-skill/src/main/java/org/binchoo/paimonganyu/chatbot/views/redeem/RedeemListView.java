@@ -32,7 +32,7 @@ public class RedeemListView extends SkillResponseView {
     private static final String FORMAT_CHARACTER_INFO = "%s Lv.%d %s";
     private static final String FORMAT_UID = "UID: %s";
     private static final String FORMAT_CODE_REASON = "%s %s";
-    private static final String FORMAT_DATE = "M월d일";
+    private static final String FORMAT_DATE = "M월 d일";
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
 
     private static final String CAROUSEL_TYPE = "itemCard";
@@ -102,7 +102,7 @@ public class RedeemListView extends SkillResponseView {
     private ItemList renderItemList(UserRedeem userRedeem) {
         String date = userRedeem.getDate().format(dateFormatter);
         String code = userRedeem.getRedeemCode().getCode();
-        String successful = userRedeem.isDone()? "성공" : "실패";
+        String successful = userRedeem.isDone()? "[성공]" : "[실패]";
         String reason = userRedeem.getReason();
 
         return new ItemList(date,

@@ -20,6 +20,8 @@ public class RedeemListTextView extends SkillResponseView {
 
     private static final String FORMAT_DATE = "yyyy/mm/dd HH:mm:SS";
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
+    private static final String LEGEND = "날짜|시간|코드|리딤사유|성패|UID";
+    private static final String LINE_SPLIT = "\n_______________\n";
 
     public RedeemListTextView(QuickReplies quickReplies) {
         super(null, quickReplies, null);
@@ -50,18 +52,18 @@ public class RedeemListTextView extends SkillResponseView {
     }
 
     private String concatLogs(List<UserRedeem> userRedeems) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(LEGEND);
         for (UserRedeem userRedeem : userRedeems) {
+            sb.append(LINE_SPLIT);
             sb.append(dateFormatter.format(userRedeem.getDate()));
             sb.append(' ');
             sb.append(userRedeem.getRedeemCode().getCode());
             sb.append(' ');
-            sb.append(userRedeem.isDone()? "성공" : "실패");
-            sb.append(' ');
             sb.append(userRedeem.getReason());
             sb.append(' ');
+            sb.append(userRedeem.isDone()? "성공" : "실패");
+            sb.append(' ');
             sb.append(userRedeem.getUid());
-            sb.append('\n');
         }
         return sb.substring(0, sb.length() - 1);
     }

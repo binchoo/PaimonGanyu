@@ -45,8 +45,8 @@ public class RedeemController {
     public String listUserRedeemAsText(@UserId String botUserId, Model model) {
         UserHoyopass user = findUser(botUserId);
 
-        var result = redeemHistory.findByUser(user);
-        model.addAttribute(CONTENT_KEY, result);
+        var userRedeems = redeemHistory.findByUser(user);
+        model.addAttribute(CONTENT_KEY, userRedeems);
 
         return "redeemListTextView";
     }
