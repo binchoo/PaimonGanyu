@@ -66,7 +66,7 @@ public class UidListView extends SkillResponseView {
         return renderSkillResponse((List<Uid>) modelContent);
     }
 
-    public SkillResponse renderSkillResponse(List<Uid> uids) {
+    private SkillResponse renderSkillResponse(List<Uid> uids) {
         List<UidValue> modelValues = uids.stream().map(UidValue::new)
                 .collect(Collectors.toList());
 

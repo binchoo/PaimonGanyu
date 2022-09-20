@@ -50,7 +50,7 @@ public class TravelerStatusView extends SkillResponseView {
         return this.renderSkillResponse((Collection<TravelerStatus>) modelContent);
     }
 
-    public SkillResponse renderSkillResponse(Collection<TravelerStatus> status) {
+    private SkillResponse renderSkillResponse(Collection<TravelerStatus> status) {
         assert !status.isEmpty();
         return SkillResponse.builder()
                 .template(renderSkillTemplate(status))

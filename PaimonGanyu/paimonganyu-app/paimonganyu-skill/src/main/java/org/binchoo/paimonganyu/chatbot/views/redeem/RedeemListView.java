@@ -47,7 +47,7 @@ public class RedeemListView extends SkillResponseView {
         return renderSkillResponse((List<UidRedeem>) content);
     }
 
-    public SkillResponse renderSkillResponse(List<UidRedeem> uidRedeems) {
+    private SkillResponse renderSkillResponse(List<UidRedeem> uidRedeems) {
         assert !uidRedeems.isEmpty();
         return SkillResponse.builder()
                 .template(renderSkillTemplate(uidRedeems))

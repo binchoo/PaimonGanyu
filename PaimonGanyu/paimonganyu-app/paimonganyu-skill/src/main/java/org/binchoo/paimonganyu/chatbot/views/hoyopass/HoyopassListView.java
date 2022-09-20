@@ -38,7 +38,7 @@ public class HoyopassListView extends SkillResponseView {
         return this.renderSkillResponse((List<Hoyopass>) modelContent);
     }
 
-    public SkillResponse renderSkillResponse(List<Hoyopass> hoyopasses) {
+    private SkillResponse renderSkillResponse(List<Hoyopass> hoyopasses) {
         return SkillResponse.builder()
                 .template(SkillTemplate.builder()
                         .outputs(List.of(CarouselView.builder()

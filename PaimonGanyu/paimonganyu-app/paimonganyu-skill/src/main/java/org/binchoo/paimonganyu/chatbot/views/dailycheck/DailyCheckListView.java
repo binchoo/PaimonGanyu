@@ -45,7 +45,7 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
         return renderSkillResponse((List<List<UserDailyCheck>>) content);
     }
 
-    public SkillResponse renderSkillResponse(List<List<UserDailyCheck>> dailyCheckCollection) {
+    private SkillResponse renderSkillResponse(List<List<UserDailyCheck>> dailyCheckCollection) {
         return SkillResponse.builder()
                 .template(SkillTemplate.builder()
                         .addOutput(CarouselView.builder()
