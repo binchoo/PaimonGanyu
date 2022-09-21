@@ -13,10 +13,10 @@ paimonganyu-skill: build-paimonganyu-skill
 	cd PaimonGanyu; ./gradlew -Penv=prod paimonganyu-app:paimonganyu-skill:sD
 
 build-paimonganyu:
-	cd PaimonGanyu; ./gradlew paimonganyu-app:paimonganyu:sB
+	cd PaimonGanyu; ./gradlew -x test paimonganyu-app:paimonganyu:sB
 
 build-paimonganyu-skill:
-	cd PaimonGanyu; ./gradlew paimonganyu-app:paimonganyu-skill:sB
+	cd PaimonGanyu; ./gradlew -x test paimonganyu-app:paimonganyu-skill:sB
 
 localtest:
 	cd PaimonGanyu; ./gradlew -PlocalTest=true clean test

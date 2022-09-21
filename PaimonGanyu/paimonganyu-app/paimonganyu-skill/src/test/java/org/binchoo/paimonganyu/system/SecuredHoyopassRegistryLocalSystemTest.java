@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.integration.hoyopass;
+package org.binchoo.paimonganyu.system;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;

@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.integration.redeem;
+package org.binchoo.paimonganyu.system;
 
 import lombok.extern.slf4j.Slf4j;
 import org.binchoo.paimonganyu.chatbot.PaimonGanyu;

@@ -30,7 +30,6 @@ def params() {
 
 task samBuild(type: Exec) {
     dependsOn bootJar
-    test.enabled = false
     workingDir = projectDir
     commandLine = ['sam', 'build']
 }
@@ -65,7 +64,7 @@ test {
         dependsOn startDynamoDBContainer
     } else {
         filter {
-            excludeTestsMatching("org.binchoo.paimonganyu.integration.*")
+            excludeTestsMatching("org.binchoo.paimonganyu.system.*")
         }
     }
 }
