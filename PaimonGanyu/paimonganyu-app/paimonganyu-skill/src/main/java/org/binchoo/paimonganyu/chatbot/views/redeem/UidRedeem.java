@@ -88,7 +88,7 @@ public class UidRedeem {
                 .region(Region.OS_OTHER)
                 .characterLevel(0)
                 .isLumine(false)
-                .characterName("Deleted uid.")
+                .characterName("DELETED UID")
                 .build();
     }
 }
