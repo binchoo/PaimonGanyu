@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.chatbot.views.redeem;
 
 import lombok.Data;
+import org.binchoo.paimonganyu.hoyopass.Region;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.redeem.UserRedeem;
@@ -84,6 +85,9 @@ public class UidRedeem {
     private static Uid nonExisting(String uid) {
         return Uid.builder()
                 .uidString(uid)
+                .region(Region.OS_OTHER)
+                .characterLevel(0)
+                .isLumine(false)
                 .characterName("Deleted uid.")
                 .build();
     }
