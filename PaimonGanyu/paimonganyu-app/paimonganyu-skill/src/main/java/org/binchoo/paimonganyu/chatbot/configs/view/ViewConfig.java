@@ -31,8 +31,9 @@ public class ViewConfig {
     @Lazy
     @Bean
     public UidListView uidListView(@Autowired Images images,
-                                   @Autowired QuickReplies quickReplies) {
-        return new UidListView(images, quickReplies);
+                                   @Autowired QuickReplies quickReplies,
+                                   @Autowired Blocks blocks) {
+        return new UidListView(images, quickReplies, blocks);
     }
 
     @Lazy

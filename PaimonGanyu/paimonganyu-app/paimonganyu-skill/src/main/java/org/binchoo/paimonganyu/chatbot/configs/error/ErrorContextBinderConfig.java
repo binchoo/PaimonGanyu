@@ -6,10 +6,7 @@ import org.binchoo.paimonganyu.chatbot.errorbinders.HoyopassExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.dailycheck.exception.NoUserDailyCheckException;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
-import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
+import org.binchoo.paimonganyu.hoyopass.exception.*;
 import org.binchoo.paimonganyu.redeem.exception.NoUserRedeemException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @since : 2022-06-12
  */
 @Configuration
-public class ErrorExplainConfig {
+public class ErrorContextBinderConfig {
 
     @Bean
     public ErrorContextBinders errorContextBinders() {
@@ -50,6 +47,12 @@ public class ErrorExplainConfig {
                 .build());
 
         binders.add(HoyopassExceptionBinder.builder()
+                .error(ImmortalUidException.class)
+                .title("지울 수 없는 UID입니다. 통행증은 최소 하나의 UID를 지녀야합니다.")
+                .fallbacks(FallbackMethods.Home)
+                .build());
+
+        binders.add(HoyopassExceptionBinder.builder()
                 .error(NoUserDailyCheckException.class)
                 .title("일일 출석을 수행한 이력이 없습니다.")
                 .fallbacks(FallbackMethods.Home)
@@ -62,7 +65,7 @@ public class ErrorExplainConfig {
                 .build());
 
         binders.add(CryptoExceptionBinder.builder()
-                .text("옳지 않은 방법으로 만들어진 QR 코드인 것 같습니다.")
+                .text("옳지 않은 방법으로 만들어진 QR 코드 같습니다.")
                 .fallbacks(FallbackMethods.Home, FallbackMethods.ScanHoyopass, FallbackMethods.CommonCs)
                 .build());
 
