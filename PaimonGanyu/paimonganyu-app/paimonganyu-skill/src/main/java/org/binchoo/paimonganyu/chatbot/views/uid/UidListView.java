@@ -70,7 +70,7 @@ public class UidListView extends SkillResponseView {
         public Button getButton() {
             if (isSingleUid) return null;
             return BlockButton.builder()
-                    .label("얘는 빼야 해")
+                    .label("얘는 빼줘")
                     .messageText(String.format("%s의 %s⋯ %s는 이미 여행을 다녀왔어", server, name, isLumine? "그녀" : "그"))
                     .blockId(blocks().findByFallbackMethod(FallbackMethods.DeleteUid))
                     .extra(Map.of("uid", uid))
@@ -97,7 +97,7 @@ public class UidListView extends SkillResponseView {
     private SkillTemplate templateOf(List<UidDto> uids) {
         return SkillTemplate.builder()
                 .addOutput(SimpleTextView.builder()
-                        .simpleText(new SimpleText(String.format("이제 %s명의 여행자들을 관리할게!%n보고 싶지 않은 여행자는 버튼을 눌러 지워줘~", uids.size())))
+                        .simpleText(new SimpleText(String.format("이제 %s명의 여행자들을 관리할게~%n버튼이 있는 여행자는 지우는 게 가능해!", uids.size())))
                         .build())
                 .addOutput(CarouselView.builder()
                         .carousel(carouselOf(uids))
