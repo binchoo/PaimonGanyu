@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import org.binchoo.paimonganyu.chatbot.PaimonGanyu;
+import org.binchoo.paimonganyu.hoyopass.exception.*;
 import org.binchoo.paimonganyu.testconfig.TestUserHoyopassTableSetup;
 import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
@@ -13,10 +14,6 @@ import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.SigningKeyManagePort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
-import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
-import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
-import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.item.UserHoyopassItem;
 import org.binchoo.paimonganyu.service.hoyopass.SecureHoyopassRegister;
 import org.binchoo.paimonganyu.testconfig.TestAmazonClientsConfig;
@@ -48,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SecuredHoyopassRegistryLocalSystemTest {
 
     @Autowired
-    SecureHoyopassRegister securedHoyopassRegistry;
+    SecureHoyopassRegister hoyopassRegister;
 
     @Autowired
     SigningKeyManagePort signingKeyManager;
@@ -85,22 +82,22 @@ class SecuredHoyopassRegistryLocalSystemTest {
     void givenSecuredHoyopass_registerSecureHoyopass_successes() {
         String botUserId = "foobar";
 
-        securedHoyopassRegistry.registerHoyopass(botUserId, getSecuredHoyopassString(valid0));
+        hoyopassRegister.registerHoyopass(botUserId, getSecuredHoyopassString(valid0));
         UserHoyopass userHoyopass = userHoyopassCrud.findByBotUserId(botUserId)
                 .orElseThrow(RuntimeException::new);
 
         assertThat(userHoyopass.getBotUserId()).isEqualTo(botUserId);
-        assertThat(userHoyopass.getSize()).isEqualTo(1);
-        assertThat(userHoyopass.getHoyopasses()).map(Hoyopass::getLtuid)
+        assertThat(userHoyopass.size()).isEqualTo(1);
+        assertThat(userHoyopass.listHoyopasses()).map(Hoyopass::getLtuid)
                 .anyMatch(ltuid-> ltuid.equals(valid0.getLtuid()));
-        assertThat(userHoyopass.getHoyopasses()).map(Hoyopass::getLtoken)
+        assertThat(userHoyopass.listHoyopasses()).map(Hoyopass::getLtoken)
                 .anyMatch(ltoken-> ltoken.equals(valid0.getLtoken()));
     }
 
     @Test
     void givenInvalidSecureHoyopass_registerSecureHoyopass_successes() {
         assertThrows(CryptoException.class, () ->
-                securedHoyopassRegistry.registerHoyopass(
+                hoyopassRegister.registerHoyopass(
                         "foobar", "fakeSecureHoyopassString"));
     }
 
@@ -122,7 +119,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
 
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, valid0, valid1);
 
-        assertThat(userHoyopass.getSize()).isEqualTo(2);
+        assertThat(userHoyopass.size()).isEqualTo(2);
     }
 
     @Test
@@ -147,7 +144,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
         String botUserId = "e";
         this.registerHoyopasses(botUserId, valid0, valid1);
 
-        List<Hoyopass> hoyopasses = securedHoyopassRegistry.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
 
         assertThat(hoyopasses).hasSize(2);
     }
@@ -156,7 +153,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
     void givenUnknownBotUserId_listHoyopasses_fails() {
         String botUserId = "botuserid uninserted";
         assertThrows(QuantityZeroException.class, ()->
-                securedHoyopassRegistry.listHoyopasses(botUserId));
+                hoyopassRegister.listHoyopasses(botUserId));
     }
 
     @Test
@@ -164,9 +161,9 @@ class SecuredHoyopassRegistryLocalSystemTest {
         String botUserId = "g";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, valid0, valid1);
 
-        List<Uid> uids = securedHoyopassRegistry.listUids(botUserId);
+        List<Uid> uids = hoyopassRegister.listUids(botUserId);
 
-        userHoyopass.getHoyopasses().forEach((hoyopass)-> {
+        userHoyopass.listHoyopasses().forEach((hoyopass)-> {
             assert(uids.containsAll(hoyopass.getUids()));
         });
     }
@@ -176,11 +173,11 @@ class SecuredHoyopassRegistryLocalSystemTest {
         String botUserId = "h";
         UserHoyopass userHoyopass = registerHoyopasses(botUserId, valid0, valid1);
 
-        List<Uid> uids = securedHoyopassRegistry.listUids(botUserId, 0);
-        assertThat(uids).containsAll(userHoyopass.listUids(0));
+        List<Uid> uids = hoyopassRegister.listUids(botUserId, 0);
+        assertThat(uids).containsAll(userHoyopass.listUidsAt(0));
 
-        uids = securedHoyopassRegistry.listUids(botUserId, 1);
-        assertThat(uids).containsAll(userHoyopass.listUids(1));
+        uids = hoyopassRegister.listUids(botUserId, 1);
+        assertThat(uids).containsAll(userHoyopass.listUidsAt(1));
     }
 
     @Test
@@ -188,10 +185,45 @@ class SecuredHoyopassRegistryLocalSystemTest {
         String botUserId = "i";
         this.registerHoyopasses(botUserId, valid0, valid1);
 
-        securedHoyopassRegistry.deleteHoyopass(botUserId, 0);
+        hoyopassRegister.deleteHoyopass(botUserId, 0);
 
-        List<Hoyopass> hoyopasses = securedHoyopassRegistry.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
         assertThat(hoyopasses).hasSize(1);
+    }
+
+    @Test
+    void givenHoyopassWithMultipleUids_deleteUid_successes() {
+        String botUserId = "with 2 uids";
+        this.registerHoyopasses(botUserId, valid0);
+
+        UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
+        Hoyopass pass = user.getHoyopassAt(0);
+        Uid uid = pass.getUids().get(0);
+
+        int beforeSize = user.listUids().size();
+        hoyopassRegister.deleteUid(botUserId, uid.getUidString());
+
+        UserHoyopass savedUser = hoyopassRegister.findUserHoyopass(botUserId);
+        int afterSize = savedUser.listUids().size();
+        assertThat(afterSize).isEqualTo(beforeSize - 1);
+    }
+
+    @Test
+    void givenHoyopassWithSingleUid_deleteUid_successes() {
+        String botUserId = "with single uid";
+        this.registerHoyopasses(botUserId, valid1);
+
+        UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
+        Hoyopass pass = user.getHoyopassAt(0);
+        Uid uid = pass.getUids().get(0);
+
+        int beforeSize = user.listUids().size();
+        assertThrows(ImmortalUidException.class,
+                ()-> hoyopassRegister.deleteUid(botUserId, uid.getUidString()));
+
+        UserHoyopass savedUser = hoyopassRegister.findUserHoyopass(botUserId);
+        int afterSize = savedUser.listUids().size();
+        assertThat(afterSize).isEqualTo(beforeSize);
     }
 
     private String getSecuredHoyopassString(TestHoyopassCredentialsConfig.TestCredentials cred) {
@@ -218,12 +250,12 @@ class SecuredHoyopassRegistryLocalSystemTest {
         for (var cred : creds)
             userHoyopass = this.registerHoyopass(botUserId, cred);
         if (userHoyopass != null)
-            assertThat(userHoyopass.getSize()).isEqualTo(creds.length);
+            assertThat(userHoyopass.size()).isEqualTo(creds.length);
         return userHoyopass;
     }
 
     private UserHoyopass registerHoyopass(String botUserId, TestHoyopassCredentialsConfig.TestCredentials cred) {
-        return securedHoyopassRegistry.registerHoyopass(botUserId,
+        return hoyopassRegister.registerHoyopass(botUserId,
                 HoyopassCredentials.builder()
                         .ltuid(cred.getLtuid())
                         .ltoken(cred.getLtoken())

@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -91,7 +90,7 @@ class DailyCheckServiceTest {
     void whenUserDailyCheckIsEmpty_historyOfUser_throwsException() {
         UserHoyopass user = HoyopassMockUtils.mockUserHoyopass();
         when(mockCrud.findByBotUserIdLtuid(any(), any()))
-                .thenReturn(Collections.emptyList());
+                .thenReturn(List.of());
 
         assertThrows(NoUserDailyCheckException.class,
                 ()-> service.historyOfUser(user, 4)) ;

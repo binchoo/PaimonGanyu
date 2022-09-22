@@ -30,7 +30,7 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks, RedeemResultCallback resultCallback) {
         if (redeemTasks != null && !redeemTasks.isEmpty())
             return sendRequest(redeemTasks, resultCallback);
-        return Collections.emptyList();
+        return List.of();
     }
 
     /**

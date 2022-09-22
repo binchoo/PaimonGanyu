@@ -53,7 +53,7 @@ public class HoyopassExceptionBinder implements ErrorContextBinder {
             @Override
             public Collection<FallbackMethod> getFallbacks() {
                 FallbackMethod[] fallbacks = returnFallbacks(hoyopassException);
-                return (fallbacks != null)? List.of(fallbacks) : Collections.emptyList();
+                return (fallbacks != null)? List.of(fallbacks) : List.of();
             }
         };
     }

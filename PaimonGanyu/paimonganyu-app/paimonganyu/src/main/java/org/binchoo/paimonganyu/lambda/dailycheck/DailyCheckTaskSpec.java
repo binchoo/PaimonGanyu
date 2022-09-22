@@ -73,7 +73,7 @@ public class DailyCheckTaskSpec {
 
     public static List<DailyCheckTaskSpec> specify(UserHoyopassMessage userHoyopassMessage) {
         UserHoyopass userHoyopass = userHoyopassMessage.toDomain();
-        return userHoyopass.getHoyopasses().stream()
+        return userHoyopass.listHoyopasses().stream()
                 .map(it-> new DailyCheckTaskSpec(userHoyopass.getBotUserId(), it.getLtuid(), it.getLtoken()))
                 .collect(Collectors.toList());
     }

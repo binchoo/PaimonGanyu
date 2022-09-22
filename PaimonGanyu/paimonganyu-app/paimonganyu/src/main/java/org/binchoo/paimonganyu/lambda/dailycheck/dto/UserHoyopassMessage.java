@@ -22,7 +22,7 @@ public class UserHoyopassMessage {
 
     public UserHoyopassMessage(UserHoyopass userHoyopass) {
         this.botUserId = userHoyopass.getBotUserId();
-        this.hoyopasses = userHoyopass.getHoyopasses().stream()
+        this.hoyopasses = userHoyopass.listHoyopasses().stream()
                 .map(HoyopassMessage::new)
                 .collect(Collectors.toList());
     }

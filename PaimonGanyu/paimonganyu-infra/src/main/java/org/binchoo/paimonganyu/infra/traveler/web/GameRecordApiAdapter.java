@@ -32,7 +32,7 @@ public class GameRecordApiAdapter implements GameRecordClientPort {
     @Override
     public Collection<TravelerStatus> getStatusOf(UserHoyopass user, Comparator<TravelerStatus> comparator) {
         PriorityQueue<TravelerStatus> heap = newHeapUsing(comparator);
-        for (Hoyopass pass : user.getHoyopasses()) {
+        for (Hoyopass pass : user.listHoyopasses()) {
             Collection<TravelerStatus> statuses = getStatusOf(pass, comparator);
             heap.addAll(statuses);
         }

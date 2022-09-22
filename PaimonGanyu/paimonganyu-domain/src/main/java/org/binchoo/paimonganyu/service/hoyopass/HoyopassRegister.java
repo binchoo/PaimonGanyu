@@ -12,7 +12,6 @@ import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityZeroException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -46,30 +45,40 @@ public class HoyopassRegister implements HoyopassRegisterPort {
     @Override
     public List<Hoyopass> listHoyopasses(String botUserId) {
         return userHoyopassCrud.findByBotUserId(botUserId)
-                .map(UserHoyopass::getHoyopasses)
+                .map(UserHoyopass::listHoyopasses)
                 .filter(it-> !it.isEmpty())
                 .orElseThrow(()-> new QuantityZeroException(null));
     }
 
     @Override
     public List<Uid> listUids(String botUserId) {
-        return userHoyopassCrud.findByBotUserId(botUserId).map(UserHoyopass::listUids)
-                .orElse(new ArrayList<>());
+        return userHoyopassCrud.findByBotUserId(botUserId)
+                .map(UserHoyopass::listUids)
+                .orElse(List.of());
     }
 
     @Override
     public List<Uid> listUids(String botUserId, int order) {
-        return userHoyopassCrud.findByBotUserId(botUserId).map(userHoyopass-> userHoyopass.listUids(order))
-                .orElse(new ArrayList<>());
+        return userHoyopassCrud.findByBotUserId(botUserId)
+                .map(user-> user.listUidsAt(order))
+                .orElse(List.of());
     }
 
     @Override
     public void deleteHoyopass(String botUserId, int order) {
         userHoyopassCrud.findByBotUserId(botUserId)
-                .ifPresent(userHoyopass-> {
-                    if (userHoyopass.deleteAt(order) != null) {
-                        userHoyopassCrud.save(userHoyopass);
-                    }
+                .ifPresent(user-> {
+                    if (user.deleteAt(order) != null)
+                        userHoyopassCrud.save(user);
+                });
+    }
+
+    @Override
+    public void deleteUid(String botUserId, String uidString) {
+        userHoyopassCrud.findByBotUserId(botUserId)
+                .ifPresent(user-> {
+                    if (user.deleteUid(uidString) != null)
+                        userHoyopassCrud.save(user);
                 });
     }
 }

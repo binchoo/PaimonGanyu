@@ -64,4 +64,9 @@ public class SecureHoyopassRegister implements SecureHoyopassRegisterPort {
     public void deleteHoyopass(String botUserId, int order) {
         delegate.deleteHoyopass(botUserId, order);
     }
+
+    @Override
+    public void deleteUid(String botUserId, String uidString) {
+        delegate.deleteUid(botUserId, uidString);
+    }
 }

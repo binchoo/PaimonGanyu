@@ -45,7 +45,7 @@ public class UserHoyopassItem {
     public static UserHoyopassItem fromDomain(UserHoyopass userHoyopass) {
         return UserHoyopassItem.builder()
                 .botUserId(userHoyopass.getBotUserId())
-                .hoyopasses(userHoyopass.getHoyopasses().stream()
+                .hoyopasses(userHoyopass.listHoyopasses().stream()
                     .map(HoyopassDocument::fromDomain).collect(Collectors.toList()))
                 .build();
     }

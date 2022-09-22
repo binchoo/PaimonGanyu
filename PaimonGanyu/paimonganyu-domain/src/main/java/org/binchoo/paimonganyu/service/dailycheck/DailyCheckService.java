@@ -28,7 +28,7 @@ public class DailyCheckService implements DailyCheckPort {
     @Override
     public List<UserDailyCheck> claimDailyCheckIn(UserHoyopass userHoyopass) {
         String botUserId = userHoyopass.getBotUserId();
-        return userHoyopass.getHoyopasses().stream()
+        return userHoyopass.listHoyopasses().stream()
                 .map(pass-> claimDailyCheckIn(botUserId, pass))
                 .collect(Collectors.toList());
     }
@@ -59,7 +59,7 @@ public class DailyCheckService implements DailyCheckPort {
     @Override
     public List<List<UserDailyCheck>> historyOfUser(UserHoyopass user, int count) {
         String botUserId = user.getBotUserId();
-        List<List<UserDailyCheck>> logs = user.getHoyopasses().stream()
+        List<List<UserDailyCheck>> logs = user.listHoyopasses().stream()
                 .map(pass-> historyOfUser(botUserId, pass, count))
                 .collect(Collectors.toList());
         return checkNotEmpty(user, logs);

@@ -60,7 +60,7 @@ class RedeemEstimatorTest {
 
         var tasks = estimator.generateTasks(new RedeemAllUsersOption(userCrud, deployProvider));
 
-        int uids = users.stream().flatMap(it-> it.getHoyopasses().stream()).mapToInt(Hoyopass::getSize).sum();
+        int uids = users.stream().flatMap(it-> it.listHoyopasses().stream()).mapToInt(Hoyopass::size).sum();
         assertThat(tasks).hasSize(uids * deploys.size());
     }
 

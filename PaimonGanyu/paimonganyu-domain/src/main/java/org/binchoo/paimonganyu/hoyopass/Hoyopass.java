@@ -5,6 +5,9 @@ import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 @ToString
 @Getter
@@ -20,6 +23,8 @@ public class Hoyopass implements Comparable<Hoyopass> {
      */
     @Singular("addUid")
     private List<Uid> uids;
+
+    private final Map<String, Uid> uidCache = new WeakHashMap<>(4);
 
     /**
      * 해당 통행증 객체가 생성된 시간
@@ -47,7 +52,7 @@ public class Hoyopass implements Comparable<Hoyopass> {
         return credentials.getCookieToken();
     }
 
-    public int getSize() {
+    public int size() {
         return uids.size();
     }
 
@@ -67,11 +72,36 @@ public class Hoyopass implements Comparable<Hoyopass> {
 
     @Override
     public int compareTo(Hoyopass o) {
-        int ascendingCreateAt = this.createAt.compareTo(o.createAt);
+        int ascendingCreateAt = createAt.compareTo(o.createAt);
         if (ascendingCreateAt == 0) {
             int ascendingLtuid = this.getLtuid().compareTo(o.getLtuid());
             return ascendingLtuid;
         }
         return ascendingCreateAt;
+    }
+
+    public boolean contains(String uid) {
+        initCache();
+        return uidCache.containsKey(uid);
+    }
+
+    public Uid remove(String uidString) {
+        initCache();
+        Uid remove = uidCache.get(uidString);
+        if (remove != null) {
+            this.uids = uids.stream().filter(uid-> !remove.equals(uid)).collect(Collectors.toList());
+            uidCache.remove(uidString);
+            return remove;
+        }
+        return null;
+    }
+
+    private void initCache() {
+        if (uidCache.isEmpty()) {
+            for (Uid uid : uids) {
+                String uidString = uid.getUidString();
+                uidCache.put(uidString, uid);
+            }
+        }
     }
 }

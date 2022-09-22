@@ -48,4 +48,6 @@ public interface HoyopassRegisterPort {
      * @param order 삭제할 통행증 객체가 생성시점 순으로 오름차순 정렬될 때의 순서
      */
     void deleteHoyopass(String botUserId, int order);
+
+    void deleteUid(String botUserId, String uidString);
 }

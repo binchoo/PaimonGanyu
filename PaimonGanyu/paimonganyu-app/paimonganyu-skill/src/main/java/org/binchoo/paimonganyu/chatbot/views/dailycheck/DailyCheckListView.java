@@ -138,7 +138,7 @@ public class DailyCheckListView extends SkillResponseView implements MessageSour
 
     private List<Button> renderButtons(int index, List<UserDailyCheck> dailyChecks) {
         boolean isButtonRequired = !dailyChecks.get(0).isDone();
-        return isButtonRequired? renderBlockButton(index) : Collections.emptyList();
+        return isButtonRequired? renderBlockButton(index) : List.of();
     }
 
     private List<Button> renderBlockButton(int index) {

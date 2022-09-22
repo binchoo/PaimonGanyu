@@ -8,7 +8,6 @@ import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,7 +43,7 @@ public final class CryptoExceptionBinder implements ErrorContextBinder {
 
             @Override
             public Collection<FallbackMethod> getFallbacks() {
-                return (fallbacks != null)? List.of(fallbacks) : Collections.emptyList();
+                return (fallbacks != null)? List.of(fallbacks) : List.of();
             }
         };
     }

@@ -2,30 +2,33 @@ package org.binchoo.paimonganyu.hoyopass;
 
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
+import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
+import org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.mockHoyopass;
+import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.mockUid;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils.*;
 
 /**
  * @author : jbinchoo
  * @since : 2022/04/15
  */
-
 @ExtendWith(MockitoExtension.class)
 class UserHoyopassTest {
 
@@ -40,7 +43,7 @@ class UserHoyopassTest {
         UserHoyopass user = new UserHoyopass();
         user.addComplete(hoyopass);
 
-        assertThat(user.getHoyopass(0)).isEqualTo(hoyopass);
+        assertThat(user.getHoyopassAt(0)).isEqualTo(hoyopass);
     }
 
     @Test
@@ -51,9 +54,9 @@ class UserHoyopassTest {
         UserHoyopass user = new UserHoyopass();
         passes.forEach(user::addComplete);
 
-        assertThat(user.getSize()).isEqualTo(createCount);
+        assertThat(user.size()).isEqualTo(createCount);
         IntStream.range(0, createCount).forEach(i->
-            assertThat(user.getHoyopass(i)).isEqualTo(passes.get(i)));
+            assertThat(user.getHoyopassAt(i)).isEqualTo(passes.get(i)));
     }
 
     @Test
@@ -89,7 +92,7 @@ class UserHoyopassTest {
         UserHoyopass user = new UserHoyopass();
         user.addIncomplete(anyCredentials(), mockUidSearchClient);
 
-        assertThat(user.getSize()).isEqualTo(1);
+        assertThat(user.size()).isEqualTo(1);
         assertThat(user.listUids()).isEqualTo(uids);
     }
 
@@ -124,10 +127,10 @@ class UserHoyopassTest {
 
         UserHoyopass user = new UserHoyopass("foobar", passes);
 
-        assertThat(user.getSize()).isEqualTo(2);
+        assertThat(user.size()).isEqualTo(2);
         assertThat(user.getBotUserId()).isEqualTo(botUserId);
         IntStream.range(0, 2).forEach(i->
-                assertThat(user.getHoyopasses().get(i)).isEqualTo(passes.get(i)));
+                assertThat(user.listHoyopasses().get(i)).isEqualTo(passes.get(i)));
     }
 
     @Test
@@ -137,7 +140,7 @@ class UserHoyopassTest {
         UserHoyopass user = new UserHoyopass("foobar", passes);
         List<Uid> userUids = user.listUids();
 
-        user.getHoyopasses().forEach(hoyopass-> {
+        user.listHoyopasses().forEach(hoyopass-> {
             uidListEquals(userUids, hoyopass);
         });
     }
@@ -149,8 +152,8 @@ class UserHoyopassTest {
         UserHoyopass user = new UserHoyopass("foobar", passes);
 
         IntStream.range(0, 2).forEach(i-> {
-            List<Uid> uids = user.listUids(i);
-            uidListEquals(uids, user.getHoyopass(i));
+            List<Uid> uids = user.listUidsAt(i);
+            uidListEquals(uids, user.getHoyopassAt(i));
         });
     }
 
@@ -163,10 +166,10 @@ class UserHoyopassTest {
         List<Hoyopass> passes = hoyopasses(2);
         UserHoyopass user = new UserHoyopass("foobar", passes);
 
-        List<Uid> userUids = user.listUids(-100);
+        List<Uid> userUids = user.listUidsAt(-100);
         assertThat(userUids).isEmpty();
 
-        userUids = user.listUids(100);
+        userUids = user.listUidsAt(100);
         assertThat(userUids).isEmpty();
     }
 
@@ -178,12 +181,12 @@ class UserHoyopassTest {
         Hoyopass hoyopass = user.deleteAt(0);
 
         assertThat(hoyopass).isEqualTo(passes.get(0));
-        assertThat(user.getSize()).isEqualTo(1);
+        assertThat(user.size()).isEqualTo(1);
 
         hoyopass = user.deleteAt(0);
 
         assertThat(hoyopass).isEqualTo(passes.get(1));
-        assertThat(user.getSize()).isZero();
+        assertThat(user.size()).isZero();
     }
 
 
@@ -259,10 +262,49 @@ class UserHoyopassTest {
         String userString = user.toString();
         assertThat(userString)
                 .contains(botUserId)
-                .contains(user.getHoyopass(0).toString())
-                .contains(user.getHoyopass(1).toString());
+                .contains(user.getHoyopassAt(0).toString())
+                .contains(user.getHoyopassAt(1).toString());
 
         System.out.println(userString);
+    }
+
+    @Test
+    void givenExistingUids_removeUid_successes() {
+        String botUserId = "foobar";
+        List<Hoyopass> passes = hoyopasses(2);
+        UserHoyopass user = new UserHoyopass(botUserId, passes);
+
+        Hoyopass passForDelete = passes.get(0);
+        List<Uid> deletedUids = new ArrayList<>();
+        for (int i = 0; i < passForDelete.size() - 1; i++) {
+            Uid uidForDelete = passForDelete.getUids().get(0);
+            deletedUids.add(user.deleteUid(uidForDelete.getUidString()));
+        }
+
+        for (Uid uid : deletedUids) {
+            assertThat(user.findUid(uid.getUidString())).isNotPresent();
+        }
+        assertThat(user.size()).isEqualTo(2);
+    }
+
+    @Test
+    void givenUnkownUids_removeUid_throwsException() {
+        String botUserId = "foobar";
+        List<Hoyopass> passes = hoyopasses(2);
+
+        UserHoyopass user = new UserHoyopass(botUserId, passes);
+
+        assertThrows(ImmortalUidException.class, ()-> user.deleteUid("unknown-uid"));
+    }
+
+    @Test
+    void givenHoyopassWithSingleUid_removeUid_throwsException() {
+        String botUserId = "foobar";
+        UserHoyopass user = new UserHoyopass(botUserId, List.of(HoyopassMockUtils.mockHoyopass(1)));
+
+        String uidString = user.listUids().get(0).getUidString();
+
+        assertThrows(ImmortalUidException.class, ()-> user.deleteUid(uidString));
     }
 
     private List<Hoyopass> hoyopasses(int n) {

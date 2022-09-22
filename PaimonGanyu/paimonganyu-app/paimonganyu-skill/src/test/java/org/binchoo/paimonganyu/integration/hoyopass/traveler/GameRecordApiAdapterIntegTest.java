@@ -75,7 +75,7 @@ class GameRecordApiAdapterIntegTest {
     }
 
     private void turnDataSwitchesOFF(UserHoyopass user) {
-        user.getHoyopasses().stream()
+        user.listHoyopasses().stream()
                 .map(this::toLtuidLtoken)
                 .forEach(this::turnDataSwitchesOFF);
     }
@@ -85,7 +85,7 @@ class GameRecordApiAdapterIntegTest {
     }
 
     private void turnDataSwitchesON(UserHoyopass user) {
-        user.getHoyopasses().stream()
+        user.listHoyopasses().stream()
                 .map(this::toLtuidLtoken)
                 .forEach(this::turnDataSwitchesON);
     }

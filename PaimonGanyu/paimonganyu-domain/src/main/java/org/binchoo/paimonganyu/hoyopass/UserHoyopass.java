@@ -1,19 +1,16 @@
 package org.binchoo.paimonganyu.hoyopass;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
+import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode
-@ToString
-@Getter
+@Data
 public class UserHoyopass {
 
     public static final int MAX_HOYOPASS_COUNT = 2;
@@ -66,7 +63,7 @@ public class UserHoyopass {
      * 유저에게 중복된 통행증을 등록하려 할 경우
      */
     public void addComplete(Hoyopass hoyopass) {
-        assertAppendable(hoyopass);
+        this.assertAppendable(hoyopass);
         this.hoyopasses.add(hoyopass);
     }
 
@@ -82,8 +79,8 @@ public class UserHoyopass {
         Hoyopass newHoyopass = Hoyopass.builder()
                 .credentials(credentials)
                 .build();
-        fillUids(newHoyopass, uidSearchClientPort);
-        addComplete(newHoyopass);
+        this.fillUids(newHoyopass, uidSearchClientPort);
+        this.addComplete(newHoyopass);
     }
 
     /**
@@ -93,8 +90,8 @@ public class UserHoyopass {
      * @throws DuplicationException 유저가 이미 소지한 통행증을 등록하려 할 경우
      */
     private void assertAppendable(Hoyopass hoyopass) {
-        checkVacancy();
-        checkDuplicate(hoyopass);
+        this.checkVacancy();
+        this.checkDuplicate(hoyopass);
     }
 
     /**
@@ -102,7 +99,7 @@ public class UserHoyopass {
      * @throws QuantityExceedException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
      */
     private void checkVacancy() {
-        if (MAX_HOYOPASS_COUNT <= this.getSize()) {
+        if (MAX_HOYOPASS_COUNT <= this.size()) {
             throw new QuantityExceedException(this, "A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
         }
     }
@@ -127,23 +124,12 @@ public class UserHoyopass {
      * 호요버스 계정이 호요랩 비활성 상태 또는, 연결된 여행자가 없을 때
      */
     private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClient) {
-        assertAppendable(newHoyopass);
+        this.assertAppendable(newHoyopass);
         try {
             newHoyopass.fillUids(uidSearchClient);
         } catch (Exception e) {
             throw new InactiveStateException(this, e);
         }
-    }
-
-    /**
-     * 모든 통행증의 {@link Uid} 리스트를 합쳐서 반환합니다.
-     * 각 통행증은 생성 시점의 오른차순으로 정렬됩니다.
-     * @return {@link Uid} 리스트
-     */
-    public List<Uid> listUids() {
-        return this.hoyopasses.stream().sorted()
-                .map(Hoyopass::getUids).flatMap(List::stream)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -158,46 +144,41 @@ public class UserHoyopass {
     }
 
     /**
+     * 모든 통행증의 {@link Uid} 리스트를 합쳐서 반환합니다.
+     * 각 통행증은 생성 시점의 오른차순으로 정렬됩니다.
+     * @return {@link Uid} 리스트
+     */
+    public List<Uid> listUids() {
+        return this.hoyopasses.stream().sorted()
+                .map(Hoyopass::getUids).flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 지정한 통행증과 연결된 모든 {@link Uid} 리스트를 얻습니다.
      * 이들은 통행증 생성시점의 오른차순 정렬을 따릅니다.
      * @param i 번째 통행증을 지정
      * @return {@link Uid} 리스트, 잘못된 i 지정일 시 길이 0인 리스트
      */
-    public List<Uid> listUids(int i) {
-        if (0 <= i && i < this.getSize()) {
+    public List<Uid> listUidsAt(int i) {
+        if (0 <= i && i < this.size()) {
             Hoyopass hoyopass = (i == 0)? hoyopasses.first() : hoyopasses.last();
             return hoyopass.getUids();
         }
-        return Collections.emptyList();
-    }
-
-    /**
-     * @throws IndexOutOfBoundsException 잘못된 인덱스 지정일 때
-     */
-    public Hoyopass deleteAt(int i) {
-        if (i < 0 || i >= this.getSize())
-            throw new IndexOutOfBoundsException();
-        return (i == 0)? hoyopasses.pollFirst() : hoyopasses.pollLast();
+        return List.of();
     }
 
     /**
      * @return 정렬된 통행증 리스트 (복제본)
      */
-    public List<Hoyopass> getHoyopasses() {
+    public List<Hoyopass> listHoyopasses() {
         return hoyopasses.stream().sorted()
                 .collect(Collectors.toList());
     }
 
-    public int getSize() {
-        return hoyopasses.size();
-    }
-
-    public Hoyopass getHoyopass(int index) {
-        if (0 <= index && index < this.getSize()) {
-            if (index == 0)
-                return hoyopasses.first();
-            else
-                return hoyopasses.last();
+    public Hoyopass getHoyopassAt(int index) {
+        if (0 <= index && index < this.size()) {
+            return index == 0? hoyopasses.first() : hoyopasses.last();
         }
         throw new IndexOutOfBoundsException();
     }
@@ -208,5 +189,31 @@ public class UserHoyopass {
 
     public Optional<Uid> findUid(String uid) {
         return listUids().stream().filter(it-> uid.equals(it.getUidString())).findFirst();
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException 잘못된 인덱스 지정일 때
+     */
+    public Hoyopass deleteAt(int i) {
+        if (i < 0 || i >= this.size())
+            throw new IndexOutOfBoundsException();
+        return (i == 0)? hoyopasses.pollFirst() : hoyopasses.pollLast();
+    }
+
+    /**
+     * 이 유저 소유의 {@code Uid}를 하나 삭제합니다.
+     * @param uid 삭제할 {@code Uid}의 uid 문자열
+     * @throws ImmortalUidException 통행증의 uid 수량 조건을 지키기 위해서 또는, 알 수 없는 uid 문자열이라서
+     * uid를 제거할 수 없는 경우
+     * @return 삭제된 {@code Uid}
+     */
+    public Uid deleteUid(String uid) {
+        return hoyopasses.stream().filter(hoyopass-> hoyopass.contains(uid) && hoyopass.size() > 1).findFirst()
+                .map(hoyopass-> hoyopass.remove(uid))
+                .orElseThrow(()-> new ImmortalUidException(this, "This UID cannot be removed."));
+    }
+
+    public int size() {
+        return hoyopasses.size();
     }
 }

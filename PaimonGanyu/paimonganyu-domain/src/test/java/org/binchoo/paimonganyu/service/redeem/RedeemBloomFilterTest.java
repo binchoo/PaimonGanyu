@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -19,7 +18,8 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author : jbinchoo
@@ -52,7 +52,7 @@ class RedeemBloomFilterTest {
     @Test
     void givenEmptyHistories_hasRedeemed_returnsFalse() {
         given(mockUserRedeemCrud.findByRedeemCode(testCode))
-                .willReturn(Collections.emptyList());
+                .willReturn(List.of());
 
         boolean hasRedeemed = testBloomFilter.hasRedeemed("foo", "bar", testCode);
 
@@ -63,7 +63,7 @@ class RedeemBloomFilterTest {
     @Test
     void givenEmptyHistories_hasNotRedeemed_returnsTrue() {
         given(mockUserRedeemCrud.findByRedeemCode(testCode))
-                .willReturn(Collections.emptyList());
+                .willReturn(List.of());
 
         boolean hasNotRedeemed = testBloomFilter.hasNotRedeemed("foo", "bar", testCode);
 

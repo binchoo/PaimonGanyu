@@ -35,7 +35,7 @@ class UserHoyopassDynamoAdapterTest {
 
     @Test
     void withNoEntry_findAll_returnsEmptyList() {
-        when(repository.findAll()).thenReturn(Collections.emptyList());
+        when(repository.findAll()).thenReturn(List.of());
 
         List<UserHoyopass> result = userHoyopassDynamoAdapter.findAll();
         assertThat(result).isEmpty();

@@ -4,7 +4,6 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
-import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemDeploy;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 
@@ -72,7 +71,7 @@ public class RedeemTaskEstimationOption {
 
     private void fillTaskContainer(List<RedeemTask> taskContainer, UserHoyopass user, RedeemDeploy deploy) {
         String botUserId = user.getBotUserId();
-        for (Hoyopass hoyopass : user.getHoyopasses()) {
+        for (Hoyopass hoyopass : user.listHoyopasses()) {
             fillTaskContainer(taskContainer, botUserId, hoyopass, deploy);
         }
     }
