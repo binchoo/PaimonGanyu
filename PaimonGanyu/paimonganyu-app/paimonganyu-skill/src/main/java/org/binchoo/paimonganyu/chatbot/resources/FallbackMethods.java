@@ -28,6 +28,8 @@ public final class FallbackMethods {
     public static FallbackMethod DeleteHoyopass;
     public static FallbackMethod ListHoyopass;
     public static FallbackMethod ListHoyopassAliasDeleteHoyopass;
+    public static FallbackMethod HomeAliasStopTravelerRemovalLoop;
+    public static FallbackMethod DeleteUid;
 
     public static FallbackMethod ListTravelerStatus;
 

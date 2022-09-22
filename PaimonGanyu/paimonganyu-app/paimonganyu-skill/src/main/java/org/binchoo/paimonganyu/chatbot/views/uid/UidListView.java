@@ -1,10 +1,12 @@
 package org.binchoo.paimonganyu.chatbot.views.uid;
 
-import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
+import org.binchoo.paimonganyu.chatbot.resources.Blocks;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.chatbot.resources.Images;
 import org.binchoo.paimonganyu.chatbot.resources.QuickReplies;
+import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
 import org.binchoo.paimonganyu.error.FallbackMethod;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.binchoo.paimonganyu.ikakao.component.CarouselView;
@@ -12,10 +14,13 @@ import org.binchoo.paimonganyu.ikakao.component.SimpleTextView;
 import org.binchoo.paimonganyu.ikakao.component.componentType.BasicCard;
 import org.binchoo.paimonganyu.ikakao.component.componentType.Carousel;
 import org.binchoo.paimonganyu.ikakao.component.componentType.SimpleText;
+import org.binchoo.paimonganyu.ikakao.type.Button;
 import org.binchoo.paimonganyu.ikakao.type.SkillTemplate;
 import org.binchoo.paimonganyu.ikakao.type.Thumbnail;
+import org.binchoo.paimonganyu.ikakao.type.buttons.BlockButton;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -27,20 +32,22 @@ public class UidListView extends SkillResponseView {
     private static final String IMAGEKEY_AETHER = "aether_banner";
     private static final String IMAGEKEY_LUMINE = "lumine_banner";
 
-    public UidListView(Images images, QuickReplies quickReplies) {
-        super(images, quickReplies, null);
+    public UidListView(Images images, QuickReplies quickReplies, Blocks blocks) {
+        super(images, quickReplies, blocks);
     }
 
-    private final class UidValue {
+    private final class UidDto {
 
         private final String server, uid, name;
+        private final boolean isSingleUid;
         private final int level;
         private final boolean isLumine;
 
-        public UidValue(Uid uid) {
+        public UidDto(Uid uid, boolean isSingleUid) {
             this.server = uid.getRegion().suffixLargeCase();
             this.uid = uid.getUidString();
             this.name = uid.getCharacterName();
+            this.isSingleUid = isSingleUid;
             this.level = uid.getCharacterLevel();
             this.isLumine = uid.getIsLumine();
         }
@@ -59,57 +66,70 @@ public class UidListView extends SkillResponseView {
             else
                 return images().findByName(IMAGEKEY_AETHER);
         }
+
+        public Button getButton() {
+            if (isSingleUid) return null;
+            return BlockButton.builder()
+                    .label("얘는 빼줘")
+                    .messageText(String.format("%s의 %s⋯ %s는 이미 여행을 다녀왔어", server, name, isLumine? "그녀" : "그"))
+                    .blockId(blocks().findByFallbackMethod(FallbackMethods.DeleteUid))
+                    .extra(Map.of("uid", uid))
+                    .build();
+        }
     }
 
     @Override
     protected SkillResponse render(Object modelContent) {
-        return renderSkillResponse((List<Uid>) modelContent);
+        return renderSkillResponse((List<Hoyopass>) modelContent);
     }
 
-    private SkillResponse renderSkillResponse(List<Uid> uids) {
-        List<UidValue> modelValues = uids.stream().map(UidValue::new)
-                .collect(Collectors.toList());
+    private SkillResponse renderSkillResponse(List<Hoyopass> passes) {
+        List<UidDto> uids = passes.stream().flatMap(pass-> {
+            boolean isSingleUid = pass.size() == 1;
+            return pass.getUids().stream().map(uid-> new UidDto(uid, isSingleUid));
+        }).collect(Collectors.toList());
 
         return SkillResponse.builder()
-                .template(templateOf(modelValues))
+                .template(templateOf(uids))
                 .build();
     }
 
-    private SkillTemplate templateOf(List<UidValue> modelValues) {
+    private SkillTemplate templateOf(List<UidDto> uids) {
         return SkillTemplate.builder()
                 .addOutput(SimpleTextView.builder()
-                        .simpleText(new SimpleText("이제 " + modelValues.size() + "명의 여행자들을 관리할게!"))
+                        .simpleText(new SimpleText(String.format("이제 %s명의 여행자들을 관리할게~%n버튼이 있는 여행자는 지우는 게 가능해!", uids.size())))
                         .build())
                 .addOutput(CarouselView.builder()
-                        .carousel(carouselOf(modelValues))
+                        .carousel(carouselOf(uids))
                         .build())
                 .quickReplies(quickReplies().findByFallbackMethod(getFallbacks()))
                 .build();
     }
 
     private FallbackMethod[] getFallbacks() {
-        return new FallbackMethod[] {FallbackMethods.Home, FallbackMethods.ListHoyopass};
+        return new FallbackMethod[] {FallbackMethods.HomeAliasStopTravelerRemovalLoop, FallbackMethods.ListHoyopass};
     }
 
-    private Carousel carouselOf(List<UidValue> modelValues) {
+    private Carousel carouselOf(List<UidDto> uids) {
         var carouselBuilder = Carousel.builder()
                 .type("basicCard");
 
-        for (UidValue item : modelValues)
+        for (UidDto item : uids)
             carouselBuilder.addItem(basicCardOf(item));
 
         return carouselBuilder.build();
     }
 
-    private BasicCard basicCardOf(UidValue value) {
+    private BasicCard basicCardOf(UidDto uid) {
         return BasicCard.builder()
                 .thumbnail(Thumbnail.builder()
-                        .imageUrl(value.getImageUrl())
+                        .imageUrl(uid.getImageUrl())
                         .fixedRatio(false)
                         .width(800).height(400)
                         .build())
-                .title(value.getTitle())
-                .description(value.getDescription())
+                .title(uid.getTitle())
+                .description(uid.getDescription())
+                .addButton(uid.getButton())
                 .build();
     }
 }
