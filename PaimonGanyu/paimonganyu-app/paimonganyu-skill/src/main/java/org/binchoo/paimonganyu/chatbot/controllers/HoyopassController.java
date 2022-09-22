@@ -50,15 +50,13 @@ public class HoyopassController {
 
         hoyopassRegister.deleteUid(botUserId, uid);
 
-        List<Hoyopass> passes = hoyopassRegister.listHoyopasses(botUserId);
-        model.addAttribute(CONTENT_KEY, passes);
-
-        return "uidListView";
+        return listUids(botUserId, model);
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String listHoyopasses(@UserId String botUserId, Model model) {
         List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
+
         model.addAttribute(CONTENT_KEY, hoyopasses);
 
         return "hoyopassListView";
