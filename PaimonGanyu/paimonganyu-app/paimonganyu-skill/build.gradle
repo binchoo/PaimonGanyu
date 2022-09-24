@@ -7,7 +7,7 @@ dependencies {
     implementation project(':paimonganyu-infra')
     implementation project(':ikakao')
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     testImplementation(testFixtures(project(':paimonganyu-domain')))
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
