@@ -44,7 +44,6 @@ public class DailyCheckService implements DailyCheckPort {
     public UserDailyCheck claimDailyCheckIn(String botUserId, String ltuid, String ltoken) {
         UserDailyCheck startState = initialize(botUserId, ltuid, ltoken);
         UserDailyCheck finalState = startState.doRequest(dailyCheckClient);
-        log.debug("Saving a UserDailyCheck: {}", finalState);
         return save(finalState);
     }
 

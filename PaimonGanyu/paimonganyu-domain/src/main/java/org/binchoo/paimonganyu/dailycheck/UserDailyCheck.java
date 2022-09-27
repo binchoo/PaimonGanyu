@@ -19,7 +19,7 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
 
     /**
      * Note that, for security reason, ltoken is not saved to the table.
-     * So this attribute is null when the item is read from the table.
+     * So this field is null when the item is read from the table.
      */
     private String ltoken;
 
@@ -48,7 +48,7 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
         } else if (requestResult.isDuplicated()) {
             return this.markDuplicate();
         } else {
-            log.info("Daily check-in request result: {}", requestResult.getMessage());
+            log.debug("Daily check-in request result: {}", requestResult.getMessage());
             return this.markComplete();
         }
     }
@@ -63,12 +63,13 @@ public class UserDailyCheck implements Comparable<UserDailyCheck> {
     }
 
     private UserDailyCheck markDuplicate() {
+        log.debug("Daily check-in is duplicated.");
         return this.changeStatus(UserDailyCheckStatus.DUPLICATE);
     }
 
     private UserDailyCheck changeStatus(UserDailyCheckStatus status) {
         UserDailyCheck userDailyCheck = this.toBuilder().status(status).build();
-        log.info("UserDailyCheck state transfer: {}", userDailyCheck);
+        log.debug("UserDailyCheck state transfer: {}", userDailyCheck);
         return userDailyCheck;
     }
 
