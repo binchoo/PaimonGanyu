@@ -235,7 +235,8 @@ Resources:
             Queue: !GetAtt DailyCheckRequestQueue.Arn
             BatchSize: 10
       EventInvokeConfig:
-        MaximumRetryAttempts: 2
+        MaximumRetryAttempts: 1
+        MaximumEventAgeInSeconds: 1800
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserDailyCheckTable
