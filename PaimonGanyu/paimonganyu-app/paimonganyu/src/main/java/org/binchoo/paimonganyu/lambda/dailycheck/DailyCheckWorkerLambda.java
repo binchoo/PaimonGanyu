@@ -12,8 +12,6 @@ import java.util.Objects;
 
 public class DailyCheckWorkerLambda {
 
-    private static final long RETRY_SLEEP = 3000;
-
     private DailyCheckPort dailyCheckPort;
 
     public DailyCheckWorkerLambda() {
@@ -37,10 +35,6 @@ public class DailyCheckWorkerLambda {
         String botUserId = taskSpec.getBotUserId(), ltuid = taskSpec.getLtuid(), ltoken = taskSpec.getLtoken();
         UserDailyCheck userDailyCheck = dailyCheckPort.claimDailyCheckIn(botUserId, ltuid, ltoken);
         if (!userDailyCheck.isDone()) {
-            try {
-                Thread.sleep(RETRY_SLEEP);
-            } catch (Exception ignored) {
-            }
             throw new RuntimeException();
         }
     }

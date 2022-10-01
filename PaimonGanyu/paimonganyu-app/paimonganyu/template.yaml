@@ -182,9 +182,10 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       VisibilityTimeout: 60
+      DelaySeconds: 7
       RedrivePolicy:
+        maxReceiveCount: 3
         deadLetterTargetArn: !GetAtt DailyCheckRequestDLQ.Arn
-        maxReceiveCount: 2
 
   DailyCheckRequestDLQ:
     Type: AWS::SQS::Queue
@@ -242,7 +243,6 @@ Resources:
             MaximumBatchingWindowInSeconds: 3
             BatchSize: 10
       EventInvokeConfig:
-        MaximumRetryAttempts: 2
         MaximumEventAgeInSeconds: 1800
       Policies:
         - DynamoDBCrudPolicy:
