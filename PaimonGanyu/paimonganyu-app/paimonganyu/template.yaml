@@ -240,8 +240,6 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt DailyCheckRequestQueue.Arn
-            MaximumBatchingWindowInSeconds: 3
-            BatchSize: 10
       EventInvokeConfig:
         MaximumEventAgeInSeconds: 1800
       Policies:
