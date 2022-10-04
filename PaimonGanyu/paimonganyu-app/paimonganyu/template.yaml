@@ -213,12 +213,19 @@ Resources:
     Properties:
       Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckBatchRequesterLambda::handler
       Events:
-        BatchDailyCheckEvent:
+        FirstDailyCheckEvent:
           Type: Schedule
           Properties:
-            Schedule: 'cron(1 0/8 ? * * *)' # everyday 01:01AM, 09:01AM, 05:01PM GMT+9 (Seoul)
+            Schedule: 'cron(1/8 16 ? * * *)' # everyday 01:[01, 09, ..., 57]AM (Seoul)
             Name: batched-dailycheck
-            Description: Do batched dailycheck three times a day!
+            Description: Do batch daily check-in serveral times around 01:00AM
+            Enabled: true
+        RetryDailyCheckEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(0 0,8 ? * * *)' # everyday 09:00AM, 05:00PM GMT+9 (Seoul)
+            Name: batched-dailycheck
+            Description: Retry daily check-in for failed users!
             Enabled: true
       Policies:
         - DynamoDBReadPolicy:
