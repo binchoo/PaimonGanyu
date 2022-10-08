@@ -1,14 +1,15 @@
 package org.binchoo.paimonganyu.chatbot.controllers;
 
-import org.binchoo.paimonganyu.chatbot.errorbinders.ErrorContextBinders;
-import org.binchoo.paimonganyu.chatbot.views.error.DefaultErrorExplain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binchoo.paimonganyu.chatbot.errorbinders.ErrorContextBinders;
+import org.binchoo.paimonganyu.chatbot.views.error.DefaultErrorExplain;
 import org.binchoo.paimonganyu.chatbot.views.error.ErrorResponseView;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;
 import org.binchoo.paimonganyu.error.ErrorExplain;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.exception.CryptoException;
+import org.binchoo.paimonganyu.hoyopass.exception.HoyopassException;
 import org.binchoo.paimonganyu.hoyopass.exception.UserHoyopassException;
 import org.binchoo.paimonganyu.ikakao.SkillResponse;
 import org.springframework.http.ResponseEntity;
@@ -27,18 +28,18 @@ public class ExceptionExplainAdvice {
     private final ErrorContextBinders binders;
     private final ErrorResponseView errorResponseView;
 
-    @ExceptionHandler({CryptoException.class, UserHoyopassException.class})
+    @ExceptionHandler({UserHoyopassException.class, HoyopassException.class, CryptoException.class})
     public ResponseEntity<SkillResponse> handleThrowerAware(ThrowerAware<?> e) {
-        log.debug("An error handled by default method: ", e.getCause());
-        ErrorContextBinder errorContext = binders.findByType(e.getClass());
-        ErrorExplain errorExplain = errorContext.explain(e);
-        return ResponseEntity.ok(errorResponseView.build(errorExplain));
+        log.debug("An error handled will be handled: ", e.getCause());
+        ErrorContextBinder ecb = binders.findByType(e.getClass());
+        ErrorExplain explain = ecb.explain(e);
+        return ResponseEntity.ok(errorResponseView.build(explain));
     }
 
     @ExceptionHandler
     public ResponseEntity<SkillResponse> handleElse(Exception e) {
-        log.debug("An error handled by default method", e);
-        ErrorExplain errorExplain = new DefaultErrorExplain();
-        return ResponseEntity.ok(errorResponseView.build(errorExplain));
+        log.debug("An error handled will be handled: ", e);
+        ErrorExplain explain = new DefaultErrorExplain();
+        return ResponseEntity.ok(errorResponseView.build(explain));
     }
 }
