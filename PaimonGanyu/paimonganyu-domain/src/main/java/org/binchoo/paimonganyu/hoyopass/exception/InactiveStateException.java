@@ -1,26 +1,26 @@
 package org.binchoo.paimonganyu.hoyopass.exception;
 
-import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
+import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 
 /**
  * @author jbinchoo
  * @since 2022/06/11
  */
-public class InactiveStateException extends UserHoyopassException {
+public class InactiveStateException extends HoyopassException {
 
-    public InactiveStateException(UserHoyopass userHoyopass) {
-        super(userHoyopass);
+    public InactiveStateException(Hoyopass hoyopass) {
+        super(hoyopass);
     }
 
-    public InactiveStateException(UserHoyopass userHoyopass, Throwable cause) {
-        super(userHoyopass, cause);
+    public InactiveStateException(Hoyopass hoyopass, Throwable cause) {
+        super(hoyopass, cause);
     }
 
-    public InactiveStateException(UserHoyopass userHoyopass, String message) {
-        super(userHoyopass, message);
+    public InactiveStateException(Hoyopass hoyopass, String message) {
+        super(hoyopass, message);
     }
 
-    public InactiveStateException(UserHoyopass userHoyopass, String message, Throwable cause) {
-        super(userHoyopass, message, cause);
+    public InactiveStateException(Hoyopass hoyopass, String message, Throwable cause) {
+        super(hoyopass, message, cause);
     }
 }

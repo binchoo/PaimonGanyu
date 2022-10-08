@@ -4,7 +4,7 @@ import lombok.Data;
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
+import org.binchoo.paimonganyu.hoyopass.exception.ManyHoyopassException;
 import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 
 import java.util.*;
@@ -71,7 +71,7 @@ public class UserHoyopass {
      * 이 유저 통행증 객체에 호요버스 통행증을 추가한다.
      * @param credentials 통행증 크레덴셜
      * @param uidSearchClientPort 미호요 통행증 실제 조회를 위한 검색 서비스 객체
-     * @throws QuantityExceedException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
+     * @throws ManyHoyopassException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
      * @throws DuplicationException 유저가 이미 소지한 통행증을 등록하려 할 경우
      * @throws InactiveStateException 통행증 Uid 조회 API 클라이언트에서 오류가 발생했을 경우
      */
@@ -86,7 +86,7 @@ public class UserHoyopass {
     /**
      * 이 유저에게 입력받은 통행증을 등록할 수 있는지 검증한다.
      * @param hoyopass 통행증 객체
-     * @throws QuantityExceedException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
+     * @throws ManyHoyopassException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
      * @throws DuplicationException 유저가 이미 소지한 통행증을 등록하려 할 경우
      */
     private void assertAppendable(Hoyopass hoyopass) {
@@ -96,11 +96,11 @@ public class UserHoyopass {
 
     /**
      * 통행증의 수량 조건 위반을 확인한다.
-     * @throws QuantityExceedException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
+     * @throws ManyHoyopassException 유저 당 최대 소지 개수를 초과하여 통행증을 등록하려 할 경우
      */
     private void checkVacancy() {
         if (MAX_HOYOPASS_COUNT <= this.size()) {
-            throw new QuantityExceedException(this, "A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
+            throw new ManyHoyopassException(this, "A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
         }
     }
 
@@ -125,11 +125,7 @@ public class UserHoyopass {
      */
     private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClient) {
         this.assertAppendable(newHoyopass);
-        try {
-            newHoyopass.fillUids(uidSearchClient);
-        } catch (Exception e) {
-            throw new InactiveStateException(this, e);
-        }
+        newHoyopass.fillUids(uidSearchClient);
     }
 
     /**
