@@ -152,7 +152,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
     @Test
     void givenUnknownBotUserId_listHoyopasses_fails() {
         String botUserId = "botuserid uninserted";
-        assertThrows(QuantityZeroException.class, ()->
+        assertThrows(NoHoyopassException.class, ()->
                 hoyopassRegister.listHoyopasses(botUserId));
     }
 

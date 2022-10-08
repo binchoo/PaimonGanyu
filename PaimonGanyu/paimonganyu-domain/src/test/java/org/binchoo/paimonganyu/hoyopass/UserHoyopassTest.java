@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
 import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
-import org.binchoo.paimonganyu.hoyopass.exception.QuantityExceedException;
+import org.binchoo.paimonganyu.hoyopass.exception.ManyHoyopassException;
 import org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,13 +68,13 @@ class UserHoyopassTest {
         UserHoyopass user = new UserHoyopass();
         passes.forEach(user::addComplete);
 
-        assertThrows(QuantityExceedException.class, ()->
+        assertThrows(ManyHoyopassException.class, ()->
                 user.addComplete(third));
     }
 
     @Test
     void givenInvalidCredentials_addIncomplete_fails() {
-        doThrow(RuntimeException.class)
+        doThrow(IllegalArgumentException.class)
                 .when(mockUidSearchClient).findUids(any());
 
         UserHoyopass user = new UserHoyopass();

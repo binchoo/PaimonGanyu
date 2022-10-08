@@ -2,6 +2,7 @@ package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.*;
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,10 +35,18 @@ public class Hoyopass implements Comparable<Hoyopass> {
 
     /**
      * @param uidSearchClientPort UID 색인 서비스 객체
-     * @throws IllegalArgumentException 이 통행증으로 UID를 색인하는 데 실패했을 경우
+     * @throws InactiveStateException API 클라이언트 오류 발생시:
      */
     public void fillUids(UidSearchClientPort uidSearchClientPort) {
-        this.uids = uidSearchClientPort.findUids(this);
+        try {
+            List<Uid> uids = uidSearchClientPort.findUids(this);
+            if (uids == null || uids.isEmpty()) {
+                throw new InactiveStateException(this);
+            }
+            this.uids = uids;
+        } catch (IllegalArgumentException e) {
+            throw new InactiveStateException(this, e);
+        }
     }
 
     public String getLtuid() {
