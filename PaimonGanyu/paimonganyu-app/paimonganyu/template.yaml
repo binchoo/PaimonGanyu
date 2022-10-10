@@ -193,6 +193,7 @@ Resources:
   DailyCheckHitoriRequesterFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Timeout: 180
       Handler: org.binchoo.paimonganyu.lambda.dailycheck.DailyCheckHitoriRequesterLambda::handler
       Events:
         NewUserHoyopassEvent:
