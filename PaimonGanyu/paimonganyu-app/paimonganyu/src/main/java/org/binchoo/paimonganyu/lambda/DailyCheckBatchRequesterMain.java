@@ -10,17 +10,14 @@ import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheck
 import org.binchoo.paimonganyu.infra.dailycheck.web.DailyCheckClientAdapter;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoAdapter;
 import org.binchoo.paimonganyu.infra.hoyopass.dynamo.repository.UserHoyopassDynamoRepository;
-import org.binchoo.paimonganyu.lambda.config.DynamoDBClientConfig;
-import org.binchoo.paimonganyu.lambda.config.SqsClientConfig;
-import org.binchoo.paimonganyu.lambda.config.UserDailyCheckTableConfig;
-import org.binchoo.paimonganyu.lambda.config.UserHoyopassTableConfig;
+import org.binchoo.paimonganyu.lambda.config.*;
 import org.binchoo.paimonganyu.service.dailycheck.DailyCheckService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Import({
-        SqsClientConfig.class, HoyoApiWebClientConfigurer.class,
+        SqsClientConfig.class, CloudWatchClientConfig.class, HoyoApiWebClientConfigurer.class,
         DynamoDBClientConfig.class, UserHoyopassTableConfig.class, UserDailyCheckTableConfig.class
 })
 @Configuration

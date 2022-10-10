@@ -71,4 +71,10 @@ public interface DailyCheckPort {
      * 호요랩 측과 직접 통신하지 않으므로 실제와 다를 수 있다.
      */
     boolean hasCheckedIn(String botUserId, String ltuid, LocalDate date);
+
+    /**
+     * 오늘 수행된 호요랩 출석체크 성공률을 계산하여 반환합니다.
+     * @return 오늘자 출석체크 성공률
+     */
+    double getCheckedInRate();
 }

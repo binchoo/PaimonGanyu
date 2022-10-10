@@ -21,6 +21,9 @@ dependencies {
     implementation ("com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}") {
         because 'Hoyopass fanout leverages an SNS topic.'
     }
+    implementation ("com.amazonaws:aws-java-sdk-cloudwatch:${awsSdkVersion}") {
+        because 'Batch dailycheck pushes a metric.'
+    }
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
 }

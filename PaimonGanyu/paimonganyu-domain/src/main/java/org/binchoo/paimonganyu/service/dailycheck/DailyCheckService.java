@@ -89,4 +89,26 @@ public class DailyCheckService implements DailyCheckPort {
     public boolean hasCheckedInToday(String botUserId, String ltuid) {
         return hasCheckedIn(botUserId, ltuid, LocalDate.now());
     }
+
+    @Override
+    public double getCheckedInRate() {
+        LocalDate today = LocalDate.now();
+        List<UserDailyCheck> logs = dailyCheckCrud.findAllBetweenDates(today, today.plusDays(1L));
+        return logs.isEmpty()? 0 : calcSuccessRate(today, logs);
+    }
+
+    private double calcSuccessRate(LocalDate date, List<UserDailyCheck> logs) {
+        var group = logs.stream().collect(Collectors.groupingBy(UserDailyCheck::getBotUserId));
+        int successfulUser = 0;
+        for (String botUserId : group.keySet()) {
+            List<UserDailyCheck> history = group.get(botUserId);
+            if (history.stream().anyMatch(userDailyCheck -> userDailyCheck.isDoneOn(date))) {
+                successfulUser++;
+            }
+        }
+        log.info("success_rate date: {}", date);
+        log.info("success_rate successfulUser: {}", successfulUser);
+        log.info("success_rate totalUser: {}", group.size());
+        return (double) successfulUser / group.size();
+    }
 }

@@ -6,6 +6,7 @@ import org.binchoo.paimonganyu.dailycheck.driven.UserDailyCheckCrudPort;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.item.UserDailyCheckItem;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,5 +31,12 @@ public class UserDailyCheckDynamoAdapter implements UserDailyCheckCrudPort {
 
     private String concat(String botUserId, String ltuid) {
         return botUserId + "-" + ltuid;
+    }
+
+    @Override
+    public List<UserDailyCheck> findAllBetweenDates(LocalDate start, LocalDate end) {
+        return dynamoRepository.findAllByTimestampGreaterThanEqualAndTimestampLessThan(start.atTime(0, 0), end.atTime(0, 0))
+                .stream().map(UserDailyCheckItem::toDomain)
+                .collect(Collectors.toList());
     }
 }

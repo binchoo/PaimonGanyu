@@ -234,6 +234,7 @@ Resources:
             TableName: !Ref UserHoyopassTable
         - SQSSendMessagePolicy:
             QueueName: !GetAtt DailyCheckRequestQueue.QueueName
+        - CloudWatchPutMetricPolicy: {}
       Environment:
         Variables:
           DAILYCHECK_QUEUE_URL: !Ref DailyCheckRequestQueue
