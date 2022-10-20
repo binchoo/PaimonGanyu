@@ -68,9 +68,6 @@ public class HoyopassController {
 
         hoyopassRegister.deleteHoyopass(botUserId, index);
 
-        List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
-        model.addAttribute(CONTENT_KEY, hoyopasses);
-
-        return "hoyopassListView";
+        return listHoyopasses(botUserId, model);
     }
 }
