@@ -65,13 +65,12 @@ class HoyolabGameRecordWebClientTest {
     }
 
     @Test
-    void getDailyNote_sucessful() {
+    void getDailyNote_successful() {
         HoyoResponse<DailyNote> response = gameRecordApi.getDailyNote(lumineAccount.getLtuidLtoken(),
                 lumineAccount.getUid(), lumineAccount.getRegion());
 
-        assertThat(response.getData()).isNotNull();
-
         DailyNote dailyNote = response.getData();
+        assertThat(dailyNote).isNotNull();
         assertThat(dailyNote.getCurrentResin()).isEqualTo(160);
         assertThat(dailyNote.getCurrentHomeCoin()).isEqualTo(0);
     }

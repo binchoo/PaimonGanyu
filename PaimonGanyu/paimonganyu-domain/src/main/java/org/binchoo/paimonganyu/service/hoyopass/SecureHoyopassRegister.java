@@ -46,11 +46,6 @@ public class SecureHoyopassRegister implements SecureHoyopassRegisterPort {
     }
 
     @Override
-    public List<Hoyopass> listHoyopasses(String botUserId) {
-        return delegate.listHoyopasses(botUserId);
-    }
-
-    @Override
     public List<Uid> listUids(String botUserId) {
         return delegate.listUids(botUserId);
     }

@@ -19,6 +19,15 @@ public class UserHoyopass {
 
     private String botUserId;
 
+    public UserHoyopass synchronize(UidSearchClientPort uidSearchClient) {
+        return UserHoyopass.builder()
+                .botUserId(botUserId)
+                .hoyopasses(listHoyopasses().stream()
+                        .map(pass-> pass.synchronize(uidSearchClient))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
     public static final class UserHoyopasBuilder {
 
         private String botUserId;
@@ -79,6 +88,7 @@ public class UserHoyopass {
         Hoyopass newHoyopass = Hoyopass.builder()
                 .credentials(credentials)
                 .build();
+        this.assertAppendable(newHoyopass);
         this.fillUids(newHoyopass, uidSearchClientPort);
         this.addComplete(newHoyopass);
     }
@@ -124,7 +134,6 @@ public class UserHoyopass {
      * 호요버스 계정이 호요랩 비활성 상태 또는, 연결된 여행자가 없을 때
      */
     private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClient) {
-        this.assertAppendable(newHoyopass);
         newHoyopass.fillUids(uidSearchClient);
     }
 

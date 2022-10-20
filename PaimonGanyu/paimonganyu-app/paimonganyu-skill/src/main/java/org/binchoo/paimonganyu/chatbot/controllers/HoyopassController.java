@@ -5,7 +5,6 @@ import org.binchoo.paimonganyu.chatbot.controllers.resolvers.clientextra.ClientE
 import org.binchoo.paimonganyu.chatbot.controllers.resolvers.id.UserId;
 import org.binchoo.paimonganyu.chatbot.controllers.resolvers.param.ActionParam;
 import org.binchoo.paimonganyu.chatbot.views.SkillResponseView;
-import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driving.SecureHoyopassRegisterPort;
 import org.binchoo.paimonganyu.ikakao.type.BarcodeData;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -39,7 +36,7 @@ public class HoyopassController {
 
     @RequestMapping(value = "/uid/list", method = RequestMethod.POST)
     public String listUids(@UserId String botUserId, Model model) {
-        model.addAttribute(CONTENT_KEY, hoyopassRegister.listHoyopasses(botUserId));
+        model.addAttribute(CONTENT_KEY, hoyopassRegister.findUserHoyopass(botUserId).listHoyopasses());
 
         return "uidListView";
     }
@@ -55,9 +52,9 @@ public class HoyopassController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String listHoyopasses(@UserId String botUserId, Model model) {
-        List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
+        UserHoyopass user = hoyopassRegister.findUserHoyopass(botUserId);
 
-        model.addAttribute(CONTENT_KEY, hoyopasses);
+        model.addAttribute(CONTENT_KEY, user.listHoyopasses());
 
         return "hoyopassListView";
     }
