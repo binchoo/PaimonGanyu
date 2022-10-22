@@ -29,7 +29,10 @@ public class DailyCheckRequestResult {
         return error;
     }
 
-    public void setError(Exception e) {
+    /**
+     * @param e NonNull
+     */
+    public void setError(Throwable e) {
         error = e;
     }
 

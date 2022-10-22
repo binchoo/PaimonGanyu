@@ -57,6 +57,7 @@ class GameRecordApiAdapterIntegTest {
 
     @Test
     void whenDataSwitchesAreON_getStatusOf_successful() {
+        turnDataSwitchesON(user);
         var result = apiAdapter.getStatusOf(user, null);
 
         assertThat(result).isNotEmpty();

@@ -1,7 +1,8 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient.async;
 
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
-import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
+import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
+import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -14,16 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @since : 2022-04-23
  */
 @SpringJUnitConfig(HoyoApiWebClientConfigurer.class)
-class CodeRedemptionWebClientTest {
+class DailyCheckAsyncWebClientTest {
 
     @Autowired
-    CodeRedemptionAsyncWebClient client;
+    DailyCheckAsyncWebClient client;
 
     @Test
-    void givenInvalidArguments_redeem_fails() {
-        var responseMono = client.redeem(
-                new AccountIdCookieToken("foo", "bar"),
-                "foobar", "os_asia", "foobar");
-        assertThrows(Exception.class, ()-> responseMono.block());
+    void givenInvalidArguments_dailyCheck_fails() {
+        var badLtuidLtoken = new LtuidLtoken("foo", "bar");
+        var responseMono = client.claimDailyCheck(badLtuidLtoken);
+        assertThrows(RetcodeException.class, ()-> responseMono.onErrorMap(Throwable::getCause).block());
     }
 }

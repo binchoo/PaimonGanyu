@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig(classes = {TestAccountConfig.class})
 class DailyCheckSyncWebClientTest {
 
-    DailyCheckSyncWebClient hoyolabDailyCheckApi = new DailyCheckSyncWebClient();
+    DailyCheckSyncWebClient client = new DailyCheckSyncWebClient();
 
     @Autowired
     @Qualifier("validHoyopass")
@@ -35,7 +35,7 @@ class DailyCheckSyncWebClientTest {
 
     @Test
     void givenValidAccount_claimDailyCheck_succeedsOrContainsNull() {
-        HoyoResponse<DailyCheckResult> response = hoyolabDailyCheckApi.claimDailyCheck(validHoyopass);
+        HoyoResponse<DailyCheckResult> response = client.claimDailyCheck(validHoyopass);
 
         int retcode = response.getRetcode();
         if (response.getData() == null) {
@@ -49,14 +49,14 @@ class DailyCheckSyncWebClientTest {
 
     @Test
     void givenFakeAccount_claimDailyCheck_fails() {
-        HoyoResponse<DailyCheckResult> response = hoyolabDailyCheckApi.claimDailyCheck(fakeHoyopass);
+        HoyoResponse<DailyCheckResult> response = client.claimDailyCheck(fakeHoyopass);
 
         assertResponseWillEncounterException(response.getRetcode(), NotLoggedInError.class);
     }
 
     @Test
     void givenValidAccount_getDailyCheckStatus_succeeds() {
-        DailyCheckMonthlyReport report = hoyolabDailyCheckApi.getDailyCheckStatus(validHoyopass).getData();
+        DailyCheckMonthlyReport report = client.getDailyCheckStatus(validHoyopass).getData();
 
         assertThat(report.getToday()).isEqualTo(
                 LocalDateTime.now().minus(4, ChronoUnit.HOURS).toLocalDate());
@@ -65,7 +65,7 @@ class DailyCheckSyncWebClientTest {
 
     @Test
     void givenFakeAccount_getDailyCheckStatus_fails() {
-        HoyoResponse<DailyCheckMonthlyReport> response = hoyolabDailyCheckApi.getDailyCheckStatus(fakeHoyopass);
+        HoyoResponse<DailyCheckMonthlyReport> response = client.getDailyCheckStatus(fakeHoyopass);
 
         assertResponseWillEncounterException(response.getRetcode(), NotLoggedInError.class);
     }

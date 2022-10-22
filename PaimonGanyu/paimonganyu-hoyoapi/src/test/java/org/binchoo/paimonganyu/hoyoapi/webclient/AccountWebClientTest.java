@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig(classes = {TestAccountConfig.class})
 class AccountWebClientTest {
 
-    AccountWebClient accountApi = new AccountWebClient();
+    AccountWebClient client = new AccountWebClient();
 
     @Autowired
     @Qualifier("validHoyopass")
@@ -26,7 +26,7 @@ class AccountWebClientTest {
 
     @Test
     void givenValidAccount_getUserGameRoles_successful() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoles(validAccount);
+        HoyoResponse<UserGameRoles> response = client.getUserGameRoles(validAccount);
         List<UserGameRole> userRoles = response.getData().getList();
 
         boolean hasAsiaAndUsaRole = 2 == userRoles.stream().filter(ugr ->
@@ -38,7 +38,7 @@ class AccountWebClientTest {
 
     @Test
     void givenFakeAccount_getUserGameRoles_returnErrorResponse() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoles(fakeAccount);
+        HoyoResponse<UserGameRoles> response = client.getUserGameRoles(fakeAccount);
 
         assertThat(response.getRetcode()).isNotEqualTo(0);
         assertThat(response.getData()).isNull();
@@ -46,7 +46,7 @@ class AccountWebClientTest {
 
     @Test
     void givenAsiaAccount_getUserGameRoles_hasAsiaUid() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoles(validAccount);
+        HoyoResponse<UserGameRoles> response = client.getUserGameRoles(validAccount);
         List<UserGameRole> userRoles = response.getData().getList();
 
         boolean hasAsiaUid = userRoles.stream().anyMatch(ugr ->
@@ -57,7 +57,7 @@ class AccountWebClientTest {
 
     @Test
     void givenUsaAccount_getUserGameRoles_hasUsaUid() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoles(validAccount);
+        HoyoResponse<UserGameRoles> response = client.getUserGameRoles(validAccount);
         List<UserGameRole> userRoles = response.getData().getList();
 
         boolean hasUsaUid = userRoles.stream().anyMatch(ugr ->
@@ -68,7 +68,7 @@ class AccountWebClientTest {
 
     @Test
     void whenSearchingAsia_getUserGameRoleByRegion_onlyReturnsAsiaUid() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(validAccount,
+        HoyoResponse<UserGameRoles> response = client.getUserGameRoleByRegion(validAccount,
                 UidRegion.OS_ASIA.lowercase());
         List<UserGameRole> userRoles = response.getData().getList();
 
@@ -79,7 +79,7 @@ class AccountWebClientTest {
 
     @Test
     void whenSearchingUsa_getUserGameRoleByRegion_onlyReturnsUsaUid() {
-        HoyoResponse<UserGameRoles> response = accountApi.getUserGameRoleByRegion(validAccount,
+        HoyoResponse<UserGameRoles> response = client.getUserGameRoleByRegion(validAccount,
                 UidRegion.OS_USA.lowercase());
         List<UserGameRole> userRoles = response.getData().getList();
 

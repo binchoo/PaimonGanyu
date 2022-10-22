@@ -54,7 +54,7 @@ public class RedemptionClientAdapter implements RedemptionClientPort {
     private List<UserRedeem> wait(List<Mono<UserRedeem>> userRedeemMonos) {
         List<UserRedeem> userRedeems = new ArrayList<>();
         wait(userRedeemMonos, userRedeems);
-        log.debug("User redemptions (count {}) has occurred: {}", userRedeems.size(), userRedeems);
+        log.debug("User redemptions (count {}) have occurred: {}", userRedeems.size(), userRedeems);
         return userRedeems;
     }
 

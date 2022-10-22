@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig(classes = {TestAccountConfig.class})
 class GameRecordWebClientTest {
 
-    GameRecordWebClient gameRecordApi = new GameRecordWebClient(DsHeaderGenerator.getDefault());
+    GameRecordWebClient client = new GameRecordWebClient(DsHeaderGenerator.getDefault());
 
     @Autowired
     @Qualifier("aetherAccountDetails")
@@ -34,7 +34,7 @@ class GameRecordWebClientTest {
 
     @Test
     void givenAetherAccount_getAllAvartar_successful() {
-        HoyoResponse<GenshinAvatars> response = gameRecordApi.getAllAvartars(aetherAccount.getLtuidLtoken(),
+        HoyoResponse<GenshinAvatars> response = client.getAllAvartars(aetherAccount.getLtuidLtoken(),
                 aetherAccount.getUid(), aetherAccount.getRegion());
 
         assertThat(response.getData()).isNotNull();
@@ -43,7 +43,7 @@ class GameRecordWebClientTest {
 
     @Test
     void givenLumineAccount_getAllAvartar_successful() {
-        HoyoResponse<GenshinAvatars> response = gameRecordApi.getAllAvartars(lumineAccount.getLtuidLtoken(),
+        HoyoResponse<GenshinAvatars> response = client.getAllAvartars(lumineAccount.getLtuidLtoken(),
                 lumineAccount.getUid(), lumineAccount.getRegion());
 
         assertThat(response.getData()).isNotNull();
@@ -54,7 +54,7 @@ class GameRecordWebClientTest {
     @Disabled("Including chararcterIds in the request doesn't change its response.")
     @Test
     void whenAetherDesignated_fetchAvartars_retunsOnlyAether() {
-        HoyoResponse<GenshinAvatars> response = gameRecordApi.fetchAvartars(lumineAccount.getLtuidLtoken(),
+        HoyoResponse<GenshinAvatars> response = client.fetchAvartars(lumineAccount.getLtuidLtoken(),
                 lumineAccount.getUid(), lumineAccount.getRegion(), aetherId);
 
         assertThat(response.getData()).isNotNull();
@@ -66,7 +66,7 @@ class GameRecordWebClientTest {
 
     @Test
     void getDailyNote_successful() {
-        HoyoResponse<DailyNote> response = gameRecordApi.getDailyNote(lumineAccount.getLtuidLtoken(),
+        HoyoResponse<DailyNote> response = client.getDailyNote(lumineAccount.getLtuidLtoken(),
                 lumineAccount.getUid(), lumineAccount.getRegion());
 
         DailyNote dailyNote = response.getData();
@@ -78,9 +78,9 @@ class GameRecordWebClientTest {
     @EnumSource(value = DataSwitch.class, names = {"ChronicleOnProfile", "CharacterDetails", "DailyNotes"})
     @ParameterizedTest
     void changeDataSwitch_sucessful(DataSwitch dataSwitch) {
-        var turnOff = gameRecordApi.changeDataSwitch(aetherAccount.getLtuidLtoken(),
+        var turnOff = client.changeDataSwitch(aetherAccount.getLtuidLtoken(),
                 dataSwitch, false);
-        var turnOn = gameRecordApi.changeDataSwitch(aetherAccount.getLtuidLtoken(),
+        var turnOn = client.changeDataSwitch(aetherAccount.getLtuidLtoken(),
                 dataSwitch, true);
 
         assertThat(turnOff.getData()).isNotNull();
