@@ -30,16 +30,13 @@ public class UserHoyopass {
      */
     public Optional<UserHoyopass> synchronize(HoyopassSyncPort hoyopassSync) {
         boolean[] doSync = hoyopassSync.syncRequired(this);
-        UserHoyopass updatedUser = null;
+        UserHoyopass updatedUser = new UserHoyopass(this.botUserId);
         for (int i = 0; i < doSync.length; i++) {
-            if (doSync[i]) {
-                if (updatedUser == null) {
-                    updatedUser = new UserHoyopass(this.botUserId);
-                }
-                updatedUser.addComplete(hoyopassSync.synchronize(this.getHoyopassAt(i)));
-            }
+            Hoyopass pass = this.getHoyopassAt(i);
+            updatedUser.addComplete(doSync[i]?
+                    hoyopassSync.synchronize(pass) : pass);
         }
-        return Optional.ofNullable(updatedUser);
+        return updatedUser.size() > 0? Optional.of(updatedUser) : Optional.empty();
     }
 
     public static final class UserHoyopasBuilder {
