@@ -25,13 +25,12 @@ public class HoyopassRegister implements HoyopassRegisterPort {
 
     @Override
     public UserHoyopass findUserHoyopass(String botUserId) {
-        UserHoyopass saved = userHoyopassCrud.findByBotUserId(botUserId)
+        return userHoyopassCrud.findByBotUserId(botUserId)
+                .filter(user-> user.size() > 0)
+                .map(user-> user.synchronize(hoyopassSync)
+                        .map(userHoyopassCrud::save)
+                        .orElse(user))
                 .orElseThrow(()-> new NoHoyopassException(null));
-
-        if (saved.size() == 0)
-            throw new NoHoyopassException(saved);
-
-        return hoyopassSync.synchronize(saved);
     }
 
     /**

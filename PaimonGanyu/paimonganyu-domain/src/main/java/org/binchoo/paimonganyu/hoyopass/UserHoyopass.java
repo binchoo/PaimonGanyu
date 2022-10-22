@@ -2,12 +2,16 @@ package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.Data;
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassSyncPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
+import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.ManyHoyopassException;
-import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Data
@@ -19,13 +23,23 @@ public class UserHoyopass {
 
     private String botUserId;
 
-    public UserHoyopass synchronize(UidSearchClientPort uidSearchClient) {
-        return UserHoyopass.builder()
-                .botUserId(botUserId)
-                .hoyopasses(listHoyopasses().stream()
-                        .map(pass-> pass.synchronize(uidSearchClient))
-                        .collect(Collectors.toList()))
-                .build();
+    /**
+     * 유저 통행증을 동기화하여 호요버스와의 정보 불일치를 해소합니다.
+     * @param hoyopassSync 통행증 동기화 도구
+     * @return 동기화가 완료된 통행증, 동기화가 불필요하면 비어있는 {@code Optional}을 반환함.
+     */
+    public Optional<UserHoyopass> synchronize(HoyopassSyncPort hoyopassSync) {
+        boolean[] doSync = hoyopassSync.syncRequired(this);
+        UserHoyopass updatedUser = null;
+        for (int i = 0; i < doSync.length; i++) {
+            if (doSync[i]) {
+                if (updatedUser == null) {
+                    updatedUser = new UserHoyopass(this.botUserId);
+                }
+                updatedUser.addComplete(hoyopassSync.synchronize(this.getHoyopassAt(i)));
+            }
+        }
+        return Optional.ofNullable(updatedUser);
     }
 
     public static final class UserHoyopasBuilder {
@@ -110,7 +124,7 @@ public class UserHoyopass {
      */
     private void checkVacancy() {
         if (MAX_HOYOPASS_COUNT <= this.size()) {
-            throw new ManyHoyopassException(this, "A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
+            throw new ManyHoyopassException(this, "A user cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
         }
     }
 
