@@ -1,6 +1,7 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient.async;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
+import org.binchoo.paimonganyu.hoyoapi.CodeRedemptionAsyncApi;
+import org.binchoo.paimonganyu.hoyoapi.Retriable;
 import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.CodeRedemptionResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
@@ -19,7 +20,7 @@ import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
  * @since : 2022-04-22
  */
 @Component
-public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable {
+public class CodeRedemptionAsyncWebClient implements CodeRedemptionAsyncApi, Retriable {
 
     public static final int DEFAULT_RETRY_ATTEMPTS = 3;
     public static final int DEFAULT_RETRY_DELAY_MILLIS = 5001;
@@ -28,11 +29,11 @@ public class CodeRedemptionWebClient implements HoyoCodeRedemptionApi, Retriable
 
     private Retry retryObject;
 
-    public CodeRedemptionWebClient() {
+    public CodeRedemptionAsyncWebClient() {
         this(DEFAULT_RETRY_ATTEMPTS, DEFAULT_RETRY_DELAY_MILLIS);
     }
 
-    public CodeRedemptionWebClient(int retryAttempts, int retryDelaysMillis) {
+    public CodeRedemptionAsyncWebClient(int retryAttempts, int retryDelaysMillis) {
         this.webClient = WebClient.create(getBaseUrl());
         this.retryObject = Retry.fixedDelay(retryAttempts, Duration.ofMillis(retryDelaysMillis));
     }

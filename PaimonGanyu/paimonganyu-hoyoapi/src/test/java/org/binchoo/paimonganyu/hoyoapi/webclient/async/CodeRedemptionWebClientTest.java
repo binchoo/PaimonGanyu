@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class CodeRedemptionWebClientTest {
 
     @Autowired
-    CodeRedemptionWebClient codeRedemption;
+    CodeRedemptionAsyncWebClient codeRedemption;
 
     @Test
     void givenInvalidArguments_redeem_fails() {

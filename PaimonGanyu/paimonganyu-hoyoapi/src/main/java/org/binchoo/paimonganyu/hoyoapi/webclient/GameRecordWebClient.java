@@ -2,11 +2,11 @@ package org.binchoo.paimonganyu.hoyoapi.webclient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
 import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 import org.binchoo.paimonganyu.hoyoapi.pojo.enums.HoyoGame;
-import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
+import org.binchoo.paimonganyu.hoyoapi.tool.DsHeaderGenerator;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import java.util.stream.LongStream;
 import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
 @Component
-public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
+public class GameRecordWebClient implements GameRecordApi {
 
     /**
      * 원신 전적 API - 보유 캐릭터 조회 - POST API
@@ -39,7 +39,7 @@ public class HoyolabGameRecordWebClient implements HoyolabGameRecordApi {
 
     private WebClient webClient;
 
-    public HoyolabGameRecordWebClient(DsHeaderGenerator dsHeaderGenerator) {
+    public GameRecordWebClient(DsHeaderGenerator dsHeaderGenerator) {
         this.webClient = WebClient.create(getBaseUrl());
         this.dsHeaderGenerator = dsHeaderGenerator;
     }

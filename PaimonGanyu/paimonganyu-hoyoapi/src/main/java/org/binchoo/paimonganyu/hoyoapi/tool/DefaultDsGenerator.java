@@ -1,7 +1,7 @@
-package org.binchoo.paimonganyu.hoyoapi.support;
+package org.binchoo.paimonganyu.hoyoapi.tool;
 
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
-import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;
+import org.binchoo.paimonganyu.hoyoapi.tool.DsGenerator;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;

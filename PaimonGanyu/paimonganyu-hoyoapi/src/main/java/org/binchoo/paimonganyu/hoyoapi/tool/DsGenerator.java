@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi.ds;
+package org.binchoo.paimonganyu.hoyoapi.tool;
 
 public interface DsGenerator {
 

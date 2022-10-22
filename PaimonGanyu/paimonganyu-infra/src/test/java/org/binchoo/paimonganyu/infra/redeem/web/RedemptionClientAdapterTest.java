@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.infra.redeem.web;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
+import org.binchoo.paimonganyu.hoyoapi.CodeRedemptionAsyncApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
@@ -31,7 +31,7 @@ class RedemptionClientAdapterTest {
     RedeemTask task;
 
     @Mock
-    HoyoCodeRedemptionApi redemptionApi;
+    CodeRedemptionAsyncApi redemptionApi;
 
     @InjectMocks
     RedemptionClientAdapter redemptionClientAdapter;

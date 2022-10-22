@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.hoyoapi.webclient;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
+import org.binchoo.paimonganyu.hoyoapi.AccountApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import static org.binchoo.paimonganyu.hoyoapi.HoyolabConstant.*;
 
 @Component
-public class HoyolabAccountWebClient implements HoyolabAccountApi {
+public class AccountWebClient implements AccountApi {
 
     /**
      * <p> 해당 유저의 원신 게임 롤을 모두 조회하는 엔드포인트 - GET API
@@ -23,7 +23,7 @@ public class HoyolabAccountWebClient implements HoyolabAccountApi {
 
     private WebClient webClient;
 
-    public HoyolabAccountWebClient() {
+    public AccountWebClient() {
         this.webClient = WebClient.builder()
                 .baseUrl(getBaseUrl())
                 .build();

@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.infra.redeem.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
+import org.binchoo.paimonganyu.hoyoapi.CodeRedemptionAsyncApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.CodeRedemptionResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
@@ -24,7 +24,7 @@ import java.util.*;
 @Component
 public class RedemptionClientAdapter implements RedemptionClientPort {
 
-    private final HoyoCodeRedemptionApi redemptionApi;
+    private final CodeRedemptionAsyncApi redemptionApi;
 
     @Override
     public List<UserRedeem> redeem(Collection<RedeemTask> redeemTasks, RedeemResultCallback resultCallback) {

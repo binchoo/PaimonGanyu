@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.integration.hoyopass.traveler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.tool.DataSwitchConfigurer;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyopass.*;
@@ -36,7 +36,7 @@ class GameRecordApiAdapterIntegTest {
     TravelerStatus errorneousStatus;
 
     @Autowired
-    HoyolabGameRecordApi gameRecordApi;
+    GameRecordApi gameRecordApi;
 
     @Autowired
     DataSwitchConfigurer dataSwitchConfigurer;

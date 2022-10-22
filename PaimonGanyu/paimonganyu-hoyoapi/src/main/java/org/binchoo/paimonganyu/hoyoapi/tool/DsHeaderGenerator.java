@@ -1,7 +1,6 @@
-package org.binchoo.paimonganyu.hoyoapi.support;
+package org.binchoo.paimonganyu.hoyoapi.tool;
 
 import lombok.Builder;
-import org.binchoo.paimonganyu.hoyoapi.ds.DsGenerator;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 

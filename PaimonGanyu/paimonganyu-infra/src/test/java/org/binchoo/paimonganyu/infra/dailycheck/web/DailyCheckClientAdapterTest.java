@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.infra.dailycheck.web;
 
 import org.binchoo.paimonganyu.dailycheck.DailyCheckRequestResult;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.DailyCheckSyncApi;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.SignInException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
@@ -20,14 +20,14 @@ import static org.mockito.Mockito.when;
 class DailyCheckClientAdapterTest {
 
     @Mock
-    HoyolabDailyCheckApi hoyolabDailyCheckApi;
+    DailyCheckSyncApi dailyCheckSyncApi;
 
     @InjectMocks
     DailyCheckClientAdapter dailyCheckClientAdapter;
 
     @Test
     void whenSignInError_sendRequest_setsResultDuplicated() {
-        when(hoyolabDailyCheckApi.claimDailyCheck(any())).thenThrow(SignInException.class);
+        when(dailyCheckSyncApi.claimDailyCheck(any())).thenThrow(SignInException.class);
 
         DailyCheckRequestResult result = dailyCheckClientAdapter.sendRequest("aa", "aaaa");
         assertThat(result.isDuplicated()).isTrue();
@@ -38,7 +38,7 @@ class DailyCheckClientAdapterTest {
 
     @Test
     void whenUnknownError_sendRequest_setsResultHasFailed() {
-        when(hoyolabDailyCheckApi.claimDailyCheck(any())).thenThrow(RuntimeException.class);
+        when(dailyCheckSyncApi.claimDailyCheck(any())).thenThrow(RuntimeException.class);
 
         DailyCheckRequestResult result = dailyCheckClientAdapter.sendRequest("aa", "aaaa");
         assertThat(result.hasFailed()).isTrue();
@@ -52,7 +52,7 @@ class DailyCheckClientAdapterTest {
         String responseMessage = "foobar";
         HoyoResponse<DailyCheckResult> goodHoyoResponse = Mockito.mock(HoyoResponse.class);
         when(goodHoyoResponse.getMessage()).thenReturn(responseMessage);
-        when(hoyolabDailyCheckApi.claimDailyCheck(any())).thenReturn(goodHoyoResponse);
+        when(dailyCheckSyncApi.claimDailyCheck(any())).thenReturn(goodHoyoResponse);
 
         DailyCheckRequestResult result = dailyCheckClientAdapter.sendRequest("aa", "aaaa");
         assertThat(result.hasFailed()).isFalse();

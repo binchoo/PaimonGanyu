@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.infra.traveler.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
@@ -45,7 +45,7 @@ class GameRecordApiAdapterTest {
     Hoyopass hoyopass;
 
     @Mock
-    HoyolabGameRecordApi gameRecordApi;
+    GameRecordApi gameRecordApi;
 
     @DisplayName("비교자에 맞게 정렬되어 TravelerStatus들을 반환한다.")
     @ArgumentsSource(ComparatorProvider.class)

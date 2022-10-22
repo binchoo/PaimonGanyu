@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.GenshinAvatars;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
-import org.binchoo.paimonganyu.hoyoapi.support.DsHeaderGenerator;
+import org.binchoo.paimonganyu.hoyoapi.tool.DsHeaderGenerator;
 import org.binchoo.paimonganyu.hoyoapi.testconfig.TestAccountConfig;
 import org.binchoo.paimonganyu.hoyoapi.testconfig.TestAccountDetails;
 import org.junit.jupiter.api.Disabled;
@@ -18,9 +18,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringJUnitConfig(classes = {TestAccountConfig.class})
-class HoyolabGameRecordWebClientTest {
+class GameRecordWebClientTest {
 
-    HoyolabGameRecordWebClient gameRecordApi = new HoyolabGameRecordWebClient(DsHeaderGenerator.getDefault());
+    GameRecordWebClient gameRecordApi = new GameRecordWebClient(DsHeaderGenerator.getDefault());
 
     @Autowired
     @Qualifier("aetherAccountDetails")

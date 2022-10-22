@@ -1,7 +1,7 @@
 package org.binchoo.paimonganyu.integration.redeem;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
+import org.binchoo.paimonganyu.hoyoapi.CodeRedemptionAsyncApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.infra.redeem.web.RedemptionClientAdapter;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RedeemClientAdapterIntegTest {
 
     @Autowired
-    private HoyoCodeRedemptionApi redemptionApi;
+    private CodeRedemptionAsyncApi redemptionApi;
 
     private RedemptionClientAdapter redeemClientAdapter;
 

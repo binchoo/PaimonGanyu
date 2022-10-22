@@ -1,8 +1,7 @@
-package org.binchoo.paimonganyu.hoyoapi.support;
+package org.binchoo.paimonganyu.hoyoapi.tool;
 
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 
@@ -13,9 +12,9 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 @Slf4j
 public class DefaultDataSwitchConfigurer implements DataSwitchConfigurer {
 
-    private final HoyolabGameRecordApi gameRecordApi;
+    private final GameRecordApi gameRecordApi;
 
-    public DefaultDataSwitchConfigurer(HoyolabGameRecordApi gameRecordApi) {
+    public DefaultDataSwitchConfigurer(GameRecordApi gameRecordApi) {
         this.gameRecordApi = gameRecordApi;
     }
 

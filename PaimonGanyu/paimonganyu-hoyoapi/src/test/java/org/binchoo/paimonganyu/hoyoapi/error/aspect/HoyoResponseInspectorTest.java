@@ -26,7 +26,7 @@ class HoyoResponseInspectorTest {
     HoyoResponse badHoyoResponse;
 
     /**
-     * <p> RetocdeException's static behavior initializes RetcodeExceptionMappings
+     * <p> The RetocdeException's static behavior initializes RetcodeExceptionMappings
      * <p> See {@link RetcodeException}'s static area.
      */
     @BeforeAll

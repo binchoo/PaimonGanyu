@@ -3,7 +3,7 @@ package org.binchoo.paimonganyu.infra.dailycheck.web;
 import lombok.RequiredArgsConstructor;
 import org.binchoo.paimonganyu.dailycheck.driven.DailyCheckClientPort;
 import org.binchoo.paimonganyu.dailycheck.DailyCheckRequestResult;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.DailyCheckSyncApi;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.SignInException;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DailyCheckClientAdapter implements DailyCheckClientPort {
 
-    private final HoyolabDailyCheckApi dailyCheckApi;
+    private final DailyCheckSyncApi dailyCheckApi;
 
     @Override
     public DailyCheckRequestResult sendRequest(String ltuid, String ltoken) {

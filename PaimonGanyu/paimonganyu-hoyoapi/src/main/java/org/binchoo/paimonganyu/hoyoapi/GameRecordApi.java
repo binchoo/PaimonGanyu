@@ -5,7 +5,7 @@ import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
 import org.binchoo.paimonganyu.hoyoapi.pojo.enums.DataSwitch;
 
-public interface HoyolabGameRecordApi extends HoyolabApi {
+public interface GameRecordApi extends HoyolabApi {
 
     /**
      * 호요랩 BBS API - OS 엔드포인트

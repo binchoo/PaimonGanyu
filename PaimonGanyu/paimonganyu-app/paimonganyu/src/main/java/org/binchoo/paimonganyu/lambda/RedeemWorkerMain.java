@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.lambda;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyoCodeRedemptionApi;
+import org.binchoo.paimonganyu.hoyoapi.CodeRedemptionAsyncApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoAdapter;
 import org.binchoo.paimonganyu.infra.redeem.dynamo.repository.UserRedeemDynamoRepository;
@@ -30,7 +30,7 @@ public class RedeemWorkerMain {
      */
     @Bean
     public RedemptionPort redemptionService(UserRedeemDynamoRepository redeemRepository,
-                                            HoyoCodeRedemptionApi redemptionApi) {
+                                            CodeRedemptionAsyncApi redemptionApi) {
 
         return new Redeemer(new UserRedeemDynamoAdapter(redeemRepository),
                 new RedemptionClientAdapter(redemptionApi));

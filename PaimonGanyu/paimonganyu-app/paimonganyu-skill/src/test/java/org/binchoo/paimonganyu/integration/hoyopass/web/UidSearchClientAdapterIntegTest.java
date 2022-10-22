@@ -1,9 +1,9 @@
 package org.binchoo.paimonganyu.integration.hoyopass.web;
 
 import org.binchoo.paimonganyu.testconfig.TestHoyopassCredentialsConfig;
-import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.tool.DataSwitchConfigurer;
+import org.binchoo.paimonganyu.hoyoapi.AccountApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRole;
@@ -30,10 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UidSearchClientAdapterIntegTest {
 
     @Autowired
-    HoyolabAccountApi accountApi;
+    AccountApi accountApi;
 
     @Autowired
-    HoyolabGameRecordApi gameRecordApi;
+    GameRecordApi gameRecordApi;
 
     @Autowired
     DataSwitchConfigurer dataSwitchConfigurer;

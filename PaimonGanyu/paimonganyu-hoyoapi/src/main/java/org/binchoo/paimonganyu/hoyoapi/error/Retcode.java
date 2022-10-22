@@ -12,11 +12,6 @@ import java.lang.annotation.Target;
 public @interface Retcode {
 
     /**
-     * @return 이 런타임 오류에 대응되는 {@link HoyoResponse}의 retcode 값
-     */
-    int value() default -2147483648;
-
-    /**
      * @return 이 런타임 오류에 대응되는 {@link HoyoResponse}의 retcode 값 여러 개
      */
     int[] codes() default {};

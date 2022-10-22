@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi;
+package org.binchoo.paimonganyu.hoyoapi.tool;
 
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 

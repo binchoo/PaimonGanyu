@@ -2,9 +2,9 @@ package org.binchoo.paimonganyu.infra.hoyopass.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.tool.DataSwitchConfigurer;
+import org.binchoo.paimonganyu.hoyoapi.AccountApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.error.RetcodeException;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.NotLoggedInError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.*;
@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @Component
 public class UidSearchClientAdapter implements UidSearchClientPort {
 
-    private final HoyolabAccountApi accountApi;
-    private final HoyolabGameRecordApi gameRecordApi;
+    private final AccountApi accountApi;
+    private final GameRecordApi gameRecordApi;
     private final DataSwitchConfigurer dataSwitchConfigurer;
 
     @Override

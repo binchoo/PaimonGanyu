@@ -12,9 +12,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringJUnitConfig(classes = {TestAccountConfig.class})
-class HoyolabAccountWebClientTest {
+class AccountWebClientTest {
 
-    HoyolabAccountWebClient accountApi = new HoyolabAccountWebClient();
+    AccountWebClient accountApi = new AccountWebClient();
 
     @Autowired
     @Qualifier("validHoyopass")

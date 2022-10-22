@@ -21,9 +21,9 @@ import java.time.temporal.ChronoUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringJUnitConfig(classes = {TestAccountConfig.class})
-class HoyolabDailyCheckWebClientTest {
+class DailyCheckSyncWebClientTest {
 
-    HoyolabDailyCheckWebClient hoyolabDailyCheckApi = new HoyolabDailyCheckWebClient();
+    DailyCheckSyncWebClient hoyolabDailyCheckApi = new DailyCheckSyncWebClient();
 
     @Autowired
     @Qualifier("validHoyopass")

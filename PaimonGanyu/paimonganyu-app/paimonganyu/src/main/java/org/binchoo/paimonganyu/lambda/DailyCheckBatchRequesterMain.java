@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.lambda;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabDailyCheckApi;
+import org.binchoo.paimonganyu.hoyoapi.DailyCheckSyncApi;
 import org.binchoo.paimonganyu.hoyoapi.autoconfig.HoyoApiWebClientConfigurer;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.infra.dailycheck.dynamo.repository.UserDailyCheckDynamoAdapter;
@@ -33,7 +33,7 @@ public class DailyCheckBatchRequesterMain {
      * @param repository from {@link UserDailyCheckTableConfig}
      */
     @Bean
-    public DailyCheckPort dailyCheckService(HoyolabDailyCheckApi dailyCheckApi,
+    public DailyCheckPort dailyCheckService(DailyCheckSyncApi dailyCheckApi,
                                             UserDailyCheckDynamoRepository repository) {
         return new DailyCheckService(
                 new DailyCheckClientAdapter(dailyCheckApi),

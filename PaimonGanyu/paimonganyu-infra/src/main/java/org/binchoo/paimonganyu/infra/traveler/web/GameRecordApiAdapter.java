@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.infra.traveler.web;
 
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.binchoo.paimonganyu.hoyoapi.error.exceptions.DataNotPublicError;
 import org.binchoo.paimonganyu.hoyoapi.pojo.DailyNote;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
@@ -21,10 +21,10 @@ import java.util.*;
 @Component
 public class GameRecordApiAdapter implements GameRecordClientPort {
 
-    private final HoyolabGameRecordApi gameRecordApi;
+    private final GameRecordApi gameRecordApi;
     private Comparator<TravelerStatus> comparator;
 
-    public GameRecordApiAdapter(HoyolabGameRecordApi gameRecordApi) {
+    public GameRecordApiAdapter(GameRecordApi gameRecordApi) {
         this.gameRecordApi = gameRecordApi;
         this.comparator = defaultComparator();
     }

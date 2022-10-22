@@ -1,8 +1,8 @@
 package org.binchoo.paimonganyu.infra.hoyopass.web;
 
-import org.binchoo.paimonganyu.hoyoapi.DataSwitchConfigurer;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabAccountApi;
-import org.binchoo.paimonganyu.hoyoapi.HoyolabGameRecordApi;
+import org.binchoo.paimonganyu.hoyoapi.tool.DataSwitchConfigurer;
+import org.binchoo.paimonganyu.hoyoapi.AccountApi;
+import org.binchoo.paimonganyu.hoyoapi.GameRecordApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,10 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class UidSearchClientAdapterTest {
 
     @Mock
-    HoyolabAccountApi accountApi;
+    AccountApi accountApi;
 
     @Mock
-    HoyolabGameRecordApi gameRecordApi;
+    GameRecordApi gameRecordApi;
 
     @Mock
     DataSwitchConfigurer configurer;

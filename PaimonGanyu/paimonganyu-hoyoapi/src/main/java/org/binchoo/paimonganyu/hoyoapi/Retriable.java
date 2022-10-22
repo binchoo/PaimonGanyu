@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.hoyoapi.webclient.async;
+package org.binchoo.paimonganyu.hoyoapi;
 
 import reactor.util.retry.Retry;
 

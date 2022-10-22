@@ -1,9 +1,11 @@
 package org.binchoo.paimonganyu.hoyoapi;
 
-import org.binchoo.paimonganyu.hoyoapi.pojo.*;
+import org.binchoo.paimonganyu.hoyoapi.pojo.AccountIdCookieToken;
+import org.binchoo.paimonganyu.hoyoapi.pojo.CodeRedemptionResult;
+import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import reactor.core.publisher.Mono;
 
-public interface HoyoCodeRedemptionApi extends HoyolabApi {
+public interface CodeRedemptionAsyncApi extends HoyolabApi {
 
     /**
      * hk4e 코드 리딤 API - OS 엔드포인트
@@ -19,7 +21,7 @@ public interface HoyoCodeRedemptionApi extends HoyolabApi {
      * @param uid UID
      * @param server UID 존재하는 서버
      * @param code 리딤 코드
-     * @return 코드 리딤 결과
+     * @return 코드 리딤 결과 모노
      */
     Mono<HoyoResponse<CodeRedemptionResult>> redeem(AccountIdCookieToken accountIdCookieToken,
                                                     String uid, String server, String code);

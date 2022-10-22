@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.pojo.UserGameRoles;
 
-public interface HoyolabAccountApi extends HoyolabApi {
+public interface AccountApi extends HoyolabApi {
 
     /**
      * 호요랩 어카운트 API OS 엔드포인트

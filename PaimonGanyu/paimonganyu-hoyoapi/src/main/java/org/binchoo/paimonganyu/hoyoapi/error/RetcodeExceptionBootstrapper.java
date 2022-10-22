@@ -36,20 +36,10 @@ class RetcodeExceptionBootstrapper {
 
     private static void initRetcodeExceptionMappings() {
         for (Class<RetcodeException> clazz : scanExceptionPackage()) {
-            Retcode retcodeAnnot = clazz.getAnnotation(Retcode.class);
-
-            if (retcodeAnnot != null) {
-                boolean singleRetcode = Integer.MIN_VALUE != retcodeAnnot.value();
-
-                if (singleRetcode) {
-                    int retcode = retcodeAnnot.value();
+            Retcode annotation = clazz.getAnnotation(Retcode.class);
+            if (annotation != null) {
+                for (int retcode : annotation.codes())
                     mappings.addMapping(retcode, clazz);
-                }
-                else {
-                    for (int retcode : retcodeAnnot.codes()) {
-                        mappings.addMapping(retcode, clazz);
-                    }
-                }
             }
         }
     }
