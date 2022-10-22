@@ -39,7 +39,7 @@ public interface GameRecordApi extends HoyolabApi {
      * @param server 조회할 서버
      * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
      * @throws DataNotPublicError 실시간 노트 데이터 스위치를 켜지 않았을 때.
-     * @return 해당 uid의 일일 노트. 레진, 파견의뢰, 선계보화 등 스테이터스 정보 포함.
+     * @return 해당 uid의 일일 노트. 레진, 파견의뢰, 선계보화 등 스테이터스 정보 포함
      */
     HoyoResponse<DailyNote> getDailyNote(LtuidLtoken ltuidLtoken, String uid, String server);
 
@@ -47,8 +47,8 @@ public interface GameRecordApi extends HoyolabApi {
      * @param ltuidLtoken 유저 통행증 쿠키
      * @param dataSwitch 제어할 데이터 스위치
      * @param on 데이터 스위치를 켜면 {@code true}, 끌 것이면 {@code false}
-     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때.
-     * @return 해당 통행증 계정의
+     * @throws NotLoggedInError 호요랩에서 닉네임 설정을 하지 않았을 때
+     * @return 스위치 변경 결과
      */
     HoyoResponse<ChangeDataSwitchResult> changeDataSwitch(LtuidLtoken ltuidLtoken, DataSwitch dataSwitch, boolean on);
 }

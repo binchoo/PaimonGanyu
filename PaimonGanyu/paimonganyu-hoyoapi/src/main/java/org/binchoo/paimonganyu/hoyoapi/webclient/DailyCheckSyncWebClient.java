@@ -7,7 +7,9 @@ import org.binchoo.paimonganyu.hoyoapi.pojo.DailyCheckResult;
 import org.binchoo.paimonganyu.hoyoapi.pojo.HoyoResponse;
 import org.binchoo.paimonganyu.hoyoapi.pojo.LtuidLtoken;
 import org.binchoo.paimonganyu.hoyoapi.webclient.async.DailyCheckAsyncWebClient;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DailyCheckSyncWebClient implements DailyCheckSyncApi {
 
     private DailyCheckAsyncApi asyncApi;
