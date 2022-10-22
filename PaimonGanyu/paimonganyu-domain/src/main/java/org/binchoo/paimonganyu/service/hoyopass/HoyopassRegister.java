@@ -2,13 +2,13 @@ package org.binchoo.paimonganyu.service.hoyopass;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.HoyopassCredentials;
 import org.binchoo.paimonganyu.hoyopass.Uid;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.hoyopass.driving.HoyopassRegisterPort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassSyncPort;
 import org.binchoo.paimonganyu.hoyopass.exception.NoHoyopassException;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +21,15 @@ public class HoyopassRegister implements HoyopassRegisterPort {
 
     private final UidSearchClientPort uidSearchClient;
     private final UserHoyopassCrudPort userHoyopassCrud;
+    private final HoyopassSyncPort hoyopassSync;
 
     @Override
     public UserHoyopass findUserHoyopass(String botUserId) {
         return userHoyopassCrud.findByBotUserId(botUserId)
+                .filter(user-> user.size() > 0)
+                .map(user-> user.synchronize(hoyopassSync)
+                        .map(userHoyopassCrud::save)
+                        .orElse(user))
                 .orElseThrow(()-> new NoHoyopassException(null));
     }
 
@@ -40,14 +45,6 @@ public class HoyopassRegister implements HoyopassRegisterPort {
 
         userHoyopass.addIncomplete(credentials, uidSearchClient);
         return userHoyopassCrud.save(userHoyopass);
-    }
-
-    @Override
-    public List<Hoyopass> listHoyopasses(String botUserId) {
-        return userHoyopassCrud.findByBotUserId(botUserId)
-                .map(UserHoyopass::listHoyopasses)
-                .filter(it-> !it.isEmpty())
-                .orElseThrow(()-> new NoHoyopassException(null));
     }
 
     @Override

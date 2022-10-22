@@ -2,12 +2,16 @@ package org.binchoo.paimonganyu.hoyopass;
 
 import lombok.Data;
 import org.binchoo.paimonganyu.hoyopass.driven.UidSearchClientPort;
+import org.binchoo.paimonganyu.hoyopass.driving.HoyopassSyncPort;
 import org.binchoo.paimonganyu.hoyopass.exception.DuplicationException;
+import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 import org.binchoo.paimonganyu.hoyopass.exception.InactiveStateException;
 import org.binchoo.paimonganyu.hoyopass.exception.ManyHoyopassException;
-import org.binchoo.paimonganyu.hoyopass.exception.ImmortalUidException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Data
@@ -18,6 +22,22 @@ public class UserHoyopass {
     private final TreeSet<Hoyopass> hoyopasses;
 
     private String botUserId;
+
+    /**
+     * 유저 통행증을 동기화하여 호요버스와의 정보 불일치를 해소합니다.
+     * @param hoyopassSync 통행증 동기화 도구
+     * @return 동기화가 완료된 통행증, 동기화가 불필요하면 비어있는 {@code Optional}을 반환함.
+     */
+    public Optional<UserHoyopass> synchronize(HoyopassSyncPort hoyopassSync) {
+        boolean[] doSync = hoyopassSync.syncRequired(this);
+        UserHoyopass updatedUser = new UserHoyopass(this.botUserId);
+        for (int i = 0; i < doSync.length; i++) {
+            Hoyopass pass = this.getHoyopassAt(i);
+            updatedUser.addComplete(doSync[i]?
+                    hoyopassSync.synchronize(pass) : pass);
+        }
+        return updatedUser.size() > 0? Optional.of(updatedUser) : Optional.empty();
+    }
 
     public static final class UserHoyopasBuilder {
 
@@ -79,6 +99,7 @@ public class UserHoyopass {
         Hoyopass newHoyopass = Hoyopass.builder()
                 .credentials(credentials)
                 .build();
+        this.assertAppendable(newHoyopass);
         this.fillUids(newHoyopass, uidSearchClientPort);
         this.addComplete(newHoyopass);
     }
@@ -100,7 +121,7 @@ public class UserHoyopass {
      */
     private void checkVacancy() {
         if (MAX_HOYOPASS_COUNT <= this.size()) {
-            throw new ManyHoyopassException(this, "A User cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
+            throw new ManyHoyopassException(this, "A user cannot have more than " + MAX_HOYOPASS_COUNT + " hoyopasses.");
         }
     }
 
@@ -124,7 +145,6 @@ public class UserHoyopass {
      * 호요버스 계정이 호요랩 비활성 상태 또는, 연결된 여행자가 없을 때
      */
     private void fillUids(Hoyopass newHoyopass, UidSearchClientPort uidSearchClient) {
-        this.assertAppendable(newHoyopass);
         newHoyopass.fillUids(uidSearchClient);
     }
 

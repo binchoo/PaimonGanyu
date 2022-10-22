@@ -144,7 +144,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
         String botUserId = "e";
         this.registerHoyopasses(botUserId, valid0, valid1);
 
-        List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegister.findUserHoyopass(botUserId).listHoyopasses();
 
         assertThat(hoyopasses).hasSize(2);
     }
@@ -153,7 +153,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
     void givenUnknownBotUserId_listHoyopasses_fails() {
         String botUserId = "botuserid uninserted";
         assertThrows(NoHoyopassException.class, ()->
-                hoyopassRegister.listHoyopasses(botUserId));
+                hoyopassRegister.findUserHoyopass(botUserId));
     }
 
     @Test
@@ -187,7 +187,7 @@ class SecuredHoyopassRegistryLocalSystemTest {
 
         hoyopassRegister.deleteHoyopass(botUserId, 0);
 
-        List<Hoyopass> hoyopasses = hoyopassRegister.listHoyopasses(botUserId);
+        List<Hoyopass> hoyopasses = hoyopassRegister.findUserHoyopass(botUserId).listHoyopasses();
         assertThat(hoyopasses).hasSize(1);
     }
 

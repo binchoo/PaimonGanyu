@@ -113,4 +113,14 @@ public class Hoyopass implements Comparable<Hoyopass> {
             }
         }
     }
+
+    public Hoyopass synchronize(UidSearchClientPort uidSearchClient) {
+        return Hoyopass.builder()
+                .credentials(this.credentials)
+                .uids(uidSearchClient.findUids(this).stream()
+                        .filter(uid-> this.contains(uid.getUidString()))
+                        .collect(Collectors.toList()))
+                .createAt(this.createAt)
+                .build();
+    }
 }

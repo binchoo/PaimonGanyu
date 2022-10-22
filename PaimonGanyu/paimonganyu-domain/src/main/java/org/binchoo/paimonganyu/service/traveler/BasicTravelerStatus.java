@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 @RequiredArgsConstructor
 @Service
-public class TravelerStatusService implements TravelerStatusPort {
+public class BasicTravelerStatus implements TravelerStatusPort {
 
     private final GameRecordClientPort gameRecordClient;
 
