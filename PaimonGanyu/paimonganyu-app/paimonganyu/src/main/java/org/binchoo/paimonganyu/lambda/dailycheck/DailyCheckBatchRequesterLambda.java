@@ -6,6 +6,7 @@ import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.binchoo.paimonganyu.dailycheck.driving.DailyCheckPort;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
@@ -17,6 +18,7 @@ import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class DailyCheckBatchRequesterLambda {
 
@@ -59,9 +61,13 @@ public class DailyCheckBatchRequesterLambda {
     }
 
     public void handler(ScheduledEvent event) {
+        Random r = new Random(System.currentTimeMillis());
         hoyopassCrud.findAll().stream().map(DailyCheckTaskSpec::specify)
                 .flatMap(List::stream)
                 .filter(task-> !dailyCheck.hasCheckedInToday(task.getBotUserId(), task.getLtuid()))
-                .forEach(task-> sqsClient.sendMessage(DAILYCHECK_QUEUE_URL, task.asJson(objectMapper)));
+                .forEach(task-> sqsClient.sendMessage(new SendMessageRequest()
+                        .withQueueUrl(DAILYCHECK_QUEUE_URL)
+                        .withMessageBody(task.asJson(objectMapper))
+                        .withDelaySeconds(Math.abs(r.nextInt()) % 20 + 1)));
     }
 }
