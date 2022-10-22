@@ -31,7 +31,11 @@ public class DailyCheckBatchRequesterLambda {
 
     public DailyCheckBatchRequesterLambda() {
         this.lookupDependencies(new AnnotationConfigApplicationContext(DailyCheckBatchRequesterMain.class));
-        this.putSuccessRate();
+        try {
+            this.putSuccessRate();
+        } catch (Exception e) {
+            logger.error("Failed to put a success rate metric.", e);
+        }
     }
 
     private void putSuccessRate() {
