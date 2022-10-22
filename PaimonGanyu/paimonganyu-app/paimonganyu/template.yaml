@@ -182,9 +182,8 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       VisibilityTimeout: 60
-      DelaySeconds: 7
       RedrivePolicy:
-        maxReceiveCount: 3
+        maxReceiveCount: 2
         deadLetterTargetArn: !GetAtt DailyCheckRequestDLQ.Arn
 
   DailyCheckRequestDLQ:
@@ -217,7 +216,7 @@ Resources:
         FirstDailyCheckEvent:
           Type: Schedule
           Properties:
-            Schedule: 'cron(1/8 16 ? * * *)' # everyday 01:[01, 09, ..., 57]AM (Seoul)
+            Schedule: 'cron(1/11 16 ? * * *)' # everyday 01:[01, 12, ..., 56]AM (Seoul)
             Name: first-dailycheck
             Description: Do batch daily check-in serveral times around 01:00AM
             Enabled: true
