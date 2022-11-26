@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Builder
 @RequiredArgsConstructor
-public class RedeemDeploy {
+public class RedeemDist {
 
     private final RedeemCode code;
     private final String reason;

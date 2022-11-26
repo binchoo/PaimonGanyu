@@ -1,8 +1,7 @@
 package org.binchoo.paimonganyu.lambda.redeem.dto;
 
-import lombok.Data;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.RedeemDeploy;
+import org.binchoo.paimonganyu.redeem.RedeemDist;
 
 /**
  * @author : jbinchoo
@@ -31,8 +30,8 @@ public class RedeemDeployDto {
         this.reason = reason;
     }
 
-    public RedeemDeploy toDomain() {
-        return RedeemDeploy.builder()
+    public RedeemDist toDomain() {
+        return RedeemDist.builder()
                 .code(RedeemCode.of(code))
                 .reason(reason)
                 .build();

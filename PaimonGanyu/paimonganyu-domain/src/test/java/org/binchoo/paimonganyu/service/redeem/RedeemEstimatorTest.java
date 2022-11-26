@@ -4,7 +4,7 @@ import org.binchoo.paimonganyu.hoyopass.Hoyopass;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 import org.binchoo.paimonganyu.hoyopass.driven.UserHoyopassCrudPort;
 import org.binchoo.paimonganyu.redeem.RedeemCode;
-import org.binchoo.paimonganyu.redeem.RedeemDeploy;
+import org.binchoo.paimonganyu.redeem.RedeemDist;
 import org.binchoo.paimonganyu.redeem.driving.RedeemHistoryPort;
 import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 import org.binchoo.paimonganyu.testfixture.hoyopass.HoyopassMockUtils;
@@ -51,7 +51,7 @@ class RedeemEstimatorTest {
     @DisplayName("전 유저 대상의 리딤 코드 배포 작업 명세가 잘 생성된다.")
     @ParameterizedTest
     @MethodSource("loadProvider")
-    public void givenRedeemAllUserOption_generateTasks_successfully(List<UserHoyopass> users, List<RedeemDeploy> deploys) {
+    public void givenRedeemAllUserOption_generateTasks_successfully(List<UserHoyopass> users, List<RedeemDist> deploys) {
         assertThat(users).hasSizeGreaterThan(0);
         assertThat(deploys).hasSizeGreaterThan(0);
         when(userCrud.findAll()).thenReturn(users);
@@ -67,7 +67,7 @@ class RedeemEstimatorTest {
     @DisplayName("전 유저 대상 리딤 코드 배포의 작업 명세는 리딤 이력이 없는 건에 한해 생성된다.")
     @ParameterizedTest
     @MethodSource("loadProvider")
-    public void givenRedeemAllUserOption_generateTasks_NotRedeemed(List<UserHoyopass> users, List<RedeemDeploy> deploys) {
+    public void givenRedeemAllUserOption_generateTasks_NotRedeemed(List<UserHoyopass> users, List<RedeemDist> deploys) {
         assertThat(users).hasSizeGreaterThan(0);
         assertThat(deploys).hasSizeGreaterThan(0);
         when(userCrud.findAll()).thenReturn(users);
@@ -81,7 +81,7 @@ class RedeemEstimatorTest {
 
     private static Stream<Arguments> loadProvider() {
         Stream.Builder<Arguments> streamBuilder = Stream.builder();
-        List<RedeemDeploy> redeemDeploys = List.of(RedeemDeploy.builder()
+        List<RedeemDist> redeemDists = List.of(RedeemDist.builder()
                 .code(RedeemCode.of("testcode"))
                 .reason("test")
                 .build());
@@ -90,7 +90,7 @@ class RedeemEstimatorTest {
             List<UserHoyopass> users = new ArrayList<>();
             for (int user = 0; user < testcase*100; user++)
                 users.add(HoyopassMockUtils.mockUserHoyopass(testcase + "testuser" + user));
-            streamBuilder.add(Arguments.of(users, redeemDeploys));
+            streamBuilder.add(Arguments.of(users, redeemDists));
         }
         return streamBuilder.build();
     }

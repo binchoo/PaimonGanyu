@@ -1,6 +1,6 @@
 package org.binchoo.paimonganyu.service.redeem;
 
-import org.binchoo.paimonganyu.redeem.RedeemDeploy;
+import org.binchoo.paimonganyu.redeem.RedeemDist;
 import org.binchoo.paimonganyu.redeem.driven.RedeemCodeCrudPort;
 import org.binchoo.paimonganyu.redeem.options.RedeemTaskEstimationOption;
 
@@ -24,7 +24,7 @@ public class RedeemAllCodesOption extends RedeemTaskEstimationOption {
     public RedeemAllCodesOption(RedeemCodeCrudPort codePort, UserProvider userProvider) {
         this
                 .withDeployProvider(()-> codePort.findAll().stream()
-                        .map(it-> RedeemDeploy.builder().code(it).reason(DEPLOY_REASON).build())
+                        .map(it-> RedeemDist.builder().code(it).reason(DEPLOY_REASON).build())
                         .collect(Collectors.toList()))
                 .withUserProvider(userProvider);
     }
