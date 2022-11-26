@@ -13,7 +13,7 @@ import org.binchoo.paimonganyu.lambda.RedeemCodeDeliveryMain;
 import org.binchoo.paimonganyu.lambda.redeem.dto.RedeemDeployDto;
 import org.binchoo.paimonganyu.redeem.RedeemTask;
 import org.binchoo.paimonganyu.redeem.driving.RedeemTaskEstimationPort;
-import org.binchoo.paimonganyu.service.redeem.RedeemAllUsersOption;
+import org.binchoo.paimonganyu.service.redeem.RedeemSingleUidUserOption;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -51,7 +51,7 @@ public class RedeemCodeDeliveryLambda {
     public void handler(S3Event s3Event) {
         var eventParser = new S3EventObjectReader(s3Client);
         var redeemDeployList = eventParser.extractPojos(s3Event, RedeemDeployDto.class);
-        var redeemOption = new RedeemAllUsersOption(userCrud,
+        var redeemOption = new RedeemSingleUidUserOption(userCrud,
                 ()-> redeemDeployList.stream().map(RedeemDeployDto::toDomain).collect(Collectors.toUnmodifiableList()));
         sendToQueue(taskEstimation.generateTasks(redeemOption));
     }
