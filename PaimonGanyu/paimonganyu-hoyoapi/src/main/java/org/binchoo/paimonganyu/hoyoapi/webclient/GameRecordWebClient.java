@@ -11,6 +11,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -37,10 +38,15 @@ public class GameRecordWebClient implements GameRecordApi {
 
     private final DsHeaderGenerator dsHeaderGenerator;
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
     public GameRecordWebClient(DsHeaderGenerator dsHeaderGenerator) {
-        this.webClient = WebClient.create(getBaseUrl());
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer-> configurer.defaultCodecs().maxInMemorySize(10*1024*1024))
+                        .build())
+                .baseUrl(getBaseUrl())
+                .build();
         this.dsHeaderGenerator = dsHeaderGenerator;
     }
 
