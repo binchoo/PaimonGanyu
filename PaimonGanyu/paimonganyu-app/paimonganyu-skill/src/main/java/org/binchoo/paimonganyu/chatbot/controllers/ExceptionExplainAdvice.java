@@ -2,7 +2,7 @@ package org.binchoo.paimonganyu.chatbot.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.binchoo.paimonganyu.chatbot.errorbinders.ErrorContextBinders;
+import org.binchoo.paimonganyu.chatbot.views.error.binders.ErrorContextBinders;
 import org.binchoo.paimonganyu.chatbot.views.error.DefaultErrorExplain;
 import org.binchoo.paimonganyu.chatbot.views.error.ErrorResponseView;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;

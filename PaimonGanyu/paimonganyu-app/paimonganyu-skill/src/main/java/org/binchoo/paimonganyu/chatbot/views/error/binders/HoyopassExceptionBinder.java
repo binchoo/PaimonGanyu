@@ -1,4 +1,4 @@
-package org.binchoo.paimonganyu.chatbot.errorbinders;
+package org.binchoo.paimonganyu.chatbot.views.error.binders;
 
 import lombok.Builder;
 import org.binchoo.paimonganyu.error.ErrorContextBinder;
@@ -6,11 +6,9 @@ import org.binchoo.paimonganyu.error.ErrorExplain;
 import org.binchoo.paimonganyu.error.FallbackMethod;
 import org.binchoo.paimonganyu.error.ThrowerAware;
 import org.binchoo.paimonganyu.hoyopass.Hoyopass;
-import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author jbinchoo

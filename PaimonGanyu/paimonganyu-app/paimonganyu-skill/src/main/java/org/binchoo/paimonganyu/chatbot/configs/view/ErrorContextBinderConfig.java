@@ -1,9 +1,9 @@
-package org.binchoo.paimonganyu.chatbot.configs.error;
+package org.binchoo.paimonganyu.chatbot.configs.view;
 
-import org.binchoo.paimonganyu.chatbot.errorbinders.CryptoExceptionBinder;
-import org.binchoo.paimonganyu.chatbot.errorbinders.ErrorContextBinders;
-import org.binchoo.paimonganyu.chatbot.errorbinders.HoyopassExceptionBinder;
-import org.binchoo.paimonganyu.chatbot.errorbinders.UserExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.views.error.binders.CryptoExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.views.error.binders.ErrorContextBinders;
+import org.binchoo.paimonganyu.chatbot.views.error.binders.HoyopassExceptionBinder;
+import org.binchoo.paimonganyu.chatbot.views.error.binders.UserExceptionBinder;
 import org.binchoo.paimonganyu.chatbot.resources.FallbackMethods;
 import org.binchoo.paimonganyu.dailycheck.exception.NoUserDailyCheckException;
 import org.binchoo.paimonganyu.hoyopass.UserHoyopass;
