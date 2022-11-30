@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * @since : 2022-06-12
  */
 @Configuration
-public class ErrorContextBinderConfig {
+public class ErrorConfig {
 
     @Bean
     public ErrorContextBinders errorContextBinders() {

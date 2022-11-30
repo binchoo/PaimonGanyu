@@ -31,7 +31,6 @@ public class RedeemListView extends SkillResponseView {
     private static final String FORMAT_PROFILE_TITLE = "최신 %s건을 보여줄게!";
     private static final String FORMAT_CHARACTER_INFO = "%s Lv.%d %s";
     private static final String FORMAT_UID = "UID: %s";
-    private static final String FORMAT_CODE_REASON = "%s %s";
     private static final String FORMAT_DATE = "M월 d일";
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
 

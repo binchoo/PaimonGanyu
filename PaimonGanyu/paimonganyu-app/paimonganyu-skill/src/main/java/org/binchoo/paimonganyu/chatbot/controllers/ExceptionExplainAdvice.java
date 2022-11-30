@@ -30,7 +30,7 @@ public class ExceptionExplainAdvice {
 
     @ExceptionHandler({UserHoyopassException.class, HoyopassException.class, CryptoException.class})
     public ResponseEntity<SkillResponse> handleThrowerAware(ThrowerAware<?> e) {
-        log.debug("An error handled will be handled: ", e.getCause());
+        log.debug("An error will be handled: ", e.getCause());
         ErrorContextBinder ecb = binders.findByType(e.getClass());
         ErrorExplain explain = ecb.explain(e);
         return ResponseEntity.ok(errorResponseView.build(explain));
@@ -38,8 +38,7 @@ public class ExceptionExplainAdvice {
 
     @ExceptionHandler
     public ResponseEntity<SkillResponse> handleElse(Exception e) {
-        log.debug("An error handled will be handled: ", e);
-        ErrorExplain explain = new DefaultErrorExplain();
-        return ResponseEntity.ok(errorResponseView.build(explain));
+        log.debug("An error will be handled: ", e);
+        return ResponseEntity.ok(errorResponseView.build(new DefaultErrorExplain()));
     }
 }

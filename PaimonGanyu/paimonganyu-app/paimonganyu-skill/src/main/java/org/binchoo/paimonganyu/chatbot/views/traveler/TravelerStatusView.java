@@ -85,7 +85,6 @@ public class TravelerStatusView extends SkillResponseView {
                 .imageTitle(imageTitle)
                 .itemList(itemLists)
                 .itemListAlignment(ITEMS_ALIGN)
-                .itemListSummary(new ItemListSummary("호요랩참고", ""))
                 .build();
     }
 
