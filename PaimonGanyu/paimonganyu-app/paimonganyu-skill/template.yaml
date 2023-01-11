@@ -24,7 +24,7 @@ Parameters:
 
 Conditions:
   CreateProd: !Equals [!Ref Env, prod]
-  CreateALB: !Or [Condition: CreateProd, !Equals [!Ref UseALB, 'True']]
+  CreateALB: !Equals [!Ref UseALB, 'True']
 
 Mappings:
   EnvMap:
@@ -139,6 +139,10 @@ Resources:
         - Namespace: aws:autoscaling:updatepolicy:rollingupdate
           OptionName: RollingUpdateEnabled
           Value: !If [CreateALB, true, false]
+
+        - Namespace: aws:ec2:instances
+          OptionName: InstanceTypes
+          Value: !If [CreateALB, t2.micro, t2.nano]
 
         - Namespace: aws:elasticbeanstalk:cloudwatch:logs
           OptionName: StreamLogs
