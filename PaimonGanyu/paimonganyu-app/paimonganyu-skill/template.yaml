@@ -142,7 +142,7 @@ Resources:
 
         - Namespace: aws:ec2:instances
           OptionName: InstanceTypes
-          Value: t4g.nano
+          Value: t4g.micro
 
         - Namespace: aws:elasticbeanstalk:cloudwatch:logs
           OptionName: StreamLogs
