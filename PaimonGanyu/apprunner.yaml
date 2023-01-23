@@ -1,0 +1,10 @@
+version: 1.1.31
+runtime: corretto11
+build:
+  commands:
+    build:
+      - make build-paimonganyu-skill
+run:
+  command: java -jar PaimonGanyu/paimonganyu-app/paimonganyu-skill/build/libs/paimonganyu-skill.jar
+  network:
+    port: 5000

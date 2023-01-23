@@ -3,11 +3,11 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "paimonganyu-skill"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-3t80l0g3f3ma"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1j5078jk7ifir"
 s3_prefix = "paimonganyu-skill"
-region = "ap-northeast-2"
-profile = "pgprod"
+region = "ap-northeast-1"
+profile = "pgtest"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "Env=\"prod\" UseALB=\"False\""
+parameter_overrides = "Env=\"test\""
 image_repositories = []
 disable_rollback = true

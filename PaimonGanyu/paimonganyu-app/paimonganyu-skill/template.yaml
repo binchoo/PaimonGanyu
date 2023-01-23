@@ -14,17 +14,8 @@ Parameters:
       - prod
     Description: The enviroment type of this deployment.
 
-  UseALB:
-    Type: String
-    Default: 'False'
-    AllowedValues:
-      - 'True'
-      - 'False'
-    Description: Whether to create an ALB. If Env=prod, an ALB is always created.
-
 Conditions:
   CreateProd: !Equals [!Ref Env, prod]
-  CreateALB: !Or [Condition: CreateProd, !Equals [!Ref UseALB, 'True']]
 
 Mappings:
   EnvMap:
@@ -34,6 +25,9 @@ Mappings:
     ApiDomain:
       prod: skill.paimon.studio
       test: skill.test.paimon.studio
+    GithubConnection:
+      prod: arn:aws:apprunner:ap-northeast-1:305992497901:connection/PaimonGanyuSkill/3387a586946a4b35896f9e4d585bc05d
+      test: arn:aws:apprunner:ap-northeast-1:254804608366:connection/PaimonGanyuSkill/34d79820235646aa92f43d7e18a63f08
 
   RegionEnvMap:
     ap-northeast-2:
@@ -49,118 +43,62 @@ Mappings:
 
 Resources:
   # paimonganyu-skill
-  IKakaoSkillConnectorSG:
-    Type: AWS::EC2::SecurityGroup
+#  IKakaoSkillConnectorSG:
+#    Type: AWS::EC2::SecurityGroup
+#    Properties:
+#      GroupDescription: 'Enable access from iKakao skill connectors'
+#      SecurityGroupIngress:
+#        - IpProtocol: tcp
+#          FromPort: 443
+#          ToPort: 443
+#          CidrIp: 219.249.231.40/30
+#        - IpProtocol: tcp
+#          FromPort: 80
+#          ToPort: 80
+#          CidrIp: 219.249.231.40/30
+#
+#  DeveloperSG:
+#    Type: AWS::EC2::SecurityGroup
+#    Properties:
+#      GroupDescription: 'Enable access from developer PC'
+#      SecurityGroupIngress:
+#        - IpProtocol: tcp
+#          FromPort: 443
+#          ToPort: 443
+#          CidrIp: 182.216.211.35/32
+#        - IpProtocol: tcp
+#          FromPort: 80
+#          ToPort: 80
+#          CidrIp: 182.216.211.35/32
+#        - IpProtocol: tcp
+#          FromPort: 22
+#          ToPort: 22
+#          CidrIp: 182.216.211.35/32
+
+  PaimonGanyuSkillSerivce:
+    Type: AWS::AppRunner::Service
     Properties:
-      GroupDescription: 'Enable access from iKakao skill connectors'
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 219.249.231.40/30
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 219.249.231.40/30
-
-  DeveloperSG:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: 'Enable access from developer PC'
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 182.216.211.35/32
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 182.216.211.35/32
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 182.216.211.35/32
-
-  PaimonGanyuSkillApplication:
-    Type: AWS::ElasticBeanstalk::Application
-    Properties:
-      Description: PaimonGanyu KakaoTalk Skill Server
-      ApplicationName: !Ref AWS::StackName
-
-  PaimonGanyuSkillApplicationVersion:
-    Type: AWS::ElasticBeanstalk::ApplicationVersion
-    Properties:
-      Description: The verion of PaimonGanyu KakaoTALK Skill Server
-      ApplicationName: !Ref PaimonGanyuSkillApplication
-      SourceBundle: ./build/libs/paimonganyu-skill.jar
-
-  PaimonGanyuSkillConfigurationTemplate:
-    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
-    Properties:
-      Description: Configuration for PaimonGanyu KakaoTALK Skill Server
-      ApplicationName: !Ref PaimonGanyuSkillApplication
-      SolutionStackName: 64bit Amazon Linux 2 v3.3.2 running Corretto 11
-      OptionSettings:
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: EnvironmentType
-          Value: !If [CreateALB, LoadBalanced, SingleInstance]
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: LoadBalancerType
-          Value: application
-
-        - Namespace: aws:elbv2:loadbalancer
-          OptionName: SecurityGroups
-          Value: !Join [',', [!GetAtt IKakaoSkillConnectorSG.GroupId, !GetAtt DeveloperSG.GroupId]]
-
-        - Namespace: aws:elbv2:listener:443
-          OptionName: DefaultProcess
-          Value: default
-        - Namespace: aws:elbv2:listener:443
-          OptionName: Protocol
-          Value: HTTPS
-        - Namespace: aws:elbv2:listener:443
-          OptionName: SSLCertificateArns
-          Value: !FindInMap [RegionEnvMap, CACert, !FindInMap [RegionEnvMap, !Ref AWS::Region, !Ref Env]]
-        - Namespace: aws:elbv2:listener:default
-          OptionName: ListenerEnabled
-          Value: false
-
-        - Namespace: aws:elasticbeanstalk:environment:process:default
-          OptionName: HealthCheckPath
-          Value: /health
-
-        - Namespace: aws:autoscaling:launchconfiguration
-          OptionName: SecurityGroups
-          Value: !If [CreateALB, !Ref IKakaoSkillConnectorSG, !Join [',', [!Ref IKakaoSkillConnectorSG, !Ref DeveloperSG]]]
-        - Namespace: aws:autoscaling:launchconfiguration
-          OptionName: IamInstanceProfile
-          Value: !Ref PaimonGanyuSkillInstanceProfile
-
-        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
-          OptionName: RollingUpdateEnabled
-          Value: !If [CreateALB, true, false]
-
-        - Namespace: aws:ec2:instances
-          OptionName: InstanceTypes
-          Value: t4g.nano
-
-        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
-          OptionName: StreamLogs
-          Value: true
-        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
-          OptionName: DeleteOnTerminate
-          Value: false
-        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
-          OptionName: RetentionInDays
-          Value: 180
-
-  PaimonGanyuSkillEnv:
-    Type: AWS::ElasticBeanstalk::Environment
-    Properties:
-      Description: Production environment for PaimonGanyu Skill Server
-      ApplicationName: !Ref PaimonGanyuSkillApplication
-      TemplateName: !Ref PaimonGanyuSkillConfigurationTemplate
-      VersionLabel: !Ref PaimonGanyuSkillApplicationVersion
+      ServiceName: PaimonGanyuSkill
+      SourceConfiguration:
+        CodeRepository:
+          RepositoryUrl: "https://github.com/binchoo/PaimonGanyu"
+          SourceCodeVersion:
+            Type: BRANCH
+            Value: apprunner
+          CodeConfiguration:
+            ConfigurationSource: REPOSITORY
+        AuthenticationConfiguration:
+          ConnectionArn: !FindInMap [EnvMap, GithubConnection, !Ref Env]
+        InstanceConfiguration:
+          Cpu: "1 vCPU"
+          Memory: "2 GB"
+          InstanceRoleArn: !Ref PaimonGanyuSkillRole
+        HealthCheckConfiguration:
+          Path: "/health"
+          Protocol: HTTP
+          Interval: 30
+          Timeout: 6
+          UnhealthyThreshold: 3
 
   PaimonGanyuSkillRole:
     Type: AWS::IAM::Role
@@ -181,12 +119,6 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
         - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
 
-  PaimonGanyuSkillInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - !Ref PaimonGanyuSkillRole
-
   ApiRecordSet:
     Type: AWS::Route53::RecordSetGroup
     Properties:
@@ -197,4 +129,4 @@ Resources:
           Type: !If [CreateALB, CNAME, A]
           TTL: 300
           ResourceRecords:
-            - !GetAtt PaimonGanyuSkillEnv.EndpointURL
+            - !GetAtt PaimonGanyuSkillSerivce.ServiceUrl
