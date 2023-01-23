@@ -43,38 +43,6 @@ Mappings:
 
 Resources:
   # paimonganyu-skill
-#  IKakaoSkillConnectorSG:
-#    Type: AWS::EC2::SecurityGroup
-#    Properties:
-#      GroupDescription: 'Enable access from iKakao skill connectors'
-#      SecurityGroupIngress:
-#        - IpProtocol: tcp
-#          FromPort: 443
-#          ToPort: 443
-#          CidrIp: 219.249.231.40/30
-#        - IpProtocol: tcp
-#          FromPort: 80
-#          ToPort: 80
-#          CidrIp: 219.249.231.40/30
-#
-#  DeveloperSG:
-#    Type: AWS::EC2::SecurityGroup
-#    Properties:
-#      GroupDescription: 'Enable access from developer PC'
-#      SecurityGroupIngress:
-#        - IpProtocol: tcp
-#          FromPort: 443
-#          ToPort: 443
-#          CidrIp: 182.216.211.35/32
-#        - IpProtocol: tcp
-#          FromPort: 80
-#          ToPort: 80
-#          CidrIp: 182.216.211.35/32
-#        - IpProtocol: tcp
-#          FromPort: 22
-#          ToPort: 22
-#          CidrIp: 182.216.211.35/32
-
   PaimonGanyuSkillSerivce:
     Type: AWS::AppRunner::Service
     Properties:
@@ -110,7 +78,7 @@ Resources:
             Principal:
               Service:
                 - ec2.amazonaws.com
-                - apprunner.amazonaws.com
+                - tasks.apprunner.amazonaws.com # https://docs.aws.amazon.com/apprunner/latest/dg/security_iam_service-with-iam.html#security_iam_service-with-iam-roles
             Action:
               - sts:AssumeRole
       ManagedPolicyArns:
