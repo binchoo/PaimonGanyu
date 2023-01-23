@@ -79,6 +79,16 @@ Resources:
     Type: AWS::AppRunner::Service
     Properties:
       ServiceName: PaimonGanyuSkill
+      InstanceConfiguration:
+        Cpu: "1 vCPU"
+        Memory: "3 GB"
+        InstanceRoleArn: !GetAtt PaimonGanyuSkillRole.Arn
+      HealthCheckConfiguration:
+        Path: "/health"
+        Protocol: HTTP
+        Interval: 30
+        Timeout: 6
+        UnhealthyThreshold: 3
       SourceConfiguration:
         CodeRepository:
           RepositoryUrl: "https://github.com/binchoo/PaimonGanyu"
@@ -88,17 +98,7 @@ Resources:
           CodeConfiguration:
             ConfigurationSource: REPOSITORY
         AuthenticationConfiguration:
-          ConnectionArn: !FindInMap [EnvMap, GithubConnection, !Ref Env]
-        InstanceConfiguration:
-          Cpu: "1 vCPU"
-          Memory: "2 GB"
-          InstanceRoleArn: !Ref PaimonGanyuSkillRole
-        HealthCheckConfiguration:
-          Path: "/health"
-          Protocol: HTTP
-          Interval: 30
-          Timeout: 6
-          UnhealthyThreshold: 3
+          ConnectionArn: !FindInMap [ EnvMap, GithubConnection, !Ref Env ]
 
   PaimonGanyuSkillRole:
     Type: AWS::IAM::Role
@@ -123,10 +123,10 @@ Resources:
     Type: AWS::Route53::RecordSetGroup
     Properties:
       HostedZoneName: !FindInMap [EnvMap, HostedZone, !Ref Env]
-      Comment: Zone apex alias targeted to ALB of PaimoGanyu Skill API
+      Comment: Zone apex alias targeted to Paimonganyu Skill Service
       RecordSets:
         - Name: !FindInMap [EnvMap, ApiDomain, !Ref Env]
-          Type: !If [CreateALB, CNAME, A]
+          Type: A
           TTL: 300
           ResourceRecords:
             - !GetAtt PaimonGanyuSkillSerivce.ServiceUrl
