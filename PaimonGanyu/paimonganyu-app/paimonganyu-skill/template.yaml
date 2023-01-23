@@ -110,6 +110,7 @@ Resources:
             Principal:
               Service:
                 - ec2.amazonaws.com
+                - apprunner.amazonaws.com
             Action:
               - sts:AssumeRole
       ManagedPolicyArns:
