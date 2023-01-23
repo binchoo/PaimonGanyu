@@ -140,6 +140,10 @@ Resources:
           OptionName: RollingUpdateEnabled
           Value: !If [CreateALB, true, false]
 
+        - Namespace: aws:ec2:instances
+          OptionName: InstanceTypes
+          Value: t4g.nano
+
         - Namespace: aws:elasticbeanstalk:cloudwatch:logs
           OptionName: StreamLogs
           Value: true
