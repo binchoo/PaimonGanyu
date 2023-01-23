@@ -86,7 +86,7 @@ Resources:
       HealthCheckConfiguration:
         Path: "/health"
         Protocol: HTTP
-        Interval: 30
+        Interval: 20
         Timeout: 6
         UnhealthyThreshold: 3
       SourceConfiguration:
